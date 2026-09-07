@@ -53,21 +53,18 @@ input:focus,select:focus,textarea:focus{border-color:#ffcc00;outline:none}
 <label>📍 Location / Area</label>
 <input id="cLocation" placeholder="e.g. East Legon, Accra">
 
-<label>🗺️ GPS Location (Optional)</label>
-<input id="cGPS" placeholder="e.g. 5.6358, -0.1613">
-
 <label>📝 Additional Notes</label>
 <textarea id="cNotes" rows="3" placeholder="Patient condition, time needed..."></textarea>
 
 <button class="btn green" onclick="submitBookingToFirebase()">🔔 BOOK NOW - We Will Call You Shortly</button>
 
-<p class="small" style="margin-top:15px">⚡ Instant booking • Our team receives immediately • 24/7 Service<br>📞 Emergency: <a href="tel:+233000000000" style="color:#ffcc00">Call Care233</a><br>🌐 www.care233.com</p>
+<p class="small" style="margin-top:15px">⚡ Instant booking • 24/7 Service<br>📞 <a href="tel:+233000000000" style="color:#ffcc00">Call Care233</a></p>
 </div>
 
 <div id="successArea" class="success">
 <h2 style="color:#ffcc00">✅ BOOKING SENT!</h2>
 <p>Thank you <b id="sName"></b>!</p>
-<p>Your booking for <b id="sService"></b> has been sent to Care233 team!</p>
+<p>Your booking for <b id="sService"></b> has been sent!</p>
 <p style="font-size:18px">📞 We will call you at <b id="sPhone" style="color:#ffcc00"></b> within <b>5 minutes!</b></p>
 <p class="small" id="sTime"></p>
 <button class="btn green" onclick="bookAnother()">+ Book Another Service</button>
@@ -88,12 +85,28 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
+// AUTO GPS - Silent capture, no inscription
+let autoLat = null;
+let autoLng = null;
+let autoGPS = "";
+
+// Capture GPS silently on page load
+if(navigator.geolocation){
+  navigator.geolocation.getCurrentPosition(pos=>{
+    autoLat = pos.coords.latitude;
+    autoLng = pos.coords.longitude;
+    autoGPS = autoLat.toFixed(6) + ", " + autoLng.toFixed(6);
+    console.log("GPS Captured:", autoGPS);
+  }, err=>{
+    console.log("GPS not allowed, will book without GPS");
+  }, {enableHighAccuracy:true, timeout:8000});
+}
+
 function submitBookingToFirebase(){
   let name = document.getElementById('cName').value.trim();
   let phone = document.getElementById('cPhone').value.trim();
   let service = document.getElementById('cService').value;
   let location = document.getElementById('cLocation').value.trim();
-  let gps = document.getElementById('cGPS').value.trim();
   let notes = document.getElementById('cNotes').value.trim();
 
   if(!name){alert('Please enter your name');return}
@@ -105,7 +118,9 @@ function submitBookingToFirebase(){
     phone: phone,
     service: service,
     location: location,
-    gps: gps,
+    gps: autoGPS || "",
+    lat: autoLat,
+    lng: autoLng,
     notes: notes,
     price: "To be discussed",
     date: new Date().toLocaleString(),
@@ -115,7 +130,7 @@ function submitBookingToFirebase(){
 
   let btn = document.querySelector('.btn.green');
   let oldText = btn.innerHTML;
-  btn.innerHTML = '⏳ Sending to Care233...';
+  btn.innerHTML = '⏳ Sending...';
   btn.disabled = true;
 
   db.ref('bookings').push(booking).then(()=>{
@@ -125,9 +140,7 @@ function submitBookingToFirebase(){
     document.getElementById('sService').innerText = service;
     document.getElementById('sPhone').innerText = phone;
     document.getElementById('sTime').innerText = new Date().toLocaleString();
-    
     if(navigator.vibrate) navigator.vibrate([200,100,200]);
-
     btn.innerHTML = oldText;
     btn.disabled = false;
   }).catch(e=>{
@@ -143,7 +156,6 @@ function bookAnother(){
   document.getElementById('cName').value='';
   document.getElementById('cPhone').value='';
   document.getElementById('cLocation').value='';
-  document.getElementById('cGPS').value='';
   document.getElementById('cNotes').value='';
 }
 </script>
