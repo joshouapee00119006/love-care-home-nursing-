@@ -6,8 +6,11 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 <style>
-body{background:#050a07;color:white;font-family:Arial;padding:10px;margin:0}
-.card{background:#111;padding:16px;border-radius:20px;max-width:480px;margin:20px auto;border:2px solid #0a4d2e;box-shadow:0 10px 30px rgba(0,0,0,0.5)}
+body{background:#050a07;color:white;font-family:Arial;padding:0;margin:0}
+.headerBar{background:linear-gradient(90deg,#0a4d2e,#0d5a35);padding:10px 12px;display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid #ffcc00;position:sticky;top:0;z-index:99}
+.headerBar b{color:#ffcc00;font-size:14px}
+.refBtn{background:#ffcc00;color:#000;border:none;padding:8px 14px;border-radius:20px;font-weight:bold;font-size:13px;cursor:pointer}
+.card{background:#111;padding:16px;border-radius:20px;max-width:480px;margin:15px auto;border:2px solid #0a4d2e;box-shadow:0 10px 30px rgba(0,0,0,0.5)}
 .top{display:flex;align-items:center;gap:12px;justify-content:center;margin-bottom:15px}
 .icon{width:55px;height:55px;background:#0a4d2e;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;color:#ffcc00;font-size:20px;border:3px solid #ffcc00}
 h2{color:#ffcc00;margin:0;text-align:center;letter-spacing:1px}
@@ -17,13 +20,20 @@ input,select,textarea{width:100%;padding:14px;margin:6px 0 12px 0;border-radius:
 input:focus,select:focus,textarea:focus{border-color:#ffcc00;outline:none}
 .btn{width:100%;padding:16px;border:none;border-radius:12px;font-weight:bold;font-size:18px;cursor:pointer;margin-top:10px}
 .green{background:#0a4d2e;color:#ffcc00;border:2px solid #ffcc00}
-.yellow{background:#4d3a0a;color:#ffcc00;border:2px solid #ffcc00}
-.green:active{background:#0d5a35}
+.yellow{background:#ffcc00;color:#000;border:2px solid #ffcc00;font-weight:bold}
 .success{background:#0a4d2e;border:1px solid #ffcc00;padding:20px;border-radius:15px;text-align:center;display:none}
-.refBox{background:#0f1f15;padding:12px;border-radius:12px;border:1px dashed #ffcc00;margin-top:15px}
+.refModal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:100;overflow:auto;padding:15px;box-sizing:border-box}
+.refModalCard{background:#111;border:2px solid #ffcc00;border-radius:20px;max-width:460px;margin:20px auto;padding:18px}
+.earnBadge{background:#4d3a0a;color:#ffcc00;padding:4px 10px;border-radius:12px;font-size:12px;display:inline-block;margin:5px 0;border:1px solid #ffcc00}
 </style>
 </head>
 <body>
+
+<!-- REFERRAL HEAD BAR -->
+<div class="headerBar">
+<b>💰 Earn 5% Per Booking!</b>
+<button class="refBtn" onclick="openRefModal()">🎁 Refer & Earn</button>
+</div>
 
 <div class="card">
 <div class="top">
@@ -55,27 +65,20 @@ input:focus,select:focus,textarea:focus{border-color:#ffcc00;outline:none}
 <label>📍 Location / Area</label>
 <input id="cLocation" placeholder="e.g. East Legon, Accra">
 
+<div id="referredBox" style="display:none;background:#1a2e00;border:1px solid #ffcc00;padding:10px;border-radius:12px;margin:10px 0">
+<p style="margin:0;color:#ffcc00;font-weight:bold;font-size:13px">🎉 You were referred by: <span id="refByName"></span></p>
+<p class="small" id="refByCode"></p>
+</div>
+
 <label>🎁 Referral Code (If someone referred you)</label>
-<input id="cReferral" placeholder="e.g. 0551234567 or REF code (Optional)">
+<input id="cReferral" placeholder="e.g. C233-SAR-1234 (Optional)">
 
 <label>📝 Additional Notes</label>
 <textarea id="cNotes" rows="3" placeholder="Patient condition, time needed..."></textarea>
 
 <button class="btn green" onclick="submitBookingToFirebase()">🔔 BOOK NOW - We Will Call You Shortly</button>
 
-<div class="refBox">
-<h4 style="color:#ffcc00;margin:5px 0;text-align:center">💰 Refer & Earn - Referral Portal</h4>
-<p class="small">Refer friends to Care233 and earn rewards! Share your phone number as referral code.</p>
-<div id="refLinkArea" style="display:none">
-<p class="small" style="color:#ffcc00">Your Referral Link:</p>
-<input id="myRefLink" readonly style="background:#111;color:#ffcc00;text-align:center;font-weight:bold">
-<button class="btn yellow" style="padding:10px;font-size:14px" onclick="copyRefLink()">📋 Copy Referral Link & Share on WhatsApp</button>
-<p class="small" id="refEarnInfo">Earn when your friend books! Track in Admin portal.</p>
-</div>
-<p class="small">Have friends who need a nurse? Tell them to enter your phone number as referral code when booking!</p>
-</div>
-
-<p class="small" style="margin-top:15px">⚡ Instant booking • 24/7 Service<br>📞 <a href="tel:+233000000000" style="color:#ffcc00">Call Care233</a></p>
+<p class="small" style="margin-top:15px">⚡ Instant booking • 24/7 Service • Auto GPS location captured<br>📞 <a href="tel:+233000000000" style="color:#ffcc00">Call Care233</a></p>
 </div>
 
 <div id="successArea" class="success">
@@ -85,16 +88,71 @@ input:focus,select:focus,textarea:focus{border-color:#ffcc00;outline:none}
 <p style="font-size:18px">📞 We will call you at <b id="sPhone" style="color:#ffcc00"></b> within <b>5 minutes!</b></p>
 <p class="small" id="sTime"></p>
 
-<div class="refBox">
-<h4 style="color:#ffcc00">🎉 Your Referral Link is Ready!</h4>
-<p class="small">Share to friends and earn!</p>
-<input id="sRefLink" readonly style="background:#111;color:#ffcc00;text-align:center;font-weight:bold">
-<button class="btn yellow" style="padding:12px" onclick="copySuccessRefLink()">📋 Copy & Share on WhatsApp</button>
+<div style="background:#1a1a00;padding:12px;border-radius:12px;border:1px dashed #ffcc00;margin-top:12px">
+<h4 style="color:#ffcc00;margin:5px 0">💰 Want to earn 5% too?</h4>
+<p class="small">Register your MoMo and get your referral link!</p>
+<button class="btn yellow" style="padding:12px" onclick="openRefModal()">🎁 Generate My Referral Link</button>
 </div>
 
 <button class="btn green" onclick="bookAnother()">+ Book Another Service</button>
 </div>
+</div>
 
+<!-- REFERRAL REGISTRATION MODAL -->
+<div id="refModal" class="refModal">
+<div class="refModalCard">
+<div style="display:flex;justify-content:space-between;align-items:center">
+<h3 style="color:#ffcc00;margin:0">💰 Refer & Earn 5%</h3>
+<button onclick="closeRefModal()" style="background:#222;color:white;border:1px solid #555;border-radius:50%;width:30px;height:30px;font-weight:bold;cursor:pointer">X</button>
+</div>
+
+<p class="small" style="text-align:left;margin:10px 0">Register once, share your link forever! When someone books with your link and pays, you earn <b style="color:#ffcc00">5% of their payment</b> straight to your MoMo! Admin will push it after client payment.</p>
+<div class="earnBadge">📊 Example: Client pays GHS 500 → You earn GHS 25 instantly!</div>
+
+<div id="refRegisterArea">
+<label>👤 Your Full Name</label>
+<input id="rName" placeholder="e.g. Kwame Asare">
+
+<label>📞 Your Phone (WhatsApp)</label>
+<input id="rPhone" placeholder="e.g. 0551234567">
+
+<label>💳 MoMo Number (For 5% Payment)</label>
+<input id="rMoMo" placeholder="e.g. 0551234567 - MTN/Vodafone">
+
+<label>📍 Your Location</label>
+<input id="rLocation" placeholder="e.g. Kaneshie, Accra">
+
+<button class="btn yellow" onclick="registerReferrer()">🚀 GENERATE MY REFERRAL LINK</button>
+<p class="small">Already have code? <a href="#" onclick="showLogin()" style="color:#ffcc00">Check my earnings</a></p>
+</div>
+
+<div id="refLoginArea" style="display:none">
+<label>🔑 Enter Your Referral Code or MoMo Number</label>
+<input id="rCheck" placeholder="e.g. C233-KWA-1234 or 055...">
+<button class="btn green" onclick="checkEarnings()">📊 Check My Earnings</button>
+<button class="btn" style="background:#222;color:#8fbc8f" onclick="showRegister()">← Back to Register</button>
+</div>
+
+<div id="refSuccessArea" style="display:none;background:#0a2e15;border:1px solid #ffcc00;padding:15px;border-radius:15px;margin-top:15px;text-align:center">
+<h3 style="color:#ffcc00">✅ Your Referral Link is Ready!</h3>
+<p class="small">Code:</p>
+<h2 id="myRefCode" style="color:#ffcc00;letter-spacing:2px;margin:5px 0"></h2>
+<p class="small">Your Link:</p>
+<input id="myRefLink" readonly style="background:#000;color:#ffcc00;text-align:center;font-weight:bold;font-size:13px">
+<button class="btn yellow" onclick="copyMyLink()">📋 Copy & Share on WhatsApp</button>
+
+<div id="earnStats" style="margin-top:15px;background:#111;padding:10px;border-radius:10px;text-align:left">
+<p style="margin:5px 0;font-size:13px">👥 Total Referrals: <b id="statTotal">0</b></p>
+<p style="margin:5px 0;font-size:13px">💰 Total Earned: <b id="statEarned" style="color:#ffcc00">GHS 0.00</b></p>
+<p style="margin:5px 0;font-size:13px">💳 MoMo: <b id="statMoMo"></b></p>
+<p class="small">Admin & Staff will see your MoMo and push 5% after client payment. Keep sharing!</p>
+</div>
+
+<button class="btn green" style="margin-top:10px" onclick="closeRefModal()">Done</button>
+</div>
+
+<p class="small" style="margin-top:15px">🔒 Your MoMo is safe - Only Admin & Staff can see it to pay you 5%.<br>Trusted by Care233 Ghana.</p>
+</div>
 </div>
 
 <script>
@@ -110,132 +168,176 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// AUTO GPS Silent
-let autoLat = null, autoLng = null, autoGPS = "";
+let autoLat=null, autoLng=null, autoGPS="";
 if(navigator.geolocation){
-  navigator.geolocation.getCurrentPosition(pos=>{
-    autoLat = pos.coords.latitude; autoLng = pos.coords.longitude;
-    autoGPS = autoLat.toFixed(6) + ", " + autoLng.toFixed(6);
-  }, ()=>{}, {enableHighAccuracy:true, timeout:8000});
+  navigator.geolocation.getCurrentPosition(p=>{
+    autoLat=p.coords.latitude; autoLng=p.coords.longitude;
+    autoGPS=autoLat.toFixed(6)+", "+autoLng.toFixed(6);
+  },()=>{},{enableHighAccuracy:true,timeout:8000});
 }
 
-// Check URL referral ?ref=XXXX
+// URL ref check
 let urlParams = new URLSearchParams(window.location.search);
 let refFromUrl = urlParams.get('ref');
 if(refFromUrl){
-  setTimeout(()=>{
-    document.getElementById('cReferral').value = refFromUrl;
-    document.getElementById('cReferral').style.borderColor = '#ffcc00';
-    document.getElementById('cReferral').style.background = '#3a2a00';
-  },500);
+  db.ref('referrers').orderByChild('code').equalTo(refFromUrl.toUpperCase()).once('value', snap=>{
+    if(snap.exists()){
+      let val=Object.values(snap.val())[0];
+      document.getElementById('referredBox').style.display='block';
+      document.getElementById('refByName').innerText = val.name+" ("+val.code+")";
+      document.getElementById('refByCode').innerText = "Code: "+val.code+" - You get trusted care!";
+      document.getElementById('cReferral').value = val.code;
+      document.getElementById('cReferral').style.borderColor='#ffcc00';
+    }else{
+      // still allow phone ref
+      document.getElementById('cReferral').value = refFromUrl;
+      document.getElementById('referredBox').style.display='block';
+      document.getElementById('refByName').innerText = refFromUrl;
+    }
+  });
 }
 
-function getMyRefLink(phone){
-  let base = window.location.origin + window.location.pathname;
-  return base + "?ref=" + phone.replace(/[^0-9]/g,'');
+function openRefModal(){document.getElementById('refModal').style.display='block'}
+function closeRefModal(){document.getElementById('refModal').style.display='none'}
+function showLogin(){document.getElementById('refRegisterArea').style.display='none';document.getElementById('refLoginArea').style.display='block';document.getElementById('refSuccessArea').style.display='none'}
+function showRegister(){document.getElementById('refRegisterArea').style.display='block';document.getElementById('refLoginArea').style.display='none'}
+
+function generateCode(name, phone){
+  let clean=name.replace(/[^a-zA-Z]/g,'').substring(0,3).toUpperCase();
+  if(clean.length<3) clean=(name.substring(0,3)+"XXX").toUpperCase();
+  let last4=phone.slice(-4);
+  let rand=Math.floor(100+Math.random()*900);
+  return "C233-"+clean+"-"+last4;
+}
+
+function registerReferrer(){
+  let name=document.getElementById('rName').value.trim();
+  let phone=document.getElementById('rPhone').value.trim();
+  let momo=document.getElementById('rMoMo').value.trim();
+  let loc=document.getElementById('rLocation').value.trim();
+  if(!name||!phone||!momo){alert('Please fill Name, Phone and MoMo number');return}
+  let code=generateCode(name, phone);
+
+  // check if phone already exists
+  db.ref('referrers').orderByChild('phone').equalTo(phone).once('value').then(snap=>{
+    if(snap.exists()){
+      let data=Object.values(snap.val())[0];
+      showRefSuccess(data);
+      return;
+    }
+    let refData={
+      name:name,
+      phone:phone,
+      momo:momo,
+      location:loc||"",
+      code:code,
+      totalReferrals:0,
+      totalEarned:0,
+      pendingEarned:0,
+      createdAt:new Date().toLocaleString(),
+      timestamp:Date.now()
+    };
+    db.ref('referrers').push(refData).then(()=>{
+      showRefSuccess(refData);
+      // also store code->data for quick lookup
+      db.ref('referrerCodes/'+code).set(refData);
+    });
+  });
+}
+
+function showRefSuccess(data){
+  document.getElementById('refRegisterArea').style.display='none';
+  document.getElementById('refLoginArea').style.display='none';
+  document.getElementById('refSuccessArea').style.display='block';
+  document.getElementById('myRefCode').innerText=data.code;
+  let link=window.location.origin+window.location.pathname+"?ref="+data.code;
+  document.getElementById('myRefLink').value=link;
+  document.getElementById('statTotal').innerText=data.totalReferrals||0;
+  document.getElementById('statEarned').innerText="GHS "+(data.totalEarned||0).toFixed(2);
+  document.getElementById('statMoMo').innerText=data.momo;
+}
+
+function checkEarnings(){
+  let check=document.getElementById('rCheck').value.trim().toUpperCase();
+  if(!check){alert('Enter code or MoMo');return}
+  // try by code then phone/momo
+  db.ref('referrers').once('value').then(snap=>{
+    let found=null;
+    snap.forEach(c=>{
+      let v=c.val();
+      if(v.code.toUpperCase()==check || v.phone==check || v.momo==check) found=v;
+    });
+    if(found) showRefSuccess(found);
+    else alert('No referrer found with '+check+'. Please register.');
+  });
+}
+
+function copyMyLink(){
+  let link=document.getElementById('myRefLink').value;
+  let code=document.getElementById('myRefCode').innerText;
+  navigator.clipboard.writeText(link).then(()=>{
+    window.open("https://wa.me/?text="+encodeURIComponent("Get trusted Home Nurse from Care233 Ghana! 🏥 Use my link and get fast care: "+link+" \nMy Referral Code: "+code)," _blank");
+  });
 }
 
 function submitBookingToFirebase(){
-  let name = document.getElementById('cName').value.trim();
-  let phone = document.getElementById('cPhone').value.trim();
-  let service = document.getElementById('cService').value;
-  let location = document.getElementById('cLocation').value.trim();
-  let referral = document.getElementById('cReferral').value.trim();
-  let notes = document.getElementById('cNotes').value.trim();
-
+  let name=document.getElementById('cName').value.trim();
+  let phone=document.getElementById('cPhone').value.trim();
+  let service=document.getElementById('cService').value;
+  let location=document.getElementById('cLocation').value.trim();
+  let referral=document.getElementById('cReferral').value.trim().toUpperCase();
+  let notes=document.getElementById('cNotes').value.trim();
   if(!name){alert('Please enter your name');return}
-  if(!phone){alert('Please enter phone number');return}
+  if(!phone){alert('Please enter phone');return}
   if(!location){alert('Please enter location');return}
 
-  let booking = {
-    name: name,
-    phone: phone,
-    service: service,
-    location: location,
-    gps: autoGPS || "",
-    lat: autoLat,
-    lng: autoLng,
-    referralCode: referral || "",
-    referredBy: referral || "",
-    notes: notes,
-    price: "To be discussed",
-    date: new Date().toLocaleString(),
-    timestamp: Date.now(),
-    status: 'new'
+  let booking={
+    name:name, phone:phone, service:service, location:location,
+    gps:autoGPS||"", lat:autoLat, lng:autoLng,
+    referralCode:referral||"", referredBy:referral||"",
+    notes:notes, price:"To be discussed", amountPaid:0, commission:0, commissionPaid:false,
+    date:new Date().toLocaleString(), timestamp:Date.now(), status:'new'
   };
 
-  // Save referral tracking
+  // track referral
   if(referral){
     db.ref('referrals').push({
-      referrer: referral,
-      referredName: name,
-      referredPhone: phone,
-      service: service,
-      date: new Date().toLocaleString(),
-      timestamp: Date.now()
+      referrerCode:referral,
+      referredName:name, referredPhone:phone, service:service,
+      amountPaid:0, commission:0, commissionPaid:false,
+      date:new Date().toLocaleString(), timestamp:Date.now()
+    });
+    // increment referrer count
+    db.ref('referrers').once('value').then(snap=>{
+      snap.forEach(c=>{
+        let v=c.val();
+        if(v.code.toUpperCase()==referral){
+          db.ref('referrers/'+c.key).update({totalReferrals:(v.totalReferrals||0)+1});
+        }
+      });
     });
   }
 
-  let btn = document.querySelector('.btn.green');
-  let oldText = btn.innerHTML;
-  btn.innerHTML = '⏳ Sending...';
-  btn.disabled = true;
-
+  let btn=document.querySelector('#formArea.btn.green');
+  let old=btn.innerHTML; btn.innerHTML='⏳ Sending...'; btn.disabled=true;
   db.ref('bookings').push(booking).then(()=>{
     document.getElementById('formArea').style.display='none';
     document.getElementById('successArea').style.display='block';
-    document.getElementById('sName').innerText = name;
-    document.getElementById('sService').innerText = service;
-    document.getElementById('sPhone').innerText = phone;
-    document.getElementById('sTime').innerText = new Date().toLocaleString();
-    let refLink = getMyRefLink(phone);
-    document.getElementById('sRefLink').value = refLink;
+    document.getElementById('sName').innerText=name;
+    document.getElementById('sService').innerText=service;
+    document.getElementById('sPhone').innerText=phone;
+    document.getElementById('sTime').innerText=new Date().toLocaleString();
     if(navigator.vibrate) navigator.vibrate([200,100,200]);
-    btn.innerHTML = oldText;
-    btn.disabled = false;
-  }).catch(e=>{
-    alert('Error: '+e.message);
-    btn.innerHTML = oldText;
-    btn.disabled = false;
-  });
-}
-
-function copyRefLink(){
-  let phone = document.getElementById('cPhone').value.trim();
-  if(!phone){alert('Enter your phone number first to generate referral link');return}
-  let link = getMyRefLink(phone);
-  document.getElementById('myRefLink').value = link;
-  navigator.clipboard.writeText(link).then(()=>{
-    window.open("https://wa.me/?text="+encodeURIComponent("Get trusted home nurse from Care233! Book here: "+link)," _blank");
-  });
-}
-
-function copySuccessRefLink(){
-  let link = document.getElementById('sRefLink').value;
-  navigator.clipboard.writeText(link).then(()=>{
-    window.open("https://wa.me/?text="+encodeURIComponent("I just booked a trusted nurse from Care233! You can also book here and get care at home: "+link)," _blank");
-  });
+    btn.innerHTML=old; btn.disabled=false;
+  }).catch(e=>{alert(e.message);btn.innerHTML=old;btn.disabled=false});
 }
 
 function bookAnother(){
   document.getElementById('formArea').style.display='block';
   document.getElementById('successArea').style.display='none';
-  document.getElementById('cName').value='';
-  document.getElementById('cPhone').value='';
-  document.getElementById('cLocation').value='';
-  document.getElementById('cReferral').value=refFromUrl||'';
-  document.getElementById('cNotes').value='';
+  document.getElementById('cName').value='';document.getElementById('cPhone').value='';
+  document.getElementById('cLocation').value='';document.getElementById('cNotes').value='';
 }
-
-// Show referral link live when phone typed
-document.getElementById('cPhone').addEventListener('input', e=>{
-  let phone = e.target.value.trim();
-  if(phone.length>=9){
-    document.getElementById('refLinkArea').style.display='block';
-    document.getElementById('myRefLink').value = getMyRefLink(phone);
-  }
-});
 </script>
-
 </body>
 </html>
