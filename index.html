@@ -2,15 +2,15 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Nurses Group - Book a Nurse</title>
+<title>Care233 - Book a Professional Nurse in Ghana</title>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 <style>
 body{background:#050a07;color:white;font-family:Arial;padding:10px;margin:0}
-.card{background:#111;padding:16px;border-radius:20px;max-width:480px;margin:20px auto;border:1px solid #0a4d2e;box-shadow:0 10px 30px rgba(0,0,0,0.5)}
+.card{background:#111;padding:16px;border-radius:20px;max-width:480px;margin:20px auto;border:2px solid #0a4d2e;box-shadow:0 10px 30px rgba(0,0,0,0.5)}
 .top{display:flex;align-items:center;gap:12px;justify-content:center;margin-bottom:15px}
-.icon{width:50px;height:50px;background:#0a4d2e;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;color:#ffcc00;font-size:20px;border:2px solid #ffcc00}
-h2{color:#ffcc00;margin:0;text-align:center}
+.icon{width:55px;height:55px;background:#0a4d2e;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;color:#ffcc00;font-size:20px;border:3px solid #ffcc00}
+h2{color:#ffcc00;margin:0;text-align:center;letter-spacing:1px}
 .small{font-size:12px;color:#8fbc8f;text-align:center;margin:2px}
 label{font-size:13px;color:#7fdbc0;margin-top:10px;display:block;font-weight:bold}
 input,select,textarea{width:100%;padding:14px;margin:6px 0 12px 0;border-radius:12px;border:2px solid #2a8a6a;background:#1e2e24;color:white;box-sizing:border-box;font-size:16px}
@@ -25,8 +25,8 @@ input:focus,select:focus,textarea:focus{border-color:#ffcc00;outline:none}
 
 <div class="card">
 <div class="top">
-<div class="icon">NG</div>
-<div><h2>NURSES GROUP</h2><p class="small">Professional Home Nursing in Ghana</p></div>
+<div class="icon">C233</div>
+<div><h2>Care233</h2><p class="small">Trusted Home Nursing & Care Services</p><p class="small" style="color:#ffcc00;font-weight:bold">Accra, Ghana - Verified Nurses</p></div>
 </div>
 
 <div id="formArea">
@@ -53,30 +53,29 @@ input:focus,select:focus,textarea:focus{border-color:#ffcc00;outline:none}
 <label>📍 Location / Area</label>
 <input id="cLocation" placeholder="e.g. East Legon, Accra">
 
-<label>🗺️ GPS Location (Optional - for easy finding)</label>
+<label>🗺️ GPS Location (Optional)</label>
 <input id="cGPS" placeholder="e.g. 5.6358, -0.1613">
 
 <label>📝 Additional Notes</label>
-<textarea id="cNotes" rows="3" placeholder="Tell us about patient condition, time needed..."></textarea>
+<textarea id="cNotes" rows="3" placeholder="Patient condition, time needed..."></textarea>
 
-<button class="btn green" onclick="submitBookingToFirebase()">🔔 BOOK NOW - Staff Will Call You</button>
+<button class="btn green" onclick="submitBookingToFirebase()">🔔 BOOK NOW - We Will Call You Shortly</button>
 
-<p class="small" style="margin-top:15px">⚡ Real-time booking • Staff receives instantly • 24/7 Service<br>📞 Emergency: <a href="tel:+233000000000" style="color:#ffcc00">Call Us</a></p>
+<p class="small" style="margin-top:15px">⚡ Instant booking • Our team receives immediately • 24/7 Service<br>📞 Emergency: <a href="tel:+233000000000" style="color:#ffcc00">Call Care233</a><br>🌐 www.care233.com</p>
 </div>
 
 <div id="successArea" class="success">
 <h2 style="color:#ffcc00">✅ BOOKING SENT!</h2>
 <p>Thank you <b id="sName"></b>!</p>
-<p>Your booking for <b id="sService"></b> has been sent LIVE to our Staffs!</p>
-<p style="font-size:18px">📞 Our staff will call you at <b id="sPhone" style="color:#ffcc00"></b> in <b>5 minutes!</b></p>
+<p>Your booking for <b id="sService"></b> has been sent to Care233 team!</p>
+<p style="font-size:18px">📞 We will call you at <b id="sPhone" style="color:#ffcc00"></b> within <b>5 minutes!</b></p>
 <p class="small" id="sTime"></p>
-<button class="btn green" onclick="bookAnother()">+ Book Another</button>
+<button class="btn green" onclick="bookAnother()">+ Book Another Service</button>
 </div>
 
 </div>
 
 <script>
-// YOUR FIREBASE - web-care-618e8
 const firebaseConfig = {
   apiKey: "AIzaSyB52-X1D8Cg-wUDWPds_tR7X3cF82dMdRg",
   authDomain: "web-care-618e8.firebaseapp.com",
@@ -114,14 +113,12 @@ function submitBookingToFirebase(){
     status: 'new'
   };
 
-  // Disable button
   let btn = document.querySelector('.btn.green');
   let oldText = btn.innerHTML;
-  btn.innerHTML = '⏳ Sending...';
+  btn.innerHTML = '⏳ Sending to Care233...';
   btn.disabled = true;
 
   db.ref('bookings').push(booking).then(()=>{
-    // Show success
     document.getElementById('formArea').style.display='none';
     document.getElementById('successArea').style.display='block';
     document.getElementById('sName').innerText = name;
@@ -134,7 +131,7 @@ function submitBookingToFirebase(){
     btn.innerHTML = oldText;
     btn.disabled = false;
   }).catch(e=>{
-    alert('Error: '+e.message+'\n\nPlease check internet and try again');
+    alert('Error: '+e.message);
     btn.innerHTML = oldText;
     btn.disabled = false;
   });
