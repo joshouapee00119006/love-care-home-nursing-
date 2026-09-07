@@ -7,88 +7,113 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 <style>
 body{background:#050a07;color:white;font-family:Arial;padding:8px;margin:0}
-.card{background:#111;padding:14px;border-radius:16px;max-width:700px;margin:auto;border:2px solid #0a4d2e}
+.card{background:#111;padding:14px;border-radius:16px;max-width:760px;margin:auto;border:2px solid #0a4d2e}
 .top{display:flex;align-items:center;gap:12px;justify-content:center;margin-bottom:10px}
 .logo{width:50px;height:50px;background:#0a4d2e;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#ffcc00;font-weight:bold;border:2px solid #ffcc00}
 h2{color:#ffcc00;margin:0}
 .box{background:#1a2a1f;padding:12px;border-radius:12px;margin:10px 0;border-left:4px solid #ffcc00}
-.btn{padding:12px 16px;border:none;border-radius:12px;font-weight:bold;margin:4px;cursor:pointer;font-size:14px;text-decoration:none;display:inline-block}
+.docBox{background:#0f1f15;padding:10px;border-radius:10px;margin:8px 0;border:1px dashed #2a8a6a}
+.btn{padding:12px 16px;border:none;border-radius:12px;font-weight:bold;margin:4px;cursor:pointer;font-size:13px;text-decoration:none;display:inline-block}
 .green{background:#0a4d2e;color:#ffcc00}.red{background:#8a0a0a;color:white}.blue{background:#0a2a4d;color:#7fdbc0}.grey{background:#222;color:white}.yellow{background:#4d3a0a;color:#ffcc00}
-input,select,textarea{width:100%;padding:14px;margin:6px 0;border-radius:12px;border:2px solid #2a8a6a;background:#1e1e1e;color:white;box-sizing:border-box;font-size:15px}
+input,select,textarea{width:100%;padding:13px;margin:6px 0;border-radius:12px;border:2px solid #2a8a6a;background:#1e1e1e;color:white;box-sizing:border-box;font-size:14px}
 .hidden{display:none!important}
-.sosBig{width:180px;height:180px;border-radius:50%;background:radial-gradient(circle, #ff0000 0%, #8a0a0a 100%);border:6px solid white;color:white;font-size:32px;font-weight:bold;cursor:pointer;box-shadow:0 0 30px red;animation:pulse 1.5s infinite;margin:20px auto;display:flex;align-items:center;justify-content:center;user-select:none}
-@keyframes pulse{0%{transform:scale(1);box-shadow:0 0 0 0 rgba(255,0,0,0.7)}50%{transform:scale(1.05);box-shadow:0 0 0 20px rgba(255,0,0,0)}100%{transform:scale(1);box-shadow:0 0 0 0 rgba(255,0,0,0)}}
-.sosActive{background:#3a0a0a;border:2px solid red;padding:14px;border-radius:12px;margin:12px 0}
-.liveDot{width:12px;height:12px;background:red;border-radius:50%;display:inline-block;animation:blink 1s infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.sosBig{width:170px;height:170px;border-radius:50%;background:radial-gradient(circle, #ff0000 0%, #8a0a0a 100%);border:6px solid white;color:white;font-size:32px;font-weight:bold;cursor:pointer;box-shadow:0 0 30px red;animation:pulse 1.5s infinite;margin:20px auto;display:flex;align-items:center;justify-content:center}
+@keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.05)}100%{transform:scale(1)}}
 .tabs{display:flex;gap:6px;margin:10px 0;flex-wrap:wrap}
 .tab{padding:10px 12px;border-radius:10px;border:none;font-weight:bold;font-size:12px;cursor:pointer}
 .active{background:#0a4d2e;color:#ffcc00}.off{background:#222;color:#ccc}
-video{width:100%;border-radius:12px;background:#000}
+video,img{width:100%;border-radius:12px;background:#000;max-height:300px;object-fit:cover}
 .small{font-size:11px;color:#8fbc8f}
+.req{color:red}
 </style>
 </head>
 <body>
 <div class="card">
-<div class="top"><div class="logo">C233</div><div><h2>Care233</h2><p style="margin:0;font-size:11px;color:#7fdbc0">Nurses Portal • Secure • Care233</p></div></div>
+<div class="top"><div class="logo">C233</div><div><h2>Care233</h2><p style="margin:0;font-size:11px;color:#7fdbc0">Nurses Portal • Care233 Verified</p></div></div>
 
 <div id="loginBox">
-<h3 style="text-align:center;color:#ffcc00">Care233 Nurse Login / Register</h3>
-<input id="nName" placeholder="Full Name">
-<input id="nPhone" placeholder="Phone e.g. 0544121814" type="tel">
-<input id="nSkill" placeholder="Skill e.g. General Nurse">
-<input id="nLocation" placeholder="Your Location e.g. Accra">
-<button class="btn green" style="width:100%;padding:16px;font-size:18px" onclick="registerNurse()">Register / Login to Care233</button>
+<h3 style="text-align:center;color:#ffcc00">Care233 Nurse Registration - Professional Documents Required</h3>
+<p class="small" style="text-align:center;color:#ffcc00">All documents will be reviewed by Admin & Staffs for approval</p>
+
+<input id="nName" placeholder="Full Name *">
+<input id="nPhone" placeholder="Phone e.g. 0544121814 *" type="tel">
+<input id="nSkill" placeholder="Professional Skill e.g. General Nurse, Midwife *">
+<input id="nLocation" placeholder="Your Location e.g. Accra *">
+<input id="nExp" placeholder="Years of Experience e.g. 3 years">
+<input id="nLicenseNo" placeholder="Nursing License Number (NMC) *">
+<input id="nGhanaCardNo" placeholder="Ghana Card Number *">
+
+<div style="background:#2a1a00;padding:12px;border-radius:12px;border:2px solid #ffcc00;margin:12px 0">
+<h4 style="margin:0 0 10px;color:#ffcc00">📄 Upload Professional Documents * Required for Approval</h4>
+
+<div class="docBox">
+<label class="small" style="color:#ffcc00">📄 CV / Resume <span class="req">*</span></label>
+<input type="file" id="cvFile" accept=".pdf,.doc,.docx,image/*">
+<p id="cvStatus" class="small"></p>
+</div>
+
+<div class="docBox">
+<label class="small" style="color:#ffcc00">🪪 Nursing License / Certificate <span class="req">*</span></label>
+<input type="file" id="licenseFile" accept="image/*,.pdf">
+<p id="licenseStatus" class="small"></p>
+</div>
+
+<div class="docBox">
+<label class="small" style="color:#ffcc00">🇬🇭 Ghana Card (Front & Back) <span class="req">*</span></label>
+<input type="file" id="ghanaCardFile" accept="image/*,.pdf" multiple>
+<p id="ghanaStatus" class="small">You can select front and back together</p>
+</div>
+
+<div class="docBox">
+<label class="small" style="color:#ffcc00">📜 Other Professional Certificates (Optional)</label>
+<input type="file" id="otherFile" accept="image/*,.pdf" multiple>
+<p id="otherStatus" class="small"></p>
+</div>
+
+<p class="small" style="color:#8fbc8f">Files will be stored securely for Care233 Admin verification. Max 5MB per file.</p>
+</div>
+
+<button class="btn green" style="width:100%;padding:16px;font-size:18px" onclick="registerNurse()">📤 Submit for Care233 Verification</button>
 <p class="small" style="text-align:center">If already registered, just enter phone to login</p>
+<div id="uploadProgress" class="small" style="text-align:center;color:#ffcc00"></div>
 </div>
 
 <div id="dash" class="hidden">
 <p style="text-align:center"><b id="welcomeName" style="color:#ffcc00"></b> <button class="btn grey" onclick="logout()" style="float:right">Logout</button></p>
+<div id="approvalBanner" class="hidden" style="background:#4d3a0a;padding:10px;border-radius:10px;border:2px solid #ffcc00;margin-bottom:10px;text-align:center">
+<span style="color:#ffcc00">⏳ Pending Approval - Care233 Admin reviewing your documents</span><br><small>Documents submitted, wait for verification</small>
+</div>
+<div id="approvedBanner" class="hidden" style="background:#0a4d2e;padding:10px;border-radius:10px;border:2px solid #00ff00;margin-bottom:10px;text-align:center">
+<span style="color:#00ff00">✅ Approved by Care233! You can receive jobs</span>
+</div>
+
 <div class="tabs">
 <button id="tb1" class="tab active" onclick="tab('home')">Home</button>
-<button id="tb2" class="tab off" onclick="tab('jobs')">My Jobs</button>
-<button id="tb3" class="tab off" onclick="tab('video')">🎥 Video Talks</button>
-<button id="tb4" class="tab off" onclick="tab('sos')">🆘 SOS - Care233 Security</button>
+<button id="tb2" class="tab off" onclick="tab('docs')">📄 My Docs</button>
+<button id="tb3" class="tab off" onclick="tab('jobs')">My Jobs</button>
+<button id="tb4" class="tab off" onclick="tab('video')">🎥 Video</button>
+<button id="tb5" class="tab off" onclick="tab('sos')">🆘 SOS</button>
 </div>
 
 <div id="vHome">
-<div class="box"><b>Welcome <span id="name2"></span>!</b><br><small>Skill: <span id="skill2"></span> | Phone: <span id="phone2"></span> | Care233 Nurse</small><br><small id="gpsStatus" style="color:#ffcc00">📍 Getting GPS for your safety...</small></div>
-<div class="box" style="text-align:center;border-left-color:#00ff00">
-<h3 style="margin:0;color:#00ff00">✅ Protected by Care233 Security</h3>
-<p style="font-size:12px">If unsafe at client location, tap SOS! CEO + Staff will see your live GPS + video for rescue. Your safety is our priority!</p>
-<button class="btn red" style="width:100%;padding:16px;font-size:18px" onclick="tab('sos')">🚨 GO TO EMERGENCY SOS BUTTON</button>
+<div class="box"><b>Welcome <span id="name2"></span> - Care233 Nurse</b><br><small>Skill: <span id="skill2"></span> | Phone: <span id="phone2"></span></small><br><small id="gpsStatus" style="color:#ffcc00">📍 Getting GPS...</small></div>
+<div id="jobsListHome"></div>
 </div>
-<h3>My Assigned Jobs - Care233</h3><div id="jobsListHome"></div>
+
+<div id="vDocs" class="hidden">
+<h3>📄 My Submitted Documents - Care233 Verification</h3>
+<div id="myDocsList"></div>
+<button class="btn yellow" style="width:100%" onclick="tab('home')">Add More Documents - Go to Home then Re-register</button>
 </div>
 
 <div id="vJobs" class="hidden"><h3>My Assigned Jobs - Care233</h3><div id="myJobsList"></div><h3>All Open Jobs</h3><div id="allJobsList"></div></div>
-
-<div id="vVideo" class="hidden"><h3>📹 Live Video Talks - Care233</h3><p class="small">Video talks from CEO for Care233 nurses</p><div id="videoTalksList"></div></div>
+<div id="vVideo" class="hidden"><h3>📹 Video Talks - Care233</h3><div id="videoTalksList"></div></div>
 
 <div id="vSos" class="hidden">
-<div style="text-align:center;padding:10px">
-<h2 style="color:red">🚨 EMERGENCY SOS - Care233 Security</h2>
-<p style="font-size:13px">Press and HOLD SOS for 2 seconds if in danger.<br>It sends your <b>Live GPS + Live Video</b> to CEO for rescue!</p>
-<div id="sosInactive">
-<div class="sosBig" id="sosBtn">SOS</div>
-<p style="color:#ffaaaa;font-weight:bold">HOLD FOR 2 SECONDS TO ACTIVATE - Care233</p>
-<p class="small">Your GPS: <span id="myLatLng">Getting...</span><br>Accuracy: <span id="myAcc">-</span></p>
-<video id="previewVideo" autoplay muted playsinline class="hidden" style="height:200px"></video>
-</div>
-<div id="sosActiveBox" class="hidden">
-<div class="sosActive">
-<h3 style="margin:0;color:red"><span class="liveDot"></span> SOS ACTIVE - Care233 HELP COMING!</h3>
-<p><b>CEO + Admins tracking you LIVE with GPS + Video!</b></p>
-<p class="small">📍 Live GPS: <span id="activeLatLng" style="color:#ffcc00"></span><br>📹 Video: <span id="activeVideoLink" style="color:#00ff00"></span><br>⏰ Started: <span id="sosStartTime"></span></p>
-<div id="activeVideoContainer"></div>
-<div style="margin-top:12px">
-<button class="btn green" style="width:100%;padding:16px" onclick="cancelSOS()">✅ I'M SAFE NOW - CANCEL SOS</button>
-<a class="btn orange" href="tel:191" style="width:100%;text-align:center;display:block;box-sizing:border-box">🚓 Call Police 191</a>
-<a class="btn orange" href="tel:112" style="width:100%;text-align:center;display:block;box-sizing:border-box">🚨 Emergency 112</a>
-</div>
-<p class="small" style="text-align:center">Keep page open! CEO watching live.</p>
-</div>
-</div>
+<div style="text-align:center">
+<h2 style="color:red">🚨 EMERGENCY SOS - Care233</h2>
+<div id="sosInactive"><div class="sosBig" id="sosBtn">SOS</div><p style="color:#ffaaaa;font-weight:bold">HOLD 2 SECONDS</p><p class="small">GPS: <span id="myLatLng">Getting...</span></p><video id="previewVideo" autoplay muted playsinline class="hidden" style="height:200px"></video></div>
+<div id="sosActiveBox" class="hidden"><div style="background:#3a0a0a;padding:14px;border-radius:12px;border:2px solid red"><h3 style="color:red">🔴 SOS ACTIVE - Care233 Help Coming!</h3><p class="small">📍 <span id="activeLatLng"></span><br>📹 <span id="activeVideoLink"></span><br><span id="sosStartTime"></span></p><div id="activeVideoContainer"></div><button class="btn green" style="width:100%;padding:16px;margin-top:10px" onclick="cancelSOS()">✅ I'M SAFE - CANCEL SOS</button><a class="btn orange" href="tel:191" style="width:100%;display:block;box-sizing:border-box;text-align:center">🚓 Police 191</a></div></div>
 </div>
 </div>
 </div>
@@ -98,101 +123,132 @@ video{width:100%;border-radius:12px;background:#000}
 const firebaseConfig = { apiKey: "AIzaSyB52-X1D8Cg-wUDWPds_tR7X3cF82dMdRg", authDomain: "web-care-618e8.firebaseapp.com", databaseURL: "https://web-care-618e8-default-rtdb.firebaseio.com", projectId: "web-care-618e8", storageBucket: "web-care-618e8.firebasestorage.app", messagingSenderId: "1062578660694", appId: "1:1062578660694:web:f94dfe12c929df05bce2f7" };
 firebase.initializeApp(firebaseConfig); const db = firebase.database();
 let currentNurse=null, watchId=null, myPos=null, sosActive=false, sosKey=null, sosInterval=null, stream=null, videoRoomId=null;
-function registerNurse(){
+
+function fileToDataURL(file){ return new Promise((res,rej)=>{ let r=new FileReader(); r.onload=e=>res(e.target.result); r.onerror=rej; r.readAsDataURL(file); }); }
+
+async function registerNurse(){
   let name=document.getElementById('nName').value.trim();
   let phone=document.getElementById('nPhone').value.trim();
-  let skill=document.getElementById('nSkill').value.trim()||'General Nurse';
-  let loc=document.getElementById('nLocation').value.trim()||'Ghana';
-  if(!phone){alert('Enter phone');return}
+  let skill=document.getElementById('nSkill').value.trim();
+  let location=document.getElementById('nLocation').value.trim();
+  let exp=document.getElementById('nExp').value.trim();
+  let licenseNo=document.getElementById('nLicenseNo').value.trim();
+  let ghanaNo=document.getElementById('nGhanaCardNo').value.trim();
+  let cvFile=document.getElementById('cvFile').files[0];
+  let licFile=document.getElementById('licenseFile').files[0];
+  let ghanaFiles=document.getElementById('ghanaCardFile').files;
+  let otherFiles=document.getElementById('otherFile').files;
+
+  if(!phone){alert('Enter phone *');return}
   let workers=JSON.parse(localStorage.getItem('care233_workers')||'[]');
   let existing=workers.find(w=>w.phone===phone);
-  if(existing){ currentNurse=existing; }
-  else{
-    if(!name){alert('Enter name for new registration');return}
-    currentNurse={id:Date.now(),name,phone,skill,location:loc,approved:false,registered:new Date().toLocaleString()};
-    workers.push(currentNurse); localStorage.setItem('care233_workers',JSON.stringify(workers));
-    alert('Registered to Care233! Wait for CEO approval. You can use SOS now for safety.');
+  if(existing &&!name){
+    currentNurse=existing; localStorage.setItem('care233_current_nurse',JSON.stringify(currentNurse)); openDash(); return;
   }
-  localStorage.setItem('care233_current_nurse',JSON.stringify(currentNurse));
-  openDash();
+  if(!name||!skill||!location||!licenseNo||!ghanaNo){alert('Fill all * fields: Name, Skill, Location, License No, Ghana Card No');return}
+  if(!existing && (!cvFile ||!licFile || ghanaFiles.length===0)){ alert('For new registration, upload CV, License, Ghana Card *'); return; }
+
+  document.getElementById('uploadProgress').innerText='⏳ Uploading documents to Care233... Please wait...';
+
+  try{
+    let docs={};
+    if(cvFile){ docs.cv={name:cvFile.name,type:cvFile.type,data:await fileToDataURL(cvFile)}; document.getElementById('cvStatus').innerText='✅ CV uploaded: '+cvFile.name; }
+    if(licFile){ docs.license={name:licFile.name,type:licFile.type,data:await fileToDataURL(licFile)}; document.getElementById('licenseStatus').innerText='✅ License uploaded'; }
+    if(ghanaFiles.length>0){
+      docs.ghanaCards=[];
+      for(let f of ghanaFiles){ docs.ghanaCards.push({name:f.name,type:f.type,data:await fileToDataURL(f)}); }
+      document.getElementById('ghanaStatus').innerText=`✅ Ghana Card uploaded: ${ghanaFiles.length} file(s)`;
+    }
+    if(otherFiles.length>0){
+      docs.others=[];
+      for(let f of otherFiles){ docs.others.push({name:f.name,type:f.type,data:await fileToDataURL(f)}); }
+      document.getElementById('otherStatus').innerText=`✅ Other certs: ${otherFiles.length} file(s)`;
+    }
+
+    let nurseData={
+      id: existing? existing.id : Date.now(),
+      name, phone, skill, location, experience:exp, licenseNo, ghanaCardNo:ghanaNo,
+      documents: docs,
+      approved: existing? existing.approved : false,
+      registered: new Date().toLocaleString(),
+      timestamp: Date.now(),
+      docsStatus: 'pending',
+      care233Verified: false
+    };
+
+    // Save locally
+    if(existing){
+      let idx=workers.findIndex(w=>w.phone===phone);
+      workers[idx]={...workers[idx],...nurseData, approved:workers[idx].approved};
+    } else {
+      workers.push(nurseData);
+    }
+    localStorage.setItem('care233_workers',JSON.stringify(workers));
+    currentNurse=nurseData;
+    localStorage.setItem('care233_current_nurse',JSON.stringify(currentNurse));
+
+    // Push to Firebase for Admin to review
+    db.ref('nurseApplications').push(nurseData);
+
+    document.getElementById('uploadProgress').innerText='✅ Documents submitted to Care233 Admin! Awaiting approval.';
+    alert('✅ Submitted to Care233!\n\nDocuments: CV, License, Ghana Card uploaded.\nAdmin & Staffs will review for approval.\nYou can still use SOS for safety.');
+    openDash();
+
+  }catch(e){ document.getElementById('uploadProgress').innerText='❌ Upload failed: '+e.message; alert('Upload failed: '+e.message); }
 }
+
 function openDash(){
   document.getElementById('loginBox').className='hidden'; document.getElementById('dash').className='';
   document.getElementById('welcomeName').innerText=currentNurse.name;
   document.getElementById('name2').innerText=currentNurse.name;
   document.getElementById('skill2').innerText=currentNurse.skill;
   document.getElementById('phone2').innerText=currentNurse.phone;
-  startGPS(); loadJobs(); loadVideoTalks(); checkActiveSOS();
+  if(currentNurse.approved){ document.getElementById('approvedBanner').className=''; document.getElementById('approvalBanner').className='hidden'; }
+  else{ document.getElementById('approvalBanner').className=''; document.getElementById('approvedBanner').className='hidden'; }
+  startGPS(); loadJobs(); loadVideoTalks(); loadMyDocs(); checkActiveSOS();
 }
-function startGPS(){
-  if(!navigator.geolocation){document.getElementById('gpsStatus').innerText='GPS not supported';return}
-  document.getElementById('gpsStatus').innerText='📍 Tracking GPS for Care233 SOS safety...';
-  watchId=navigator.geolocation.watchPosition(pos=>{
-    myPos=pos; 
-    document.getElementById('myLatLng').innerText=`${pos.coords.latitude.toFixed(6)}, ${pos.coords.longitude.toFixed(6)}`;
-    document.getElementById('myAcc').innerText=`±${Math.round(pos.coords.accuracy)}m`;
-    document.getElementById('gpsStatus').innerText=`📍 GPS Active ±${Math.round(pos.coords.accuracy)}m - Ready for SOS - Care233`;
-    if(sosActive && sosKey){ updateSosLocation(); }
-  }, err=>{ document.getElementById('gpsStatus').innerText='📍 Enable location for SOS'; }, {enableHighAccuracy:true, maximumAge:5000, timeout:10000});
+
+function loadMyDocs(){
+  if(!currentNurse.documents){ document.getElementById('myDocsList').innerHTML='<p class="small">No documents uploaded yet</p>'; return; }
+  let d=currentNurse.documents;
+  let html='';
+  if(d.cv) html+=`<div class="docBox">📄 CV: <b>${d.cv.name}</b><br><a class="btn blue" target="_blank" href="${d.cv.data}">View CV</a></div>`;
+  if(d.license) html+=`<div class="docBox">🪪 License: <b>${d.license.name}</b> - No: ${currentNurse.licenseNo}<br><a class="btn blue" target="_blank" href="${d.license.data}">View License</a></div>`;
+  if(d.ghanaCards) html+=`<div class="docBox">🇬🇭 Ghana Card: <b>${currentNurse.ghanaCardNo}</b> - ${d.ghanaCards.length} file(s)<br>${d.ghanaCards.map((g,i)=>`<a class="btn yellow" target="_blank" href="${g.data}">View Ghana Card ${i+1}</a>`).join('')}</div>`;
+  if(d.others) html+=`<div class="docBox">📜 Other Certificates: ${d.others.length} file(s)<br>${d.others.map((o,i)=>`<a class="btn grey" target="_blank" href="${o.data}">View Cert ${i+1}: ${o.name}</a>`).join('')}</div>`;
+  html+=`<div class="box"><b>Status:</b> ${currentNurse.approved?'<span style="color:#0f0">✅ Approved by Care233 Admin</span>':'<span style="color:#ffcc00">⏳ Pending Approval - Admin & Staff reviewing</span>'}<br><small>License No: ${currentNurse.licenseNo} | Ghana Card: ${currentNurse.ghanaCardNo} | Exp: ${currentNurse.experience||'N/A'}</small></div>`;
+  document.getElementById('myDocsList').innerHTML=html;
 }
-const sosBtn=document.getElementById('sosBtn');
-let pressTimer=null;
-sosBtn.addEventListener('touchstart', (e)=>{ e.preventDefault(); startPress(); });
-sosBtn.addEventListener('touchend', cancelPress);
-sosBtn.addEventListener('mousedown', startPress);
-sosBtn.addEventListener('mouseup', cancelPress);
-function startPress(){ pressTimer=setTimeout(()=>{ activateSOS(); }, 2000); sosBtn.innerText='HOLD...'; sosBtn.style.background='orange'; if(navigator.vibrate) navigator.vibrate(100); }
-function cancelPress(){ clearTimeout(pressTimer); if(!sosActive){ sosBtn.innerText='SOS'; sosBtn.style.background=''; } }
-async function activateSOS(){
-  if(sosActive) return;
-  if(!myPos){ alert('Wait for GPS! Enable location.'); sosBtn.innerText='SOS'; return; }
-  if(!confirm('🚨 ACTIVATE EMERGENCY SOS - Care233?\n\nThis will:\n✅ Send LIVE GPS to CEO\n✅ Start LIVE video for monitoring\n✅ Alert staffs for rescue\n\nContinue?')){ sosBtn.innerText='SOS'; return; }
-  sosBtn.innerText='SENDING...';
-  try{
-    try{ stream = await navigator.mediaDevices.getUserMedia({video:true,audio:true}); document.getElementById('previewVideo').srcObject=stream; document.getElementById('previewVideo').className=''; }catch(e){}
-    videoRoomId='SOS_Care233_'+currentNurse.phone+'_'+Date.now();
-    let videoLink=`https://meet.jit.si/${videoRoomId}`;
-    let sosData={nurseName:currentNurse.name+' - Care233',nursePhone:currentNurse.phone,nurseSkill:currentNurse.skill,lat:myPos.coords.latitude,lng:myPos.coords.longitude,accuracy:myPos.coords.accuracy,message:'🚨 EMERGENCY! Nurse feels unsafe at client location! Needs immediate rescue! Live GPS + Video from Care233',videoLink:videoLink,videoRoomId:videoRoomId,date:new Date().toLocaleString(),timestamp:Date.now(),status:'active'};
-    let ref = db.ref('sosAlerts').push(sosData);
-    sosKey=ref.key; sosActive=true;
-    localStorage.setItem('care233_sos_active',JSON.stringify({key:sosKey,room:videoRoomId}));
-    document.getElementById('sosInactive').className='hidden';
-    document.getElementById('sosActiveBox').className='';
-    document.getElementById('activeLatLng').innerText=`${myPos.coords.latitude.toFixed(6)}, ${myPos.coords.longitude.toFixed(6)}`;
-    document.getElementById('activeVideoLink').innerHTML=`<a href="${videoLink}" target="_blank" style="color:#00ff00">${videoLink}</a>`;
-    document.getElementById('sosStartTime').innerText=new Date().toLocaleString();
-    document.getElementById('activeVideoContainer').innerHTML=`<div style="background:#000;padding:8px;border-radius:8px;margin-top:8px"><p class="small" style="color:#0f0">📹 Live Video Monitoring - Care233 Security</p><a class="btn blue" target="_blank" href="${videoLink}">Join Live Video Monitoring</a><p class="small">CEO will join to see you live!</p></div>`;
-    sosInterval=setInterval(()=>{ if(myPos) updateSosLocation(); }, 10000);
-    if(navigator.vibrate) navigator.vibrate([500,200,500,200,500]);
-    alert(`🚨 SOS ACTIVATED - Care233!\nCEO tracking your GPS + Video:\n${videoLink}`);
-  }catch(e){ alert('SOS Failed: '+e.message); sosBtn.innerText='SOS'; }
-}
-function updateSosLocation(){ if(!sosKey || !myPos) return; db.ref('sosAlerts/'+sosKey).update({lat:myPos.coords.latitude,lng:myPos.coords.longitude,accuracy:myPos.coords.accuracy,lastUpdate:Date.now()}); document.getElementById('activeLatLng').innerText=`${myPos.coords.latitude.toFixed(6)}, ${myPos.coords.longitude.toFixed(6)} ±${Math.round(myPos.coords.accuracy)}m (Live)`; }
-function cancelSOS(){ if(!confirm('Safe now? Cancel SOS?')) return; if(sosKey){ db.ref('sosAlerts/'+sosKey).update({status:'resolved', resolvedAt:Date.now()}); } sosActive=false; sosKey=null; clearInterval(sosInterval); localStorage.removeItem('care233_sos_active'); if(stream){ stream.getTracks().forEach(t=>t.stop()); } document.getElementById('sosActiveBox').className='hidden'; document.getElementById('sosInactive').className=''; sosBtn.innerText='SOS'; document.getElementById('previewVideo').className='hidden'; alert('✅ SOS Cancelled - Care233 glad you safe!'); }
-function checkActiveSOS(){ let saved=JSON.parse(localStorage.getItem('care233_sos_active')||'null'); if(saved){ sosKey=saved.key; videoRoomId=saved.room; sosActive=true; document.getElementById('sosInactive').className='hidden'; document.getElementById('sosActiveBox').className=''; document.getElementById('activeVideoLink').innerHTML=`<a href="https://meet.jit.si/${videoRoomId}" target="_blank" style="color:#0f0">https://meet.jit.si/${videoRoomId}</a>`; sosInterval=setInterval(()=>{ if(myPos) updateSosLocation(); }, 10000); } }
+
+function startGPS(){ if(!navigator.geolocation) return; watchId=navigator.geolocation.watchPosition(pos=>{ myPos=pos; document.getElementById('myLatLng').innerText=`${pos.coords.latitude.toFixed(6)}, ${pos.coords.longitude.toFixed(6)}`; if(sosActive&&sosKey) updateSosLocation(); }, ()=>{}, {enableHighAccuracy:true}); }
+const sosBtn=document.getElementById('sosBtn'); let pressTimer=null;
+sosBtn.addEventListener('touchstart', e=>{ e.preventDefault(); startPress(); }); sosBtn.addEventListener('touchend', cancelPress); sosBtn.addEventListener('mousedown', startPress); sosBtn.addEventListener('mouseup', cancelPress);
+function startPress(){ pressTimer=setTimeout(activateSOS,2000); sosBtn.innerText='HOLD...'; }
+function cancelPress(){ clearTimeout(pressTimer); if(!sosActive) sosBtn.innerText='SOS'; }
+async function activateSOS(){ if(sosActive||!myPos) return; if(!confirm('🚨 Activate SOS - Care233 Security?\nSend LIVE GPS + Video to CEO?')){sosBtn.innerText='SOS';return} sosBtn.innerText='SENDING...'; try{ try{ stream=await navigator.mediaDevices.getUserMedia({video:true,audio:true}); document.getElementById('previewVideo').srcObject=stream; document.getElementById('previewVideo').className=''; }catch(e){} videoRoomId='SOS_Care233_'+currentNurse.phone+'_'+Date.now(); let videoLink=`https://meet.jit.si/${videoRoomId}`; let sosData={nurseName:currentNurse.name+' - Care233',nursePhone:currentNurse.phone,lat:myPos.coords.latitude,lng:myPos.coords.longitude,message:'EMERGENCY! Care233 nurse needs rescue! Docs verified: '+currentNurse.licenseNo,videoLink,date:new Date().toLocaleString(),timestamp:Date.now(),status:'active'}; let ref=db.ref('sosAlerts').push(sosData); sosKey=ref.key; sosActive=true; localStorage.setItem('care233_sos_active',JSON.stringify({key:sosKey,room:videoRoomId})); document.getElementById('sosInactive').className='hidden'; document.getElementById('sosActiveBox').className=''; document.getElementById('activeLatLng').innerText=`${myPos.coords.latitude.toFixed(6)}, ${myPos.coords.longitude.toFixed(6)}`; document.getElementById('activeVideoLink').innerHTML=`<a href="${videoLink}" target="_blank" style="color:#0f0">${videoLink}</a>`; document.getElementById('sosStartTime').innerText=new Date().toLocaleString(); sosInterval=setInterval(()=>{ if(myPos) updateSosLocation(); },10000); alert('SOS Active - Care233 CEO tracking!'); }catch(e){alert(e.message)} }
+function updateSosLocation(){ if(!sosKey||!myPos) return; db.ref('sosAlerts/'+sosKey).update({lat:myPos.coords.latitude,lng:myPos.coords.longitude,lastUpdate:Date.now()}); }
+function cancelSOS(){ if(!confirm('Safe? Cancel SOS?')) return; if(sosKey) db.ref('sosAlerts/'+sosKey).update({status:'resolved'}); sosActive=false; sosKey=null; clearInterval(sosInterval); localStorage.removeItem('care233_sos_active'); if(stream) stream.getTracks().forEach(t=>t.stop()); document.getElementById('sosActiveBox').className='hidden'; document.getElementById('sosInactive').className=''; sosBtn.innerText='SOS'; document.getElementById('previewVideo').className='hidden'; }
+function checkActiveSOS(){ let s=JSON.parse(localStorage.getItem('care233_sos_active')||'null'); if(s){ sosKey=s.key; videoRoomId=s.room; sosActive=true; document.getElementById('sosInactive').className='hidden'; document.getElementById('sosActiveBox').className=''; } }
 function loadJobs(){
   db.ref('bookings').orderByChild('timestamp').on('value', snap=>{
     let bookings=[]; snap.forEach(c=>bookings.push({id:c.key,...c.val()})); bookings.reverse();
     let myJobs=bookings.filter(b=>b.assignedNurse && b.assignedNurse.includes(currentNurse.phone));
     document.getElementById('myJobsList').innerHTML=myJobs.map(j=>{
-      // FIXED: SAYS CARE233 NOT NURSES GROUP
-      let waToClient=`Hello ${j.name||'there'} 👋%0AThis is ${currentNurse.name} from *Care233* 💚💛%0AI am your assigned professional nurse from Care233 Home Nursing Service.%0A📍 I am on my way to ${j.location}%0A%0AThank you for choosing Care233!%0Awww.care233.com`;
-      return `<div class="box" style="border-left-color:#00ff00"><b>${j.service}</b> - ${j.name}<br>📍 ${j.location}<br>📞 ${j.phone}<br><div style="margin-top:8px"><a class="btn blue" href="tel:${j.phone}">📞 Call Client</a><a class="btn green" target="_blank" href="https://wa.me/${j.phone.replace(/[^0-9]/g,'')}?text=${waToClient}">💬 WhatsApp Care233</a><a class="btn yellow" target="_blank" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(j.location)}">🗺️ Navigate</a></div><small>${j.date}</small></div>`;
-    }).join('')||'<p class="small">No jobs assigned yet - Care233 CEO will assign</p>';
-    document.getElementById('allJobsList').innerHTML=bookings.filter(b=>b.status==='new').map(j=>`<div class="box"><b>${j.service}</b> - ${j.location}<br>${j.price||''}<br><small>${j.date}</small></div>`).join('')||'No open jobs';
-    document.getElementById('jobsListHome').innerHTML=myJobs.slice(0,3).map(j=>`<div class="box" style="border-left-color:#00ff00"><b>${j.service}</b> - ${j.name} - ${j.location}</div>`).join('')||'<p class="small">No assigned jobs</p>';
+      let wa=`Hello ${j.name||''} 👋%0AThis is ${currentNurse.name} from *Care233* 💚💛%0ALicensed Nurse: ${currentNurse.licenseNo}%0AVerified by Care233.%0AI am on my way to ${j.location}%0Awww.care233.com`;
+      return `<div class="box" style="border-left-color:#00ff00"><b>${j.service}</b> - ${j.name}<br>📍 ${j.location}<br>📞 ${j.phone}<br><a class="btn blue" href="tel:${j.phone}">Call</a><a class="btn green" target="_blank" href="https://wa.me/${j.phone.replace(/[^0-9]/g,'')}?text=${wa}">💬 WhatsApp Care233</a><a class="btn yellow" target="_blank" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(j.location)}">Navigate</a><br><small>${j.date}</small></div>`;
+    }).join('')||'No jobs assigned';
+    document.getElementById('jobsListHome').innerHTML=myJobs.slice(0,3).map(j=>`<div class="box" style="border-left-color:#00ff00"><b>${j.service}</b> - ${j.location}</div>`).join('')||'No jobs';
   });
 }
-function loadVideoTalks(){
-  db.ref('videoTalks').orderByChild('timestamp').on('value', snap=>{
-    let talks=[]; snap.forEach(c=>talks.push({...c.val()})); talks.reverse();
-    let filtered=talks.filter(t=>t.audience==='both' || t.audience==='nurses');
-    document.getElementById('videoTalksList').innerHTML=filtered.map(t=>`<div class="box" style="border-left-color:#2a6aff"><b>🎥 ${t.title}</b><br><small>🎯 Audience: ${t.audience.toUpperCase()} | ${t.date}</small><br><small>${t.desc||''}</small><br><a class="btn blue" target="_blank" href="${t.link}">Join Video Talk - Care233</a></div>`).join('')||'<p class="small">No video talks for Care233 nurses</p>';
-  });
-}
-function tab(t){ ['Home','Jobs','Video','Sos'].forEach(x=>{ document.getElementById('v'+x).className=x.toLowerCase()===t.toLowerCase()?'':'hidden'; let btn=document.getElementById('tb'+(['Home','Jobs','Video','Sos'].indexOf(x)+1)); if(btn) btn.className=x.toLowerCase()===t.toLowerCase()?'tab active':'tab off'; }); }
-function logout(){ localStorage.removeItem('care233_current_nurse'); localStorage.removeItem('care233_sos_active'); if(watchId) navigator.geolocation.clearWatch(watchId); if(sosInterval) clearInterval(sosInterval); if(stream) stream.getTracks().forEach(t=>t.stop()); location.reload(); }
-let savedNurse=JSON.parse(localStorage.getItem('care233_current_nurse')||'null'); if(savedNurse){ currentNurse=savedNurse; openDash(); }
+function loadVideoTalks(){ db.ref('videoTalks').orderByChild('timestamp').on('value', snap=>{ let talks=[]; snap.forEach(c=>talks.push({...c.val()})); talks.reverse(); let filtered=talks.filter(t=>t.audience==='both'||t.audience==='nurses'); document.getElementById('videoTalksList').innerHTML=filtered.map(t=>`<div class="box"><b>🎥 ${t.title}</b><br><small>${t.audience.toUpperCase()} | ${t.date}</small><br><a class="btn blue" target="_blank" href="${t.link}">Join Video - Care233</a></div>`).join('')||'No videos'; }); }
+function tab(t){ ['Home','Docs','Jobs','Video','Sos'].forEach(x=>{ document.getElementById('v'+x).className=x.toLowerCase()===t.toLowerCase()?'':'hidden'; let btn=document.getElementById('tb'+(['Home','Docs','Jobs','Video','Sos'].indexOf(x)+1)); if(btn) btn.className=x.toLowerCase()===t.toLowerCase()?'tab active':'tab off'; }); }
+function logout(){ localStorage.removeItem('care233_current_nurse'); localStorage.removeItem('care233_sos_active'); if(watchId) navigator.geolocation.clearWatch(watchId); if(sosInterval) clearInterval(sosInterval); location.reload(); }
+let saved=JSON.parse(localStorage.getItem('care233_current_nurse')||'null'); if(saved){ currentNurse=saved; openDash(); }
+
+// Show file names
+document.getElementById('cvFile')?.addEventListener('change', e=>{ document.getElementById('cvStatus').innerText=e.target.files[0]?`Selected: ${e.target.files[0].name}`:''; });
+document.getElementById('licenseFile')?.addEventListener('change', e=>{ document.getElementById('licenseStatus').innerText=e.target.files[0]?`Selected: ${e.target.files[0].name}`:''; });
+document.getElementById('ghanaCardFile')?.addEventListener('change', e=>{ document.getElementById('ghanaStatus').innerText=e.target.files.length?`Selected: ${e.target.files.length} file(s)`:''; });
 </script>
 </body>
 </html>
