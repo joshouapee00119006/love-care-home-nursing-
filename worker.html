@@ -2,196 +2,240 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Care233 - Nurses Portal</title>
+<title>Care233 - Book a Professional Nurse in Ghana</title>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 <style>
-body{background:#050a07;color:white;font-family:Arial;padding:8px;margin:0}
-.card{background:#111;padding:14px;border-radius:16px;max-width:760px;margin:auto;border:2px solid #0a4d2e}
-.top{display:flex;align-items:center;gap:12px;justify-content:center}
-.logo{width:50px;height:50px;background:#0a4d2e;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#ffcc00;font-weight:bold;border:2px solid #ffcc00}
-h2{color:#ffcc00;margin:0}
-.box{background:#1a2a1f;padding:12px;border-radius:12px;margin:10px 0;border-left:4px solid #ffcc00}
-.docBox{background:#0f1f15;padding:10px;border-radius:10px;margin:8px 0;border:1px dashed #2a8a6a}
-.btn{padding:12px 16px;border:none;border-radius:12px;font-weight:bold;margin:4px;cursor:pointer;font-size:13px;text-decoration:none;display:inline-block}
-.green{background:#0a4d2e;color:#ffcc00}.red{background:#8a0a0a;color:white}.blue{background:#0a2a4d;color:#7fdbc0}.grey{background:#222;color:white}.yellow{background:#4d3a0a;color:#ffcc00}
-input{width:100%;padding:13px;margin:6px 0;border-radius:12px;border:2px solid #2a8a6a;background:#1e1e1e;color:white;box-sizing:border-box}
-.hidden{display:none!important}
-.sosBig{width:160px;height:160px;border-radius:50%;background:radial-gradient(circle, #ff0000 0%, #8a0a0a 100%);border:5px solid white;color:white;font-size:30px;font-weight:bold;display:flex;align-items:center;justify-content:center;margin:20px auto;cursor:pointer;box-shadow:0 0 20px red;animation:pulse 1.5s infinite}
-@keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.05)}100%{transform:scale(1)}}
-.tabs{display:flex;gap:5px;flex-wrap:wrap;margin:10px 0}
-.tab{padding:9px 10px;border-radius:10px;border:none;font-weight:bold;font-size:11px;cursor:pointer}
-.active{background:#0a4d2e;color:#ffcc00}.off{background:#222;color:#ccc}
-.small{font-size:11px;color:#8fbc8f}
-.loginTabs{display:flex;gap:6px;margin:12px 0}
-.loginTab{flex:1;padding:14px;border-radius:12px;border:2px solid #0a4d2e;font-weight:bold;cursor:pointer;text-align:center}
-.loginTab.active{background:#0a4d2e;color:#ffcc00;border-color:#ffcc00}
-.loginTab.off{background:#1a1a1a;color:#888}
-.jobPending{border-left:5px solid #ffcc00;background:#2a2a0a;animation:flash 1.5s infinite}
-.jobAccepted{border-left:5px solid #00ff00;background:#0a2a0a}
-@keyframes flash{0%,100%{background:#1a2a1f}50%{background:#3a2a00}}
+body{background:#050a07;color:white;font-family:Arial;padding:10px;margin:0}
+.card{background:#111;padding:16px;border-radius:20px;max-width:480px;margin:20px auto;border:2px solid #0a4d2e;box-shadow:0 10px 30px rgba(0,0,0,0.5)}
+.top{display:flex;align-items:center;gap:12px;justify-content:center;margin-bottom:15px}
+.icon{width:55px;height:55px;background:#0a4d2e;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;color:#ffcc00;font-size:20px;border:3px solid #ffcc00}
+h2{color:#ffcc00;margin:0;text-align:center;letter-spacing:1px}
+.small{font-size:12px;color:#8fbc8f;text-align:center;margin:2px}
+label{font-size:13px;color:#7fdbc0;margin-top:10px;display:block;font-weight:bold}
+input,select,textarea{width:100%;padding:14px;margin:6px 0 12px 0;border-radius:12px;border:2px solid #2a8a6a;background:#1e2e24;color:white;box-sizing:border-box;font-size:16px}
+input:focus,select:focus,textarea:focus{border-color:#ffcc00;outline:none}
+.btn{width:100%;padding:16px;border:none;border-radius:12px;font-weight:bold;font-size:18px;cursor:pointer;margin-top:10px}
+.green{background:#0a4d2e;color:#ffcc00;border:2px solid #ffcc00}
+.yellow{background:#4d3a0a;color:#ffcc00;border:2px solid #ffcc00}
+.green:active{background:#0d5a35}
+.success{background:#0a4d2e;border:1px solid #ffcc00;padding:20px;border-radius:15px;text-align:center;display:none}
+.refBox{background:#0f1f15;padding:12px;border-radius:12px;border:1px dashed #ffcc00;margin-top:15px}
 </style>
 </head>
 <body>
+
 <div class="card">
-<div class="top"><div class="logo">C233</div><div><h2>Care233</h2><p style="margin:0;font-size:10px;color:#7fdbc0">Nurses Portal</p></div></div>
-
-<div id="authBox">
-<div class="loginTabs">
-<div id="loginTabBtn" class="loginTab off" onclick="switchAuth('login')">LOGIN</div>
-<div id="regTabBtn" class="loginTab active" onclick="switchAuth('register')">REGISTER</div>
-</div>
-<div id="loginFormBox" class="hidden">
-<h3 style="text-align:center;color:#00ff00">Welcome Back</h3>
-<input id="loginPhone" placeholder="Enter your phone number *" type="tel">
-<button class="btn green" style="width:100%;padding:16px;font-size:18px" onclick="loginNurse()">LOGIN NOW</button>
-<p id="loginMsg" class="small" style="text-align:center;color:#ffcc00"></p>
-</div>
-<div id="regFormBox">
-<h3 style="text-align:center;color:#ffcc00">Join Care233 as a Nurse</h3>
-<input id="nName" placeholder="Full Name *"><input id="nPhone" placeholder="Phone Number *"><input id="nSkill" placeholder="Skill *"><input id="nLocation" placeholder="Location *"><input id="nExp" placeholder="Years of Experience"><input id="nLicenseNo" placeholder="License Number *"><input id="nGhanaCardNo" placeholder="Ghana Card Number *">
-<div style="background:#111;padding:10px;border-radius:12px;border:1px solid #333;margin:10px 0">
-<h4 style="margin:0;color:#ffcc00">Upload Your Documents</h4>
-<div class="docBox"><label class="small" style="color:#ffcc00">Your CV *</label><input type="file" id="cvFile" accept="image/*,.pdf"></div>
-<div class="docBox"><label class="small" style="color:#ffcc00">Nursing License *</label><input type="file" id="licenseFile" accept="image/*,.pdf"></div>
-<div class="docBox"><label class="small" style="color:#ffcc00">Ghana Card (Front & Back) *</label><input type="file" id="ghanaFile" accept="image/*,.pdf" multiple></div>
-<div class="docBox"><label class="small" style="color:#ffcc00">Other Certificates (Optional)</label><input type="file" id="otherFile" accept="image/*,.pdf" multiple></div>
-</div>
-<button class="btn green" style="width:100%;padding:16px;font-size:18px" onclick="registerNurse()">Submit Application</button>
-<div id="uploadProgress" class="small" style="text-align:center;color:#ffcc00"></div>
-</div>
+<div class="top">
+<div class="icon">C233</div>
+<div><h2>Care233</h2><p class="small">Trusted Home Nursing & Care Services</p><p class="small" style="color:#ffcc00;font-weight:bold">Accra, Ghana - Verified Nurses</p></div>
 </div>
 
-<div id="dash" class="hidden">
-<p style="text-align:center"><b id="welcomeName" style="color:#ffcc00"></b> - <span id="welcomePhone" class="small"></span> <button class="btn grey" onclick="logout()" style="float:right">Logout</button></p>
-<div id="approvalBanner" class="hidden" style="background:#4d3a0a;padding:12px;border-radius:10px;border:2px solid #ffcc00;text-align:center;color:#ffcc00">Your application is under review<br><button class="btn yellow" style="margin-top:8px" onclick="checkApprovalNow()">Check Status</button></div>
-<div id="approvedBanner" class="hidden" style="background:#0a4d2e;padding:12px;border-radius:10px;border:2px solid #00ff00;text-align:center;color:#00ff00">You are verified by Care233!<br><small>You can now receive bookings</small></div>
-<div class="tabs"><button id="tb1" class="tab active" onclick="tab('home')">Home</button><button id="tb2" class="tab off" onclick="tab('docs')">My Docs</button><button id="tb3" class="tab off" onclick="tab('jobs')">My Jobs <span id="pendingCount" style="background:red;color:white;border-radius:10px;padding:2px 6px" class="hidden">0</span></button><button id="tb4" class="tab off" onclick="tab('video')">Video</button><button id="tb5" class="tab off" onclick="tab('sos')">SOS</button></div>
-<div id="vHome"><div class="box"><b>Welcome <span id="name2"></span></b><br><small id="gpsStatus">Getting location...</small><br><small id="realtimeStatus" style="color:#8fbc8f">Live updates active - <span id="debugInfo">Waiting for bookings...</span></small><br><button class="btn yellow" onclick="loadJobs()" style="padding:6px 12px;font-size:11px;margin-top:6px">🔄 Refresh My Jobs</button></div><div id="jobsListHome"></div></div>
-<div id="vDocs" class="hidden"><div id="myDocsList"></div></div>
-<div id="vJobs" class="hidden"><div style="background:#0a4d2e;padding:8px;border-radius:8px;margin-bottom:10px;text-align:center"><small id="debugJobs" style="color:#ffcc00">Checking for offers...</small><br><button class="btn yellow" onclick="loadJobs()" style="padding:6px 12px;font-size:11px;margin-top:4px">🔄 Refresh Offers</button></div><div id="myJobsList"></div></div>
-<div id="vVideo" class="hidden"><div id="videoTalksList"></div></div>
-<div id="vSos" class="hidden"><div style="text-align:center"><h2 style="color:red">Emergency SOS</h2><div id="sosInactive"><div class="sosBig" id="sosBtn">SOS</div><p class="small">GPS: <span id="myLatLng">...</span></p><p class="small">Hold for 2 seconds</p></div><div id="sosActiveBox" class="hidden"><div style="background:#3a0a0a;padding:14px;border-radius:12px;border:2px solid red"><h3 style="color:red">SOS ACTIVE!</h3><p class="small">📍 <span id="activeLatLng"></span><br>📹 <span id="activeVideoLink"></span></p><button class="btn green" style="width:100%" onclick="cancelSOS()">I AM SAFE</button></div></div></div></div>
+<div id="formArea">
+<h3 style="color:#7fdbc0;text-align:center;margin:10px 0">📋 Book a Professional Nurse</h3>
+
+<label>👤 Your Full Name</label>
+<input id="cName" placeholder="e.g. Sarah Mensah">
+
+<label>📞 Phone Number (WhatsApp)</label>
+<input id="cPhone" placeholder="e.g. 0551234567" type="tel">
+
+<label>💉 Service Needed</label>
+<select id="cService">
+<option value="Home Nursing">Home Nursing</option>
+<option value="Elderly Care">Elderly Care</option>
+<option value="Baby / Nanny Care">Baby / Nanny Care</option>
+<option value="Post-Surgery Care">Post-Surgery Care</option>
+<option value="Injection / Wound Dressing">Injection / Wound Dressing</option>
+<option value="Physiotherapy">Physiotherapy</option>
+<option value="Hospital Accompaniment">Hospital Accompaniment</option>
+<option value="Other">Other</option>
+</select>
+
+<label>📍 Location / Area</label>
+<input id="cLocation" placeholder="e.g. East Legon, Accra">
+
+<label>🎁 Referral Code (If someone referred you)</label>
+<input id="cReferral" placeholder="e.g. 0551234567 or REF code (Optional)">
+
+<label>📝 Additional Notes</label>
+<textarea id="cNotes" rows="3" placeholder="Patient condition, time needed..."></textarea>
+
+<button class="btn green" onclick="submitBookingToFirebase()">🔔 BOOK NOW - We Will Call You Shortly</button>
+
+<div class="refBox">
+<h4 style="color:#ffcc00;margin:5px 0;text-align:center">💰 Refer & Earn - Referral Portal</h4>
+<p class="small">Refer friends to Care233 and earn rewards! Share your phone number as referral code.</p>
+<div id="refLinkArea" style="display:none">
+<p class="small" style="color:#ffcc00">Your Referral Link:</p>
+<input id="myRefLink" readonly style="background:#111;color:#ffcc00;text-align:center;font-weight:bold">
+<button class="btn yellow" style="padding:10px;font-size:14px" onclick="copyRefLink()">📋 Copy Referral Link & Share on WhatsApp</button>
+<p class="small" id="refEarnInfo">Earn when your friend books! Track in Admin portal.</p>
 </div>
+<p class="small">Have friends who need a nurse? Tell them to enter your phone number as referral code when booking!</p>
 </div>
+
+<p class="small" style="margin-top:15px">⚡ Instant booking • 24/7 Service<br>📞 <a href="tel:+233000000000" style="color:#ffcc00">Call Care233</a></p>
+</div>
+
+<div id="successArea" class="success">
+<h2 style="color:#ffcc00">✅ BOOKING SENT!</h2>
+<p>Thank you <b id="sName"></b>!</p>
+<p>Your booking for <b id="sService"></b> has been sent!</p>
+<p style="font-size:18px">📞 We will call you at <b id="sPhone" style="color:#ffcc00"></b> within <b>5 minutes!</b></p>
+<p class="small" id="sTime"></p>
+
+<div class="refBox">
+<h4 style="color:#ffcc00">🎉 Your Referral Link is Ready!</h4>
+<p class="small">Share to friends and earn!</p>
+<input id="sRefLink" readonly style="background:#111;color:#ffcc00;text-align:center;font-weight:bold">
+<button class="btn yellow" style="padding:12px" onclick="copySuccessRefLink()">📋 Copy & Share on WhatsApp</button>
+</div>
+
+<button class="btn green" onclick="bookAnother()">+ Book Another Service</button>
+</div>
+
+</div>
+
 <script>
-const firebaseConfig = { apiKey: "AIzaSyB52-X1D8Cg-wUDWPds_tR7X3cF82dMdRg", authDomain: "web-care-618e8.firebaseapp.com", databaseURL: "https://web-care-618e8-default-rtdb.firebaseio.com", projectId: "web-care-618e8", storageBucket: "web-care-618e8.firebasestorage.app", messagingSenderId: "1062578660694", appId: "1:1062578660694:web:f94dfe12c929df05bce2f7" };
-firebase.initializeApp(firebaseConfig); const db=firebase.database();
-let currentNurse=null,watchId=null,myPos=null,sosActive=false,sosKey=null,approvalListener=null, bookingsListener=null;
-function switchAuth(m){document.getElementById('loginFormBox').className=m==='login'?'':'hidden';document.getElementById('regFormBox').className=m==='register'?'':'hidden';document.getElementById('loginTabBtn').className=m==='login'?'loginTab active':'loginTab off';document.getElementById('regTabBtn').className=m==='register'?'loginTab active':'loginTab off';}
-function fileToDataURL(f){return new Promise((r,j)=>{let x=new FileReader();x.onload=e=>r(e.target.result);x.onerror=j;x.readAsDataURL(f);});}
-function compressImage(d){return new Promise(r=>{let i=new Image();i.onload=()=>{let c=document.createElement('canvas');let w=i.width,h=i.height,maxW=800;if(w>maxW){h=h*maxW/w;w=maxW;}c.width=w;c.height=h;c.getContext('2d').drawImage(i,0,0,w,h);r(c.toDataURL('image/jpeg',0.6));};i.src=d;});}
-async function loginNurse(){
-  let phone=document.getElementById('loginPhone').value.trim(); if(!phone){alert('Enter phone');return;}
-  document.getElementById('loginMsg').innerText='Checking...';
-  let snap=await db.ref('nurseApplications/'+phone).once('value');
-  if(snap.exists()){currentNurse=snap.val();localStorage.setItem('care233_current_nurse',JSON.stringify(currentNurse));openDash();return;}
-  let workers=JSON.parse(localStorage.getItem('care233_workers')||'[]');let f=workers.find(w=>w.phone===phone);
-  if(f){currentNurse=f;localStorage.setItem('care233_current_nurse',JSON.stringify(currentNurse));openDash();return;}
-  document.getElementById('loginMsg').innerText='Not found. Please register.';
+const firebaseConfig = {
+  apiKey: "AIzaSyB52-X1D8Cg-wUDWPds_tR7X3cF82dMdRg",
+  authDomain: "web-care-618e8.firebaseapp.com",
+  databaseURL: "https://web-care-618e8-default-rtdb.firebaseio.com",
+  projectId: "web-care-618e8",
+  storageBucket: "web-care-618e8.firebasestorage.app",
+  messagingSenderId: "1062578660694",
+  appId: "1:1062578660694:web:f94dfe12c929df05bce2f7"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+// AUTO GPS Silent
+let autoLat = null, autoLng = null, autoGPS = "";
+if(navigator.geolocation){
+  navigator.geolocation.getCurrentPosition(pos=>{
+    autoLat = pos.coords.latitude; autoLng = pos.coords.longitude;
+    autoGPS = autoLat.toFixed(6) + ", " + autoLng.toFixed(6);
+  }, ()=>{}, {enableHighAccuracy:true, timeout:8000});
 }
-async function registerNurse(){
-let name=document.getElementById('nName').value.trim(),phone=document.getElementById('nPhone').value.trim(),skill=document.getElementById('nSkill').value.trim(),location=document.getElementById('nLocation').value.trim(),exp=document.getElementById('nExp').value.trim(),licenseNo=document.getElementById('nLicenseNo').value.trim(),ghanaNo=document.getElementById('nGhanaCardNo').value.trim();
-let cvFile=document.getElementById('cvFile').files[0],licFile=document.getElementById('licenseFile').files[0],ghanaFiles=document.getElementById('ghanaFile').files,otherFiles=document.getElementById('otherFile').files;
-if(!phone||!name||!skill||!location||!licenseNo||!ghanaNo){alert('Fill required');return}
-document.getElementById('uploadProgress').innerText='Submitting...';
-try{
-let docs={};
-if(cvFile){let d=await fileToDataURL(cvFile);if(d.startsWith('data:image'))d=await compressImage(d);docs.cv={name:cvFile.name,data:d};}
-if(licFile){let d=await fileToDataURL(licFile);if(d.startsWith('data:image'))d=await compressImage(d);docs.license={name:licFile.name,data:d};}
-if(ghanaFiles.length>0){docs.ghanaCards=[];for(let f of ghanaFiles){let d=await fileToDataURL(f);if(d.startsWith('data:image'))d=await compressImage(d);docs.ghanaCards.push({name:f.name,data:d});}}
-if(otherFiles.length>0){docs.others=[];for(let f of otherFiles){let d=await fileToDataURL(f);if(d.startsWith('data:image'))d=await compressImage(d);docs.others.push({name:f.name,data:d});}}
-let nurseData={id:Date.now(),name,phone,skill,location,experience:exp,licenseNo,ghanaCardNo:ghanaNo,documents:docs,approved:false,registered:new Date().toLocaleString(),timestamp:Date.now()};
-let workers=JSON.parse(localStorage.getItem('care233_workers')||'[]');workers.push(nurseData);localStorage.setItem('care233_workers',JSON.stringify(workers));
-currentNurse=nurseData;localStorage.setItem('care233_current_nurse',JSON.stringify(currentNurse));
-await db.ref('nurseApplications/'+phone).set(nurseData);await db.ref('nurseDocs/'+phone).set(nurseData);
-document.getElementById('uploadProgress').innerHTML='Application submitted! Waiting for verification.';
-openDash();
-}catch(e){document.getElementById('uploadProgress').innerText='Error: '+e.message;}
+
+// Check URL referral ?ref=XXXX
+let urlParams = new URLSearchParams(window.location.search);
+let refFromUrl = urlParams.get('ref');
+if(refFromUrl){
+  setTimeout(()=>{
+    document.getElementById('cReferral').value = refFromUrl;
+    document.getElementById('cReferral').style.borderColor = '#ffcc00';
+    document.getElementById('cReferral').style.background = '#3a2a00';
+  },500);
 }
-function openDash(){document.getElementById('authBox').className='hidden';document.getElementById('dash').className='';document.getElementById('welcomeName').innerText=currentNurse.name;document.getElementById('welcomePhone').innerText=currentNurse.phone;document.getElementById('name2').innerText=currentNurse.name;document.getElementById('debugInfo').innerText='Logged in as '+currentNurse.phone;updateApprovalUI();startGPS();loadJobs();loadVideoTalks();loadMyDocs();checkActiveSOS();startApprovalListener();}
-function updateApprovalUI(){if(currentNurse.approved){document.getElementById('approvedBanner').className='';document.getElementById('approvalBanner').className='hidden';}else{document.getElementById('approvalBanner').className='';document.getElementById('approvedBanner').className='hidden';}}
-function startApprovalListener(){if(approvalListener) db.ref('nurseApplications/'+currentNurse.phone).off('value', approvalListener);approvalListener=db.ref('nurseApplications/'+currentNurse.phone).on('value',snap=>{if(!snap.exists())return;let u=snap.val();if(u.approved!==currentNurse.approved){currentNurse=u;localStorage.setItem('care233_current_nurse',JSON.stringify(currentNurse));updateApprovalUI();if(u.approved){alert('You are now verified!');}}});}
-async function checkApprovalNow(){let s=await db.ref('nurseApplications/'+currentNurse.phone).once('value');if(s.exists()){currentNurse=s.val();localStorage.setItem('care233_current_nurse',JSON.stringify(currentNurse));updateApprovalUI();}}
-function loadMyDocs(){if(!currentNurse.documents){document.getElementById('myDocsList').innerHTML='No documents';return;}let d=currentNurse.documents,html='';if(d.cv)html+=`<div class="docBox">CV: ${d.cv.name}</div>`;if(d.license)html+=`<div class="docBox">License: ${d.license.name}</div>`;if(d.ghanaCards)html+=`<div class="docBox">Ghana Card: ${d.ghanaCards.length} file(s)</div>`;document.getElementById('myDocsList').innerHTML=html;}
 
-function normalizePhone(p){ return (p||'').replace(/[^0-9]/g,'').slice(-9); }
+function getMyRefLink(phone){
+  let base = window.location.origin + window.location.pathname;
+  return base + "?ref=" + phone.replace(/[^0-9]/g,'');
+}
 
-function loadJobs(){
-  if(bookingsListener) db.ref('bookings').off('value', bookingsListener);
-  bookingsListener = db.ref('bookings').orderByChild('timestamp').on('value',snap=>{
-    let bookings=[];snap.forEach(c=>bookings.push({id:c.key,...c.val()}));bookings.reverse();
-    console.log('All bookings from DB:', bookings);
-    document.getElementById('debugInfo').innerText = `Total bookings in DB: ${bookings.length} | My phone: ${currentNurse.phone}`;
-    document.getElementById('debugJobs').innerText = `Total: ${bookings.length} | My phone last 9: ${normalizePhone(currentNurse.phone)} | Checking...`;
+function submitBookingToFirebase(){
+  let name = document.getElementById('cName').value.trim();
+  let phone = document.getElementById('cPhone').value.trim();
+  let service = document.getElementById('cService').value;
+  let location = document.getElementById('cLocation').value.trim();
+  let referral = document.getElementById('cReferral').value.trim();
+  let notes = document.getElementById('cNotes').value.trim();
 
-    // FIXED: Robust matching - check phone last 9 digits, full phone, name
-    let myPhoneNorm = normalizePhone(currentNurse.phone);
-    let myJobs=bookings.filter(b=>{
-      if(!b.assignedNurse) return false;
-      let assignedNorm = normalizePhone(b.assignedNurse);
-      let assignedStr = (b.assignedNurse||'').toLowerCase();
-      let myPhoneFull = (currentNurse.phone||'').replace(/[^0-9]/g,'');
-      let myNameLower = (currentNurse.name||'').toLowerCase();
-      // Match if: last 9 digits match OR full phone included OR name included OR exact assignedNurse contains phone
-      return assignedNorm.includes(myPhoneNorm) || myPhoneNorm.includes(assignedNorm) || assignedStr.includes(myPhoneFull) || assignedStr.includes(currentNurse.phone) || assignedStr.includes(myNameLower);
+  if(!name){alert('Please enter your name');return}
+  if(!phone){alert('Please enter phone number');return}
+  if(!location){alert('Please enter location');return}
+
+  let booking = {
+    name: name,
+    phone: phone,
+    service: service,
+    location: location,
+    gps: autoGPS || "",
+    lat: autoLat,
+    lng: autoLng,
+    referralCode: referral || "",
+    referredBy: referral || "",
+    notes: notes,
+    price: "To be discussed",
+    date: new Date().toLocaleString(),
+    timestamp: Date.now(),
+    status: 'new'
+  };
+
+  // Save referral tracking
+  if(referral){
+    db.ref('referrals').push({
+      referrer: referral,
+      referredName: name,
+      referredPhone: phone,
+      service: service,
+      date: new Date().toLocaleString(),
+      timestamp: Date.now()
     });
+  }
 
-    console.log('My jobs filtered:', myJobs);
-    document.getElementById('debugJobs').innerText = `Found ${myJobs.length} offer(s) for you (${currentNurse.phone}) out of ${bookings.length} total`;
+  let btn = document.querySelector('.btn.green');
+  let oldText = btn.innerHTML;
+  btn.innerHTML = '⏳ Sending...';
+  btn.disabled = true;
 
-    let pending=myJobs.filter(j=>!j.assignmentStatus || j.assignmentStatus==='pending').length;
-    let pc=document.getElementById('pendingCount'); if(pending>0){pc.innerText=pending;pc.className='';}else{pc.className='hidden';}
-
-    let html=myJobs.map(j=>{
-      let status=j.assignmentStatus || 'pending';
-      let wa=`Hello ${j.name} 👋%0AThis is ${currentNurse.name} from Care233%0AYour booking ${j.service} is accepted!`;
-      if(status==='pending'){
-        return `<div class="box jobPending" style="border:3px solid #ffcc00">
-        <span style="background:#ffcc00;color:#000;padding:6px 12px;border-radius:12px;font-weight:bold;font-size:14px">🔔 NEW CLIENT OFFER - ACTION REQUIRED</span><br><br>
-        <b style="font-size:18px;color:#ffcc00">${j.service}</b><br>
-        <b>Client: ${j.name}</b> - ${j.phone}<br>📍 ${j.location} ${j.price?'- '+j.price:''}<br><small>${j.date}</small><br>
-        <div style="background:#111;padding:12px;border-radius:10px;margin:12px 0;border:2px dashed #ffcc00;text-align:center">
-        <p class="small" style="color:#ffcc00;font-size:13px">Care233 assigned this client to you! Accept to get Call & WhatsApp.</p>
-        <button class="btn green" style="width:48%;padding:18px;font-size:16px;font-weight:bold" onclick="acceptJob('${j.id}')">✅ ACCEPT OFFER</button>
-        <button class="btn red" style="width:48%;padding:18px;font-size:16px;font-weight:bold" onclick="rejectJob('${j.id}')">❌ REJECT</button>
-        </div></div>`;
-      } else if(status==='accepted'){
-        return `<div class="box jobAccepted" style="border:3px solid #00ff00">
-        <span style="background:#00ff00;color:#000;padding:6px 12px;border-radius:12px;font-weight:bold">✅ YOU ACCEPTED - CONTACT CLIENT NOW</span><br><br>
-        <b style="font-size:18px">${j.service}</b><br>
-        <b>Client: ${j.name}</b> - ${j.phone}<br>📍 ${j.location} ${j.price?'- '+j.price:''}<br><small>${j.date}</small><br>
-        <div style="margin-top:12px">
-        <a class="btn blue" href="tel:${j.phone}" style="width:45%;text-align:center;padding:16px;font-size:15px">📞 CALL CLIENT</a>
-        <a class="btn green" target="_blank" href="https://wa.me/${j.phone.replace(/[^0-9]/g,'')}?text=${wa}" style="width:45%;text-align:center;padding:16px;font-size:15px">💬 WHATSAPP CLIENT</a><br>
-        <button class="btn grey" style="width:100%;margin-top:10px;padding:14px" onclick="markJobDone('${j.id}')">✅ Mark Completed</button>
-        </div></div>`;
-      } else { return ''; }
-    }).join('')||`<div class="box" style="text-align:center;padding:20px"><p class="small">No offers yet for ${currentNurse.phone}</p><p class="small" style="color:#666">Total bookings in system: ${bookings.length}<br>Waiting for Admin to assign client to you.<br>Admin must assign to: ${currentNurse.name} - ${currentNurse.phone}<br><br>Debug: Last 9 digits check: ${myPhoneNorm}<br>If Admin assigned but you don't see, ask Admin to use Assign by Phone with <b>${currentNurse.phone}</b></p><button class="btn yellow" onclick="loadJobs()">🔄 Refresh Again</button></div>`;
-
-    document.getElementById('myJobsList').innerHTML=html;
-    document.getElementById('jobsListHome').innerHTML=html;
-
-    if(myJobs.length>0 && myJobs.some(j=>j.assignmentStatus==='pending')){
-      if(navigator.vibrate) navigator.vibrate([300,100,300]);
-    }
+  db.ref('bookings').push(booking).then(()=>{
+    document.getElementById('formArea').style.display='none';
+    document.getElementById('successArea').style.display='block';
+    document.getElementById('sName').innerText = name;
+    document.getElementById('sService').innerText = service;
+    document.getElementById('sPhone').innerText = phone;
+    document.getElementById('sTime').innerText = new Date().toLocaleString();
+    let refLink = getMyRefLink(phone);
+    document.getElementById('sRefLink').value = refLink;
+    if(navigator.vibrate) navigator.vibrate([200,100,200]);
+    btn.innerHTML = oldText;
+    btn.disabled = false;
+  }).catch(e=>{
+    alert('Error: '+e.message);
+    btn.innerHTML = oldText;
+    btn.disabled = false;
   });
 }
-function acceptJob(id){ if(!confirm('Accept this client? You will be able to call and WhatsApp the client.')) return; db.ref('bookings/'+id).update({assignmentStatus:'accepted', status:'accepted', acceptedAt:Date.now(), acceptedBy:currentNurse.phone}); alert('Accepted! Now call the client!'); }
-function rejectJob(id){ if(!confirm('Reject? Job will go back to Admin.')) return; db.ref('bookings/'+id).update({assignmentStatus:'rejected', status:'new', assignedNurse:null, rejectedAt:Date.now(), rejectedBy:currentNurse.phone}); alert('Rejected - Admin will reassign'); }
-function markJobDone(id){ if(confirm('Mark completed?')) db.ref('bookings/'+id).update({status:'done', completedAt:Date.now()}); }
-function startGPS(){if(!navigator.geolocation)return;watchId=navigator.geolocation.watchPosition(pos=>{myPos=pos;document.getElementById('myLatLng').innerText=`${pos.coords.latitude.toFixed(6)}, ${pos.coords.longitude.toFixed(6)}`;document.getElementById('gpsStatus').innerText=`Location active`;},{},{enableHighAccuracy:true});}
-const sosBtn=document.getElementById('sosBtn');let pressTimer=null;
-sosBtn.addEventListener('touchstart',e=>{e.preventDefault();startPress();});sosBtn.addEventListener('touchend',cancelPress);sosBtn.addEventListener('mousedown',startPress);sosBtn.addEventListener('mouseup',cancelPress);
-function startPress(){pressTimer=setTimeout(activateSOS,2000);sosBtn.innerText='HOLD...';}
-function cancelPress(){clearTimeout(pressTimer);if(!sosActive)sosBtn.innerText='SOS';}
-async function activateSOS(){if(sosActive||!myPos)return;if(!confirm('Activate SOS?')){sosBtn.innerText='SOS';return}sosBtn.innerText='SENDING...';try{let videoRoomId='SOS_Care233_'+currentNurse.phone+'_'+Date.now(),videoLink=`https://meet.jit.si/${videoRoomId}`;let sosData={nurseName:currentNurse.name,nursePhone:currentNurse.phone,lat:myPos.coords.latitude,lng:myPos.coords.longitude,message:'EMERGENCY! '+currentNurse.licenseNo,videoLink,date:new Date().toLocaleString(),timestamp:Date.now(),status:'active'};let ref=db.ref('sosAlerts').push(sosData);sosKey=ref.key;sosActive=true;localStorage.setItem('care233_sos_active',JSON.stringify({key:sosKey}));document.getElementById('sosInactive').className='hidden';document.getElementById('sosActiveBox').className='';document.getElementById('activeLatLng').innerText=`${myPos.coords.latitude}, ${myPos.coords.longitude}`;document.getElementById('activeVideoLink').innerHTML=`<a href="${videoLink}" target="_blank" style="color:#0f0">${videoLink}</a>`;}catch(e){alert(e.message)}}
-function cancelSOS(){if(!confirm('Cancel SOS?'))return;if(sosKey)db.ref('sosAlerts/'+sosKey).update({status:'resolved'});sosActive=false;sosKey=null;localStorage.removeItem('care233_sos_active');document.getElementById('sosActiveBox').className='hidden';document.getElementById('sosInactive').className='';sosBtn.innerText='SOS';}
-function checkActiveSOS(){let s=JSON.parse(localStorage.getItem('care233_sos_active')||'null');if(s){sosKey=s.key;sosActive=true;document.getElementById('sosInactive').className='hidden';document.getElementById('sosActiveBox').className='';}}
-function loadVideoTalks(){db.ref('videoTalks').orderByChild('timestamp').on('value',snap=>{let talks=[];snap.forEach(c=>talks.push({...c.val()}));talks.reverse();let filtered=talks.filter(t=>t.audience==='both'||t.audience==='nurses');document.getElementById('videoTalksList').innerHTML=filtered.map(t=>`<div class="box"><b>${t.title}</b><br><a class="btn blue" target="_blank" href="${t.link}">Join Video</a></div>`).join('')||'No videos';});}
-function tab(t){['Home','Docs','Jobs','Video','Sos'].forEach(x=>{document.getElementById('v'+x).className=x.toLowerCase()===t.toLowerCase()?'':'hidden';let btn=document.getElementById('tb'+(['Home','Docs','Jobs','Video','Sos'].indexOf(x)+1));if(btn)btn.className=x.toLowerCase()===t.toLowerCase()?'tab active':'tab off';});}
-function logout(){localStorage.removeItem('care233_current_nurse');location.reload();}
-let saved=JSON.parse(localStorage.getItem('care233_current_nurse')||'null');if(saved){currentNurse=saved;db.ref('nurseApplications/'+saved.phone).once('value').then(s=>{if(s.exists()){currentNurse=s.val();localStorage.setItem('care233_current_nurse',JSON.stringify(currentNurse));}openDash();}).catch(()=>openDash());}else{switchAuth('register');}
+
+function copyRefLink(){
+  let phone = document.getElementById('cPhone').value.trim();
+  if(!phone){alert('Enter your phone number first to generate referral link');return}
+  let link = getMyRefLink(phone);
+  document.getElementById('myRefLink').value = link;
+  navigator.clipboard.writeText(link).then(()=>{
+    window.open("https://wa.me/?text="+encodeURIComponent("Get trusted home nurse from Care233! Book here: "+link)," _blank");
+  });
+}
+
+function copySuccessRefLink(){
+  let link = document.getElementById('sRefLink').value;
+  navigator.clipboard.writeText(link).then(()=>{
+    window.open("https://wa.me/?text="+encodeURIComponent("I just booked a trusted nurse from Care233! You can also book here and get care at home: "+link)," _blank");
+  });
+}
+
+function bookAnother(){
+  document.getElementById('formArea').style.display='block';
+  document.getElementById('successArea').style.display='none';
+  document.getElementById('cName').value='';
+  document.getElementById('cPhone').value='';
+  document.getElementById('cLocation').value='';
+  document.getElementById('cReferral').value=refFromUrl||'';
+  document.getElementById('cNotes').value='';
+}
+
+// Show referral link live when phone typed
+document.getElementById('cPhone').addEventListener('input', e=>{
+  let phone = e.target.value.trim();
+  if(phone.length>=9){
+    document.getElementById('refLinkArea').style.display='block';
+    document.getElementById('myRefLink').value = getMyRefLink(phone);
+  }
+});
 </script>
+
 </body>
 </html>
