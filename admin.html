@@ -2,122 +2,209 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Staffs Portal</title>
+<title>Care233 - CEO Portal</title>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 <style>
 body{background:#050a07;color:white;font-family:Arial;padding:8px;margin:0}
-.card{background:#111;padding:12px;border-radius:16px;max-width:720px;margin:auto;border:1px solid #0a4d2e}
+.card{background:#111;padding:12px;border-radius:16px;max-width:780px;margin:auto;border:1px solid #0a4d2e}
 .top{display:flex;align-items:center;gap:15px;justify-content:center;margin-bottom:15px;padding-top:10px}
 .icon{width:55px;height:55px;background:#0a4d2e;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;color:#ffcc00;font-size:22px;cursor:pointer;border:3px solid #ffcc00;user-select:none}
 h2{color:#ffcc00;margin:0;text-align:center;font-size:26px}
-.tabs{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
-.tab{padding:10px 11px;border-radius:10px;border:none;font-weight:bold;font-size:12px;cursor:pointer}
+.tabs{display:flex;flex-wrap:wrap;gap:5px;margin:10px 0}
+.tab{padding:9px 10px;border-radius:10px;border:none;font-weight:bold;font-size:11px;cursor:pointer}
 .active{background:#0a4d2e;color:#ffcc00}.off{background:#222;color:#ccc}
-.box{background:#1a2a1f;padding:10px;border-radius:10px;margin:8px 0;border-left:4px solid #ffcc00}
-.btn{padding:8px 12px;border:none;border-radius:8px;font-weight:bold;margin:2px;cursor:pointer;text-decoration:none;display:inline-block}
-.green{background:#0a4d2e;color:#ffcc00}.red{background:#4d0a0a;color:white}.blue{background:#0a2a4d;color:#7fdbc0}.grey{background:#222;color:white}
-input,textarea{width:100%;padding:14px;margin:6px 0;border-radius:12px;border:2px solid #2a8a6a;background:#1e1e1e;color:white;box-sizing:border-box;font-size:16px}
-.small{font-size:12px;color:#8fbc8f}.hidden{display:none !important}
+.box{background:#1a2a1f;padding:12px;border-radius:12px;margin:10px 0;border-left:5px solid #ffcc00}
+.box.new{border-left-color:red;background:#2a1f1f}.box.sos{background:#3a0a0a;border-left-color:red;animation:flash 0.8s infinite}
+.btn{padding:9px 12px;border:none;border-radius:8px;font-weight:bold;margin:3px;cursor:pointer;text-decoration:none;display:inline-block;font-size:12px}
+.green{background:#0a4d2e;color:#ffcc00}.red{background:#8a0a0a;color:white}.blue{background:#0a2a4d;color:#7fdbc0}.grey{background:#222;color:white}.yellow{background:#4d3a0a;color:#ffcc00}.orange{background:#ff6a00;color:white}
+input,select,textarea{width:100%;padding:13px;margin:6px 0;border-radius:12px;border:2px solid #2a8a6a;background:#1e1e1e;color:white;box-sizing:border-box;font-size:14px}
+.small{font-size:11px;color:#8fbc8f}.hidden{display:none!important}
+@keyframes flash{0%,100%{background:#1a2a1f}50%{background:#4a0a0a}}
 .newFlash{animation: flash 1s infinite}
-@keyframes flash{0%,100%{background:#1a2a1f}50%{background:#3a2a00}}
 </style>
 </head>
 <body>
 <div class="card">
-<div class="top"><div class="icon" id="adIcon">AD</div><div><h2>STAFFS</h2><p class="small" style="margin:0;text-align:center;color:#7fdbc0">Care233 • LIVE</p><p id="adTapCount" style="font-size:10px;color:#ffcc00;text-align:center"></p></div></div>
+<div class="top"><div class="icon" id="adIcon">AD</div><div><h2>STAFFS</h2><p class="small" style="margin:0;text-align:center;color:#7fdbc0">Care233 • CEO • LIVE</p><p id="adTapCount" style="font-size:10px;color:#ffcc00;text-align:center;height:10px"></p></div></div>
 
-<div id="loginStaff">
-<input id="sPhone" placeholder="Phone Number" type="tel"><input id="sPass" type="password" placeholder="Password">
-<button class="btn green" style="width:100%;padding:16px;font-size:18px" onclick="loginStaff()">Login</button><p id="sMsg" class="small" style="text-align:center;color:#ff6b6b"></p>
-</div>
-
-<div id="loginSuper" class="hidden">
-<h3 style="color:#ffcc00;text-align:center">SUPER ADMIN</h3>
-<input id="superPass" type="password" placeholder="Super Password">
-<button class="btn green" style="width:100%;padding:16px" onclick="loginSuper()">UNLOCK</button>
-<button class="btn grey" style="width:100%;margin-top:10px;padding:14px" onclick="showStaffLogin()">← Back</button>
-</div>
+<div id="loginStaff"><input id="sPhone" placeholder="Phone" type="tel"><input id="sPass" type="password" placeholder="Password"><button class="btn green" style="width:100%;padding:16px" onclick="loginStaff()">Login</button><p id="sMsg" class="small" style="text-align:center;color:#ff6b6b"></p></div>
+<div id="loginSuper" class="hidden"><h3 style="color:#ffcc00;text-align:center">SUPER ADMIN</h3><input id="superPass" type="password" placeholder="Super Password"><button class="btn green" style="width:100%;padding:16px" onclick="loginSuper()">UNLOCK</button><button class="btn grey" style="width:100%;margin-top:10px" onclick="showStaffLogin()">← Back</button></div>
 
 <div id="dash" class="hidden">
 <p style="text-align:center"><b id="userName" style="color:#ffcc00"></b> <button class="btn grey" onclick="logout()" style="float:right">Logout</button></p>
+<div style="display:flex;gap:6px;justify-content:center;margin-bottom:8px"><button id="soundBtn" class="btn yellow" onclick="toggleSound()">🔊 Sound ON</button><button class="btn blue" onclick="testSound()">Test Ding</button><button class="btn red" onclick="tab('sos')">🚨 SOS <span id="sosCount" class="hidden" style="background:white;color:red;padding:1px 6px;border-radius:10px">0</span></button></div>
+
 <div class="tabs">
-<button id="tb1" class="tab active" onclick="tab('bookings')">Bookings <span id="newCount" style="background:red;color:white;border-radius:10px;padding:2px 7px;font-size:11px" class="hidden">0</span></button>
+<button id="tb1" class="tab active" onclick="tab('bookings')">Bookings <span id="newCount" style="background:red;color:white;border-radius:10px;padding:2px 6px" class="hidden">0</span></button>
 <button id="tb2" class="tab off" onclick="tab('nurses')">Nurses</button>
 <button id="tb3" class="tab off" onclick="tab('jobs')">Jobs</button>
 <button id="tb4" class="tab off" onclick="tab('edu')">Talks</button>
+<button id="tb6" class="tab off" onclick="tab('video')">🎥 Video</button>
+<button id="tb7" class="tab off" onclick="tab('sos')">🚨 SOS</button>
 <button id="tb5" class="tab off" onclick="tab('staff')">Staffs</button>
 </div>
 
 <div id="vBookings"><div id="bookList"></div></div>
 <div id="vNurses" class="hidden"><div id="nurseList"></div><div id="approvedList"></div></div>
-<div id="vJobs" class="hidden"><input id="jService" placeholder="Service"><input id="jLoc" placeholder="Location"><input id="jPrice" placeholder="Price"><input id="jPhone" placeholder="Client Phone"><input id="jGPS" placeholder="GPS"><button class="btn green" style="width:100%;padding:14px" onclick="createJobManual()">+ CREATE</button></div>
-<div id="vEdu" class="hidden"><input id="eTitle" placeholder="Title"><textarea id="eMsg" placeholder="Message" rows="4"></textarea><button class="btn blue" style="width:100%;padding:14px" onclick="sendEdu()">Send</button><div id="eduList"></div></div>
+<div id="vJobs" class="hidden"><input id="jService" placeholder="Service"><input id="jLoc" placeholder="Location"><input id="jPrice" placeholder="Price"><input id="jPhone" placeholder="Phone"><input id="jGPS" placeholder="GPS"><button class="btn green" style="width:100%" onclick="createJobManual()">+ CREATE</button></div>
+
+<div id="vEdu" class="hidden"><input id="eTitle" placeholder="Title"><textarea id="eMsg" placeholder="Message" rows="3"></textarea><button class="btn blue" style="width:100%" onclick="sendEdu()">Send Text Talk</button><div id="eduList"></div></div>
+
+<div id="vVideo" class="hidden">
+<div style="background:#0f1a2a;padding:14px;border-radius:12px;border:2px solid #2a6aff;margin-bottom:12px">
+<h3 style="margin:0;color:#7fbcff">🎥 Video Talks - Care233 Live</h3>
+<p class="small">Create live video meeting for clients & nurses</p>
+<input id="vTitle" placeholder="Video Topic e.g. Health Education">
+<select id="vAudience"><option value="both">👥 Both Clients & Nurses</option><option value="clients">🧑‍🤝‍🧑 Clients Only</option><option value="nurses">👩‍⚕️ Nurses Only</option></select>
+<button class="btn blue" style="width:100%;padding:14px;font-size:16px" onclick="createVideoTalk()">🎥 CREATE VIDEO LINK</button>
+<p id="vLinkBox" class="small"></p>
+</div>
+<div id="videoList"></div>
+</div>
+
+<div id="vSos" class="hidden">
+<div style="background:#3a0a0a;padding:14px;border-radius:12px;border:2px solid red;margin-bottom:12px">
+<h3 style="margin:0;color:#ff6b6b">🚨 SOS SECURITY CENTER</h3>
+<p class="small">Nurse emergency alerts - Real-time rescue</p>
+<button class="btn red" style="width:100%;padding:12px" onclick="simulateSOS()">⚠️ TEST SOS (Simulate Nurse Danger)</button>
+<p class="small" style="color:#ffcc00">When nurse presses SOS in their app, it appears here with GPS!</p>
+</div>
+<div id="sosList"><p class="small">Listening for SOS...</p></div>
+</div>
 
 <div id="vStaff" class="hidden">
 <div style="background:#2a1a00;padding:14px;border-radius:12px;border:2px solid #ffcc00;margin-bottom:15px">
-<h4 style="margin:0 0 10px 0;color:#ffcc00">🔐 Change Super Admin Password</h4>
-<p class="small">Current: <b id="curSuperPass" style="color:#ffcc00;font-size:16px;background:#111;padding:4px 8px;border-radius:6px"></b></p>
-<input id="newSuperPass" type="text" placeholder="New password"><input id="confirmSuperPass" type="text" placeholder="Confirm"><button class="btn green" style="width:100%;padding:14px" onclick="changeSuperPass()">💾 SAVE</button><p id="superPassMsg" class="small"></p>
+<h4 style="margin:0 0 8px;color:#ffcc00">🔐 Change Super Password</h4>
+<p class="small">Current: <b id="curSuperPass" style="color:#ffcc00;background:#111;padding:4px 8px;border-radius:6px"></b></p>
+<input id="newSuperPass" type="text" placeholder="New password"><input id="confirmSuperPass" type="text" placeholder="Confirm"><button class="btn green" style="width:100%" onclick="changeSuperPass()">💾 SAVE</button><p id="superPassMsg" class="small"></p>
 </div>
-<h3>Staff Management</h3><div style="background:#0f1f15;padding:12px;border-radius:12px;border:1px dashed #ffcc00"><input id="stName" placeholder="Staff Name"><input id="stPhone" placeholder="Staff Phone" type="tel"><button class="btn green" onclick="addStaff()" style="width:100%;padding:14px">+ Add Staff</button><p id="stMsg" class="small"></p></div><div id="staffList"></div>
+<div style="background:#0f1f15;padding:12px;border-radius:12px;border:1px dashed #ffcc00"><input id="stName" placeholder="Staff Name"><input id="stPhone" placeholder="Phone" type="tel"><button class="btn green" onclick="addStaff()" style="width:100%">+ Add Staff</button><p id="stMsg" class="small"></p></div><div id="staffList"></div>
+</div>
+
 </div>
 </div>
-</div>
+
+<audio id="notifSound" preload="auto"><source src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg" type="audio/ogg"></audio>
+<audio id="sosSound" preload="auto"><source src="https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg" type="audio/ogg"></audio>
 
 <script>
 const firebaseConfig = { apiKey: "AIzaSyB52-X1D8Cg-wUDWPds_tR7X3cF82dMdRg", authDomain: "web-care-618e8.firebaseapp.com", databaseURL: "https://web-care-618e8-default-rtdb.firebaseio.com", projectId: "web-care-618e8", storageBucket: "web-care-618e8.firebasestorage.app", messagingSenderId: "1062578660694", appId: "1:1062578660694:web:f94dfe12c929df05bce2f7" };
 firebase.initializeApp(firebaseConfig); const db = firebase.database();
 function getSuperPass(){ return localStorage.getItem('care233_super_pass') || "1234"; }
-let taps=0, tapTimer=null, pressTimer=null, isSuper=false;
+let taps=0, tapTimer=null, pressTimer=null, isSuper=false, lastBookingCount=0, lastSosCount=0, soundEnabled=true, firstLoad=true, firstSosLoad=true;
 const adIcon = document.getElementById('adIcon');
-adIcon.addEventListener('click', handleTap);
-adIcon.addEventListener('touchstart', (e)=>{ e.preventDefault(); handleTap(); startPress(); });
-adIcon.addEventListener('touchend', ()=>{ clearTimeout(pressTimer); });
-adIcon.addEventListener('mousedown', startPress);
-adIcon.addEventListener('mouseup', ()=>{ clearTimeout(pressTimer); });
-function startPress(){ clearTimeout(pressTimer); pressTimer = setTimeout(()=>{ openSuperLogin(); if(navigator.vibrate) navigator.vibrate([100,50,100]); }, 1500); }
-function handleTap(){ taps++; document.getElementById('adTapCount').innerText = `Taps: ${taps}/5`; if(navigator.vibrate) navigator.vibrate(50); clearTimeout(tapTimer); tapTimer=setTimeout(()=>{ taps=0; document.getElementById('adTapCount').innerText=''; }, 3000); if(taps>=5){ openSuperLogin(); } }
-function openSuperLogin(){ document.getElementById('loginStaff').className='hidden'; document.getElementById('loginSuper').className=''; taps=0; document.getElementById('adTapCount').innerText='SUPER ADMIN'; if(navigator.vibrate) navigator.vibrate([200,100,200]); }
-function showStaffLogin(){document.getElementById('loginSuper').className='hidden';document.getElementById('loginStaff').className='';document.getElementById('adTapCount').innerText='';taps=0;}
-function loginStaff(){ let phone=document.getElementById('sPhone').value.trim(); let pass=document.getElementById('sPass').value.trim(); let staffs=JSON.parse(localStorage.getItem('care233_staffs')||'[]'); let s=staffs.find(x=>x.phone===phone && x.password===pass); if(!s){document.getElementById('sMsg').innerText='Wrong';return} if(!s.active){document.getElementById('sMsg').innerText='Disabled';return} isSuper=false; localStorage.setItem('care233_current_role',JSON.stringify({isSuper:false,staff:s})); openDash(s.name,false); }
-function loginSuper(){ let entered = document.getElementById('superPass').value.trim(); if(entered!==getSuperPass()){alert('Wrong! Current: '+getSuperPass());return} isSuper=true; localStorage.setItem('care233_current_role',JSON.stringify({isSuper:true,name:'CEO'})); openDash('CEO (Super Admin)',true); }
-function openDash(name,superFlag){ document.getElementById('loginStaff').className='hidden';document.getElementById('loginSuper').className='hidden';document.getElementById('dash').className=''; document.getElementById('userName').innerText=name; document.getElementById('curSuperPass').innerText = getSuperPass(); tab('bookings'); loadBookingsRealTime(); }
-function changeSuperPass(){ let newP = document.getElementById('newSuperPass').value.trim(); let confirmP = document.getElementById('confirmSuperPass').value.trim(); if(!newP || newP.length<4){document.getElementById('superPassMsg').innerText='❌ Min 4 chars';return} if(newP!==confirmP){document.getElementById('superPassMsg').innerText='❌ Not match';return} localStorage.setItem('care233_super_pass', newP); document.getElementById('curSuperPass').innerText = newP; document.getElementById('superPassMsg').innerHTML = `✅ New: <b style="color:#00ff00">${newP}</b>`; document.getElementById('newSuperPass').value='';document.getElementById('confirmSuperPass').value=''; alert('Password changed to: '+newP); }
+adIcon.addEventListener('click', handleTap); adIcon.addEventListener('touchstart', (e)=>{ e.preventDefault(); handleTap(); startPress(); }); adIcon.addEventListener('touchend', ()=>clearTimeout(pressTimer)); adIcon.addEventListener('mousedown', startPress); adIcon.addEventListener('mouseup', ()=>clearTimeout(pressTimer));
+function startPress(){ clearTimeout(pressTimer); pressTimer=setTimeout(openSuperLogin,1500); }
+function handleTap(){ taps++; document.getElementById('adTapCount').innerText=`Taps ${taps}/5`; clearTimeout(tapTimer); tapTimer=setTimeout(()=>{taps=0;document.getElementById('adTapCount').innerText='';},3000); if(taps>=5) openSuperLogin(); }
+function openSuperLogin(){ document.getElementById('loginStaff').className='hidden'; document.getElementById('loginSuper').className=''; taps=0; document.getElementById('adTapCount').innerText='SUPER ADMIN'; }
+function showStaffLogin(){document.getElementById('loginSuper').className='hidden';document.getElementById('loginStaff').className='';}
+function loginStaff(){ let phone=document.getElementById('sPhone').value.trim(); let pass=document.getElementById('sPass').value.trim(); let staffs=JSON.parse(localStorage.getItem('care233_staffs')||'[]'); let s=staffs.find(x=>x.phone===phone&&x.password===pass); if(!s){document.getElementById('sMsg').innerText='Wrong';return} if(!s.active){document.getElementById('sMsg').innerText='Disabled';return} isSuper=false; localStorage.setItem('care233_current_role',JSON.stringify({isSuper:false,staff:s})); openDash(s.name,false); }
+function loginSuper(){ if(document.getElementById('superPass').value.trim()!==getSuperPass()){alert('Wrong! '+getSuperPass());return} isSuper=true; localStorage.setItem('care233_current_role',JSON.stringify({isSuper:true,name:'CEO'})); openDash('CEO',true); }
+function openDash(name,superFlag){ document.getElementById('loginStaff').className='hidden';document.getElementById('loginSuper').className='hidden';document.getElementById('dash').className=''; document.getElementById('userName').innerText=name; document.getElementById('curSuperPass').innerText=getSuperPass(); tab('bookings'); loadBookingsRealTime(); loadSosRealTime(); }
+function changeSuperPass(){ let newP=document.getElementById('newSuperPass').value.trim(); let c=document.getElementById('confirmSuperPass').value.trim(); if(newP.length<4){document.getElementById('superPassMsg').innerText='Min 4';return} if(newP!==c){document.getElementById('superPassMsg').innerText='No match';return} localStorage.setItem('care233_super_pass',newP); document.getElementById('curSuperPass').innerText=newP; document.getElementById('superPassMsg').innerHTML=`✅ <b style="color:#0f0">${newP}</b>`; alert('Changed to '+newP); }
+function toggleSound(){ soundEnabled=!soundEnabled; document.getElementById('soundBtn').innerText=soundEnabled?'🔊 Sound ON':'🔇 Sound OFF'; localStorage.setItem('care233_sound',soundEnabled?'on':'off'); if(soundEnabled) testSound(); }
+function testSound(){ document.getElementById('notifSound').play().catch(()=>{}); }
+
+// VIDEO TALKS
+function createVideoTalk(){
+  let title=document.getElementById('vTitle').value.trim()||'Care233 Live Session';
+  let audience=document.getElementById('vAudience').value;
+  let roomId='Care233_'+Date.now();
+  let link=`https://meet.jit.si/${roomId}`;
+  let data={id:roomId,title,audience,link,by:isSuper?'CEO':'Staff',date:new Date().toLocaleString(),timestamp:Date.now(),active:true};
+  db.ref('videoTalks').push(data);
+  document.getElementById('vLinkBox').innerHTML=`✅ Created!<br><b>${title}</b><br>Audience: <b>${audience.toUpperCase()}</b><br><a href="${link}" target="_blank" style="color:#00ff00;font-size:16px">${link}</a><br><button class="btn green" onclick="copyLink('${link}')">Copy Link</button> <a class="btn blue" href="${link}" target="_blank">Join Now</a>`;
+  document.getElementById('vTitle').value='';
+}
+function copyLink(l){ navigator.clipboard.writeText(l); alert('Link copied! Share to '+document.getElementById('vAudience').value); }
+function loadVideoTalks(){
+  db.ref('videoTalks').orderByChild('timestamp').on('value', snap=>{
+    let talks=[]; snap.forEach(c=>talks.push({key:c.key,...c.val()})); talks.reverse();
+    document.getElementById('videoList').innerHTML=talks.map(t=>`
+      <div class="box" style="border-left-color:#2a6aff">
+      🎥 <b>${t.title}</b><br><small>Audience: ${t.audience.toUpperCase()} | ${t.date} by ${t.by}</small><br>
+      <a href="${t.link}" target="_blank" style="color:#7fbcff;word-break:break-all">${t.link}</a><br>
+      <a class="btn blue" href="${t.link}" target="_blank">Join Video</a>
+      <button class="btn green" onclick="copyLink('${t.link}')">Copy</button>
+      <button class="btn red" onclick="endVideo('${t.key}')">End</button>
+      </div>
+    `).join('')||'<p class="small">No video talks</p>';
+  });
+}
+function endVideo(key){ if(confirm('End video?')) db.ref('videoTalks/'+key).remove(); }
+
+// SOS SECURITY
+function simulateSOS(){
+  if(!navigator.geolocation){ alert('No GPS'); return; }
+  navigator.geolocation.getCurrentPosition(pos=>{
+    let sos={nurseName:'Test Nurse Akosua', nursePhone:'0544121814', lat:pos.coords.latitude, lng:pos.coords.longitude, accuracy:pos.coords.accuracy, message:'I feel unsafe at client location! Need help!', date:new Date().toLocaleString(), timestamp:Date.now(), status:'active'};
+    db.ref('sosAlerts').push(sos);
+    alert('🚨 SOS Sent with GPS!');
+  }, ()=>{ let sos={nurseName:'Test Nurse Akosua', nursePhone:'0544121814', lat:5.6037, lng:-0.1870, accuracy:0, message:'I feel unsafe! Location: Accra (GPS failed, using default)', date:new Date().toLocaleString(), timestamp:Date.now(), status:'active'}; db.ref('sosAlerts').push(sos); });
+}
+
+function loadSosRealTime(){
+  db.ref('sosAlerts').orderByChild('timestamp').on('value', snap=>{
+    let alerts=[]; snap.forEach(c=>alerts.push({key:c.key,...c.val()})); alerts.reverse();
+    let activeCount=alerts.filter(a=>a.status==='active').length;
+    let el=document.getElementById('sosCount'); if(activeCount>0){el.innerText=activeCount;el.className='';}else{el.className='hidden';}
+    if(!firstSosLoad && activeCount>lastSosCount && soundEnabled){ document.getElementById('sosSound').play().catch(()=>{}); if(navigator.vibrate) navigator.vibrate([500,200,500,200,500]); alert('🚨🚨🚨 SOS ALERT! NURSE IN DANGER!'); }
+    firstSosLoad=false; lastSosCount=activeCount;
+
+    document.getElementById('sosList').innerHTML=alerts.map(a=>`
+      <div class="box sos">
+      <span style="background:red;color:white;padding:4px 10px;border-radius:12px;font-weight:bold">🚨 SOS ${a.status.toUpperCase()}</span><br>
+      <b style="font-size:18px">${a.nurseName}</b> - ${a.nursePhone}<br>
+      📝 ${a.message}<br>
+      📍 GPS: ${a.lat.toFixed(6)}, ${a.lng.toFixed(6)} (±${Math.round(a.accuracy||0)}m)<br>
+      <small>${a.date}</small><br>
+      <div style="margin-top:10px">
+      <a class="btn blue" href="tel:${a.nursePhone}">📞 Call Nurse</a>
+      <a class="btn green" target="_blank" href="https://www.google.com/maps?q=${a.lat},${a.lng}">🗺️ GPS Directions</a>
+      <a class="btn yellow" target="_blank" href="https://www.google.com/maps/dir/?api=1&destination=${a.lat},${a.lng}">🚑 Navigate Rescue</a>
+      <a class="btn orange" href="tel:191">🚓 Call Police 191</a>
+      <a class="btn orange" href="tel:112">🚨 Emergency 112</a>
+      </div>
+      <div style="margin-top:8px">
+      <button class="btn grey" onclick="resolveSos('${a.key}')">✅ Mark Resolved</button>
+      <button class="btn red" onclick="deleteSos('${a.key}')">Delete</button>
+      </div>
+      </div>
+    `).join('')||'<p class="small">No SOS alerts - All nurses safe ✅</p>';
+  });
+}
+function resolveSos(key){ db.ref('sosAlerts/'+key).update({status:'resolved'}); }
+function deleteSos(key){ if(confirm('Delete SOS?')) db.ref('sosAlerts/'+key).remove(); }
 
 function loadBookingsRealTime(){
   db.ref('bookings').orderByChild('timestamp').on('value', snap=>{
-    let bookings = []; snap.forEach(child=>{ bookings.push({id:child.key,...child.val()}) }); bookings.reverse();
-    let newCount = bookings.filter(b=>b.status==='new').length;
-    let countEl = document.getElementById('newCount'); if(newCount>0){countEl.innerText=newCount;countEl.className='';}else{countEl.className='hidden';}
-    document.getElementById('bookList').innerHTML = bookings.map(j=>{
-      // FIXED WHATSAPP MESSAGE - NOW SAYS CARE233 NOT NURSES GROUP
-      let waMsg = `Hello ${j.name||''} 👋%0A%0AThis is *Care233* - Your trusted home nursing service in Ghana.%0A%0AWe received your booking:%0A🔹 Service: ${j.service}%0A📍 Location: ${j.location}%0A${j.price?'💰 Price: '+j.price+'%0A':''}%0AWe will assign a professional nurse shortly and call you.%0A%0AThank you for choosing Care233! 💚💛%0Awww.care233.com`;
-      return `
-      <div class="box ${j.status==='new'?'newFlash':''}">
-      ${j.status==='new'?'<span style="background:red;color:white;padding:3px 8px;border-radius:12px;font-size:11px">🔔 NEW</span>':''}
-      <b style="font-size:16px">${j.service}</b><br><b>${j.name}</b> - ${j.phone}<br>📍 ${j.location} ${j.price?'- '+j.price:''}<br>
-      ${j.notes?`📝 ${j.notes}<br>`:''}
-      <div style="margin-top:8px">
-      <a class="btn blue" href="tel:${j.phone}">📞 Call</a>
-      <a class="btn green" target="_blank" href="https://wa.me/${j.phone.replace(/[^0-9]/g,'')}?text=${waMsg}">💬 WhatsApp</a>
-      <button class="btn grey" onclick="markDone('${j.id}')">${j.status==='new'?'✅ Done':'↩️ Undo'}</button>
-      </div><small style="opacity:0.6">${j.date}</small>
-      </div>`;
-    }).join('') || '<p class="small">No bookings yet</p>';
+    let bookings=[]; snap.forEach(c=>bookings.push({id:c.key,...c.val()})); bookings.reverse();
+    let newCount=bookings.filter(b=>b.status==='new').length;
+    let el=document.getElementById('newCount'); if(newCount>0){el.innerText=newCount;el.className='';}else{el.className='hidden';}
+    if(!firstLoad && newCount>lastBookingCount && soundEnabled){ testSound(); if(navigator.vibrate) navigator.vibrate([300,100,300]); }
+    firstLoad=false; lastBookingCount=newCount;
+    let nurses=JSON.parse(localStorage.getItem('care233_workers')||'[]').filter(w=>w.approved);
+    let nurseOptions=nurses.map(n=>`<option value="${n.name} - ${n.phone}">${n.name} (${n.phone})</option>`).join('');
+    document.getElementById('bookList').innerHTML=bookings.map(j=>{
+      let waMsg=`Hello ${j.name||''} 👋%0A%0AThis is *Care233* 💚💛 - Your trusted home nursing service in Ghana.%0A%0AWe received your booking:%0A🔹 Service: ${j.service}%0A📍 Location: ${j.location}%0A${j.assignedNurse?'👩‍⚕️ Nurse: '+j.assignedNurse+'%0A':''}%0AWe will call you shortly.%0AThank you!%0Awww.care233.com`;
+      return `<div class="box ${j.status==='new'?'new newFlash':''}">${j.status==='new'?'<span style="background:red;color:white;padding:3px 8px;border-radius:10px">🔔 NEW</span>':''} ${j.assignedNurse?`<span style="background:#0a4d2e;color:#ffcc00;padding:3px 8px;border-radius:10px">👩‍⚕️ ${j.assignedNurse.split(' - ')[0]}</span>`:''}<br><b>${j.service}</b> - ${j.name} - ${j.phone}<br>📍 ${j.location}<br><div style="background:#111;padding:8px;border-radius:8px;margin:6px 0"><select id="assign_${j.id}"><option value="">-- Assign Nurse --</option>${nurseOptions}</select><button class="btn yellow" onclick="assignNurse('${j.id}')">Assign</button></div><a class="btn blue" href="tel:${j.phone}">📞 Call</a><a class="btn green" target="_blank" href="https://wa.me/${j.phone.replace(/[^0-9]/g,'')}?text=${waMsg}">💬 Care233</a><button class="btn grey" onclick="markDone('${j.id}')">${j.status==='new'?'✅ Done':'↩️ Undo'}</button><br><small>${j.date}</small></div>`;
+    }).join('')||'No bookings';
   });
 }
-function markDone(id){ db.ref('bookings/'+id).once('value').then(s=>{let cur=s.val().status; db.ref('bookings/'+id).update({status:cur==='new'?'done':'new'});});}
-function createJobManual(){ let j={name:'Manual Job',service:document.getElementById('jService').value,location:document.getElementById('jLoc').value,price:document.getElementById('jPrice').value,phone:document.getElementById('jPhone').value,gps:document.getElementById('jGPS').value,date:new Date().toLocaleString(),timestamp:Date.now(),status:'new'}; if(!j.service||!j.phone){alert('Fill');return} db.ref('bookings').push(j); alert('Created'); }
-function tab(t){ ['Bookings','Nurses','Jobs','Edu','Staff'].forEach(x=>{ let el=document.getElementById('v'+x); if(el) el.className=x.toLowerCase()===t.toLowerCase()?'':'hidden'; let btn=document.getElementById('tb'+(['Bookings','Nurses','Jobs','Edu','Staff'].indexOf(x)+1)); if(btn) btn.className=x.toLowerCase()===t.toLowerCase()?'tab active':'tab off'; }); if(t==='staff' &&!isSuper){alert('Only Super Admin');tab('bookings');return;} if(t==='nurses')loadNurses();if(t==='staff'&&isSuper){loadStaff();document.getElementById('curSuperPass').innerText=getSuperPass();}if(t==='edu')loadEdu();if(t==='bookings')loadBookingsRealTime(); }
-function loadNurses(){let workers=JSON.parse(localStorage.getItem('care233_workers')||'[]');document.getElementById('nurseList').innerHTML=workers.filter(w=>!w.approved).map((w,i)=>{let idx=workers.indexOf(w);return `<div class="box"><b>${w.name}</b><br><button class="btn green" onclick="approveN(${idx})">Approve</button></div>`}).join('')||'No pending';}
+function assignNurse(id){ let sel=document.getElementById('assign_'+id); if(!sel.value){alert('Select nurse');return} db.ref('bookings/'+id).update({assignedNurse:sel.value,status:'assigned'}); alert('Assigned!'); }
+function markDone(id){ db.ref('bookings/'+id).once('value').then(s=>{let cur=s.val().status; db.ref('bookings/'+id).update({status:cur==='new'||cur==='assigned'?'done':'new'});});}
+function createJobManual(){ let j={name:'Manual',service:document.getElementById('jService').value,location:document.getElementById('jLoc').value,price:document.getElementById('jPrice').value,phone:document.getElementById('jPhone').value,gps:document.getElementById('jGPS').value,date:new Date().toLocaleString(),timestamp:Date.now(),status:'new'}; if(!j.service||!j.phone){alert('Fill');return} db.ref('bookings').push(j); }
+function tab(t){ ['Bookings','Nurses','Jobs','Edu','Staff','Video','Sos'].forEach(x=>{ let el=document.getElementById('v'+x); if(el) el.className=x.toLowerCase()===t.toLowerCase()?'':'hidden'; let idMap={Bookings:'tb1',Nurses:'tb2',Jobs:'tb3',Edu:'tb4',Staff:'tb5',Video:'tb6',Sos:'tb7'}; let btn=document.getElementById(idMap[x]); if(btn) btn.className=x.toLowerCase()===t.toLowerCase()?'tab active':'tab off'; }); if(t==='staff'&&!isSuper){alert('Only Super');tab('bookings');return;} if(t==='nurses')loadNurses(); if(t==='staff'&&isSuper){loadStaff();document.getElementById('curSuperPass').innerText=getSuperPass();} if(t==='edu')loadEdu(); if(t==='video')loadVideoTalks(); if(t==='sos')loadSosRealTime(); if(t==='bookings')loadBookingsRealTime(); }
+function loadNurses(){let w=JSON.parse(localStorage.getItem('care233_workers')||'[]');document.getElementById('nurseList').innerHTML=w.filter(x=>!x.approved).map((n,i)=>{let idx=w.indexOf(n);return `<div class="box"><b>${n.name}</b> - ${n.phone}<br><button class="btn green" onclick="approveN(${idx})">Approve</button></div>`}).join('')||'No pending'; document.getElementById('approvedList').innerHTML=w.filter(x=>x.approved).map(n=>`<div class="box"><b>${n.name}</b> - ${n.phone}</div>`).join('')||'None';}
 function approveN(i){let w=JSON.parse(localStorage.getItem('care233_workers')||'[]');w[i].approved=true;localStorage.setItem('care233_workers',JSON.stringify(w));loadNurses()}
-function addStaff(){let name=document.getElementById('stName').value.trim();let phone=document.getElementById('stPhone').value.trim();if(!name||!phone){alert('Fill');return}let pass='STAFF'+Math.floor(1000+Math.random()*9000);let staffs=JSON.parse(localStorage.getItem('care233_staffs')||'[]');staffs.push({id:Date.now(),name,phone,password:pass,active:true});localStorage.setItem('care233_staffs',JSON.stringify(staffs));document.getElementById('stMsg').innerHTML=`Added! Pass: <b style="color:#ffcc00">${pass}</b>`;loadStaff();}
-function loadStaff(){let staffs=JSON.parse(localStorage.getItem('care233_staffs')||'[]');document.getElementById('staffList').innerHTML=staffs.map((s,i)=>`<div class="box"><b>${s.name}</b> - ${s.phone}<br>Pass: ${s.password}<br><button class="btn red" onclick="delStaff(${i})">Delete</button></div>`).join('')||'None';}
-function delStaff(i){if(!confirm('Delete?'))return;let s=JSON.parse(localStorage.getItem('care233_staffs')||'[]');s.splice(i,1);localStorage.setItem('care233_staffs',JSON.stringify(s));loadStaff();}
-function sendEdu(){let t=document.getElementById('eTitle').value;let m=document.getElementById('eMsg').value;if(!t||!m){alert('Fill');return}let edus=JSON.parse(localStorage.getItem('care233_edu')||'[]');edus.push({title:t,msg:m,date:new Date().toLocaleString()});localStorage.setItem('care233_edu',JSON.stringify(edus));loadEdu();}
-function loadEdu(){let edus=JSON.parse(localStorage.getItem('care233_edu')||'[]');document.getElementById('eduList').innerHTML=edus.slice().reverse().map(e=>`<div class="box"><b>${e.title}</b><br>${e.msg}</div>`).join('')||'No talks'}
+function addStaff(){let n=document.getElementById('stName').value.trim();let p=document.getElementById('stPhone').value.trim();if(!n||!p){alert('Fill');return}let pass='STAFF'+Math.floor(1000+Math.random()*9000);let s=JSON.parse(localStorage.getItem('care233_staffs')||'[]');s.push({name:n,phone:p,password:pass,active:true});localStorage.setItem('care233_staffs',JSON.stringify(s));document.getElementById('stMsg').innerHTML=`Added Pass: <b style="color:#ffcc00">${pass}</b>`;loadStaff();}
+function loadStaff(){let s=JSON.parse(localStorage.getItem('care233_staffs')||'[]');document.getElementById('staffList').innerHTML=s.map((x,i)=>`<div class="box"><b>${x.name}</b> - ${x.phone} - ${x.password}<br><button class="btn red" onclick="delStaff(${i})">Delete</button></div>`).join('')||'None';}
+function delStaff(i){let s=JSON.parse(localStorage.getItem('care233_staffs')||'[]');s.splice(i,1);localStorage.setItem('care233_staffs',JSON.stringify(s));loadStaff();}
+function sendEdu(){let t=document.getElementById('eTitle').value;let m=document.getElementById('eMsg').value;if(!t||!m){alert('Fill');return}let e=JSON.parse(localStorage.getItem('care233_edu')||'[]');e.push({title:t,msg:m,date:new Date().toLocaleString()});localStorage.setItem('care233_edu',JSON.stringify(e));loadEdu();}
+function loadEdu(){let e=JSON.parse(localStorage.getItem('care233_edu')||'[]');document.getElementById('eduList').innerHTML=e.slice().reverse().map(x=>`<div class="box"><b>${x.title}</b><br>${x.msg}</div>`).join('')||'No talks'}
 function logout(){localStorage.removeItem('care233_current_role');location.reload()}
+soundEnabled=localStorage.getItem('care233_sound')!=='off';
 let cur=JSON.parse(localStorage.getItem('care233_current_role')||'null'); if(cur){isSuper=cur.isSuper;openDash(cur.isSuper?cur.name:cur.staff.name,cur.isSuper);}
 </script>
 </body>
