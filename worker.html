@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Care233 - Nurses Portal FREE</title>
+<title>Care233 - Nurses Portal FINAL</title>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 <style>
@@ -15,7 +15,7 @@ h2{color:#ffcc00;margin:0}
 .docBox{background:#0f1f15;padding:10px;border-radius:10px;margin:8px 0;border:1px dashed #2a8a6a}
 .btn{padding:12px 16px;border:none;border-radius:12px;font-weight:bold;margin:4px;cursor:pointer;font-size:13px;text-decoration:none;display:inline-block}
 .green{background:#0a4d2e;color:#ffcc00}.red{background:#8a0a0a;color:white}.blue{background:#0a2a4d;color:#7fdbc0}.grey{background:#222;color:white}.yellow{background:#4d3a0a;color:#ffcc00}
-input,select,textarea{width:100%;padding:13px;margin:6px 0;border-radius:12px;border:2px solid #2a8a6a;background:#1e1e1e;color:white;box-sizing:border-box}
+input{width:100%;padding:13px;margin:6px 0;border-radius:12px;border:2px solid #2a8a6a;background:#1e1e1e;color:white;box-sizing:border-box}
 .hidden{display:none!important}
 .sosBig{width:160px;height:160px;border-radius:50%;background:radial-gradient(circle, #ff0000 0%, #8a0a0a 100%);border:5px solid white;color:white;font-size:30px;font-weight:bold;display:flex;align-items:center;justify-content:center;margin:20px auto;cursor:pointer;box-shadow:0 0 20px red;animation:pulse 1.5s infinite}
 @keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.05)}100%{transform:scale(1)}}
@@ -27,254 +27,144 @@ input,select,textarea{width:100%;padding:13px;margin:6px 0;border-radius:12px;bo
 .loginTab{flex:1;padding:14px;border-radius:12px;border:2px solid #0a4d2e;font-weight:bold;cursor:pointer;text-align:center}
 .loginTab.active{background:#0a4d2e;color:#ffcc00;border-color:#ffcc00}
 .loginTab.off{background:#1a1a1a;color:#888}
+.jobPending{border-left:5px solid #ffcc00;background:#2a2a0a;animation:flash 1.5s infinite}
+.jobAccepted{border-left:5px solid #00ff00;background:#0a2a0a}
+@keyframes flash{0%,100%{background:#1a2a1f}50%{background:#3a2a00}}
 </style>
 </head>
 <body>
 <div class="card">
-<div class="top"><div class="logo">C233</div><div><h2>Care233</h2><p style="margin:0;font-size:10px;color:#7fdbc0">FREE Backend - No Billing Needed - SECURE</p></div></div>
+<div class="top"><div class="logo">C233</div><div><h2>Care233</h2><p style="margin:0;font-size:10px;color:#7fdbc0">Accept / Reject - FREE DB - SECURE</p></div></div>
 
-<!-- LOGIN / REGISTER SECTION -->
 <div id="authBox">
 <div class="loginTabs">
 <div id="loginTabBtn" class="loginTab off" onclick="switchAuth('login')">🔑 LOGIN (Approved Nurse)</div>
 <div id="regTabBtn" class="loginTab active" onclick="switchAuth('register')">📝 REGISTER (New)</div>
 </div>
-
-<!-- LOGIN BOX -->
 <div id="loginFormBox" class="hidden">
 <h3 style="text-align:center;color:#00ff00">Nurse Login - Care233</h3>
-<p class="small" style="text-align:center">If you already registered, just enter phone to login. Approval syncs realtime from Admin!</p>
-<input id="loginPhone" placeholder="Enter your registered Phone *" type="tel">
+<p class="small" style="text-align:center">Enter phone you used to register - Approval syncs realtime!</p>
+<input id="loginPhone" placeholder="Enter registered Phone *" type="tel">
 <button class="btn green" style="width:100%;padding:16px;font-size:18px" onclick="loginNurse()">🔑 LOGIN NOW</button>
 <p id="loginMsg" class="small" style="text-align:center;color:#ffcc00"></p>
-<p class="small" style="text-align:center">New nurse? Click REGISTER above</p>
 </div>
-
-<!-- REGISTRATION BOX -->
 <div id="regFormBox">
 <h3 style="text-align:center;color:#ffcc00">Nurse Registration - FREE (No Billing)</h3>
-<input id="nName" placeholder="Full Name *"><input id="nPhone" placeholder="Phone *"><input id="nSkill" placeholder="Skill e.g. General Nurse *"><input id="nLocation" placeholder="Location *"><input id="nExp" placeholder="Experience e.g. 3 years"><input id="nLicenseNo" placeholder="License No *"><input id="nGhanaCardNo" placeholder="Ghana Card No *">
+<input id="nName" placeholder="Full Name *"><input id="nPhone" placeholder="Phone *"><input id="nSkill" placeholder="Skill *"><input id="nLocation" placeholder="Location *"><input id="nExp" placeholder="Experience"><input id="nLicenseNo" placeholder="License No *"><input id="nGhanaCardNo" placeholder="Ghana Card No *">
 <div style="background:#2a1a00;padding:10px;border-radius:12px;border:2px solid #ffcc00;margin:10px 0">
-<h4 style="margin:0;color:#ffcc00">📄 Upload Docs - Saved to FREE Realtime DB</h4>
-<div class="docBox"><label class="small" style="color:#ffcc00">CV *</label><input type="file" id="cvFile" accept="image/*,.pdf"><p id="cvStatus" class="small"></p></div>
-<div class="docBox"><label class="small" style="color:#ffcc00">License *</label><input type="file" id="licenseFile" accept="image/*,.pdf"><p id="licenseStatus" class="small"></p></div>
-<div class="docBox"><label class="small" style="color:#ffcc00">Ghana Card Front & Back *</label><input type="file" id="ghanaFile" accept="image/*,.pdf" multiple><p id="ghanaStatus" class="small"></p></div>
-<div class="docBox"><label class="small" style="color:#ffcc00">Other Certs (Optional)</label><input type="file" id="otherFile" accept="image/*,.pdf" multiple><p id="otherStatus" class="small"></p></div>
-<p class="small">Max 2MB per file - Compressed - FREE quota - No Billing</p>
+<h4 style="margin:0;color:#ffcc00">📄 Upload Docs - FREE Realtime DB</h4>
+<div class="docBox"><label class="small">CV *</label><input type="file" id="cvFile" accept="image/*,.pdf"></div>
+<div class="docBox"><label class="small">License *</label><input type="file" id="licenseFile" accept="image/*,.pdf"></div>
+<div class="docBox"><label class="small">Ghana Card Front & Back *</label><input type="file" id="ghanaFile" accept="image/*,.pdf" multiple></div>
+<div class="docBox"><label class="small">Other Certs</label><input type="file" id="otherFile" accept="image/*,.pdf" multiple></div>
+<p class="small">Compressed to 60% - FREE quota - No Billing needed</p>
 </div>
-<button class="btn green" style="width:100%;padding:16px;font-size:18px" onclick="registerNurse()">📤 Submit - FREE DB</button>
+<button class="btn green" style="width:100%;padding:16px;font-size:18px" onclick="registerNurse()">📤 Submit to FREE DB</button>
 <div id="uploadProgress" class="small" style="text-align:center;color:#ffcc00"></div>
-<p class="small" style="text-align:center">Already registered? Click LOGIN above</p>
 </div>
 </div>
 
-<!-- DASHBOARD -->
 <div id="dash" class="hidden">
 <p style="text-align:center"><b id="welcomeName" style="color:#ffcc00"></b> - <span id="welcomePhone" class="small"></span> <button class="btn grey" onclick="logout()" style="float:right">Logout</button></p>
-<div id="approvalBanner" class="hidden" style="background:#4d3a0a;padding:12px;border-radius:10px;border:2px solid #ffcc00;text-align:center;color:#ffcc00">⏳ Pending Approval - Admin will verify your License & Ghana Card<br><small>Keep this app open - When Admin approves, this will turn GREEN automatically!</small><br><button class="btn yellow" style="margin-top:8px" onclick="checkApprovalNow()">🔄 Check Approval Now</button></div>
-<div id="approvedBanner" class="hidden" style="background:#0a4d2e;padding:12px;border-radius:10px;border:2px solid #00ff00;text-align:center;color:#00ff00">✅ Approved by Care233! You can receive jobs now! 💚<br><small>Verified - License & Ghana Card OK</small></div>
-<div class="tabs"><button id="tb1" class="tab active" onclick="tab('home')">Home</button><button id="tb2" class="tab off" onclick="tab('docs')">Docs</button><button id="tb3" class="tab off" onclick="tab('jobs')">Jobs</button><button id="tb4" class="tab off" onclick="tab('video')">Video</button><button id="tb5" class="tab off" onclick="tab('sos')">SOS</button></div>
-<div id="vHome"><div class="box"><b>Welcome <span id="name2"></span></b><br><small id="gpsStatus">📍 Getting GPS...</small><br><small id="realtimeStatus" style="color:#00ff00">🔴 Live sync to Admin...</small></div><div id="jobsListHome"></div></div>
-<div id="vDocs" class="hidden"><h3>My Docs - FREE DB</h3><div id="myDocsList"></div></div>
-<div id="vJobs" class="hidden"><h3>My Assigned Jobs - Care233</h3><div id="myJobsList"></div></div>
-<div id="vVideo" class="hidden"><h3>Video Talks</h3><div id="videoTalksList"></div></div>
-<div id="vSos" class="hidden"><div style="text-align:center"><h2 style="color:red">🚨 SOS Care233</h2><div id="sosInactive"><div class="sosBig" id="sosBtn">SOS</div><p class="small">GPS: <span id="myLatLng">...</span></p><p class="small">Hold SOS for 2 seconds to activate emergency with Live Video</p><video id="previewVideo" autoplay muted playsinline class="hidden" style="height:200px;width:100%;border-radius:12px"></video></div><div id="sosActiveBox" class="hidden"><div style="background:#3a0a0a;padding:14px;border-radius:12px;border:2px solid red"><h3 style="color:red">🔴 SOS ACTIVE!</h3><p class="small">📍 <span id="activeLatLng"></span><br>📹 <span id="activeVideoLink"></span></p><button class="btn green" style="width:100%" onclick="cancelSOS()">SAFE - CANCEL SOS</button></div></div></div></div>
+<div id="approvalBanner" class="hidden" style="background:#4d3a0a;padding:12px;border-radius:10px;border:2px solid #ffcc00;text-align:center;color:#ffcc00">⏳ Pending Approval - Admin will verify<br><small>Keep app open - When Admin approves, this turns GREEN automatically!</small><br><button class="btn yellow" style="margin-top:8px" onclick="checkApprovalNow()">🔄 Check Approval Now</button></div>
+<div id="approvedBanner" class="hidden" style="background:#0a4d2e;padding:12px;border-radius:10px;border:2px solid #00ff00;text-align:center;color:#00ff00">✅ Approved by Care233! You can receive jobs! 💚</div>
+<div class="tabs"><button id="tb1" class="tab active" onclick="tab('home')">Home</button><button id="tb2" class="tab off" onclick="tab('docs')">Docs</button><button id="tb3" class="tab off" onclick="tab('jobs')">Jobs <span id="pendingCount" style="background:red;color:white;border-radius:10px;padding:2px 6px" class="hidden">0</span></button><button id="tb4" class="tab off" onclick="tab('video')">Video</button><button id="tb5" class="tab off" onclick="tab('sos')">SOS</button></div>
+<div id="vHome"><div class="box"><b>Welcome <span id="name2"></span></b><br><small id="gpsStatus">📍 GPS...</small><br><small id="realtimeStatus" style="color:#00ff00">🔴 Live sync to Admin...</small></div><div id="jobsListHome"></div></div>
+<div id="vDocs" class="hidden"><div id="myDocsList"></div></div>
+<div id="vJobs" class="hidden"><h3>My Assigned Jobs - Accept/Reject</h3><div id="myJobsList"></div></div>
+<div id="vVideo" class="hidden"><div id="videoTalksList"></div></div>
+<div id="vSos" class="hidden"><div style="text-align:center"><h2 style="color:red">🚨 SOS Care233</h2><div id="sosInactive"><div class="sosBig" id="sosBtn">SOS</div><p class="small">GPS: <span id="myLatLng">...</span></p><p class="small">Hold 2 sec to activate</p><video id="previewVideo" autoplay muted playsinline class="hidden" style="height:200px;width:100%"></video></div><div id="sosActiveBox" class="hidden"><div style="background:#3a0a0a;padding:14px;border-radius:12px;border:2px solid red"><h3 style="color:red">🔴 SOS ACTIVE!</h3><p class="small">📍 <span id="activeLatLng"></span><br>📹 <span id="activeVideoLink"></span></p><button class="btn green" style="width:100%" onclick="cancelSOS()">SAFE - CANCEL SOS</button></div></div></div></div>
 </div>
 </div>
-
 <script>
 const firebaseConfig = { apiKey: "AIzaSyB52-X1D8Cg-wUDWPds_tR7X3cF82dMdRg", authDomain: "web-care-618e8.firebaseapp.com", databaseURL: "https://web-care-618e8-default-rtdb.firebaseio.com", projectId: "web-care-618e8", storageBucket: "web-care-618e8.firebasestorage.app", messagingSenderId: "1062578660694", appId: "1:1062578660694:web:f94dfe12c929df05bce2f7" };
 firebase.initializeApp(firebaseConfig); const db=firebase.database();
 let currentNurse=null,watchId=null,myPos=null,sosActive=false,sosKey=null,stream=null,approvalListener=null;
-
-function switchAuth(mode){
-  document.getElementById('loginFormBox').className = mode==='login'? '' : 'hidden';
-  document.getElementById('regFormBox').className = mode==='register'? '' : 'hidden';
-  document.getElementById('loginTabBtn').className = mode==='login'? 'loginTab active' : 'loginTab off';
-  document.getElementById('regTabBtn').className = mode==='register'? 'loginTab active' : 'loginTab off';
-}
-
-function fileToDataURL(file){return new Promise((res,rej)=>{let r=new FileReader();r.onload=e=>res(e.target.result);r.onerror=rej;r.readAsDataURL(file);});}
-function compressImage(dataUrl){return new Promise(resolve=>{let img=new Image();img.onload=()=>{let canvas=document.createElement('canvas');let maxW=800;let w=img.width,h=img.height;if(w>maxW){h=h*maxW/w;w=maxW;}canvas.width=w;canvas.height=h;canvas.getContext('2d').drawImage(img,0,0,w,h);resolve(canvas.toDataURL('image/jpeg',0.6));};img.src=dataUrl;});}
-
-// NEW LOGIN FUNCTION - WORKS ACROSS PHONES - REALTIME
+function switchAuth(m){document.getElementById('loginFormBox').className=m==='login'?'':'hidden';document.getElementById('regFormBox').className=m==='register'?'':'hidden';document.getElementById('loginTabBtn').className=m==='login'?'loginTab active':'loginTab off';document.getElementById('regTabBtn').className=m==='register'?'loginTab active':'loginTab off';}
+function fileToDataURL(f){return new Promise((r,j)=>{let x=new FileReader();x.onload=e=>r(e.target.result);x.onerror=j;x.readAsDataURL(f);});}
+function compressImage(d){return new Promise(r=>{let i=new Image();i.onload=()=>{let c=document.createElement('canvas');let w=i.width,h=i.height,maxW=800;if(w>maxW){h=h*maxW/w;w=maxW;}c.width=w;c.height=h;c.getContext('2d').drawImage(i,0,0,w,h);r(c.toDataURL('image/jpeg',0.6));};i.src=d;});}
 async function loginNurse(){
-  let phone = document.getElementById('loginPhone').value.trim();
-  if(!phone){ alert('Enter phone'); return; }
+  let phone=document.getElementById('loginPhone').value.trim(); if(!phone){alert('Enter phone');return;}
   document.getElementById('loginMsg').innerText='⏳ Checking FREE DB...';
-  try{
-    // 1. Check Firebase first (different phone registration)
-    let snap = await db.ref('nurseApplications/'+phone).once('value');
-    if(snap.exists()){
-      let nurseData = snap.val();
-      currentNurse = nurseData;
-      localStorage.setItem('care233_current_nurse', JSON.stringify(currentNurse));
-      // Also save to local workers list
-      let workers=JSON.parse(localStorage.getItem('care233_workers')||'[]');
-      let idx=workers.findIndex(w=>w.phone===phone);
-      if(idx>=0) workers[idx]=nurseData; else workers.push(nurseData);
-      localStorage.setItem('care233_workers', JSON.stringify(workers));
-      document.getElementById('loginMsg').innerHTML='✅ <b style="color:#0f0">Found! Logging in... Approved: '+(nurseData.approved?'YES':'Pending')+'</b>';
-      setTimeout(()=>openDash(), 500);
-      return;
-    }
-    // 2. Check local storage
-    let workers=JSON.parse(localStorage.getItem('care233_workers')||'[]');
-    let found = workers.find(w=>w.phone===phone);
-    if(found){
-      currentNurse=found;
-      localStorage.setItem('care233_current_nurse', JSON.stringify(currentNurse));
-      document.getElementById('loginMsg').innerText='✅ Found locally, logging in...';
-      openDash();
-      return;
-    }
-    document.getElementById('loginMsg').innerText='❌ Phone not found in FREE DB. Please REGISTER first with that phone.';
-  }catch(e){
-    document.getElementById('loginMsg').innerText='❌ '+e.message;
-  }
+  let snap=await db.ref('nurseApplications/'+phone).once('value');
+  if(snap.exists()){currentNurse=snap.val();localStorage.setItem('care233_current_nurse',JSON.stringify(currentNurse));openDash();return;}
+  let workers=JSON.parse(localStorage.getItem('care233_workers')||'[]');let f=workers.find(w=>w.phone===phone);
+  if(f){currentNurse=f;localStorage.setItem('care233_current_nurse',JSON.stringify(currentNurse));openDash();return;}
+  document.getElementById('loginMsg').innerText='❌ Phone not found. Please REGISTER.';
 }
-
 async function registerNurse(){
 let name=document.getElementById('nName').value.trim(),phone=document.getElementById('nPhone').value.trim(),skill=document.getElementById('nSkill').value.trim(),location=document.getElementById('nLocation').value.trim(),exp=document.getElementById('nExp').value.trim(),licenseNo=document.getElementById('nLicenseNo').value.trim(),ghanaNo=document.getElementById('nGhanaCardNo').value.trim();
 let cvFile=document.getElementById('cvFile').files[0],licFile=document.getElementById('licenseFile').files[0],ghanaFiles=document.getElementById('ghanaFile').files,otherFiles=document.getElementById('otherFile').files;
-if(!phone){alert('Phone *');return}
-let workers=JSON.parse(localStorage.getItem('care233_workers')||'[]'),existing=workers.find(w=>w.phone===phone);
-if(existing&&!name){
-// Quick login if only phone provided in register form
-currentNurse=existing;localStorage.setItem('care233_current_nurse',JSON.stringify(currentNurse));openDash();return;}
-if(!name||!skill||!location||!licenseNo||!ghanaNo){alert('Fill * fields');return}
-if(!existing&&(!cvFile||!licFile||ghanaFiles.length===0)){alert('Upload CV, License, Ghana Card *');return;}
-document.getElementById('uploadProgress').innerText='⏳ Compressing & saving to FREE Realtime DB... No billing!';
+if(!phone||!name||!skill||!location||!licenseNo||!ghanaNo){alert('Fill *');return}
+document.getElementById('uploadProgress').innerText='⏳ Saving to FREE Realtime DB...';
 try{
 let docs={};
-if(cvFile){let data=await fileToDataURL(cvFile);if(data.startsWith('data:image'))data=await compressImage(data);docs.cv={name:cvFile.name,data};}
-if(licFile){let data=await fileToDataURL(licFile);if(data.startsWith('data:image'))data=await compressImage(data);docs.license={name:licFile.name,data};}
-if(ghanaFiles.length>0){docs.ghanaCards=[];for(let f of ghanaFiles){let data=await fileToDataURL(f);if(data.startsWith('data:image'))data=await compressImage(data);docs.ghanaCards.push({name:f.name,data});}}
-if(otherFiles.length>0){docs.others=[];for(let f of otherFiles){let data=await fileToDataURL(f);if(data.startsWith('data:image'))data=await compressImage(data);docs.others.push({name:f.name,data});}}
-let nurseData={id:existing?existing.id:Date.now(),name,phone,skill,location,experience:exp,licenseNo,ghanaCardNo:ghanaNo,documents:docs,approved:existing?existing.approved:false,registered:new Date().toLocaleString(),timestamp:Date.now(),backend:'FREE-RealtimeDB-no-storage'};
-if(existing){let idx=workers.findIndex(w=>w.phone===phone);workers[idx]={...workers[idx],...nurseData,approved:workers[idx].approved};}else workers.push(nurseData);
-localStorage.setItem('care233_workers',JSON.stringify(workers));currentNurse=nurseData;localStorage.setItem('care233_current_nurse',JSON.stringify(currentNurse));
-await db.ref('nurseApplications/'+phone).set(nurseData);
-await db.ref('nurseDocs/'+phone).set(nurseData);
-document.getElementById('uploadProgress').innerHTML='✅ <b style="color:#0f0">Saved to FREE DB! Now login and wait for approval - It will auto-update when Admin approves!</b>';
-alert('✅ Saved to FREE Firebase!\\nNow you can LOGIN with your phone.\\nWhen CEO approves in admin, your phone will automatically show APPROVED! Keep app open.');
+if(cvFile){let d=await fileToDataURL(cvFile);if(d.startsWith('data:image'))d=await compressImage(d);docs.cv={name:cvFile.name,data:d};}
+if(licFile){let d=await fileToDataURL(licFile);if(d.startsWith('data:image'))d=await compressImage(d);docs.license={name:licFile.name,data:d};}
+if(ghanaFiles.length>0){docs.ghanaCards=[];for(let f of ghanaFiles){let d=await fileToDataURL(f);if(d.startsWith('data:image'))d=await compressImage(d);docs.ghanaCards.push({name:f.name,data:d});}}
+if(otherFiles.length>0){docs.others=[];for(let f of otherFiles){let d=await fileToDataURL(f);if(d.startsWith('data:image'))d=await compressImage(d);docs.others.push({name:f.name,data:d});}}
+let nurseData={id:Date.now(),name,phone,skill,location,experience:exp,licenseNo,ghanaCardNo:ghanaNo,documents:docs,approved:false,registered:new Date().toLocaleString(),timestamp:Date.now(),backend:'FREE-RealtimeDB'};
+let workers=JSON.parse(localStorage.getItem('care233_workers')||'[]');workers.push(nurseData);localStorage.setItem('care233_workers',JSON.stringify(workers));
+currentNurse=nurseData;localStorage.setItem('care233_current_nurse',JSON.stringify(currentNurse));
+await db.ref('nurseApplications/'+phone).set(nurseData);await db.ref('nurseDocs/'+phone).set(nurseData);
+document.getElementById('uploadProgress').innerHTML='✅ Saved! Now wait for approval - Will auto-update when Admin approves!';
 openDash();
-}catch(e){document.getElementById('uploadProgress').innerText='❌ '+e.message;alert(e.message);}
+}catch(e){document.getElementById('uploadProgress').innerText='❌ '+e.message;}
 }
-
-function openDash(){
-  document.getElementById('authBox').className='hidden';
-  document.getElementById('dash').className='';
-  document.getElementById('welcomeName').innerText=currentNurse.name;
-  document.getElementById('welcomePhone').innerText=currentNurse.phone;
-  document.getElementById('name2').innerText=currentNurse.name;
-  updateApprovalUI();
-  startGPS();
-  loadJobs();
-  loadVideoTalks();
-  loadMyDocs();
-  checkActiveSOS();
-  // START REALTIME APPROVAL LISTENER - THIS FIXES YOUR PROBLEM!
-  startApprovalListener();
-}
-
-function updateApprovalUI(){
-  if(currentNurse.approved){
-    document.getElementById('approvedBanner').className='';
-    document.getElementById('approvalBanner').className='hidden';
-  } else {
-    document.getElementById('approvalBanner').className='';
-    document.getElementById('approvedBanner').className='hidden';
-  }
-}
-
-// REALTIME APPROVAL SYNC FROM ADMIN - KEY FIX!
-function startApprovalListener(){
-  if(approvalListener) db.ref('nurseApplications/'+currentNurse.phone).off('value', approvalListener);
-  approvalListener = db.ref('nurseApplications/'+currentNurse.phone).on('value', snap=>{
-    if(!snap.exists()) return;
-    let updated = snap.val();
-    // If approval status changed
-    if(updated.approved!== currentNurse.approved){
-      currentNurse = updated;
-      localStorage.setItem('care233_current_nurse', JSON.stringify(currentNurse));
-      let workers=JSON.parse(localStorage.getItem('care233_workers')||'[]');
-      let idx=workers.findIndex(w=>w.phone===currentNurse.phone);
-      if(idx>=0){ workers[idx]=updated; localStorage.setItem('care233_workers', JSON.stringify(workers)); }
-      updateApprovalUI();
-      if(updated.approved){
-        document.getElementById('realtimeStatus').innerHTML='✅ <b style="color:#00ff00">APPROVED REALTIME BY CEO!</b> You can receive jobs now!';
-        if(navigator.vibrate) navigator.vibrate([300,100,300,100,300]);
-        alert('🎉 CONGRATULATIONS!\\n✅ You are now APPROVED by Care233 CEO!\\nYou can receive jobs!');
-      } else {
-        document.getElementById('realtimeStatus').innerText='⏳ Pending approval - Live sync active';
-      }
-    }
+function openDash(){document.getElementById('authBox').className='hidden';document.getElementById('dash').className='';document.getElementById('welcomeName').innerText=currentNurse.name;document.getElementById('welcomePhone').innerText=currentNurse.phone;document.getElementById('name2').innerText=currentNurse.name;updateApprovalUI();startGPS();loadJobs();loadVideoTalks();loadMyDocs();checkActiveSOS();startApprovalListener();}
+function updateApprovalUI(){if(currentNurse.approved){document.getElementById('approvedBanner').className='';document.getElementById('approvalBanner').className='hidden';}else{document.getElementById('approvalBanner').className='';document.getElementById('approvedBanner').className='hidden';}}
+function startApprovalListener(){if(approvalListener) db.ref('nurseApplications/'+currentNurse.phone).off('value', approvalListener);approvalListener=db.ref('nurseApplications/'+currentNurse.phone).on('value',snap=>{if(!snap.exists())return;let u=snap.val();if(u.approved!==currentNurse.approved){currentNurse=u;localStorage.setItem('care233_current_nurse',JSON.stringify(currentNurse));updateApprovalUI();if(u.approved){document.getElementById('realtimeStatus').innerHTML='✅ <b style="color:#00ff00">APPROVED REALTIME BY CEO!</b>'; if(navigator.vibrate) navigator.vibrate([300,100,300]); alert('🎉 APPROVED by CEO! You can receive jobs!');}}});}
+async function checkApprovalNow(){let s=await db.ref('nurseApplications/'+currentNurse.phone).once('value');if(s.exists()){currentNurse=s.val();localStorage.setItem('care233_current_nurse',JSON.stringify(currentNurse));updateApprovalUI(); if(currentNurse.approved) alert('✅ APPROVED!'); else alert('⏳ Still pending');}}
+function loadMyDocs(){if(!currentNurse.documents){document.getElementById('myDocsList').innerHTML='No docs';return;}let d=currentNurse.documents,html='';if(d.cv)html+=`<div class="docBox">📄 CV: ${d.cv.name}</div>`;if(d.license)html+=`<div class="docBox">🪪 License: ${d.license.name}</div>`;if(d.ghanaCards)html+=`<div class="docBox">🇬🇭 Ghana: ${d.ghanaCards.length} files</div>`;document.getElementById('myDocsList').innerHTML=html;}
+function loadJobs(){
+  db.ref('bookings').orderByChild('timestamp').on('value',snap=>{
+    let bookings=[];snap.forEach(c=>bookings.push({id:c.key,...c.val()}));bookings.reverse();
+    let myJobs=bookings.filter(b=>b.assignedNurse&&b.assignedNurse.includes(currentNurse.phone));
+    let pending=myJobs.filter(j=>!j.assignmentStatus || j.assignmentStatus==='pending').length;
+    let pc=document.getElementById('pendingCount'); if(pending>0){pc.innerText=pending;pc.className='';}else{pc.className='hidden';}
+    let html=myJobs.map(j=>{
+      let status=j.assignmentStatus || 'pending';
+      let wa=`Hello ${j.name} 👋%0AThis is ${currentNurse.name} from *Care233* 💚💛%0ALicense ${currentNurse.licenseNo}%0AYour booking ${j.service} is accepted!%0Awww.care233.com`;
+      if(status==='pending'){
+        return `<div class="box jobPending">
+        <span style="background:#ffcc00;color:#000;padding:4px 10px;border-radius:10px;font-weight:bold">🔔 NEW CLIENT OFFER - ACTION NEEDED</span><br><br>
+        <b style="font-size:18px">${j.service}</b><br>
+        <b>Client: ${j.name}</b><br>📍 ${j.location} ${j.price?'- '+j.price:''}<br><small>${j.date}</small><br>
+        <div style="background:#111;padding:10px;border-radius:10px;margin:10px 0;border:1px dashed #ffcc00">
+        <p class="small" style="color:#ffcc00;text-align:center">Admin assigned this client to you! Accept to get Call & WhatsApp, or Reject if busy.</p>
+        <button class="btn green" style="width:48%;padding:16px;font-size:16px" onclick="acceptJob('${j.id}')">✅ ACCEPT</button>
+        <button class="btn red" style="width:48%;padding:16px;font-size:16px" onclick="rejectJob('${j.id}')">❌ REJECT</button>
+        </div></div>`;
+      } else if(status==='accepted'){
+        return `<div class="box jobAccepted">
+        <span style="background:#00ff00;color:#000;padding:4px 10px;border-radius:10px;font-weight:bold">✅ ACCEPTED - Contact Client Now</span><br><br>
+        <b style="font-size:18px">${j.service}</b><br>
+        <b>Client: ${j.name}</b> - ${j.phone}<br>📍 ${j.location} ${j.price?'- '+j.price:''}<br><small>${j.date}</small><br>
+        <div style="margin-top:10px">
+        <a class="btn blue" href="tel:${j.phone}" style="width:45%;text-align:center;padding:14px">📞 CALL CLIENT</a>
+        <a class="btn green" target="_blank" href="https://wa.me/${j.phone.replace(/[^0-9]/g,'')}?text=${wa}" style="width:45%;text-align:center;padding:14px">💬 WHATSAPP CLIENT</a><br>
+        <button class="btn grey" style="width:100%;margin-top:8px" onclick="markJobDone('${j.id}')">✅ Mark Completed</button>
+        </div></div>`;
+      } else { return ''; }
+    }).join('')||'<p class="small" style="text-align:center;padding:20px">No jobs yet - Wait for CEO to assign</p>';
+    document.getElementById('myJobsList').innerHTML=html; document.getElementById('jobsListHome').innerHTML=html;
   });
-  document.getElementById('realtimeStatus').innerText='🔴 Live sync to Admin active - Waiting for approval...';
 }
-
-async function checkApprovalNow(){
-  document.getElementById('realtimeStatus').innerText='🔄 Checking Admin approval...';
-  try{
-    let snap = await db.ref('nurseApplications/'+currentNurse.phone).once('value');
-    if(snap.exists()){
-      let updated = snap.val();
-      currentNurse = updated;
-      localStorage.setItem('care233_current_nurse', JSON.stringify(currentNurse));
-      updateApprovalUI();
-      if(updated.approved){
-        document.getElementById('realtimeStatus').innerText='✅ APPROVED! CEO verified you!';
-        alert('✅ APPROVED! You are verified!');
-      } else {
-        document.getElementById('realtimeStatus').innerText='⏳ Still pending - Admin not yet approved';
-        alert('⏳ Still pending - CEO has not approved yet');
-      }
-    }
-  }catch(e){ alert(e.message); }
-}
-
-function loadMyDocs(){
-  if(!currentNurse.documents){document.getElementById('myDocsList').innerHTML='No docs';return;}
-  let d=currentNurse.documents,html='';
-  if(d.cv)html+=`<div class="docBox">📄 CV: ${d.cv.name}<br><button class="btn blue" onclick="window.open('${d.cv.data}','_blank')">View CV</button></div>`;
-  if(d.license)html+=`<div class="docBox">🪪 License: ${d.license.name}<br><button class="btn yellow" onclick="window.open('${d.license.data}','_blank')">View License</button></div>`;
-  if(d.ghanaCards)html+=`<div class="docBox">🇬🇭 Ghana Cards: ${d.ghanaCards.length}<br>${d.ghanaCards.map((g,i)=>`<button class="btn grey" onclick="window.open('${g.data}','_blank')">Ghana ${i+1}</button>`).join(' ')}</div>`;
-  if(d.others)html+=`<div class="docBox">Other: ${d.others.length}<br>${d.others.map((o,i)=>`<button class="btn grey" onclick="window.open('${o.data}','_blank')">Cert ${i+1}</button>`).join(' ')}</div>`;
-  document.getElementById('myDocsList').innerHTML=html;
-}
-function startGPS(){if(!navigator.geolocation)return;watchId=navigator.geolocation.watchPosition(pos=>{myPos=pos;let el=document.getElementById('myLatLng');if(el)el.innerText=`${pos.coords.latitude.toFixed(6)}, ${pos.coords.longitude.toFixed(6)}`; document.getElementById('gpsStatus').innerText=`📍 GPS: ${pos.coords.latitude.toFixed(5)}, ${pos.coords.longitude.toFixed(5)}`;},()=>{document.getElementById('gpsStatus').innerText='📍 GPS blocked - Enable location';},{enableHighAccuracy:true});}
+function acceptJob(id){ if(!confirm('Accept this client? You will be able to call and WhatsApp.')) return; db.ref('bookings/'+id).update({assignmentStatus:'accepted', status:'accepted', acceptedAt:Date.now(), acceptedBy:currentNurse.phone}); alert('✅ Accepted! Now you can Call and WhatsApp!'); }
+function rejectJob(id){ if(!confirm('Reject? Job will go back to Admin.')) return; db.ref('bookings/'+id).update({assignmentStatus:'rejected', status:'new', assignedNurse:null, rejectedAt:Date.now(), rejectedBy:currentNurse.phone}); alert('❌ Rejected - Admin will reassign'); }
+function markJobDone(id){ if(confirm('Mark completed?')) db.ref('bookings/'+id).update({status:'done', completedAt:Date.now()}); }
+function startGPS(){if(!navigator.geolocation)return;watchId=navigator.geolocation.watchPosition(pos=>{myPos=pos;document.getElementById('myLatLng').innerText=`${pos.coords.latitude.toFixed(6)}, ${pos.coords.longitude.toFixed(6)}`;document.getElementById('gpsStatus').innerText=`📍 GPS OK`;},{},{enableHighAccuracy:true});}
 const sosBtn=document.getElementById('sosBtn');let pressTimer=null;
 sosBtn.addEventListener('touchstart',e=>{e.preventDefault();startPress();});sosBtn.addEventListener('touchend',cancelPress);sosBtn.addEventListener('mousedown',startPress);sosBtn.addEventListener('mouseup',cancelPress);
 function startPress(){pressTimer=setTimeout(activateSOS,2000);sosBtn.innerText='HOLD...';}
 function cancelPress(){clearTimeout(pressTimer);if(!sosActive)sosBtn.innerText='SOS';}
-async function activateSOS(){if(sosActive||!myPos)return;if(!confirm('Activate SOS Emergency?')){sosBtn.innerText='SOS';return}sosBtn.innerText='SENDING...';try{try{stream=await navigator.mediaDevices.getUserMedia({video:true,audio:true});document.getElementById('previewVideo').srcObject=stream;document.getElementById('previewVideo').className='';}catch(e){}let videoRoomId='SOS_Care233_'+currentNurse.phone+'_'+Date.now(),videoLink=`https://meet.jit.si/${videoRoomId}`;let sosData={nurseName:currentNurse.name+' - Care233',nursePhone:currentNurse.phone,lat:myPos.coords.latitude,lng:myPos.coords.longitude,message:'EMERGENCY! License '+currentNurse.licenseNo,videoLink,date:new Date().toLocaleString(),timestamp:Date.now(),status:'active'};let ref=db.ref('sosAlerts').push(sosData);sosKey=ref.key;sosActive=true;localStorage.setItem('care233_sos_active',JSON.stringify({key:sosKey,room:videoRoomId}));document.getElementById('sosInactive').className='hidden';document.getElementById('sosActiveBox').className='';document.getElementById('activeLatLng').innerText=`${myPos.coords.latitude}, ${myPos.coords.longitude}`;document.getElementById('activeVideoLink').innerHTML=`<a href="${videoLink}" target="_blank" style="color:#0f0">${videoLink}</a>`;}catch(e){alert(e.message)}}
-function cancelSOS(){if(!confirm('Safe? Cancel SOS?'))return;if(sosKey)db.ref('sosAlerts/'+sosKey).update({status:'resolved'});sosActive=false;sosKey=null;localStorage.removeItem('care233_sos_active');if(stream)stream.getTracks().forEach(t=>t.stop());document.getElementById('sosActiveBox').className='hidden';document.getElementById('sosInactive').className='';sosBtn.innerText='SOS';}
+async function activateSOS(){if(sosActive||!myPos)return;if(!confirm('Activate SOS?')){sosBtn.innerText='SOS';return}sosBtn.innerText='SENDING...';try{let videoRoomId='SOS_Care233_'+currentNurse.phone+'_'+Date.now(),videoLink=`https://meet.jit.si/${videoRoomId}`;let sosData={nurseName:currentNurse.name+' - Care233',nursePhone:currentNurse.phone,lat:myPos.coords.latitude,lng:myPos.coords.longitude,message:'EMERGENCY! '+currentNurse.licenseNo,videoLink,date:new Date().toLocaleString(),timestamp:Date.now(),status:'active'};let ref=db.ref('sosAlerts').push(sosData);sosKey=ref.key;sosActive=true;localStorage.setItem('care233_sos_active',JSON.stringify({key:sosKey}));document.getElementById('sosInactive').className='hidden';document.getElementById('sosActiveBox').className='';document.getElementById('activeLatLng').innerText=`${myPos.coords.latitude}, ${myPos.coords.longitude}`;document.getElementById('activeVideoLink').innerHTML=`<a href="${videoLink}" target="_blank" style="color:#0f0">${videoLink}</a>`;}catch(e){alert(e.message)}}
+function cancelSOS(){if(!confirm('Safe?'))return;if(sosKey)db.ref('sosAlerts/'+sosKey).update({status:'resolved'});sosActive=false;sosKey=null;localStorage.removeItem('care233_sos_active');document.getElementById('sosActiveBox').className='hidden';document.getElementById('sosInactive').className='';sosBtn.innerText='SOS';}
 function checkActiveSOS(){let s=JSON.parse(localStorage.getItem('care233_sos_active')||'null');if(s){sosKey=s.key;sosActive=true;document.getElementById('sosInactive').className='hidden';document.getElementById('sosActiveBox').className='';}}
-function loadJobs(){db.ref('bookings').orderByChild('timestamp').on('value',snap=>{let bookings=[];snap.forEach(c=>bookings.push({id:c.key,...c.val()}));bookings.reverse();let myJobs=bookings.filter(b=>b.assignedNurse&&b.assignedNurse.includes(currentNurse.phone));document.getElementById('myJobsList').innerHTML=myJobs.map(j=>{let wa=`Hello ${j.name} 👋%0AThis is ${currentNurse.name} from *Care233* 💚💛%0ALicense ${currentNurse.licenseNo}%0Awww.care233.com`;return `<div class="box"><b>${j.service}</b> - ${j.name}<br>📍 ${j.location}<br><a class="btn blue" href="tel:${j.phone}">Call Client</a><a class="btn green" target="_blank" href="https://wa.me/${j.phone.replace(/[^0-9]/g,'')}?text=${wa}">WhatsApp Care233</a></div>`;}).join('')||'<p class="small">No jobs assigned yet - Wait for CEO to assign you a booking</p>'; document.getElementById('jobsListHome').innerHTML=document.getElementById('myJobsList').innerHTML;});}
-function loadVideoTalks(){db.ref('videoTalks').orderByChild('timestamp').on('value',snap=>{let talks=[];snap.forEach(c=>talks.push({...c.val()}));talks.reverse();let filtered=talks.filter(t=>t.audience==='both'||t.audience==='nurses');document.getElementById('videoTalksList').innerHTML=filtered.map(t=>`<div class="box"><b>🎥 ${t.title}</b><br><small>${t.date}</small><br><a class="btn blue" target="_blank" href="${t.link}">Join Care233 Video</a></div>`).join('')||'No video talks';});}
+function loadVideoTalks(){db.ref('videoTalks').orderByChild('timestamp').on('value',snap=>{let talks=[];snap.forEach(c=>talks.push({...c.val()}));talks.reverse();let filtered=talks.filter(t=>t.audience==='both'||t.audience==='nurses');document.getElementById('videoTalksList').innerHTML=filtered.map(t=>`<div class="box"><b>🎥 ${t.title}</b><br><a class="btn blue" target="_blank" href="${t.link}">Join</a></div>`).join('')||'No videos';});}
 function tab(t){['Home','Docs','Jobs','Video','Sos'].forEach(x=>{document.getElementById('v'+x).className=x.toLowerCase()===t.toLowerCase()?'':'hidden';let btn=document.getElementById('tb'+(['Home','Docs','Jobs','Video','Sos'].indexOf(x)+1));if(btn)btn.className=x.toLowerCase()===t.toLowerCase()?'tab active':'tab off';});}
-function logout(){
-  if(approvalListener && currentNurse) db.ref('nurseApplications/'+currentNurse.phone).off('value', approvalListener);
-  localStorage.removeItem('care233_current_nurse');
-  localStorage.removeItem('care233_sos_active');
-  if(watchId) navigator.geolocation.clearWatch(watchId);
-  location.reload();
-}
-let saved=JSON.parse(localStorage.getItem('care233_current_nurse')||'null');
-if(saved){
-  currentNurse=saved;
-  // Verify from Firebase on load
-  db.ref('nurseApplications/'+saved.phone).once('value').then(snap=>{
-    if(snap.exists()){
-      currentNurse=snap.val();
-      localStorage.setItem('care233_current_nurse', JSON.stringify(currentNurse));
-    }
-    openDash();
-  }).catch(()=>openDash());
-} else {
-  switchAuth('register');
-}
+function logout(){localStorage.removeItem('care233_current_nurse');location.reload();}
+let saved=JSON.parse(localStorage.getItem('care233_current_nurse')||'null');if(saved){currentNurse=saved;db.ref('nurseApplications/'+saved.phone).once('value').then(s=>{if(s.exists()){currentNurse=s.val();localStorage.setItem('care233_current_nurse',JSON.stringify(currentNurse));}openDash();}).catch(()=>openDash());}else{switchAuth('register');}
 </script>
 </body>
 </html>
