@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Care233 - CEO Portal - FREE + Viewer</title>
+<title>Care233 - CEO Portal - SECURE</title>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 <style>
@@ -25,16 +25,16 @@ input,select,textarea{width:100%;padding:13px;margin:6px 0;border-radius:12px;bo
 .docBox{background:#111;padding:10px;border-radius:10px;margin:8px 0;border:1px dashed #ffcc00}
 #docModal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);display:none;align-items:center;justify-content:center;z-index:99999;padding:10px;box-sizing:border-box;flex-direction:column}
 #docModal img{max-width:98%;max-height:80vh;border-radius:12px;border:3px solid #ffcc00;object-fit:contain;background:#000}
-#docModal.close{position:absolute;top:15px;right:15px;background:red;color:white;border:none;padding:12px 18px;border-radius:10px;font-weight:bold;font-size:18px;cursor:pointer;z-index:100000}
+#docModal.closeBtn{position:absolute;top:15px;right:15px;background:red;color:white;border:none;padding:12px 18px;border-radius:10px;font-weight:bold;font-size:18px;cursor:pointer;z-index:100000}
 #docModal.modalInfo{color:#ffcc00;text-align:center;margin-top:10px;font-weight:bold;background:#111;padding:8px 12px;border-radius:8px}
 </style>
 </head>
 <body>
 <div class="card">
-<div class="top"><div class="icon" id="adIcon">AD</div><div><h2>STAFFS</h2><p class="small" style="margin:0;text-align:center;color:#7fdbc0">Care233 • CEO • FREE DB + Image Viewer • No Billing</p><p id="adTapCount" style="font-size:10px;color:#ffcc00;text-align:center;height:10px"></p></div></div>
+<div class="top"><div class="icon" id="adIcon">AD</div><div><h2>STAFFS</h2><p class="small" style="margin:0;text-align:center;color:#7fdbc0">Care233 • CEO • SECURE • No Billing</p><p id="adTapCount" style="font-size:10px;color:#ffcc00;text-align:center;height:10px"></p></div></div>
 
 <div id="loginStaff"><input id="sPhone" placeholder="Phone" type="tel"><input id="sPass" type="password" placeholder="Password"><button class="btn green" style="width:100%;padding:16px;font-size:18px" onclick="loginStaff()">Login</button><p id="sMsg" class="small" style="text-align:center;color:#ff6b6b"></p></div>
-<div id="loginSuper" class="hidden"><h3 style="color:#ffcc00;text-align:center">SUPER ADMIN</h3><input id="superPass" type="password" placeholder="Super Password"><button class="btn green" style="width:100%;padding:16px" onclick="loginSuper()">UNLOCK</button><button class="btn grey" style="width:100%;margin-top:10px;padding:14px" onclick="showStaffLogin()">← Back</button></div>
+<div id="loginSuper" class="hidden"><h3 style="color:#ffcc00;text-align:center">SUPER ADMIN - SECURE</h3><input id="superPass" type="password" placeholder="Super Password"><button class="btn green" style="width:100%;padding:16px" onclick="loginSuper()">UNLOCK</button><button class="btn grey" style="width:100%;margin-top:10px;padding:14px" onclick="showStaffLogin()">← Back</button><p class="small" style="text-align:center;color:#666;margin-top:10px">Protected by Care233 Security</p></div>
 
 <div id="dash" class="hidden">
 <p style="text-align:center"><b id="userName" style="color:#ffcc00"></b> <button class="btn grey" onclick="logout()" style="float:right">Logout</button></p>
@@ -54,7 +54,7 @@ input,select,textarea{width:100%;padding:13px;margin:6px 0;border-radius:12px;bo
 
 <div id="vNurses" class="hidden">
 <h3 style="color:#ffcc00">🔍 Pending Approval - FREE Realtime DB</h3>
-<p class="small">Different phone registration works! Docs compressed to FREE DB - Click View to preview inside portal</p>
+<p class="small">Docs from different phones - Click View to preview</p>
 <div id="nurseList"></div>
 <h3 style="color:#00ff00">✅ Approved Nurses - Care233 Verified</h3>
 <div id="approvedList"></div>
@@ -76,7 +76,7 @@ input,select,textarea{width:100%;padding:13px;margin:6px 0;border-radius:12px;bo
 
 <div id="vSos" class="hidden">
 <div style="background:#3a0a0a;padding:14px;border-radius:12px;border:2px solid red;margin-bottom:12px">
-<h3 style="margin:0;color:#ff6b6b">🚨 SOS SECURITY - Care233 - FREE DB</h3>
+<h3 style="margin:0;color:#ff6b6b">🚨 SOS SECURITY - Care233</h3>
 <button class="btn yellow" style="width:100%;padding:12px" onclick="simulateSOS()">⚠️ TEST SOS</button>
 </div>
 <div id="sosList"><p class="small">Listening for SOS... Safe ✅</p></div>
@@ -84,20 +84,19 @@ input,select,textarea{width:100%;padding:13px;margin:6px 0;border-radius:12px;bo
 
 <div id="vStaff" class="hidden">
 <div style="background:#2a1a00;padding:14px;border-radius:12px;border:2px solid #ffcc00;margin-bottom:15px">
-<h4 style="margin:0 0 8px;color:#ffcc00">🔐 Change Super Password</h4>
-<p class="small">Current: <b id="curSuperPass" style="color:#ffcc00;background:#111;padding:4px 8px;border-radius:6px"></b></p>
-<input id="newSuperPass" type="text" placeholder="New super password"><input id="confirmSuperPass" type="text" placeholder="Confirm"><button class="btn green" style="width:100%;padding:14px" onclick="changeSuperPass()">💾 SAVE</button><p id="superPassMsg" class="small"></p>
+<h4 style="margin:0 0 8px;color:#ffcc00">🔐 Change Super Admin Password (SECURE)</h4>
+<p class="small" style="color:#666">For security, current password is hidden. Enter new password only.</p>
+<input id="newSuperPass" type="password" placeholder="New super password"><input id="confirmSuperPass" type="password" placeholder="Confirm new password"><button class="btn green" style="width:100%;padding:14px" onclick="changeSuperPass()">💾 SAVE NEW PASSWORD</button><p id="superPassMsg" class="small"></p>
 </div>
 <div style="background:#0f1f15;padding:12px;border-radius:12px;border:1px dashed #ffcc00"><input id="stName" placeholder="Staff Name"><input id="stPhone" placeholder="Phone" type="tel"><button class="btn green" onclick="addStaff()" style="width:100%;padding:14px">+ Add Staff</button><p id="stMsg" class="small"></p></div><div id="staffList"></div>
 </div>
 </div>
 </div>
 
-<!-- DOC VIEWER MODAL -->
 <div id="docModal" onclick="closeDocModal()">
-<button class="close" onclick="closeDocModal()">✕ Close</button>
+<button class="closeBtn" onclick="closeDocModal()">✕ Close</button>
 <img id="docModalImg" src="">
-<div class="modalInfo"><span id="docModalName"></span><br><small class="small" style="color:#ccc">Tap outside or Close to exit - Care233 FREE DB</small></div>
+<div class="modalInfo"><span id="docModalName"></span><br><small class="small" style="color:#ccc">Care233 FREE DB - Tap outside to close</small></div>
 </div>
 
 <audio id="notifSound" preload="auto"><source src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg" type="audio/ogg"></audio>
@@ -106,7 +105,7 @@ input,select,textarea{width:100%;padding:13px;margin:6px 0;border-radius:12px;bo
 <script>
 const firebaseConfig = { apiKey: "AIzaSyB52-X1D8Cg-wUDWPds_tR7X3cF82dMdRg", authDomain: "web-care-618e8.firebaseapp.com", databaseURL: "https://web-care-618e8-default-rtdb.firebaseio.com", projectId: "web-care-618e8", storageBucket: "web-care-618e8.firebasestorage.app", messagingSenderId: "1062578660694", appId: "1:1062578660694:web:f94dfe12c929df05bce2f7" };
 firebase.initializeApp(firebaseConfig); const db = firebase.database();
-function getSuperPass(){ return localStorage.getItem('care233_super_pass') || "1234"; }
+function getSuperPass(){ return localStorage.getItem('care233_super_pass') || "Peterasa80@you!"; }
 let taps=0, tapTimer=null, pressTimer=null, isSuper=false, lastBookingCount=0, lastSosCount=0, soundEnabled=true, firstLoad=true, firstSosLoad=true, allNursesCache=[];
 const adIcon=document.getElementById('adIcon');
 adIcon.addEventListener('click', handleTap); adIcon.addEventListener('touchstart', (e)=>{ e.preventDefault(); handleTap(); startPress(); }); adIcon.addEventListener('touchend', ()=>clearTimeout(pressTimer));
@@ -115,14 +114,33 @@ function handleTap(){ taps++; document.getElementById('adTapCount').innerText=`T
 function openSuperLogin(){ document.getElementById('loginStaff').className='hidden'; document.getElementById('loginSuper').className=''; taps=0; document.getElementById('adTapCount').innerText='SUPER ADMIN'; if(navigator.vibrate) navigator.vibrate([200,100,200]); }
 function showStaffLogin(){document.getElementById('loginSuper').className='hidden';document.getElementById('loginStaff').className='';}
 function loginStaff(){ let phone=document.getElementById('sPhone').value.trim(); let pass=document.getElementById('sPass').value.trim(); let staffs=JSON.parse(localStorage.getItem('care233_staffs')||'[]'); let s=staffs.find(x=>x.phone===phone&&x.password===pass); if(!s){document.getElementById('sMsg').innerText='Wrong phone or password';return} if(!s.active){document.getElementById('sMsg').innerText='Account disabled';return} isSuper=false; localStorage.setItem('care233_current_role',JSON.stringify({isSuper:false,staff:s})); openDash(s.name,false); }
-function loginSuper(){ if(document.getElementById('superPass').value.trim()!==getSuperPass()){alert('Wrong! Current: '+getSuperPass());return} isSuper=true; localStorage.setItem('care233_current_role',JSON.stringify({isSuper:true,name:'CEO'})); openDash('CEO (Super Admin)',true); }
-function openDash(name,superFlag){ document.getElementById('loginStaff').className='hidden';document.getElementById('loginSuper').className='hidden';document.getElementById('dash').className=''; document.getElementById('userName').innerText=name; document.getElementById('curSuperPass').innerText=getSuperPass(); tab('bookings'); loadBookingsRealTime(); loadSosRealTime(); loadVideoTalks(); loadNurses(); }
-function changeSuperPass(){ let newP=document.getElementById('newSuperPass').value.trim(); let c=document.getElementById('confirmSuperPass').value.trim(); if(newP.length<4){document.getElementById('superPassMsg').innerText='❌ Min 4 chars';return} if(newP!==c){document.getElementById('superPassMsg').innerText='❌ Not match';return} localStorage.setItem('care233_super_pass',newP); document.getElementById('curSuperPass').innerText=newP; document.getElementById('superPassMsg').innerHTML=`✅ Changed to: <b style="color:#00ff00">${newP}</b>`; alert('Changed to: '+newP); }
+function loginSuper(){
+  let entered = document.getElementById('superPass').value.trim();
+  if(entered!== getSuperPass()){
+    // SECURE - Do NOT show current password!
+    alert('Wrong super password! Access denied.');
+    document.getElementById('superPass').value='';
+    return;
+  }
+  isSuper=true;
+  localStorage.setItem('care233_current_role',JSON.stringify({isSuper:true,name:'CEO'}));
+  openDash('CEO (Super Admin)',true);
+}
+function openDash(name,superFlag){ document.getElementById('loginStaff').className='hidden';document.getElementById('loginSuper').className='hidden';document.getElementById('dash').className=''; document.getElementById('userName').innerText=name; tab('bookings'); loadBookingsRealTime(); loadSosRealTime(); loadVideoTalks(); loadNurses(); }
+function changeSuperPass(){
+  let newP=document.getElementById('newSuperPass').value.trim();
+  let c=document.getElementById('confirmSuperPass').value.trim();
+  if(newP.length<6){document.getElementById('superPassMsg').innerText='❌ Min 6 chars for security';return}
+  if(newP!==c){document.getElementById('superPassMsg').innerText='❌ Passwords do not match';return}
+  localStorage.setItem('care233_super_pass',newP);
+  document.getElementById('superPassMsg').innerHTML=`✅ <span style="color:#00ff00">New super password saved securely!</span>`;
+  document.getElementById('newSuperPass').value='';
+  document.getElementById('confirmSuperPass').value='';
+  alert('Super password changed securely!');
+}
 function toggleSound(){ soundEnabled=!soundEnabled; document.getElementById('soundBtn').innerText=soundEnabled?'🔊 Sound: ON':'🔇 Sound: OFF'; localStorage.setItem('care233_sound',soundEnabled?'on':'off'); if(soundEnabled) testSound(); }
 function testSound(){ document.getElementById('notifSound').play().catch(()=>{}); }
 function getApprovedNurses(){ return allNursesCache.filter(w=>w.approved); }
-
-// MODAL VIEWER FUNCTIONS
 function openDocViewerByPhone(phone, docType, index){
   let w = allNursesCache.find(x=>x.phone===phone);
   if(!w ||!w.documents){ alert('No documents'); return; }
@@ -133,21 +151,15 @@ function openDocViewerByPhone(phone, docType, index){
   else if(docType==='other'){ doc=w.documents.others?.[index]; name=doc?.name||`Certificate ${index+1}`; }
   if(!doc ||!doc.data){ alert('Document not found'); return; }
   let dataUrl = doc.data || doc.url;
-  if(!dataUrl){ alert('No data'); return; }
-  // PDF check
-  if(dataUrl.includes('application/pdf') || name.toLowerCase().endsWith('.pdf') || dataUrl.startsWith('data:application/pdf')){
+  if(dataUrl.includes('application/pdf') || name.toLowerCase().endsWith('.pdf')){
     window.open(dataUrl, '_blank');
   } else {
     document.getElementById('docModalImg').src = dataUrl;
-    document.getElementById('docModalName').innerText = `${w.name} - ${name} - License: ${w.licenseNo} - Ghana: ${w.ghanaCardNo}`;
+    document.getElementById('docModalName').innerText = `${w.name} - ${name} - License: ${w.licenseNo}`;
     document.getElementById('docModal').style.display='flex';
   }
 }
-function closeDocModal(){
-  document.getElementById('docModal').style.display='none';
-  document.getElementById('docModalImg').src='';
-}
-
+function closeDocModal(){ document.getElementById('docModal').style.display='none'; document.getElementById('docModalImg').src=''; }
 function loadBookingsRealTime(){
   db.ref('bookings').orderByChild('timestamp').on('value', snap=>{
     let bookings=[]; snap.forEach(c=>bookings.push({id:c.key,...c.val()})); bookings.reverse();
@@ -157,15 +169,14 @@ function loadBookingsRealTime(){
     firstLoad=false; lastBookingCount=newCount;
     let nurses=getApprovedNurses(); let nurseOptions=nurses.map(n=>`<option value="${n.name} - ${n.phone}">${n.name} (${n.phone}) - ${n.skill}</option>`).join('');
     document.getElementById('bookList').innerHTML=bookings.map(j=>{
-      let waMsg=`Hello ${j.name||'there'} 👋%0A%0AThis is *Care233* 💚💛 - Your trusted home nursing service in Ghana.%0A%0AWe received your booking:%0A🔹 Service: ${j.service}%0A📍 Location: ${j.location}%0A${j.price?'💰 Price: '+j.price+'%0A':''}${j.assignedNurse?'👩‍⚕️ Assigned Nurse: '+j.assignedNurse+'%0A':''}%0AWe will call you shortly to confirm.%0A%0AThank you for choosing Care233!%0Awww.care233.com`;
-      return `<div class="box ${j.status==='new'?'new newFlash':''}">${j.status==='new'?'<span style="background:red;color:white;padding:3px 8px;border-radius:10px;font-size:11px">🔔 NEW</span>':''} ${j.assignedNurse?`<span style="background:#0a4d2e;color:#ffcc00;padding:3px 8px;border-radius:10px;font-size:11px">👩‍⚕️ ${j.assignedNurse.split(' - ')[0]}</span>`:''}<div style="margin-top:6px"><b style="font-size:16px">${j.service}</b><br><b>${j.name}</b> - ${j.phone}<br>📍 ${j.location} ${j.price?'- '+j.price:''}<br>${j.notes?`📝 ${j.notes}<br>`:''}</div><div style="background:#111;padding:8px;border-radius:8px;margin:8px 0;border:1px dashed #2a8a6a"><label class="small">Assign Nurse (Verified):</label><select id="assign_${j.id}" style="margin:4px 0;padding:10px"><option value="">-- Select Approved Nurse --</option>${nurseOptions}</select><button class="btn yellow" onclick="assignNurse('${j.id}')">👩‍⚕️ Assign</button>${j.assignedNurse?`<button class="btn blue" onclick="unassignNurse('${j.id}')">Clear</button>`:''}</div><div><a class="btn blue" href="tel:${j.phone}">📞 Call</a><a class="btn green" target="_blank" href="https://wa.me/${j.phone.replace(/[^0-9]/g,'')}?text=${waMsg}">💬 WhatsApp Care233</a><button class="btn grey" onclick="markDone('${j.id}')">${j.status==='new'||j.status==='assigned'?'✅ Done':'↩️ Undo'}</button></div><small style="opacity:0.6">${j.date}</small></div>`;
-    }).join('')||'<p class="small">No bookings yet - FREE DB</p>';
+      let waMsg=`Hello ${j.name||'there'} 👋%0A%0AThis is *Care233* 💚💛 - Your trusted home nursing service in Ghana.%0A%0AWe received your booking:%0A🔹 Service: ${j.service}%0A📍 Location: ${j.location}%0A${j.price?'💰 Price: '+j.price+'%0A':''}${j.assignedNurse?'👩‍⚕️ Assigned Nurse: '+j.assignedNurse+'%0A':''}%0AWe will call you shortly.%0A%0Awww.care233.com`;
+      return `<div class="box ${j.status==='new'?'new newFlash':''}">${j.status==='new'?'<span style="background:red;color:white;padding:3px 8px;border-radius:10px;font-size:11px">🔔 NEW</span>':''} ${j.assignedNurse?`<span style="background:#0a4d2e;color:#ffcc00;padding:3px 8px;border-radius:10px;font-size:11px">👩‍⚕️ ${j.assignedNurse.split(' - ')[0]}</span>`:''}<div style="margin-top:6px"><b style="font-size:16px">${j.service}</b><br><b>${j.name}</b> - ${j.phone}<br>📍 ${j.location} ${j.price?'- '+j.price:''}<br>${j.notes?`📝 ${j.notes}<br>`:''}</div><div style="background:#111;padding:8px;border-radius:8px;margin:8px 0;border:1px dashed #2a8a6a"><label class="small">Assign Nurse:</label><select id="assign_${j.id}" style="margin:4px 0;padding:10px"><option value="">-- Select Approved Nurse --</option>${nurseOptions}</select><button class="btn yellow" onclick="assignNurse('${j.id}')">👩‍⚕️ Assign</button>${j.assignedNurse?`<button class="btn blue" onclick="unassignNurse('${j.id}')">Clear</button>`:''}</div><div><a class="btn blue" href="tel:${j.phone}">📞 Call</a><a class="btn green" target="_blank" href="https://wa.me/${j.phone.replace(/[^0-9]/g,'')}?text=${waMsg}">💬 WhatsApp Care233</a><button class="btn grey" onclick="markDone('${j.id}')">${j.status==='new'||j.status==='assigned'?'✅ Done':'↩️ Undo'}</button></div><small style="opacity:0.6">${j.date}</small></div>`;
+    }).join('')||'<p class="small">No bookings yet</p>';
   });
 }
-function assignNurse(id){ let sel=document.getElementById('assign_'+id); if(!sel.value){alert('Select nurse');return} db.ref('bookings/'+id).update({assignedNurse:sel.value,status:'assigned'}); alert('✅ Assigned '+sel.value.split(' - ')[0]+' - Care233'); }
+function assignNurse(id){ let sel=document.getElementById('assign_'+id); if(!sel.value){alert('Select nurse');return} db.ref('bookings/'+id).update({assignedNurse:sel.value,status:'assigned'}); alert('✅ Assigned '+sel.value.split(' - ')[0]); }
 function unassignNurse(id){ db.ref('bookings/'+id).update({assignedNurse:null,status:'new'}); }
 function markDone(id){ db.ref('bookings/'+id).once('value').then(s=>{let cur=s.val().status; db.ref('bookings/'+id).update({status:cur==='done'?'new':'done'});});}
-
 function createVideoTalk(){
   let title=document.getElementById('vTitle').value.trim()||'Care233 Live Session';
   let audience=document.getElementById('vAudience').value;
@@ -173,10 +184,10 @@ function createVideoTalk(){
   let link=`https://meet.jit.si/${roomId}`;
   let data={id:roomId,title,audience,link,by:isSuper?'CEO':'Staff',date:new Date().toLocaleString(),timestamp:Date.now(),active:true};
   db.ref('videoTalks').push(data);
-  document.getElementById('vLinkBox').innerHTML=`✅ Created!<br><b>${title}</b><br>Audience: <b>${audience.toUpperCase()}</b><br><a href="${link}" target="_blank" style="color:#00ff00;font-size:16px">${link}</a><br><button class="btn green" onclick="copyLink('${link}')">Copy Link</button> <a class="btn blue" href="${link}" target="_blank">Join Now</a>`;
+  document.getElementById('vLinkBox').innerHTML=`✅ Created!<br><b>${title}</b><br>Audience: <b>${audience.toUpperCase()}</b><br><a href="${link}" target="_blank" style="color:#00ff00;font-size:16px">${link}</a><br><button class="btn green" onclick="copyLink('${link}')">Copy</button> <a class="btn blue" href="${link}" target="_blank">Join Now</a>`;
   document.getElementById('vTitle').value='';
 }
-function copyLink(l){ navigator.clipboard.writeText(l); alert('Link copied! Care233'); }
+function copyLink(l){ navigator.clipboard.writeText(l); alert('Link copied!'); }
 function loadVideoTalks(){
   db.ref('videoTalks').orderByChild('timestamp').on('value', snap=>{
     let talks=[]; snap.forEach(c=>talks.push({key:c.key,...c.val()})); talks.reverse();
@@ -184,12 +195,11 @@ function loadVideoTalks(){
   });
 }
 function endVideo(key){ if(confirm('End video?')) db.ref('videoTalks/'+key).remove(); }
-
 function simulateSOS(){
   if(!navigator.geolocation){ alert('No GPS'); return; }
   navigator.geolocation.getCurrentPosition(pos=>{
     let sos={nurseName:'Test Nurse Ama - Care233',nursePhone:'0544121814',lat:pos.coords.latitude,lng:pos.coords.longitude,accuracy:pos.coords.accuracy,message:'Test SOS - Care233',videoLink:`https://meet.jit.si/SOS_Test_${Date.now()}`,date:new Date().toLocaleString(),timestamp:Date.now(),status:'active'};
-    db.ref('sosAlerts').push(sos); alert('🚨 SOS Sent! FREE DB');
+    db.ref('sosAlerts').push(sos); alert('🚨 SOS Sent!');
   });
 }
 function loadSosRealTime(){
@@ -199,13 +209,11 @@ function loadSosRealTime(){
     let el=document.getElementById('sosCount'); if(activeCount>0){el.innerText=activeCount;el.className='';}else{el.className='hidden';}
     if(!firstSosLoad && activeCount>lastSosCount && soundEnabled){ document.getElementById('sosSound').play().catch(()=>{}); if(navigator.vibrate) navigator.vibrate([500,200,500,200,500]); alert('🚨 SOS ALERT! Care233'); }
     firstSosLoad=false; lastSosCount=activeCount;
-    document.getElementById('sosList').innerHTML=alerts.map(a=>`<div class="box sos"><span style="background:red;color:white;padding:4px 10px;border-radius:12px;font-weight:bold">🚨 SOS ${a.status.toUpperCase()} - Care233</span><br><b style="font-size:18px">👩‍⚕️ ${a.nurseName}</b> - ${a.nursePhone}<br>📝 ${a.message}<br>📍 GPS: ${a.lat}, ${a.lng}<br>${a.videoLink?`📹 <a href="${a.videoLink}" target="_blank" style="color:#00ff00">Live Video: ${a.videoLink}</a><br>`:''}<small>⏰ ${a.date}</small><br><div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:6px"><a class="btn blue" href="tel:${a.nursePhone}">📞 Call Nurse</a><a class="btn green" target="_blank" href="https://www.google.com/maps?q=${a.lat},${a.lng}">🗺️ GPS View</a><a class="btn yellow" target="_blank" href="https://www.google.com/maps/dir/?api=1&destination=${a.lat},${a.lng}">🚑 Navigate Rescue</a><a class="btn orange" href="tel:191">🚓 Police 191</a>${a.videoLink?`<a class="btn blue" target="_blank" href="${a.videoLink}">🎥 Join Live Video</a>`:''}</div><div style="margin-top:8px"><button class="btn green" onclick="resolveSos('${a.key}')">✅ Safe - Resolve</button><button class="btn red" onclick="deleteSos('${a.key}')">Delete</button></div></div>`).join('')||'<p class="small" style="text-align:center;padding:20px">✅ No SOS alerts</p>';
+    document.getElementById('sosList').innerHTML=alerts.map(a=>`<div class="box sos"><span style="background:red;color:white;padding:4px 10px;border-radius:12px;font-weight:bold">🚨 SOS ${a.status.toUpperCase()} - Care233</span><br><b style="font-size:18px">👩‍⚕️ ${a.nurseName}</b> - ${a.nursePhone}<br>📝 ${a.message}<br>📍 GPS: ${a.lat}, ${a.lng}<br>${a.videoLink?`📹 <a href="${a.videoLink}" target="_blank" style="color:#00ff00">Live Video: ${a.videoLink}</a><br>`:''}<small>⏰ ${a.date}</small><br><div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:6px"><a class="btn blue" href="tel:${a.nursePhone}">📞 Call Nurse</a><a class="btn green" target="_blank" href="https://www.google.com/maps?q=${a.lat},${a.lng}">🗺️ GPS View</a><a class="btn yellow" target="_blank" href="https://www.google.com/maps/dir/?api=1&destination=${a.lat},${a.lng}">🚑 Navigate</a><a class="btn orange" href="tel:191">🚓 Police 191</a>${a.videoLink?`<a class="btn blue" target="_blank" href="${a.videoLink}">🎥 Join Live Video</a>`:''}</div><div style="margin-top:8px"><button class="btn green" onclick="resolveSos('${a.key}')">✅ Safe - Resolve</button><button class="btn red" onclick="deleteSos('${a.key}')">Delete</button></div></div>`).join('')||'<p class="small" style="text-align:center;padding:20px">✅ No SOS alerts</p>';
   });
 }
 function resolveSos(key){ db.ref('sosAlerts/'+key).update({status:'resolved'}); }
 function deleteSos(key){ if(confirm('Delete SOS?')) db.ref('sosAlerts/'+key).remove(); }
-
-// FREE REALTIME NURSES WITH DOC VIEWER - FIXED FOR DIFFERENT PHONE
 function loadNurses(){
   db.ref('nurseApplications').orderByChild('timestamp').on('value', snap=>{
     let firebaseWorkers=[];
@@ -222,9 +230,9 @@ function loadNurses(){
       let docs=w.documents||{};
       return `<div class="box" style="border-left-color:orange">
       <b style="font-size:16px">${w.name}</b> - ${w.phone}<br>
-      <small>Skill: ${w.skill||''} | Exp: ${w.experience||'N/A'}<br>License No: <b style="color:#ffcc00">${w.licenseNo||'N/A'}</b> | Ghana Card: <b style="color:#ffcc00">${w.ghanaCardNo||'N/A'}</b><br>📍 ${w.location||''} | ${w.registered||''}<br>Backend: ${w.backend||'FREE DB'} | Docs: ${docs.cv?'CV✅':''} ${docs.license?'LIC✅':''} ${docs.ghanaCards?'Ghana✅':''}</small><br>
+      <small>Skill: ${w.skill||''} | Exp: ${w.experience||'N/A'}<br>License No: <b style="color:#ffcc00">${w.licenseNo||'N/A'}</b> | Ghana Card: <b style="color:#ffcc00">${w.ghanaCardNo||'N/A'}</b><br>📍 ${w.location||''} | ${w.registered||''}</small><br>
       <div class="docBox">
-      <b style="color:#ffcc00">📄 Documents (Click to View Inside - FREE DB):</b><br>
+      <b style="color:#ffcc00">📄 Documents (Click to View Inside):</b><br>
       ${docs.cv?`<button class="btn blue" onclick="openDocViewerByPhone('${w.phone}','cv',0)">📄 View CV: ${docs.cv.name}</button>`:'<span class="small" style="color:red">❌ No CV</span>'}
       ${docs.license?`<button class="btn yellow" onclick="openDocViewerByPhone('${w.phone}','license',0)">🪪 View License: ${docs.license.name}</button>`:'<span class="small" style="color:red">❌ No License</span>'}<br>
       ${docs.ghanaCards && docs.ghanaCards.length>0? docs.ghanaCards.map((g,i)=>`<button class="btn grey" onclick="openDocViewerByPhone('${w.phone}','ghana',${i})">🇬🇭 Ghana Card ${i+1}: ${g.name}</button>`).join(' ') : '<span class="small" style="color:red">❌ No Ghana Card</span>'}<br>
@@ -235,14 +243,14 @@ function loadNurses(){
       <button class="btn red" onclick="rejectN('${w.phone}')">❌ Reject</button>
       </div>
       </div>`;
-    }).join('')||'<p class="small" style="text-align:center;padding:20px">No pending nurses - Waiting for FREE DB registrations from workers.html</p>';
+    }).join('')||'<p class="small" style="text-align:center;padding:20px">No pending nurses</p>';
 
     document.getElementById('approvedList').innerHTML=allWorkers.filter(w=>w.approved).map(w=>{
       let docs=w.documents||{};
       return `<div class="box" style="border-left-color:#00ff00"><b>${w.name}</b> - ${w.phone} - ${w.skill}<br><small>License: ${w.licenseNo} | Ghana: ${w.ghanaCardNo} | Exp: ${w.experience} | ${w.location}<br>✅ Verified by Care233 | ${w.registered}<br>
       Docs: ${docs.cv?`<button class="btn blue" onclick="openDocViewerByPhone('${w.phone}','cv',0)" style="padding:4px 8px;font-size:10px">CV</button>`:''} ${docs.license?`<button class="btn yellow" onclick="openDocViewerByPhone('${w.phone}','license',0)" style="padding:4px 8px;font-size:10px">LIC</button>`:''} ${docs.ghanaCards? docs.ghanaCards.map((g,i)=>`<button class="btn grey" onclick="openDocViewerByPhone('${w.phone}','ghana',${i})" style="padding:4px 8px;font-size:10px">GH${i+1}</button>`).join(''):''}
       </small><br><button class="btn red" onclick="unapproveN('${w.phone}')">↩️ Unapprove</button></div>`;
-    }).join('')||'<p class="small">None approved yet - Approve Test Worker above!</p>';
+    }).join('')||'<p class="small">None approved yet</p>';
   });
 }
 function approveN(phone){
@@ -251,7 +259,7 @@ function approveN(phone){
   let workers=JSON.parse(localStorage.getItem('care233_workers')||'[]');
   let idx=workers.findIndex(w=>w.phone===phone);
   if(idx>=0){ workers[idx].approved=true; workers[idx].care233Verified=true; localStorage.setItem('care233_workers', JSON.stringify(workers)); }
-  alert('✅ Approved '+phone+' - FREE DB Verified! Care233');
+  alert('✅ Approved '+phone+' - Verified!');
 }
 function unapproveN(phone){
   db.ref('nurseApplications/'+phone).update({approved:false});
@@ -259,7 +267,6 @@ function unapproveN(phone){
   let workers=JSON.parse(localStorage.getItem('care233_workers')||'[]');
   let idx=workers.findIndex(w=>w.phone===phone);
   if(idx>=0){ workers[idx].approved=false; localStorage.setItem('care233_workers', JSON.stringify(workers)); }
-  alert('Unapproved '+phone);
 }
 function rejectN(phone){
   if(!confirm('Reject and delete '+phone+' from FREE DB?')) return;
@@ -268,11 +275,10 @@ function rejectN(phone){
   let workers=JSON.parse(localStorage.getItem('care233_workers')||'[]');
   workers=workers.filter(w=>w.phone!==phone);
   localStorage.setItem('care233_workers', JSON.stringify(workers));
-  alert('Rejected and removed '+phone+' from FREE DB');
+  alert('Rejected '+phone);
 }
-
-function createJobManual(){ let j={name:'Manual',service:document.getElementById('jService').value,location:document.getElementById('jLoc').value,price:document.getElementById('jPrice').value,phone:document.getElementById('jPhone').value,date:new Date().toLocaleString(),timestamp:Date.now(),status:'new'}; if(!j.service||!j.phone){alert('Fill Service and Phone');return} db.ref('bookings').push(j); alert('Job Created - FREE DB'); }
-function tab(t){ ['Bookings','Nurses','Jobs','Edu','Staff','Video','Sos'].forEach(x=>{ let el=document.getElementById('v'+x); if(el) el.className=x.toLowerCase()===t.toLowerCase()?'':'hidden'; let idMap={Bookings:'tb1',Nurses:'tb2',Jobs:'tb3',Edu:'tb4',Staff:'tb5',Video:'tb6',Sos:'tb7'}; let btn=document.getElementById(idMap[x]); if(btn) btn.className=x.toLowerCase()===t.toLowerCase()?'tab active':'tab off'; }); if(t==='staff'&&!isSuper){alert('Only Super Admin');tab('bookings');return;} if(t==='nurses')loadNurses(); if(t==='staff'&&isSuper){loadStaff();document.getElementById('curSuperPass').innerText=getSuperPass();} if(t==='edu')loadEdu(); if(t==='video')loadVideoTalks(); if(t==='sos')loadSosRealTime(); }
+function createJobManual(){ let j={name:'Manual',service:document.getElementById('jService').value,location:document.getElementById('jLoc').value,price:document.getElementById('jPrice').value,phone:document.getElementById('jPhone').value,date:new Date().toLocaleString(),timestamp:Date.now(),status:'new'}; if(!j.service||!j.phone){alert('Fill Service and Phone');return} db.ref('bookings').push(j); alert('Job Created'); }
+function tab(t){ ['Bookings','Nurses','Jobs','Edu','Staff','Video','Sos'].forEach(x=>{ let el=document.getElementById('v'+x); if(el) el.className=x.toLowerCase()===t.toLowerCase()?'':'hidden'; let idMap={Bookings:'tb1',Nurses:'tb2',Jobs:'tb3',Edu:'tb4',Staff:'tb5',Video:'tb6',Sos:'tb7'}; let btn=document.getElementById(idMap[x]); if(btn) btn.className=x.toLowerCase()===t.toLowerCase()?'tab active':'tab off'; }); if(t==='staff'&&!isSuper){alert('Only Super Admin');tab('bookings');return;} if(t==='nurses')loadNurses(); if(t==='staff'&&isSuper){loadStaff();} if(t==='edu')loadEdu(); if(t==='video')loadVideoTalks(); if(t==='sos')loadSosRealTime(); }
 function addStaff(){let n=document.getElementById('stName').value.trim();let p=document.getElementById('stPhone').value.trim();if(!n||!p){alert('Fill');return}let pass='STAFF'+Math.floor(1000+Math.random()*9000);let s=JSON.parse(localStorage.getItem('care233_staffs')||'[]');s.push({id:Date.now(),name:n,phone:p,password:pass,active:true});localStorage.setItem('care233_staffs',JSON.stringify(s));document.getElementById('stMsg').innerHTML=`Added! Pass: <b style="color:#ffcc00;font-size:18px">${pass}</b>`;loadStaff();}
 function loadStaff(){let s=JSON.parse(localStorage.getItem('care233_staffs')||'[]');document.getElementById('staffList').innerHTML=s.map((x,i)=>`<div class="box"><b>${x.name}</b> - ${x.phone}<br>Pass: <b style="color:#ffcc00">${x.password}</b><br><button class="btn red" onclick="delStaff(${i})">Delete</button></div>`).join('')||'No staffs';}
 function delStaff(i){if(!confirm('Delete?'))return;let s=JSON.parse(localStorage.getItem('care233_staffs')||'[]');s.splice(i,1);localStorage.setItem('care233_staffs',JSON.stringify(s));loadStaff();}
