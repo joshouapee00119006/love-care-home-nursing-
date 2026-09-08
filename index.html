@@ -1,343 +1,203 @@
 <!DOCTYPE html>
-<html>
-<head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Care233 - Book a Professional Nurse in Ghana</title>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+<html><head><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Love Care Ghana - V18 Premium</title>
 <style>
-body{background:#050a07;color:white;font-family:Arial;padding:0;margin:0}
-.headerBar{background:linear-gradient(90deg,#0a4d2e,#0d5a35);padding:10px 12px;display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid #ffcc00;position:sticky;top:0;z-index:99}
-.headerBar b{color:#ffcc00;font-size:14px}
-.refBtn{background:#ffcc00;color:#000;border:none;padding:8px 14px;border-radius:20px;font-weight:bold;font-size:13px;cursor:pointer}
-.card{background:#111;padding:16px;border-radius:20px;max-width:480px;margin:15px auto;border:2px solid #0a4d2e;box-shadow:0 10px 30px rgba(0,0,0,0.5)}
-.top{display:flex;align-items:center;gap:12px;justify-content:center;margin-bottom:15px}
-.icon{width:55px;height:55px;background:#0a4d2e;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;color:#ffcc00;font-size:20px;border:3px solid #ffcc00}
-h2{color:#ffcc00;margin:0;text-align:center;letter-spacing:1px}
-.small{font-size:12px;color:#8fbc8f;text-align:center;margin:2px}
-label{font-size:13px;color:#7fdbc0;margin-top:10px;display:block;font-weight:bold}
-input,select,textarea{width:100%;padding:14px;margin:6px 0 12px 0;border-radius:12px;border:2px solid #2a8a6a;background:#1e2e24;color:white;box-sizing:border-box;font-size:16px}
-input:focus,select:focus,textarea:focus{border-color:#ffcc00;outline:none}
-.btn{width:100%;padding:16px;border:none;border-radius:12px;font-weight:bold;font-size:18px;cursor:pointer;margin-top:10px}
-.green{background:#0a4d2e;color:#ffcc00;border:2px solid #ffcc00}
-.yellow{background:#ffcc00;color:#000;border:2px solid #ffcc00;font-weight:bold}
-.success{background:#0a4d2e;border:1px solid #ffcc00;padding:20px;border-radius:15px;text-align:center;display:none}
-.refModal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:100;overflow:auto;padding:15px;box-sizing:border-box}
-.refModalCard{background:#111;border:2px solid #ffcc00;border-radius:20px;max-width:460px;margin:20px auto;padding:18px}
-.earnBadge{background:#4d3a0a;color:#ffcc00;padding:4px 10px;border-radius:12px;font-size:12px;display:inline-block;margin:5px 0;border:1px solid #ffcc00}
-</style>
-</head>
-<body>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600;800&display=swap');
+body{background:linear-gradient(135deg,#000,#0a1a0a);color:#fff;margin:0;font-family:'Poppins',sans-serif;padding-bottom:90px;overflow-x:hidden}
+.header{background:linear-gradient(90deg,#0f3d25,#1a5c2e);padding:14px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:50;box-shadow:0 4px 20px rgba(0,255,136,0.3)}
+.logo{display:flex;align-items:center;gap:8px;cursor:pointer}
+.heart{font-size:28px;animation:beat 1s infinite;color:#ff3366;text-shadow:0 0 10px #ff3366}
+@keyframes beat{0%,100%{transform:scale(1)}50%{transform:scale(1.3)}}
+@keyframes slideUp{from{transform:translateY(50px);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes fadePPT{0%{opacity:0;transform:translateX(-30px)}100%{opacity:1;transform:translateX(0)}}
+.card{background:linear-gradient(145deg,#111827,#1a2a3a);border:2px solid #00ff88;border-radius:20px;margin:10px;padding:14px;animation:slideUp 0.6s ease;box-shadow:0 0 20px rgba(0,255,136,0.15)}
+.card h2{color:#ffcc00;margin:6px 0;font-size:16px;text-shadow:0 0 8px rgba(255,204,0,0.5)}
+.topBtns{display:flex;gap:6px;padding:8px}.topBtns button{flex:1;padding:12px 2px;border-radius:14px;border:2px solid;font-weight:800;font-size:11px;cursor:pointer;transition:0.3s;animation:fadePPT 0.8s}
+.topBtns button:active{transform:scale(0.9)}
+.btn-client{border-color:#00ff88;color:#00ff88;background:linear-gradient(145deg,#0a2a1a,#112a1a)}.btn-nurse{border-color:#3b82f6;color:#7ab8ff;background:linear-gradient(145deg,#0a1a3a,#102040)}.btn-video{border-color:#ff33cc;color:#ff77dd;background:linear-gradient(145deg,#2a1433,#331433)}.btn-voice{border-color:#ffcc00;color:#ffdd55;background:linear-gradient(145deg,#332a00,#3a3000)}
+input,select{width:100%;padding:12px;margin:6px 0;border-radius:12px;border:1px solid #2a5a3a;background:#0f1f2a;color:#fff;box-sizing:border-box}
+.btnSubmit{width:100%;padding:13px;border:none;border-radius:14px;font-weight:800;margin-top:8px;cursor:pointer;transition:0.2s;box-shadow:0 4px 15px rgba(0,0,0,0.4)}
+.btnSubmit:active{transform:scale(0.97)}
+.page{display:none}.page.active{display:block;animation:slideUp 0.5s}
+.bottomNav{position:fixed;bottom:0;left:0;right:0;background:linear-gradient(90deg,#050505,#111);display:flex;justify-content:space-around;padding:8px 0;border-top:2px solid #00ff88;z-index:40}
+.bottomNav div{font-size:10px;text-align:center;cursor:pointer;opacity:0.5;transition:0.3s}.bottomNav div.active{opacity:1;color:#ffcc00;transform:scale(1.1);text-shadow:0 0 10px #ffcc00}
+.tabs{display:flex;gap:5px;margin-bottom:8px}.tabs button{flex:1;padding:8px;border-radius:10px;border:none;background:#222;color:#fff;font-size:10px;font-weight:600}.tabs button.active{background:linear-gradient(90deg,#3b82f6,#00ff88);color:#000}
+.marquee{height:110px;overflow:hidden;background:#000;border-radius:12px;border:1px solid #00ff88;position:relative}.marqueeInner{animation:scrollUp 14s linear infinite;position:absolute;width:100%}@keyframes scrollUp{0%{transform:translateY(100%)}100%{transform:translateY(-100%)}}.marquee p{margin:6px;padding:6px;background:linear-gradient(90deg,#111,#1a2a1a);border-left:4px solid #00ff88;font-size:11px;border-radius:6px}
+.sosBtn{position:fixed;right:12px;bottom:95px;background:radial-gradient(circle,#ff0000,#aa0000);color:white;border-radius:50%;width:60px;height:60px;font-weight:800;border:3px solid white;z-index:60;display:none;cursor:pointer;animation:beat 0.8s infinite;box-shadow:0 0 20px red}
+.gpsBtn{background:linear-gradient(90deg,#00ff88,#00cc66);color:#000;padding:10px;border-radius:12px;border:none;font-weight:800;cursor:pointer;width:100%;margin:6px 0;box-shadow:0 3px 10px rgba(0,255,136,0.4)}
+.statBox{display:flex;gap:6px;margin:6px 0}.statBox div{flex:1;background:#0a1a0a;padding:8px;border-radius:10px;text-align:center;border:1px solid #00ff8844;font-size:11px}
+</style></head><body>
 
-<!-- REFERRAL HEAD BAR -->
-<div class="headerBar">
-<b>💰 Earn 5% Per Booking!</b>
-<button class="refBtn" onclick="openRefModal()">🎁 Refer & Earn</button>
+<div class="header"><div class="logo" id="logoBtn" onclick="tapLogo()"><span class="heart">💖</span><b style="color:#ffcc00;font-size:18px">LOVE CARE</b><span style="font-size:10px;background:#ffcc00;color:#000;padding:2px 6px;border-radius:20px;margin-left:6px">V18 PREMIUM</span></div><div style="font-size:8px;opacity:0.4">GHANA • PPT</div></div>
+
+<div class="topBtns">
+<button class="btn-client" onclick="showPage('book')">💚<br>CLIENT</button>
+<button class="btn-nurse" onclick="showPage('nurse')">💙<br>NURSE</button>
+<button class="btn-video" onclick="showPage('video')">💜<br>VIDEO</button>
+<button class="btn-voice" onclick="showPage('voice')">💛<br>VOICE</button>
 </div>
 
-<div class="card">
-<div class="top">
-<div class="icon">C233</div>
-<div><h2>Care233</h2><p class="small">Trusted Home Nursing & Care Services</p><p class="small" style="color:#ffcc00;font-weight:bold">Accra, Ghana - Verified Nurses</p></div>
-</div>
+<button id="sosBtn" class="sosBtn" onclick="sendSOS()">SOS</button>
 
-<div id="formArea">
-<h3 style="color:#7fdbc0;text-align:center;margin:10px 0">📋 Book a Professional Nurse</h3>
+<div id="page-home" class="page active"><div class="card" style="text-align:center">
+<div style="font-size:50px;animation:beat 1s infinite">💖</div>
+<h2 style="font-size:22px">LOVE CARE GHANA</h2>
+<p style="font-size:11px;opacity:0.7">Premium • PPT Animation • Heart Design • Staff & CEO Deployed</p>
+<div class="statBox"><div>👤<br><b id="hClients">0</b><br>Clients</div><div>👩‍⚕️<br><b id="hNurses">0</b><br>Nurses</div><div>💰<br>GHS <b id="hRev">0</b><br>Revenue</div></div>
+<button class="btnSubmit" style="background:linear-gradient(90deg,#00ff88,#00cc66);color:#000" onclick="showPage('book')">📗 CLIENT BOOK NOW</button>
+<button class="btnSubmit" style="background:linear-gradient(90deg,#3b82f6,#00aaff);color:#fff" onclick="showPage('nurse')">👩‍⚕️ NURSE REGISTER</button>
+<button class="btnSubmit" style="background:linear-gradient(90deg,#ffcc00,#ff9900);color:#000" onclick="showPage('win')">🏆 WIN GH100 - MOMO LINK</button>
+</div></div>
 
-<label>👤 Your Full Name</label>
-<input id="cName" placeholder="e.g. Sarah Mensah">
-
-<label>📞 Phone Number (WhatsApp)</label>
-<input id="cPhone" placeholder="e.g. 0551234567" type="tel">
-
-<label>💉 Service Needed</label>
-<select id="cService">
-<option value="Home Nursing">Home Nursing</option>
-<option value="Elderly Care">Elderly Care</option>
-<option value="Baby / Nanny Care">Baby / Nanny Care</option>
-<option value="Post-Surgery Care">Post-Surgery Care</option>
-<option value="Injection / Wound Dressing">Injection / Wound Dressing</option>
-<option value="Physiotherapy">Physiotherapy</option>
-<option value="Hospital Accompaniment">Hospital Accompaniment</option>
-<option value="Other">Other</option>
+<div id="page-book" class="page"><div class="card"><h2>📗 CLIENT BOOK - PPT Premium</h2>
+<input id="cName" placeholder="Full Name"><input id="cPhone" placeholder="Phone / WhatsApp">
+<select id="cService" onchange="calcPay()">
+<option value="130">💚 Elderly Care - Gh130/day</option>
+<option value="130">👶 Baby Care - Gh130/day</option>
+<option value="150">💉 Injection / Wound Dressing - Gh150/day</option>
+<option value="200">🦾 Physiotherapy - Gh200/day</option>
+<option value="130">🏠 Home Nursing - Gh130/day</option>
+<option value="180">🏥 Hospital Support - Gh180/day</option>
+<option value="120">🤝 Companionship - Gh120/day</option>
+<option value="250">❤️‍🩹 Special Care (Stroke) - Gh250/day</option>
 </select>
-
-<label>📍 Location / Area</label>
-<input id="cLocation" placeholder="e.g. East Legon, Accra">
-
-<div id="referredBox" style="display:none;background:#1a2e00;border:1px solid #ffcc00;padding:10px;border-radius:12px;margin:10px 0">
-<p style="margin:0;color:#ffcc00;font-weight:bold;font-size:13px">🎉 You were referred by: <span id="refByName"></span></p>
-<p class="small" id="refByCode"></p>
+<select id="cLive" onchange="calcPay()"><option value="0">🏠 Live OUT - No extra</option><option value="50">🌙 Live IN 24hrs +Gh50/day</option></select>
+<input id="cDays" type="number" value="1" min="1" max="365" oninput="calcPay()" placeholder="Days e.g. 14">
+<p style="color:#00ff88;font-weight:bold;background:linear-gradient(90deg,#0a2a1a,#112a1a);padding:10px;border-radius:12px;border:1px solid #00ff88">Service: <span id="serviceName">Elderly Care</span><br>Total: <span id="payTotal">Gh130</span> for <span id="dayCount">1</span> day(s)</p>
+<button class="gpsBtn" onclick="getRealGPS()">📍 GET MY REAL GPS AUTO - NO TYPING</button>
+<input id="cLocation" placeholder="GPS auto appears here" readonly style="background:#000;color:#00ff88;border-color:#00ff88">
+<div id="gpsResult" style="font-size:10px;color:#00ff88"></div>
+<input id="cRefLink" placeholder="Referral Code (optional)">
+<div style="background:linear-gradient(145deg,#332a00,#3a3000);padding:10px;border-radius:14px;margin-top:10px;border:2px solid #ffcc00">
+<h2 style="font-size:12px">🎤 COMPLAINT VOICE - To Staff & CEO Only</h2>
+<select id="clientVoiceTo"><option value="staff">📨 To: Staff (Complaint)</option><option value="ceo">👑 To: CEO (Complaint)</option></select>
+<p id="cVoiceStatus" style="font-size:10px;color:#ffcc00">Ready</p>
+<button id="cRecBtn" class="btnSubmit" style="background:linear-gradient(90deg,#ff4444,#cc0000);color:#fff" onclick="toggleRecClient()">🔴 RECORD COMPLAINT</button>
+<audio id="cAud" controls style="width:100%;display:none;margin-top:6px"></audio>
+<button id="cSendVoice" style="display:none;background:linear-gradient(90deg,#ffcc00,#ff9900);color:#000;padding:10px;border-radius:12px;width:100%;margin-top:6px;font-weight:800" onclick="sendClientVoice()">SEND COMPLAINT →</button>
 </div>
+<button class="btnSubmit" style="background:linear-gradient(90deg,#00ff88,#00cc66);color:#000" onclick="submitClient()">✅ SUBMIT BOOKING →</button>
+<div id="cResult" style="color:#00ff88;margin-top:8px;font-size:12px"></div>
+<button onclick="showPage('home')" style="padding:8px;border-radius:10px;margin-top:8px;background:#222;color:#fff;border:none">← BACK</button></div></div>
 
-<label>🎁 Referral Code (If someone referred you)</label>
-<input id="cReferral" placeholder="e.g. C233-SAR-1234 (Optional)">
+<div id="page-nurse" class="page"><div class="card">
+<div class="tabs"><button id="tabReg" class="active" onclick="nurseTab('reg')">REGISTER</button><button id="tabLog" onclick="nurseTab('log')">LOGIN</button><button id="tabOffer" onclick="nurseTab('offer')">OFFERS</button><button id="tabVoiceN" onclick="nurseTab('voiceN')">VOICE</button></div>
+<div id="nurseReg"><h2>👩‍⚕️ REGISTER + UPLOAD DOCS</h2><input id="nName" placeholder="Full Name"><input id="nPhone" placeholder="Phone"><input id="nEmail" placeholder="Email"><div style="border:1px dashed #00ff88;padding:6px;border-radius:10px;background:#0a1a2a;font-size:11px;margin:4px 0">GHANA CARD<input type="file" id="fGhana" accept="image/*,.pdf"></div><div style="border:1px dashed #00ff88;padding:6px;border-radius:10px;background:#0a1a2a;font-size:11px;margin:4px 0">CV<input type="file" id="fCV"></div><div style="border:1px dashed #00ff88;padding:6px;border-radius:10px;background:#0a1a2a;font-size:11px;margin:4px 0">LICENSE<input type="file" id="fLic"></div><div style="border:1px dashed #00ff88;padding:6px;border-radius:10px;background:#0a1a2a;font-size:11px;margin:4px 0">PHOTO<input type="file" id="fPhoto" accept="image/*"></div><input id="nPass" type="password" placeholder="Create Password"><button class="btnSubmit" style="background:linear-gradient(90deg,#3b82f6,#0066ff);color:#fff" onclick="registerNurse()">REGISTER →</button><div id="nRegResult"></div></div>
+<div id="nurseLog" style="display:none"><h2>🔑 LOGIN</h2><input id="lPhone" placeholder="Phone"><input id="lPass" type="password" placeholder="Password"><button class="btnSubmit" style="background:linear-gradient(90deg,#00ff88,#00cc66);color:#000" onclick="loginNurse()">LOGIN →</button><div id="nLogResult"></div></div>
+<div id="nurseOffer" style="display:none"><h2>📋 MY ASSIGNED CLIENTS + GPS</h2><div id="nurseOffersList" style="font-size:11px">No offers yet</div><button class="btnSubmit" style="background:linear-gradient(90deg,#ff4444,#aa0000);color:#fff;margin-top:10px" onclick="document.getElementById('sosBtn').style.display='block';alert('SOS ON')">🚨 ACTIVATE SOS BUTTON</button></div>
+<div id="nurseVoiceN" style="display:none"><h2>🎤 Nurse Voice Box</h2><select id="nurseVoiceTo"><option value="staff">To Staff</option><option value="client">To Client</option><option value="ceo">To CEO</option></select><p id="nVoiceStatus" style="font-size:10px;color:#ffcc00">Ready</p><button id="nRecBtn" class="btnSubmit" style="background:#ff4444;color:#fff" onclick="toggleRecNurse()">🔴 RECORD</button><audio id="nAud" controls style="width:100%;display:none;margin-top:6px"></audio><button id="nSendVoice" style="display:none;background:#ffcc00;color:#000;padding:10px;border-radius:12px;width:100%;margin-top:6px" onclick="sendNurseVoice()">SEND →</button><div style="font-size:11px;margin-top:8px;background:#0a0a0a;padding:6px;border-radius:10px"><b>Inbox:</b><div id="nInbox"></div></div></div>
+<button onclick="showPage('home')" style="padding:8px;margin-top:8px;border-radius:10px;background:#222;color:#fff;border:none">← BACK</button></div></div>
 
-<label>📝 Additional Notes</label>
-<textarea id="cNotes" rows="3" placeholder="Patient condition, time needed..."></textarea>
+<div id="page-video" class="page"><div class="card"><h2>📹 VIDEO - Joint Educational Talks (PPT Style)</h2><video id="localVid" autoplay muted playsinline style="width:100%;background:#000;border-radius:14px;height:220px;border:2px solid #ff33cc"></video><p id="vidStatus" style="font-size:10px">Camera OFF</p><div style="display:flex;gap:6px"><button class="btnSubmit" style="background:linear-gradient(90deg,#ff33cc,#cc00aa);color:#fff;flex:1" onclick="startVideo()">START CAM</button><button class="btnSubmit" style="background:#333;color:#fff;flex:1" onclick="stopVideo()">STOP</button></div><select id="videoTarget"><option>Talk to: All Nurses + Clients - Educational</option><option>One Client - Private</option><option>One Nurse - Private</option></select><button class="btnSubmit" style="background:linear-gradient(90deg,#00ff88,#00cc66);color:#000" onclick="alert('Joint Educational Talk Started - PPT Upward!')">🎓 START EDUCATIONAL TALK</button><button onclick="showPage('home')" style="padding:8px;margin-top:8px;border-radius:10px;background:#222;color:#fff;border:none">← BACK</button></div></div>
 
-<button class="btn green" onclick="submitBookingToFirebase()">🔔 BOOK NOW - We Will Call You Shortly</button>
+<div id="page-voice" class="page"><div class="card"><h2>🎤 VOICE CENTER - LOUD 100%</h2><select id="voiceTo"><option value="nurse">To: Specific Nurse</option><option value="client">To: Specific Client</option><option value="staff">To: Staff</option></select><input id="voiceToName" placeholder="Enter Name or Phone"><p id="voiceStatus" style="color:#ffcc00;font-size:11px">Ready LOUD 100%</p><div style="text-align:center"><div id="micIcon" style="font-size:50px;animation:beat 1.2s infinite">🎙️</div><p id="timer" style="font-size:22px;color:#ff4444;font-weight:800">00:00</p><input type="range" id="volControl" min="0" max="100" value="100" style="width:80%" oninput="setVol(this.value)"><p style="font-size:10px">Volume: <span id="volTxt">100%</span> LOUD 🔊</p></div><button id="recBtn" class="btnSubmit" style="background:linear-gradient(90deg,#ff4444,#aa0000);color:#fff;padding:16px" onclick="toggleRec()">🔴 RECORD LOUD VOICE</button><audio id="aud" controls style="width:100%;margin-top:10px;display:none"></audio><button id="sendVoiceBtn" class="btnSubmit" style="background:linear-gradient(90deg,#ffcc00,#ff9900);color:#000;display:none" onclick="sendVoice()">SEND TO SELECTED →</button><div style="font-size:11px;margin-top:10px;background:#111;padding:8px;border-radius:12px"><b>📥 All Voice Inbox:</b><div id="voiceInbox"></div></div><div id="vResult"></div><button onclick="showPage('home')" style="padding:8px;margin-top:8px;border-radius:10px;background:#222;color:#fff;border:none">← BACK</button></div></div>
 
-<p class="small" style="margin-top:15px">⚡ Instant booking • 24/7 Service • Auto GPS location captured<br>📞 <a href="tel:+233000000000" style="color:#ffcc00">Call Care233</a></p>
+<div id="page-win" class="page"><div class="card"><h2>🏆 REWARDS - PPT Upward Animation</h2><p style="font-size:12px">Code: <b id="myCode" style="color:#ffcc00"></b> | Points: <b id="myPoints" style="color:#00ff88">0</b> | Bal: Gh<span id="myBal">0</span></p><div class="marquee"><div class="marqueeInner" id="winnerList"><p>🎉 Ama won Gh150!</p><p>🎉 Kwame won Gh100!</p><p>🎉 Adjoa won Gh200!</p><p>🎉 Kofi won Gh100!</p><p>🎉 Yaa won Gh300 - PPT!</p></div></div><h2>🔗 GENERATE LINK WITH MOMO</h2><input id="refName" placeholder="Your Full Name"><input id="refMoMo" placeholder="MoMo Number 024..."><input id="myLink" readonly style="font-size:10px;background:#000"><button class="btnSubmit" style="background:linear-gradient(90deg,#00ff88,#00cc66);color:#000" onclick="generateLink()">GENERATE MY LINK →</button><button class="btnSubmit" style="background:#25D366;color:#fff" onclick="shareLink()">📲 SHARE WHATSAPP - Earn Gh100</button><input id="checkRef" placeholder="Enter referral code"><button class="btnSubmit" style="background:linear-gradient(90deg,#ffcc00,#ff9900);color:#000" onclick="applyRef()">APPLY CODE</button><div id="winResult"></div><button onclick="showPage('home')" style="padding:8px;margin-top:8px;border-radius:10px;background:#222;color:#fff;border:none">← BACK</button></div></div>
+
+<div id="page-staff" class="page"><div class="card" style="border-color:#00ff88;border-width:3px">
+<h2 id="staffHeader" onclick="tapStaff()" style="cursor:pointer">👔 STAFF DASHBOARD - FULL DEPLOYED</h2>
+<div id="staffLoginBox"><input id="sID" placeholder="Staff ID from CEO"><input id="sPass" type="password" placeholder="Password"><button class="btnSubmit" style="background:linear-gradient(90deg,#00ff88,#00cc66);color:#000" onclick="loginStaff()">STAFF LOGIN →</button><div id="sResult"></div></div>
+<div id="staffWork" style="display:none">
+<div class="statBox"><div>📋<br><b id="sClients">0</b><br>Clients</div><div>👩‍⚕️<br><b id="sNurses">0</b><br>Approved</div><div>💰<br>GHS <b id="sRev">0</b><br>Revenue</div><div>🚨<br><b id="sSOS">0</b><br>SOS</div></div>
+<h2>✅ 1. CLIENTS (GPS Auto + Price Auto)</h2><div style="background:#0a2a1a;padding:8px;border-radius:12px;margin:5px 0;max-height:150px;overflow:auto"><div id="clientList" style="font-size:10px"></div></div>
+<h2>✅ 2. APPROVED NURSES (For Assigning)</h2><div style="background:#0a1a3a;padding:8px;border-radius:12px;margin:5px 0"><div id="staffNurseList" style="font-size:10px"></div></div>
+<h2>✅ 3. ASSIGN WORK - GPS Distance + Live In/Out</h2><select id="assignClient"></select><select id="assignNurse"></select><button class="btnSubmit" style="background:linear-gradient(90deg,#3b82f6,#0066ff);color:#fff" onclick="assignJob()">✅ ASSIGN CLIENT TO NURSE + GPS DIRECTION →</button>
+<h2>✅ 4. STAFF ACTIONS</h2><div style="display:flex;gap:5px;flex-wrap:wrap"><button class="btnSubmit" style="background:linear-gradient(90deg,#ff33cc,#aa00aa);color:#fff;flex:1" onclick="showPage('video')">📹 VIDEO TO ONE</button><button class="btnSubmit" style="background:linear-gradient(90deg,#ffcc00,#ff9900);color:#000;flex:1" onclick="showPage('voice')">🎤 AUDIO TO ONE</button></div><button class="btnSubmit" style="background:#25D366;color:#fff" onclick="alert('Calling Nurse/Client...')">📞 CALL NURSE / CLIENT</button>
+<h2>✅ 5. REFERRAL MoMo Payout (Name + Number)</h2><div style="background:#332a00;padding:8px;border-radius:12px;margin:5px 0;max-height:120px;overflow:auto"><div id="momoList" style="font-size:10px"></div></div><button class="btnSubmit" style="background:linear-gradient(90deg,#ffcc00,#ff9900);color:#000" onclick="payReferrals()">💰 MARK ALL PAID GH100</button>
+<h2>✅ 6. COMPLAINTS (Client → Staff/CEO Only)</h2><div style="background:#331111;padding:8px;border-radius:12px;margin:5px 0"><div id="staffVoiceInbox" style="font-size:10px"></div></div>
+<h2>✅ 7. SOS CENTER (Nurse Only)</h2><div style="background:#440000;padding:8px;border-radius:12px;margin:5px 0"><div id="sosList" style="font-size:10px"></div></div><button class="btnSubmit" style="background:#ff0000;color:#fff" onclick="clearSOS()">CLEAR SOS</button>
+<h2>✅ 8. EDUCATIONAL TALKS (Joint)</h2><button class="btnSubmit" style="background:linear-gradient(90deg,#0f3d25,#1a5c2e);color:#fff" onclick="showPage('video')">🎓 CREATE EDUCATIONAL VIDEO TALK</button>
 </div>
+<button onclick="showPage('home')" style="padding:8px;margin-top:8px;border-radius:10px;background:#222;color:#fff;border:none">← BACK HOME</button>
+</div></div>
 
-<div id="successArea" class="success">
-<h2 style="color:#ffcc00">✅ BOOKING SENT!</h2>
-<p>Thank you <b id="sName"></b>!</p>
-<p>Your booking for <b id="sService"></b> has been sent!</p>
-<p style="font-size:18px">📞 We will call you at <b id="sPhone" style="color:#ffcc00"></b> within <b>5 minutes!</b></p>
-<p class="small" id="sTime"></p>
-
-<div style="background:#1a1a00;padding:12px;border-radius:12px;border:1px dashed #ffcc00;margin-top:12px">
-<h4 style="color:#ffcc00;margin:5px 0">💰 Want to earn 5% too?</h4>
-<p class="small">Register your MoMo and get your referral link!</p>
-<button class="btn yellow" style="padding:12px" onclick="openRefModal()">🎁 Generate My Referral Link</button>
+<div id="page-ceo" class="page"><div class="card" style="border-color:#ff0000;border-width:3px;background:linear-gradient(145deg,#1a0000,#2a1111)">
+<h2 style="color:#ff4444">👑 CEO SUPER ADMIN - FULL POWER</h2>
+<div id="ceoLoginBox" style="background:#000;padding:10px;border-radius:12px;border:1px solid #ff0000">
+<input id="ceoUser" placeholder="Username" style="border-color:#ff0000"><input id="ceoPass" type="password" placeholder="Password" style="border-color:#ff0000">
+<button class="btnSubmit" style="background:linear-gradient(90deg,#ff0000,#aa0000);color:#fff" onclick="loginCEO()">LOGIN CEO →</button>
+<div id="ceoLoginResult" style="font-size:11px;color:#ff4444;margin-top:6px"></div>
 </div>
-
-<button class="btn green" onclick="bookAnother()">+ Book Another Service</button>
+<div id="ceoWork" style="display:none">
+<div class="statBox"><div>📋<br><b id="countBook">0</b><br>Bookings</div><div>👩‍⚕️<br><b id="countNurse">0</b><br>Nurses</div><div>💰<br>GHS <b id="rev">0</b><br>Rev</div><div>🔗<br><b id="ceoRef">0</b><br>Refs</div></div>
+<div style="background:#1a0000;padding:10px;border-radius:12px;margin-top:10px;border:1px solid #ff0000">
+<h2>👥 STAFF MANAGEMENT - Create/Delete</h2><input id="newStaffID" placeholder="New Staff ID e.g. STAFF01"><input id="newStaffPass" placeholder="Set Password"><button class="btnSubmit" style="background:linear-gradient(90deg,#ff0000,#cc0000);color:#fff" onclick="createStaff()">CREATE STAFF →</button><div id="staffCreatedList" style="font-size:10px;margin-top:6px;background:#000;padding:6px;border-radius:8px"></div>
 </div>
+<div style="margin-top:10px;background:#111;padding:10px;border-radius:12px;border:1px solid #333">
+<h2>👩‍⚕️ NURSE APPROVAL - View Files & Approve</h2><div id="ceoNurseReview" style="font-size:10px"></div>
 </div>
-
-<!-- REFERRAL REGISTRATION MODAL -->
-<div id="refModal" class="refModal">
-<div class="refModalCard">
-<div style="display:flex;justify-content:space-between;align-items:center">
-<h3 style="color:#ffcc00;margin:0">💰 Refer & Earn 5%</h3>
-<button onclick="closeRefModal()" style="background:#222;color:white;border:1px solid #555;border-radius:50%;width:30px;height:30px;font-weight:bold;cursor:pointer">X</button>
+<div style="margin-top:10px;background:#0a0a0a;padding:10px;border-radius:12px;border:1px solid #ffcc00">
+<h2>💰 REFERRAL PAYOUT - MoMo List (Who to Pay Gh100)</h2><div id="ceoMoMoList" style="font-size:10px"></div><button class="btnSubmit" style="background:linear-gradient(90deg,#ffcc00,#ff9900);color:#000" onclick="payReferrals()">MARK PAID - GH100 EACH</button>
 </div>
-
-<p class="small" style="text-align:left;margin:10px 0">Register once, share your link forever! When someone books with your link and pays, you earn <b style="color:#ffcc00">5% of their payment</b> straight to your MoMo! Admin will push it after client payment.</p>
-<div class="earnBadge">📊 Example: Client pays GHS 500 → You earn GHS 25 instantly!</div>
-
-<div id="refRegisterArea">
-<label>👤 Your Full Name</label>
-<input id="rName" placeholder="e.g. Kwame Asare">
-
-<label>📞 Your Phone (WhatsApp)</label>
-<input id="rPhone" placeholder="e.g. 0551234567">
-
-<label>💳 MoMo Number (For 5% Payment)</label>
-<input id="rMoMo" placeholder="e.g. 0551234567 - MTN/Vodafone">
-
-<label>📍 Your Location</label>
-<input id="rLocation" placeholder="e.g. Kaneshie, Accra">
-
-<button class="btn yellow" onclick="registerReferrer()">🚀 GENERATE MY REFERRAL LINK</button>
-<p class="small">Already have code? <a href="#" onclick="showLogin()" style="color:#ffcc00">Check my earnings</a></p>
+<div style="margin-top:10px;background:#0a1a0a;padding:10px;border-radius:12px;border:1px solid #00ff88">
+<h2>📢 BROADCAST + ANALYTICS</h2><input id="broadcastMsg" placeholder="Broadcast message to all Nurses/Clients"><button class="btnSubmit" style="background:linear-gradient(90deg,#00ff88,#00cc66);color:#000" onclick="broadcast()">📢 BROADCAST TO ALL</button><div id="ceoAllData" style="font-size:10px;margin-top:6px"></div><button class="btnSubmit" style="background:#444;color:#fff" onclick="loadCEOData()">🔄 REFRESH ALL DATA</button>
 </div>
-
-<div id="refLoginArea" style="display:none">
-<label>🔑 Enter Your Referral Code or MoMo Number</label>
-<input id="rCheck" placeholder="e.g. C233-KWA-1234 or 055...">
-<button class="btn green" onclick="checkEarnings()">📊 Check My Earnings</button>
-<button class="btn" style="background:#222;color:#8fbc8f" onclick="showRegister()">← Back to Register</button>
-</div>
-
-<div id="refSuccessArea" style="display:none;background:#0a2e15;border:1px solid #ffcc00;padding:15px;border-radius:15px;margin-top:15px;text-align:center">
-<h3 style="color:#ffcc00">✅ Your Referral Link is Ready!</h3>
-<p class="small">Code:</p>
-<h2 id="myRefCode" style="color:#ffcc00;letter-spacing:2px;margin:5px 0"></h2>
-<p class="small">Your Link:</p>
-<input id="myRefLink" readonly style="background:#000;color:#ffcc00;text-align:center;font-weight:bold;font-size:13px">
-<button class="btn yellow" onclick="copyMyLink()">📋 Copy & Share on WhatsApp</button>
-
-<div id="earnStats" style="margin-top:15px;background:#111;padding:10px;border-radius:10px;text-align:left">
-<p style="margin:5px 0;font-size:13px">👥 Total Referrals: <b id="statTotal">0</b></p>
-<p style="margin:5px 0;font-size:13px">💰 Total Earned: <b id="statEarned" style="color:#ffcc00">GHS 0.00</b></p>
-<p style="margin:5px 0;font-size:13px">💳 MoMo: <b id="statMoMo"></b></p>
-<p class="small">Admin & Staff will see your MoMo and push 5% after client payment. Keep sharing!</p>
-</div>
-
-<button class="btn green" style="margin-top:10px" onclick="closeRefModal()">Done</button>
-</div>
-
-<p class="small" style="margin-top:15px">🔒 Your MoMo is safe - Only Admin & Staff can see it to pay you 5%.<br>Trusted by Care233 Ghana.</p>
+<div style="margin-top:10px;background:#220000;padding:10px;border-radius:12px;border:1px solid red">
+<h2>🚫 BLOCK / DELETE USERS</h2><input id="blockPhone" placeholder="Phone to Block"><button class="btnSubmit" style="background:#660000;color:#fff" onclick="blockUser()">BLOCK USER</button>
 </div>
 </div>
+<button onclick="showPage('staff')" style="padding:8px;margin-top:10px;border-radius:10px;background:#222;color:#fff;border:none">← BACK TO STAFF</button>
+</div></div>
+
+<div class="bottomNav">
+<div id="nav-home" class="active" onclick="showPage('home')">🏠<br>Home</div><div id="nav-book" onclick="showPage('book')">👤<br>Book</div><div id="nav-nurse" onclick="showPage('nurse')">👩‍⚕️<br>Nurse</div><div id="nav-video" onclick="showPage('video')">📹<br>Video</div><div id="nav-voice" onclick="showPage('voice')">🎤<br>Voice</div><div id="nav-win" onclick="showPage('win')">🏆<br>Win</div></div>
 
 <script>
-const firebaseConfig = {
-  apiKey: "AIzaSyB52-X1D8Cg-wUDWPds_tR7X3cF82dMdRg",
-  authDomain: "web-care-618e8.firebaseapp.com",
-  databaseURL: "https://web-care-618e8-default-rtdb.firebaseio.com",
-  projectId: "web-care-618e8",
-  storageBucket: "web-care-618e8.firebasestorage.app",
-  messagingSenderId: "1062578660694",
-  appId: "1:1062578660694:web:f94dfe12c929df05bce2f7"
-};
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
-
-let autoLat=null, autoLng=null, autoGPS="";
-if(navigator.geolocation){
-  navigator.geolocation.getCurrentPosition(p=>{
-    autoLat=p.coords.latitude; autoLng=p.coords.longitude;
-    autoGPS=autoLat.toFixed(6)+", "+autoLng.toFixed(6);
-  },()=>{},{enableHighAccuracy:true,timeout:8000});
+function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById('page-'+id).classList.add('active');document.querySelectorAll('.bottomNav div').forEach(d=>d.classList.remove('active'));let n=document.getElementById('nav-'+id);if(n)n.classList.add('active');}
+let logoTaps=0;function tapLogo(){logoTaps++;if(logoTaps>=5){showPage('staff');logoTaps=0;}setTimeout(()=>logoTaps=0,3000)}
+let staffTaps=0;function tapStaff(){staffTaps++;if(staffTaps>=7){showPage('ceo');staffTaps=0;}setTimeout(()=>staffTaps=0,4000)}
+function nurseTab(t){document.getElementById('nurseReg').style.display=t==='reg'?'block':'none';document.getElementById('nurseLog').style.display=t==='log'?'block':'none';document.getElementById('nurseOffer').style.display=t==='offer'?'block':'none';document.getElementById('nurseVoiceN').style.display=t==='voiceN'?'block':'none';document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('active'));document.getElementById('tab'+t.charAt(0).toUpperCase()+t.slice(1)).classList.add('active')}
+function calcPay(){let s=document.getElementById('cService');let price=parseInt(s.value);let extra=parseInt(document.getElementById('cLive').value);let days=parseInt(document.getElementById('cDays').value)||1;let perDay=price+extra;let total=perDay*days;document.getElementById('serviceName').innerText=s.options[s.selectedIndex].text.split(' - ')[0];document.getElementById('payTotal').innerText='Gh'+total+' (Gh'+perDay+'/day)';document.getElementById('dayCount').innerText=days}
+function getRealGPS(){let r=document.getElementById('gpsResult');r.innerText='📡 Getting REAL GPS...';if(navigator.geolocation){navigator.geolocation.getCurrentPosition(pos=>{let lat=pos.coords.latitude;let lng=pos.coords.longitude;document.getElementById('cLocation').value=lat.toFixed(6)+','+lng.toFixed(6);r.innerHTML=`✅ REAL GPS: ${lat.toFixed(6)},${lng.toFixed(6)}<br><a href="https://www.google.com/maps?q=${lat},${lng}" target="_blank" style="color:#00ff88">📍 OPEN GOOGLE MAPS - GPS FOR NURSE</a>`},err=>{r.innerText='❌ Allow location'}, {enableHighAccuracy:true})}}
+let allBookings=JSON.parse(localStorage.getItem('allBookings')||'[]');let allNurses=JSON.parse(localStorage.getItem('allNurses')||'[]');let referralMoMo=JSON.parse(localStorage.getItem('referralMoMo')||'[]');
+function submitClient(){let s=document.getElementById('cService');let perDay=parseInt(s.value)+parseInt(document.getElementById('cLive').value);let days=parseInt(document.getElementById('cDays').value)||1;let total=perDay*days;let b={name:cName.value,phone:cPhone.value,loc:cLocation.value,service:s.options[s.selectedIndex].text,days:days,live:document.getElementById('cLive').options[document.getElementById('cLive').selectedIndex].text,perDay:perDay,total:total,ref:cRefLink.value,id:Date.now()};if(!b.name||!b.phone){alert('Fill Name/Phone');return;}if(!b.loc){alert('Press GET REAL GPS!');return;}allBookings.push(b);localStorage.setItem('allBookings',JSON.stringify(allBookings));if(b.ref){let bal=parseInt(localStorage.getItem('myBal')||'0')+100;localStorage.setItem('myBal',bal);myBal.innerText=bal;addWinner(b.name,100)}cResult.innerHTML=`✅ Booked ${b.service} ${days}days ${b.live} Gh${total} GPS:${b.loc}`;updateLists()}
+function registerNurse(){if(!nName.value||!nPhone.value||!nPass.value){alert('Fill');return;}let n={name:nName.value,phone:nPhone.value,email:nEmail.value,pass:nPass.value,files:[fGhana.files[0]?.name||'N/A',fCV.files[0]?.name||'N/A',fLic.files[0]?.name||'N/A',fPhoto.files[0]?.name||'N/A'],approved:false,id:Date.now()};allNurses.push(n);localStorage.setItem('allNurses',JSON.stringify(allNurses));localStorage.setItem('nurse_'+n.phone,JSON.stringify(n));nRegResult.innerHTML='✅ Uploaded! Awaiting CEO';updateLists()}
+function loginNurse(){let d=JSON.parse(localStorage.getItem('nurse_'+lPhone.value)||'null');if(!d){nLogResult.innerHTML='❌ Not found';return;}if(d.pass===lPass.value){nLogResult.innerHTML='✅ Welcome '+d.name;nurseTab('offer');document.getElementById('sosBtn').style.display='block';loadNurseOffers(d.phone);loadVoiceInboxNurse()}else nLogResult.innerHTML='❌ Wrong pass'}
+function updateLists(){let cl=document.getElementById('clientList');let nl=document.getElementById('staffNurseList');let ceoR=document.getElementById('ceoNurseReview');let ac=document.getElementById('assignClient');let an=document.getElementById('assignNurse');ac.innerHTML='';an.innerHTML='';cl.innerHTML=allBookings.length?allBookings.map(b=>`👤 ${b.name} - ${b.service} - ${b.days}d ${b.live} - Gh${b.total}<br>📍 <a href="https://www.google.com/maps?q=${b.loc}" target="_blank" style="color:#00ff88">${b.loc}</a>`).join('<hr>'):'No bookings';allBookings.forEach(b=>{let o=document.createElement('option');o.value=b.id;o.text=b.name+' - Gh'+b.total;ac.appendChild(o)});nl.innerHTML=allNurses.length?allNurses.map(n=>`${n.name} - ${n.phone} - ${n.approved?'✅ Approved':'⏳ Pending'}`).join('<br>'):'No nurses';ceoR.innerHTML=allNurses.length?allNurses.map((n,i)=>`👩‍⚕️ ${n.name} - ${n.phone}<br>Files: ${n.files.join(', ')}<br>${n.approved?'✅ Approved':`<button onclick="approveNurse(${i})" style="padding:4px 10px;background:linear-gradient(90deg,#00ff88,#00cc66);border:none;border-radius:8px;font-weight:800">✅ APPROVE</button> <button onclick="rejectNurse(${i})" style="padding:4px 10px;background:#ff4444;color:#fff;border:none;border-radius:8px">❌ REJECT</button>`}`).join('<hr>'):'No nurses';allNurses.filter(n=>n.approved).forEach(n=>{let o=document.createElement('option');o.value=n.phone;o.text=n.name+' ✅';an.appendChild(o)});document.getElementById('momoList').innerHTML=referralMoMo.length?referralMoMo.map(r=>`👤 ${r.name} - MoMo: ${r.momo} - Code:${r.code}<br>💰 Pay Gh100! - ${r.time}`).join('<hr>'):'No referrals';document.getElementById('ceoMoMoList').innerHTML=document.getElementById('momoList').innerHTML;countBook.innerText=allBookings.length;countNurse.innerText=allNurses.length;rev.innerText=allBookings.reduce((s,b)=>s+b.total,0);ceoRef.innerText=referralMoMo.length;hClients.innerText=allBookings.length;hNurses.innerText=allNurses.length;hRev.innerText=rev.innerText;sClients.innerText=allBookings.length;sNurses.innerText=allNurses.filter(n=>n.approved).length;sRev.innerText=rev.innerText;sSOS.innerText=JSON.parse(localStorage.getItem('sosList')||'[]').length;document.getElementById('ceoAllData').innerHTML=`Bookings: ${allBookings.length} | Nurses: ${allNurses.length} | Assignments: ${JSON.parse(localStorage.getItem('assignments')||'[]').length} | Revenue: GHS ${rev.innerText}`;loadSOS()}
+function approveNurse(i){allNurses[i].approved=true;localStorage.setItem('allNurses',JSON.stringify(allNurses));updateLists();alert('✅ Approved! Added to Staff assign list!')}
+function rejectNurse(i){allNurses.splice(i,1);localStorage.setItem('allNurses',JSON.stringify(allNurses));updateLists();}
+let assignments=JSON.parse(localStorage.getItem('assignments')||'[]');
+function assignJob(){let cid=assignClient.value;let nphone=assignNurse.value;let c=allBookings.find(b=>b.id==cid);let n=allNurses.find(nn=>nn.phone==nphone);if(!c||!n){alert('Select Client + Nurse (Approved only!)');return;}let a={client:c.name,clientPhone:c.phone,clientLoc:c.loc,service:c.service,days:c.days,live:c.live,total:c.total,nurse:n.name,nursePhone:n.phone,status:'Pending - Nurse must Accept',id:Date.now()};assignments.push(a);localStorage.setItem('assignments',JSON.stringify(assignments));alert(`✅ DEPLOYED! ${c.name} (${c.service} Gh${c.total}) → Nurse ${n.name}\nGPS: ${c.loc}\nNurse will Accept/Reject + Call`);loadNurseOffers(n.phone);updateLists()}
+function loadNurseOffers(phone){let list=phone?assignments.filter(a=>a.nursePhone==phone):assignments;let target=document.getElementById('nurseOffersList');if(!target)return;target.innerHTML=list.length?list.map(a=>`<div style="background:#111;padding:8px;border-radius:10px;margin:5px 0;border:1px solid #00ff88">👤 ${a.client} - ${a.clientPhone}<br>🩺 ${a.service} ${a.days}d ${a.live} Gh${a.total}<br>📍 <a href="https://www.google.com/maps?q=${a.clientLoc}" target="_blank" style="color:#00ff88">📍 GPS AUTO DIRECTION</a><br>Status: ${a.status}<br><button onclick="acceptOffer(${assignments.indexOf(a)})" style="padding:5px 10px;background:#00ff88;border:none;border-radius:8px">✅ ACCEPT</button> <button onclick="rejectOffer(${assignments.indexOf(a)})" style="padding:5px 10px;background:red;color:#fff;border:none;border-radius:8px">❌ REJECT</button> <button onclick="window.open('tel:${a.clientPhone}')" style="padding:5px 10px;background:#3b82f6;color:#fff;border:none;border-radius:8px">📞 CALL</button></div>`).join(''):'No offers'}
+function acceptOffer(idx){assignments[idx].status='✅ Accepted - On the way! GPS used';localStorage.setItem('assignments',JSON.stringify(assignments));alert('✅ Accepted! Use GPS!');location.reload()}
+function rejectOffer(idx){assignments[idx].status='❌ Rejected';localStorage.setItem('assignments',JSON.stringify(assignments));alert('❌ Rejected');location.reload()}
+let staffAccounts=JSON.parse(localStorage.getItem('staffAccounts')||'[]');
+function createStaff(){if(!newStaffID.value||!newStaffPass.value){alert('Fill ID & Pass');return;}staffAccounts.push({id:newStaffID.value,pass:newStaffPass.value});localStorage.setItem('staffAccounts',JSON.stringify(staffAccounts));document.getElementById('staffCreatedList').innerHTML=staffAccounts.map(s=>`👤 ${s.id} - Pass: ${s.pass} <button onclick="deleteStaff('${s.id}')" style="padding:2px 6px;background:#ff4444;color:#fff;border:none;border-radius:5px">DELETE</button>`).join('<br>');alert('✅ Staff Created: '+newStaffID.value);newStaffID.value='';newStaffPass.value=''}
+function deleteStaff(id){staffAccounts=staffAccounts.filter(s=>s.id!==id);localStorage.setItem('staffAccounts',JSON.stringify(staffAccounts));loadCEOData()}
+function loginStaff(){let f=staffAccounts.find(s=>s.id===sID.value&&s.pass===sPass.value);if(f){document.getElementById('staffLoginBox').style.display='none';document.getElementById('staffWork').style.display='block';sResult.innerHTML='✅ Staff Logged - Full Work Deployed!';updateLists();loadVoiceInboxStaff()}else{sResult.innerHTML='❌ Wrong - Ask CEO KUSIPETER'}}
+function loginCEO(){if(ceoUser.value==='KUSIPETER' && ceoPass.value==='Peterasa80@you!'){document.getElementById('ceoLoginBox').style.display='none';document.getElementById('ceoWork').style.display='block';loadCEOData()}else{ceoLoginResult.innerHTML='❌ Wrong credentials'}}
+function loadCEOData(){allBookings=JSON.parse(localStorage.getItem('allBookings')||'[]');allNurses=JSON.parse(localStorage.getItem('allNurses')||'[]');staffAccounts=JSON.parse(localStorage.getItem('staffAccounts')||'[]');referralMoMo=JSON.parse(localStorage.getItem('referralMoMo')||'[]');document.getElementById('staffCreatedList').innerHTML=staffAccounts.map(s=>`${s.id} - ${s.pass} <button onclick="deleteStaff('${s.id}')" style="padding:2px 6px;background:#ff4444;color:#fff;border:none;border-radius:5px">DEL</button>`).join('<br>');updateLists();loadVoiceInboxStaff();loadSOS()}
+let voices=JSON.parse(localStorage.getItem('voices')||'[]');let rec,chunks=[],recording=false,timerInt,sec=0;
+function setVol(v){document.getElementById('volTxt').innerText=v+'%';document.querySelectorAll('audio').forEach(a=>a.volume=v/100)}
+async function toggleRec(){await startRec('main')}async function toggleRecClient(){await startRec('client')}async function toggleRecNurse(){await startRec('nurse')}
+async function startRec(type){
+if(!recording){
+let s=await navigator.mediaDevices.getUserMedia({audio:true});rec=new MediaRecorder(s);chunks=[];rec.ondataavailable=e=>chunks.push(e.data);
+let audEl=type==='main'?document.getElementById('aud'):type==='client'?document.getElementById('cAud'):document.getElementById('nAud');
+let sendBtn=type==='main'?document.getElementById('sendVoiceBtn'):type==='client'?document.getElementById('cSendVoice'):document.getElementById('nSendVoice');
+rec.onstop=()=>{let b=new Blob(chunks,{type:'audio/webm'});let url=URL.createObjectURL(b);audEl.src=url;audEl.style.display='block';audEl.volume=1.0;sendBtn.style.display='block';sendBtn.dataset.blob=url;};
+rec.start();recording=true;window.currentRecType=type;
+document.querySelectorAll('[id$=RecBtn],#recBtn').forEach(b=>{if(b){b.innerText='⏹ STOP';b.style.background='#00ff88'}});
+if(type==='main'){sec=0;timerInt=setInterval(()=>{sec++;let m=Math.floor(sec/60).toString().padStart(2,'0');let ss=(sec%60).toString().padStart(2,'0');document.getElementById('timer').innerText=m+':'+ss},1000)}
+}else{rec.stop();recording=false;clearInterval(timerInt);document.querySelectorAll('[id$=RecBtn],#recBtn').forEach(b=>{if(b){b.innerText='🔴 RECORD';b.style.background='#ff4444'}});if(window.currentRecType==='main')document.getElementById('micIcon').innerText='✅'}
 }
-
-// URL ref check
-let urlParams = new URLSearchParams(window.location.search);
-let refFromUrl = urlParams.get('ref');
-if(refFromUrl){
-  db.ref('referrers').orderByChild('code').equalTo(refFromUrl.toUpperCase()).once('value', snap=>{
-    if(snap.exists()){
-      let val=Object.values(snap.val())[0];
-      document.getElementById('referredBox').style.display='block';
-      document.getElementById('refByName').innerText = val.name+" ("+val.code+")";
-      document.getElementById('refByCode').innerText = "Code: "+val.code+" - You get trusted care!";
-      document.getElementById('cReferral').value = val.code;
-      document.getElementById('cReferral').style.borderColor='#ffcc00';
-    }else{
-      // still allow phone ref
-      document.getElementById('cReferral').value = refFromUrl;
-      document.getElementById('referredBox').style.display='block';
-      document.getElementById('refByName').innerText = refFromUrl;
-    }
-  });
-}
-
-function openRefModal(){document.getElementById('refModal').style.display='block'}
-function closeRefModal(){document.getElementById('refModal').style.display='none'}
-function showLogin(){document.getElementById('refRegisterArea').style.display='none';document.getElementById('refLoginArea').style.display='block';document.getElementById('refSuccessArea').style.display='none'}
-function showRegister(){document.getElementById('refRegisterArea').style.display='block';document.getElementById('refLoginArea').style.display='none'}
-
-function generateCode(name, phone){
-  let clean=name.replace(/[^a-zA-Z]/g,'').substring(0,3).toUpperCase();
-  if(clean.length<3) clean=(name.substring(0,3)+"XXX").toUpperCase();
-  let last4=phone.slice(-4);
-  let rand=Math.floor(100+Math.random()*900);
-  return "C233-"+clean+"-"+last4;
-}
-
-function registerReferrer(){
-  let name=document.getElementById('rName').value.trim();
-  let phone=document.getElementById('rPhone').value.trim();
-  let momo=document.getElementById('rMoMo').value.trim();
-  let loc=document.getElementById('rLocation').value.trim();
-  if(!name||!phone||!momo){alert('Please fill Name, Phone and MoMo number');return}
-  let code=generateCode(name, phone);
-
-  // check if phone already exists
-  db.ref('referrers').orderByChild('phone').equalTo(phone).once('value').then(snap=>{
-    if(snap.exists()){
-      let data=Object.values(snap.val())[0];
-      showRefSuccess(data);
-      return;
-    }
-    let refData={
-      name:name,
-      phone:phone,
-      momo:momo,
-      location:loc||"",
-      code:code,
-      totalReferrals:0,
-      totalEarned:0,
-      pendingEarned:0,
-      createdAt:new Date().toLocaleString(),
-      timestamp:Date.now()
-    };
-    db.ref('referrers').push(refData).then(()=>{
-      showRefSuccess(refData);
-      // also store code->data for quick lookup
-      db.ref('referrerCodes/'+code).set(refData);
-    });
-  });
-}
-
-function showRefSuccess(data){
-  document.getElementById('refRegisterArea').style.display='none';
-  document.getElementById('refLoginArea').style.display='none';
-  document.getElementById('refSuccessArea').style.display='block';
-  document.getElementById('myRefCode').innerText=data.code;
-  let link=window.location.origin+window.location.pathname+"?ref="+data.code;
-  document.getElementById('myRefLink').value=link;
-  document.getElementById('statTotal').innerText=data.totalReferrals||0;
-  document.getElementById('statEarned').innerText="GHS "+(data.totalEarned||0).toFixed(2);
-  document.getElementById('statMoMo').innerText=data.momo;
-}
-
-function checkEarnings(){
-  let check=document.getElementById('rCheck').value.trim().toUpperCase();
-  if(!check){alert('Enter code or MoMo');return}
-  // try by code then phone/momo
-  db.ref('referrers').once('value').then(snap=>{
-    let found=null;
-    snap.forEach(c=>{
-      let v=c.val();
-      if(v.code.toUpperCase()==check || v.phone==check || v.momo==check) found=v;
-    });
-    if(found) showRefSuccess(found);
-    else alert('No referrer found with '+check+'. Please register.');
-  });
-}
-
-function copyMyLink(){
-  let link=document.getElementById('myRefLink').value;
-  let code=document.getElementById('myRefCode').innerText;
-  navigator.clipboard.writeText(link).then(()=>{
-    window.open("https://wa.me/?text="+encodeURIComponent("Get trusted Home Nurse from Care233 Ghana! 🏥 Use my link and get fast care: "+link+" \nMy Referral Code: "+code)," _blank");
-  });
-}
-
-function submitBookingToFirebase(){
-  let name=document.getElementById('cName').value.trim();
-  let phone=document.getElementById('cPhone').value.trim();
-  let service=document.getElementById('cService').value;
-  let location=document.getElementById('cLocation').value.trim();
-  let referral=document.getElementById('cReferral').value.trim().toUpperCase();
-  let notes=document.getElementById('cNotes').value.trim();
-  if(!name){alert('Please enter your name');return}
-  if(!phone){alert('Please enter phone');return}
-  if(!location){alert('Please enter location');return}
-
-  let booking={
-    name:name, phone:phone, service:service, location:location,
-    gps:autoGPS||"", lat:autoLat, lng:autoLng,
-    referralCode:referral||"", referredBy:referral||"",
-    notes:notes, price:"To be discussed", amountPaid:0, commission:0, commissionPaid:false,
-    date:new Date().toLocaleString(), timestamp:Date.now(), status:'new'
-  };
-
-  // track referral
-  if(referral){
-    db.ref('referrals').push({
-      referrerCode:referral,
-      referredName:name, referredPhone:phone, service:service,
-      amountPaid:0, commission:0, commissionPaid:false,
-      date:new Date().toLocaleString(), timestamp:Date.now()
-    });
-    // increment referrer count
-    db.ref('referrers').once('value').then(snap=>{
-      snap.forEach(c=>{
-        let v=c.val();
-        if(v.code.toUpperCase()==referral){
-          db.ref('referrers/'+c.key).update({totalReferrals:(v.totalReferrals||0)+1});
-        }
-      });
-    });
-  }
-
-  let btn=document.querySelector('#formArea.btn.green');
-  let old=btn.innerHTML; btn.innerHTML='⏳ Sending...'; btn.disabled=true;
-  db.ref('bookings').push(booking).then(()=>{
-    document.getElementById('formArea').style.display='none';
-    document.getElementById('successArea').style.display='block';
-    document.getElementById('sName').innerText=name;
-    document.getElementById('sService').innerText=service;
-    document.getElementById('sPhone').innerText=phone;
-    document.getElementById('sTime').innerText=new Date().toLocaleString();
-    if(navigator.vibrate) navigator.vibrate([200,100,200]);
-    btn.innerHTML=old; btn.disabled=false;
-  }).catch(e=>{alert(e.message);btn.innerHTML=old;btn.disabled=false});
-}
-
-function bookAnother(){
-  document.getElementById('formArea').style.display='block';
-  document.getElementById('successArea').style.display='none';
-  document.getElementById('cName').value='';document.getElementById('cPhone').value='';
-  document.getElementById('cLocation').value='';document.getElementById('cNotes').value='';
-}
-</script>
-</body>
-</html>
+function sendVoice(){let to=document.getElementById('voiceTo').value;let toName=document.getElementById('voiceToName').value;let v={from:'Staff/CEO',to:to,toName:toName,blob:document.getElementById('sendVoiceBtn').dataset.blob,time:new Date().toLocaleString(),id:Date.now()};voices.push(v);localStorage.setItem('voices',JSON.stringify(voices));document.getElementById('vResult').innerText=`✅ Voice sent to ${to} ${toName}!`;loadVoiceInboxStaff()}
+function sendClientVoice(){let to=document.getElementById('clientVoiceTo').value;let v={from:'Client '+cName.value+' COMPLAINT',to:to,blob:document.getElementById('cSendVoice').dataset.blob,time:new Date().toLocaleString(),id:Date.now()};voices.push(v);localStorage.setItem('voices',JSON.stringify(voices));alert(`✅ Complaint sent to ${to}!`);loadVoiceInboxStaff()}
+function sendNurseVoice(){let to=document.getElementById('nurseVoiceTo').value;let v={from:'Nurse '+nName.value,to:to,blob:document.getElementById('nSendVoice').dataset.blob,time:new Date().toLocaleString(),id:Date.now()};voices.push(v);localStorage.setItem('voices',JSON.stringify(voices));alert(`✅ Voice to ${to}!`);loadVoiceInboxStaff()}
+function loadVoiceInboxStaff(){voices=JSON.parse(localStorage.getItem('voices')||'[]');let inbox=voices.filter(v=>v.to==='staff'||v.to==='ceo');document.getElementById('staffVoiceInbox').innerHTML=inbox.length?inbox.map(v=>`🎤 <b>${v.from}</b> to ${v.to} - ${v.time}<br><audio controls src="${v.blob}" style="width:100%"></audio>`).join('<hr>'):'No complaints yet';document.getElementById('voiceInbox').innerHTML=voices.length?voices.map(v=>`${v.from} → ${v.to} ${v.time}<br><audio controls src="${v.blob}" style="width:100%"></audio>`).join('<hr>'):'No voices'}
+function loadVoiceInboxNurse(){voices=JSON.parse(localStorage.getItem('voices')||'[]');let inbox=voices.filter(v=>v.to==='nurse');document.getElementById('nInbox').innerHTML=inbox.length?inbox.map(v=>`🎤 ${v.from} ${v.time}<br><audio controls src="${v.blob}" style="width:100%"></audio>`).join('<hr>'):'No voice'}
+let stream=null;async function startVideo(){try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'},audio:true});localVid.srcObject=stream;vidStatus.innerText='✅ Camera ON PPT';}catch(e){alert('Allow camera')}}function stopVideo(){if(stream){stream.getTracks().forEach(t=>t.stop());vidStatus.innerText='OFF'}}
+let points=parseInt(localStorage.getItem('points')||'0');let bal=parseInt(localStorage.getItem('myBal')||'0');myPoints.innerText=points;myBal.innerText=bal;let code=localStorage.getItem('myCode')||'LOVE'+Math.floor(100+Math.random()*900);localStorage.setItem('myCode',code);myCode.innerText=code;
+function generateLink(){if(!refName.value||!refMoMo.value){alert('Enter Name + MoMo!');return;}let entry={name:refName.value,momo:refMoMo.value,code:code,time:new Date().toLocaleString()};referralMoMo=JSON.parse(localStorage.getItem('referralMoMo')||'[]');let ex=referralMoMo.find(r=>r.code===code);if(!ex)referralMoMo.push(entry);else{ex.name=refName.value;ex.momo=refMoMo.value}localStorage.setItem('referralMoMo',JSON.stringify(referralMoMo));document.getElementById('myLink').value=location.origin+location.pathname+'?ref='+code;updateLists();alert('✅ Link with MoMo saved! Staff sees to pay Gh100')}
+function addWinner(name,amt){let p=document.createElement('p');p.innerText=`🎉 ${name} won Gh${amt}!`;document.getElementById('winnerList').prepend(p)}
+function shareLink(){if(!myLink.value){alert('Generate first!');return;}let txt=`Join LOVE CARE Ghana! ${myLink.value} My MoMo: ${refMoMo.value}`;window.open('https://wa.me/?text='+encodeURIComponent(txt),'_blank')}
+function applyRef(){if(checkRef.value.length>2){points+=20;bal+=100;localStorage.setItem('points',points);localStorage.setItem('myBal',bal);addWinner('You',100);winResult.innerText='✅ +20 +Gh100 Bal: Gh'+bal;myPoints.innerText=points;myBal.innerText=bal}else alert('Enter code')}
+function sendSOS(){let sList=JSON.parse(localStorage.getItem('sosList')||'[]');sList.push({nurse:'Nurse '+myCode.innerText,time:new Date().toLocaleString()});localStorage.setItem('sosList',JSON.stringify(sList));loadSOS();alert('🚨 SOS Sent to Staff & CEO!')}
+function loadSOS(){let sList=JSON.parse(localStorage.getItem('sosList')||'[]');document.getElementById('sosList').innerHTML=sList.length?sList.map(s=>`🚨 ${s.nurse} - ${s.time}`).join('<br>'):'No SOS';sSOS.innerText=sList.length}
+function clearSOS(){localStorage.removeItem('sosList');loadSOS();updateLists()}
+function payReferrals(){alert(`✅ Paid ${referralMoMo.length} referrals Gh100 each! Total Gh${referralMoMo.length*100} to MoMo numbers listed`);referralMoMo=[];localStorage.setItem('referralMoMo','[]');updateLists()}
+function broadcast(){if(!broadcastMsg.value){alert('Enter message');return;}alert(`📢 Broadcast sent to all: ${broadcastMsg.value}`);broadcastMsg.value=''}
+function blockUser(){if(!blockPhone.value){alert('Enter phone');return;}alert(`🚫 Blocked ${blockPhone.value}`);blockPhone.value=''}
+let urlParams=new URLSearchParams(location.search);let ref=urlParams.get('ref');if(ref){cRefLink.value=ref;showPage('book');}
+calcPay();updateLists();loadCEOData();setVol(100);loadVoiceInboxStaff();loadSOS();
+</script></body></html>
