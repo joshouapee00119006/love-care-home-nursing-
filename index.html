@@ -1,45 +1,47 @@
 <!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Boadi Laundry V34.1 Rotating</title>
+<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Boadi Laundry V33.6 Full</title>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 <style>
-body{margin:0;font-family:Arial;background:#f0fdf4}
-.header{background:linear-gradient(90deg,#16a34a,#eab308);color:white;padding:12px;text-align:center;font-weight:bold;font-size:18px}
-.winners-box{background:#fefce8;border:2px solid #eab308;margin:10px;border-radius:12px;padding:10px;overflow:hidden;height:40px;position:relative}
-.marquee{position:absolute;white-space:nowrap;animation:scroll 15s linear infinite}
-@keyframes scroll{0%{transform:translateX(100%)}100%{transform:translateX(-100%)}}
-.batch{font-weight:bold}
-.free{color:#16a34a} .money{color:#ca8a04}
-.tab{display:none;padding:10px} .tab.active{display:block}
-.nav{position:fixed;bottom:0;width:100%;display:flex;background:white;border-top:1px solid #ddd}
-.nav button{flex:1;padding:12px;border:none;background:none;font-weight:bold}
+*{box-sizing:border-box}body{margin:0;font-family:Arial;background:#f0fdf4;padding-bottom:70px}
+.header{background:linear-gradient(90deg,#16a34a,#eab308);color:white;padding:14px;text-align:center;font-weight:bold;font-size:19px;position:sticky;top:0;z-index:10}
+.winners-box{background:#fefce8;border:2px solid #eab308;margin:10px;border-radius:12px;padding:10px;overflow:hidden;height:44px;position:relative}
+.marquee{position:absolute;white-space:nowrap;animation:scroll 18s linear infinite;line-height:22px;font-weight:bold}
+@keyframes scroll{0%{transform:translateX(100%)}100%{transform:translateX(-300%)}}
+.free{color:#16a34a}.money{color:#b45309}
+.tab{display:none;padding:12px}.tab.active{display:block}
+.card{background:white;border-radius:12px;padding:14px;margin:10px 0;box-shadow:0 2px 6px rgba(0,0,0,0.08)}
+input,select{width:100%;padding:11px;margin:6px 0;border-radius:8px;border:1px solid #d1d5db}
+.btn{width:100%;padding:12px;border:none;border-radius:8px;font-weight:bold;color:white;cursor:pointer;margin-top:8px}
+.btn-green{background:#16a34a}.btn-yellow{background:#eab308;color:#000}.btn-red{background:#dc2626}
+.nav{position:fixed;bottom:0;width:100%;display:flex;background:white;border-top:1px solid #e5e7eb;z-index:20}
+.nav button{flex:1;padding:13px;border:none;background:none;font-weight:bold;color:#6b7280}
 .nav button.active{color:#16a34a;border-top:3px solid #16a34a}
-.card{background:white;border-radius:10px;padding:12px;margin:8px 0;box-shadow:0 1px 3px rgba(0,0,0,0.1)}
-</style>
-</head>
-<body>
+table{width:100%;border-collapse:collapse}th,td{padding:8px;border:1px solid #eee;font-size:13px;text-align:left}th{background:#f3f4f6}
+</style></head><body>
 <div class="header">👕 Boadi Laundry - Win Free Wash & Cash!</div>
-
-<div class="winners-box">
-<div id="rotatingWinners" class="marquee"></div>
-</div>
+<div class="winners-box"><div id="rotatingWinners" class="marquee"></div></div>
 
 <div id="homeTab" class="tab active">
-<div class="card">
-<h3>Refer & Win</h3>
-<p>Invite friends, they wash, you win!</p>
-<p><b>5 referrals = 5 days free</b> or <b>Gh250 cash</b></p>
-<input id="referrerMoMo" placeholder="Your MoMo (for referrals)" style="width:100%;padding:10px;border-radius:8px;border:1px solid #ddd">
-</div>
+<div class="card"><h3>Refer & Win</h3><p>Invite friends, they wash, you win!</p><p><b>5 referrals = 5 days free</b> or <b>Gh250 cash</b></p>
+<input id="homeName" placeholder="Your Name"><input id="homeMoMo" placeholder="Your MoMo (for referrals)"><button class="btn btn-green" onclick="registerReferrer()">Register as Referrer</button></div>
+<div class="card"><h3>🏆 Live Winners Board (Public)</h3><div id="publicWinners"></div></div>
 </div>
 
-<div id="staffTab" class="tab"><div class="card"><h3>Staff - Add Customer</h3><input id="custName" placeholder="Customer Name" style="width:100%;padding:8px;margin:4px 0"><input id="custMoMo" placeholder="Customer MoMo" style="width:100%;padding:8px;margin:4px 0"><input id="refMoMo" placeholder="Referrer MoMo" style="width:100%;padding:8px;margin:4px 0"><button onclick="addCustomer()" style="width:100%;padding:12px;background:#16a34a;color:white;border:none;border-radius:8px;margin-top:8px">Add Wash</button><div id="liveWinners"></div></div></div>
+<div id="staffTab" class="tab">
+<div class="card"><h3>Staff - Registration (Nurses / Customers)</h3>
+<input id="custName" placeholder="Customer/Nurse Name"><input id="custMoMo" placeholder="Customer MoMo Number"><input id="custPhone" placeholder="Phone (optional)"><select id="custService"><option>Regular Wash</option><option>Express Wash</option><option>Iron Only</option><option>Nurse Uniform Special</option></select><input id="refMoMo" placeholder="Referrer MoMo (who referred)"><button class="btn btn-green" onclick="addCustomer()">Add Customer / Register</button></div>
+<div class="card"><h3>Recent Customers</h3><div id="recentCustomers"></div></div>
+<div class="card"><h3>Staff Winners (Private - with MoMo)</h3><div id="staffWinners"></div></div>
+</div>
 
-<div id="ceoTab" class="tab"><div class="card"><h3>CEO Dashboard</h3><div id="ceoContent"></div></div></div>
+<div id="ceoTab" class="tab">
+<div class="card"><h3>CEO Dashboard - LOCKED</h3><div id="ceoStats"></div></div>
+<div class="card"><h3>All Customers / Nurses</h3><div id="ceoCustomers" style="overflow:auto"></div></div>
+<div class="card"><h3>Referral Leaders & Payouts</h3><div id="ceoReferrals"></div></div>
+<div class="card"><h3>Manage Winners</h3><button class="btn btn-red" onclick="clearWinners()">Clear All Winners (Reset)</button><div id="ceoWinners"></div></div>
+</div>
 
 <div class="nav">
 <button id="homeBtn" class="active" onclick="showTab('homeTab',this)">Home</button>
@@ -48,60 +50,34 @@ body{margin:0;font-family:Arial;background:#f0fdf4}
 </div>
 
 <script>
-// --- YOUR FIREBASE CONFIG - KEEP YOUR OWN FROM LINE 54 ---
-const firebaseConfig={apiKey:"AIzaSyB52YOURKEY",authDomain:"yourapp.firebaseapp.com",databaseURL:"https://yourapp.firebaseio.com",projectId:"yourapp",storageBucket:"yourapp.appspot.com",messagingSenderId:"123",appId:"1:123:web:abc"};
-firebase.initializeApp(firebaseConfig);
-const db=firebase.database();
+// === KEEP YOUR FIREBASE CONFIG FROM V33.6 ===
+const firebaseConfig={apiKey:"AIzaSyB52YOURKEY_REPLACE",authDomain:"YOURAPP.firebaseapp.com",databaseURL:"https://YOURAPP.firebaseio.com",projectId:"YOURAPP",storageBucket:"YOURAPP.appspot.com",messagingSenderId:"123",appId:"1:123:web:abc"};
+firebase.initializeApp(firebaseConfig);const db=firebase.database();
 
-// --- V34.1 OLD FAKE WINNERS + ROTATING 2 BATCHES ---
-const freeBatch=[
-"🏆 Yaa Brago won 5 days free",
-"🏆 Uncle Ebo won 2 days free",
-"🏆 Akosua won 5 days free"
-];
-const moneyBatch=[
-"💰 Yaw Antwi won Gh100",
-"💰 Ama Fremah won Gh250",
-"💰 Kofi won Gh100"
-];
-
-let batchIndex=0;
+// === 2 BATCHES ROTATING - V33.6 + NEW COLOR ===
+const freeBatch=["🏆 Yaa Brago won 5 days free","🏆 Uncle Ebo won 2 days free","🏆 Akosua won 5 days free","🏆 Nurse Abena won 2 days free"];
+const moneyBatch=["💰 Yaw Antwi won Gh100","💰 Ama Fremah won Gh250","💰 Nurse Kofi won Gh100","💰 Adwoa won Gh250"];
+let batchIdx=0;
 function rotateBatches(){
-const container=document.getElementById('rotatingWinners');
-const batch = batchIndex===0 ? freeBatch : moneyBatch;
-const cls = batchIndex===0 ? 'free' : 'money';
-container.innerHTML = `<span class="batch ${cls}">${batch.join(' • • • ')}</span>`;
-batchIndex = batchIndex===0 ? 1 : 0;
+const el=document.getElementById('rotatingWinners');
+const batch=batchIdx===0?freeBatch:moneyBatch; const cls=batchIdx===0?'free':'money';
+el.innerHTML=`<span class="${cls}">${batch.join(' • • • ')}</span>`; batchIdx=batchIdx===0?1:0;
 }
-rotateBatches();
-setInterval(rotateBatches,4000); // Rotate every 4 seconds
-setInterval(()=>{ // Also rotate with real firebase winners if exist
-db.ref('winners').once('value',snap=>{
-if(snap.exists()){
-let real=[];
-snap.forEach(c=>{let v=c.val(); if(v.reward) real.push(`🏆 ${v.name} won ${v.reward}`);});
-if(real.length>0){
-document.getElementById('rotatingWinners').innerHTML += ` • ${real.join(' • ')}`;
-}
-}
-});
-},5000);
+rotateBatches(); setInterval(rotateBatches,4000);
 
+// === FUNCTIONS RESTORED FROM V33.6 ===
 function showTab(id,btn){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
-function openCEO(btn){
-let pass=prompt("CEO Password:");
-if(pass==="LOVE123"){showTab('ceoTab',btn);loadCEO();}
-else if(pass!==null){alert("Wrong password!");}
-}
-function loadCEO(){db.ref('customers').once('value',s=>{let count=s.numChildren();document.getElementById('ceoContent').innerHTML=`<p>Total Customers: <b>${count}</b></p><p>Total Payout: Calculating...</p>`;});}
-function addCustomer(){let n=document.getElementById('custName').value;let m=document.getElementById('custMoMo').value;let r=document.getElementById('refMoMo').value;if(!n||!m){alert("Add name & momo");return;}db.ref('customers').push({name:n,momo:m,referrer:r,date:Date.now()});alert("Added!");}
+function openCEO(btn){let p=prompt("CEO Password:"); if(p==="LOVE123"){showTab('ceoTab',btn);loadCEO();} else if(p!==null){alert("Wrong password! CEO locked.");}}
+function registerReferrer(){let n=document.getElementById('homeName').value,m=document.getElementById('homeMoMo').value; if(!n||!m){alert("Enter name & MoMo");return;} db.ref('referrers/'+m).set({name:n,momo:m,date:Date.now()}); alert("Registered! Share your MoMo to referrals");}
+function addCustomer(){let n=document.getElementById('custName').value,m=document.getElementById('custMoMo').value,ph=document.getElementById('custPhone').value,svc=document.getElementById('custService').value,ref=document.getElementById('refMoMo').value; if(!n||!m){alert("Name & MoMo required");return;} db.ref('customers').push({name:n,momo:m,phone:ph,service:svc,referrer:ref,date:Date.now()}); if(ref){db.ref('referralCount/'+ref).transaction(c=>(c||0)+1);} alert("Customer Registered!"); document.getElementById('custName').value="";}
 
-// Live winners for staff (with MoMo - private)
-db.ref('winners').on('value',snap=>{
-let html="";
-snap.forEach(c=>{let v=c.val(); html+=`<div class="card">${v.name} - ${v.reward} - ${v.momo||''}</div>`;});
-document.getElementById('liveWinners').innerHTML=html;
-});
-</script>
-</body>
-</html>
+function loadCEO(){
+db.ref('customers').on('value',s=>{let c=s.numChildren(); document.getElementById('ceoStats').innerHTML=`<p>Total Customers/Nurses: <b>${c}</b></p><p>Free Days Given: Calculating...</p><p>Cash Payout: Gh... </p>`; let html='<table><tr><th>Name</th><th>MoMo</th><th>Service</th><th>Referrer</th></tr>'; s.forEach(ch=>{let v=ch.val(); html+=`<tr><td>${v.name}</td><td>${v.momo}</td><td>${v.service||''}</td><td>${v.referrer||''}</td></tr>`}); html+='</table>'; document.getElementById('ceoCustomers').innerHTML=html; });
+db.ref('referralCount').on('value',s=>{let html='<table><tr><th>Referrer MoMo</th><th>Count</th><th>Reward</th></tr>'; s.forEach(ch=>{let count=ch.val(); let momo=ch.key; let reward=count>=5?(count>=10?'Gh250':'5 days free'):'Pending'; if(count>=2) html+=`<tr><td>${momo}</td><td>${count}</td><td>${reward} <button onclick="makeWinner('${momo}','${reward}')">Make Winner</button></td></tr>`;}); html+='</table>'; document.getElementById('ceoReferrals').innerHTML=html; });
+db.ref('winners').on('value',s=>{let htmlPub='',htmlStaff='',htmlCeo='<table><tr><th>Name</th><th>Reward</th><th>MoMo</th></tr>'; s.forEach(ch=>{let v=ch.val(); htmlPub+=`<div style="padding:6px;border-bottom:1px solid #eee">🏆 ${v.name} won ${v.reward}</div>`; htmlStaff+=`<div style="padding:6px;border-bottom:1px solid #eee">${v.name} - ${v.reward} - ${v.momo}</div>`; htmlCeo+=`<tr><td>${v.name}</td><td>${v.reward}</td><td>${v.momo}</td></tr>`;}); htmlCeo+='</table>'; document.getElementById('publicWinners').innerHTML=htmlPub||'No winners yet'; document.getElementById('staffWinners').innerHTML=htmlStaff; document.getElementById('ceoWinners').innerHTML=htmlCeo; });
+}
+function makeWinner(momo,reward){db.ref('referrers/'+momo).once('value',snap=>{let name=snap.exists()?snap.val().name:momo; db.ref('winners').push({name:name,momo:momo,reward:reward,date:Date.now()}); alert(name+" made winner: "+reward);});}
+function clearWinners(){if(confirm("Clear all winners?")){db.ref('winners').remove();}}
+loadCEO();
+db.ref('customers').limitToLast(10).on('value',s=>{let html=''; s.forEach(ch=>{let v=ch.val(); html=`<div style="padding:6px;border-bottom:1px solid #eee">${v.name} - ${v.momo} - ${v.service}</div>`+html;}); document.getElementById('recentCustomers').innerHTML=html;});
+</script></body></html>
