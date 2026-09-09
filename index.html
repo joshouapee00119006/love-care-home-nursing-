@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html><head><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Love Care V32.4 - Admin Can Change Password Anytime + Auto GPS + Ringing</title>
+<title>Love Care V32.5 - Client Condition Stroke Seizure etc + GPS + Ringing</title>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 <style>
@@ -26,7 +26,6 @@ input,select{width:100%;padding:11px;margin:5px 0;border-radius:11px;border:1px 
 .videoBox{background:#000;border:2px solid #ff33cc;border-radius:12px;padding:8px;margin:8px 0}
 .voiceBox{background:#1a1a00;border:2px solid #ffcc00;border-radius:12px;padding:8px;margin:8px 0}
 .deleteBtn{background:red;color:#fff;border:none;padding:5px 10px;border-radius:6px;font-size:10px;font-weight:800;cursor:pointer;margin:3px}
-.editBtn{background:#ffcc00;color:#000;border:none;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:800;cursor:pointer}
 .marqueeContainer{height:180px;overflow:hidden;position:relative;background:#000;border:2px solid #ffcc00;border-radius:12px;padding:5px}
 .marqueeContent{animation:scrollUp 25s linear infinite}
 @keyframes scrollUp{0%{transform:translateY(100%)}100%{transform:translateY(-100%)}}
@@ -34,55 +33,79 @@ input,select{width:100%;padding:11px;margin:5px 0;border-radius:11px;border:1px 
 .genderBox{background:#1a0a2a;border:2px solid #ff77dd;border-radius:12px;padding:10px;margin:8px 0}
 .colleagueBox{background:#0a1a2a;border:2px dashed #00ff88;border-radius:12px;padding:10px;margin:10px 0}
 .gpsBox{background:#0a2a00;border:2px solid #00ff88;border-radius:12px;padding:10px;margin:10px 0}
+.conditionBox{background:#1a0a2a;border:2px solid #ff77dd;border-radius:12px;padding:10px;margin:10px 0}
+.conditionGrid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin:8px 0}
+.conditionItem{background:#0f1f2a;border:1px solid #2a5a3a;padding:8px;border-radius:8px;font-size:10px;cursor:pointer;text-align:center}
+.conditionItem.selected{background:#ff77dd;color:#000;font-weight:800;border-color:#ff77dd}
 .ringingModal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.95);z-index:300;justify-content:center;align-items:center;padding:20px;flex-direction:column}.ringingModal.active{display:flex}
 .ringPulse{width:100px;height:100px;background:#00ff88;border-radius:50%;animation:pulse 1s infinite;display:flex;justify-content:center;align-items:center;font-size:50px}
 @keyframes pulse{0%{transform:scale(1);box-shadow:0 0 0 0 rgba(0,255,136,0.7)}70%{transform:scale(1.1);box-shadow:0 0 0 20px rgba(0,255,136,0)}100%{transform:scale(1);box-shadow:0 0 0 0 rgba(0,255,136,0)}}
-.adminPassBox{background:#1a0000;border:2px solid red;border-radius:12px;padding:10px;margin:10px 0}
 </style></head><body>
 <audio id="ringtone" loop preload="auto"><source src="https://actions.google.com/sounds/v1/alarms/phone_ringing.ogg" type="audio/ogg"></audio>
-<div id="ringingModal" class="ringingModal"><div class="ringPulse">📞</div><h2 style="color:#00ff88;margin-top:15px" id="ringingTitle">🔔 Incoming Call - Ringing!</h2><p id="ringingFrom" style="color:#ffcc00;font-size:14px">From: Staff</p><div style="display:flex;gap:10px;margin-top:15px;width:100%"><button class="btnSubmit" style="background:#00ff88;color:#000;flex:1" onclick="acceptRinging()">✅ ANSWER</button><button class="btnSubmit" style="background:red;color:#fff;flex:1" onclick="rejectRinging()">❌ REJECT</button></div><button class="btnSubmit" style="background:#333;color:#fff" onclick="stopRinging()">🔇 MUTE</button></div>
-<div class="syncBadge" id="syncBadge">✅ Live + 🔔 Ringing + 📍 GPS + 🔑 Admin Pass Change</div>
+<div id="ringingModal" class="ringingModal"><div class="ringPulse">📞</div><h2 style="color:#00ff88;margin-top:15px" id="ringingTitle">🔔 Incoming Call</h2><p id="ringingFrom" style="color:#ffcc00;font-size:14px">From: Staff</p><div style="display:flex;gap:10px;margin-top:15px;width:100%"><button class="btnSubmit" style="background:#00ff88;color:#000;flex:1" onclick="acceptRinging()">✅ ANSWER</button><button class="btnSubmit" style="background:red;color:#fff;flex:1" onclick="rejectRinging()">❌ REJECT</button></div><button class="btnSubmit" style="background:#333;color:#fff" onclick="stopRinging()">🔇 MUTE</button></div>
+<div class="syncBadge" id="syncBadge">✅ Live - V32.5 + Condition</div>
 <div class="header"><div onclick="tapLogo()" style="display:flex;align-items:center;gap:8px;cursor:pointer"><span style="font-size:26px">💖</span><b style="color:#ffcc00">LOVE CARE</b><span style="background:#ffcc00;color:#000;padding:2px 8px;border-radius:10px;font-size:9px">GHANA</span></div><div onclick="showPage('win')" style="font-size:18px;cursor:pointer">🏆</div></div>
 <div class="topBtns">
 <button style="border-color:#00ff88;color:#00ff88;background:#0a2a1a" onclick="showPage('book')">CLIENT<br>BOOK</button>
-<button style="border-color:#3b82f6;color:#7ab8ff;background:#0a1a3a" onclick="showPage('nurse')">NURSE<br>PORTAL 📍</button>
-<button style="border-color:#ff33cc;color:#ff77dd;background:#2a1433" onclick="openSelectModal('video')">VIDEO<br>CALL 🔔</button>
-<button style="border-color:#ffcc00;color:#ffdd55;background:#332a00" onclick="openSelectModal('voice')">VOICE<br>CHAT 🔔</button>
+<button style="border-color:#3b82f6;color:#7ab8ff;background:#0a1a3a" onclick="showPage('nurse')">NURSE<br>PORTAL</button>
+<button style="border-color:#ff33cc;color:#ff77dd;background:#2a1433" onclick="openSelectModal('video')">VIDEO<br>CALL</button>
+<button style="border-color:#ffcc00;color:#ffdd55;background:#332a00" onclick="openSelectModal('voice')">VOICE<br>CHAT</button>
 </div>
-<div id="selectModal" class="modal"><div class="modalBox"><h2 style="color:#ffcc00" id="modalTitle">Select Person - Will Ring 🔔</h2><div id="modalList" style="font-size:11px"></div><button class="btnSubmit" style="background:#333;color:#fff" onclick="closeModal()">CLOSE</button></div></div>
-<div id="page-home" class="page active"><div class="card" style="text-align:center"><div style="font-size:50px">💖</div><h2 style="font-size:18px;color:#ffcc00">LOVE CARE HOME NURSING GHANA</h2><p style="font-size:11px;background:#0a2a1a;padding:10px;border-radius:12px;border:1px solid #00ff88">Gh40 House Help | Gh120-150 Nurses | Male/Female | 📍 Auto GPS | 🔔 Ringing | 🔑 Admin Pass Change Anytime</p><p style="font-size:11px">Clients: <b id="hClients" style="color:#00ff88">0</b> | Nurses: <b id="hNurses" style="color:#7ab8ff">0</b> | Winners: <b id="hWinners" style="color:#ffcc00">0</b></p><button class="btnSubmit" style="background:linear-gradient(90deg,#00ff88,#00cc66);color:#000" onclick="showPage('book')">📗 BOOK A NURSE / HOUSE HELP Gh40-150</button><button class="btnSubmit" style="background:linear-gradient(90deg,#3b82f6,#5a9cff);color:#fff" onclick="showPage('nurse')">👩‍⚕️ NURSE REGISTER + 📍 GPS + Colleagues</button><button class="btnSubmit" style="background:linear-gradient(90deg,#ffcc00,#ffdd55);color:#000" onclick="showPage('win')">🏆 WIN Gh100</button>
+<div id="selectModal" class="modal"><div class="modalBox"><h2 style="color:#ffcc00" id="modalTitle">Select Person</h2><div id="modalList" style="font-size:11px"></div><button class="btnSubmit" style="background:#333;color:#fff" onclick="closeModal()">CLOSE</button></div></div>
+<div id="page-home" class="page active"><div class="card" style="text-align:center"><div style="font-size:50px">💖</div><h2 style="font-size:18px;color:#ffcc00">LOVE CARE HOME NURSING GHANA</h2><p style="font-size:11px;background:#0a2a1a;padding:10px;border-radius:12px;border:1px solid #00ff88">Gh40 House Help | Gh120-150 Nurses | Male/Female | Medical Condition Options | GPS + Ringing</p><p style="font-size:11px">Clients: <b id="hClients" style="color:#00ff88">0</b> | Nurses: <b id="hNurses" style="color:#7ab8ff">0</b> | Winners: <b id="hWinners" style="color:#ffcc00">0</b></p><button class="btnSubmit" style="background:linear-gradient(90deg,#00ff88,#00cc66);color:#000" onclick="showPage('book')">📗 BOOK A NURSE + Select Condition (Stroke etc)</button><button class="btnSubmit" style="background:linear-gradient(90deg,#3b82f6,#5a9cff);color:#fff" onclick="showPage('nurse')">👩‍⚕️ NURSE REGISTER</button><button class="btnSubmit" style="background:linear-gradient(90deg,#ffcc00,#ffdd55);color:#000" onclick="showPage('win')">🏆 WIN Gh100</button>
 <div style="margin-top:12px;background:#111;padding:8px;border-radius:12px;border:2px solid #ffcc00"><h2 style="font-size:12px;color:#ffcc00">🏆 TOP WINNERS - Only Name + Amount Won</h2><div class="marqueeContainer"><div id="homeWinners" class="marqueeContent" style="font-size:11px">Loading...</div></div></div>
 </div></div>
-<div id="page-book" class="page"><div class="card"><h2>📗 CLIENT BOOK</h2>
+
+<div id="page-book" class="page"><div class="card"><h2>📗 CLIENT BOOK - Gh40-150 + Male/Female + Medical Condition</h2>
 <input id="cName" placeholder="Full Name *"><input id="cPhone" placeholder="Phone *">
+
+<!-- NEW CONDITION OPTIONS -->
+<div class="conditionBox">
+<h2 style="font-size:12px;color:#ff77dd">🩺 What Condition is Patient Suffering From? (Optional but helps nurse prepare) - Select one or more</h2>
+<p style="font-size:9px;opacity:0.7">Choose condition like Stroke, Seizure etc - Helps us assign specialist nurse</p>
+<div class="conditionGrid" id="conditionGrid">
+<div class="conditionItem" onclick="toggleCondition(this,'Stroke')">🧠 Stroke</div>
+<div class="conditionItem" onclick="toggleCondition(this,'Seizure')">⚡ Seizure / Epilepsy</div>
+<div class="conditionItem" onclick="toggleCondition(this,'Diabetes')">🍬 Diabetes</div>
+<div class="conditionItem" onclick="toggleCondition(this,'Hypertension')">❤️ Hypertension / High BP</div>
+<div class="conditionItem" onclick="toggleCondition(this,'Paralysis')">🦽 Paralysis</div>
+<div class="conditionItem" onclick="toggleCondition(this,'Dementia')">🧓 Dementia / Alzheimer</div>
+<div class="conditionItem" onclick="toggleCondition(this,'Cancer')">🎗️ Cancer</div>
+<div class="conditionItem" onclick="toggleCondition(this,'Asthma')">🫁 Asthma / Breathing</div>
+<div class="conditionItem" onclick="toggleCondition(this,'Kidney')">🫘 Kidney Disease</div>
+<div class="conditionItem" onclick="toggleCondition(this,'Heart')">💔 Heart Disease</div>
+<div class="conditionItem" onclick="toggleCondition(this,'Wound')">🩹 Wound / Injury</div>
+<div class="conditionItem" onclick="toggleCondition(this,'PostSurgery')">🏥 Post Surgery</div>
+<div class="conditionItem" onclick="toggleCondition(this,'Elderly')">👴 Elderly Frail</div>
+<div class="conditionItem" onclick="toggleCondition(this,'Baby')">👶 Newborn / Baby</div>
+<div class="conditionItem" onclick="toggleCondition(this,'Mental')">🧠 Mental Health</div>
+<div class="conditionItem" onclick="toggleCondition(this,'Other')">📝 Other</div>
+</div>
+<input id="cConditionOther" placeholder="If Other, describe condition (e.g. Stroke + Diabetes + etc)" style="display:none;background:#1a0a2a;border:1px solid #ff77dd">
+<div id="selectedConditions" style="font-size:10px;color:#ff77dd;background:#000;padding:6px;border-radius:8px;margin-top:6px">No condition selected yet - Optional - Select one or more like Stroke, Seizure etc</div>
+</div>
+
 <div class="genderBox"><h2 style="font-size:12px;color:#ff77dd">👫 Choose Male or Female Nurse *</h2><div class="radioRow"><label id="genderMaleLabel" onclick="setGender('male')">👨 MALE NURSE</label><label id="genderFemaleLabel" onclick="setGender('female')" class="selected">👩 FEMALE NURSE</label><label id="genderAnyLabel" onclick="setGender('any')">👫 ANY</label></div><p id="genderNote" style="font-size:10px;color:#ff77dd;background:#1a0a2a;padding:6px;border-radius:8px;margin-top:6px">✅ Female Nurse selected</p></div>
-<select id="cService" onchange="calcPay()"><option value="40">🏠 House Help - Gh40/day</option><option value="120">💚 Elderly Care - Gh120/day</option><option value="120">👶 Baby Care - Gh120/day</option><option value="130">💉 Injection - Gh130/day</option><option value="140">🦾 Physio - Gh140/day</option><option value="125">🏠 Home Nursing - Gh125/day</option><option value="135">🏥 Hospital Support - Gh135/day</option><option value="120">🤝 Companion - Gh120/day</option><option value="150">❤️‍🩹 Special Care - Gh150/day MAX</option></select>
+<select id="cService" onchange="calcPay()"><option value="40">🏠 House Help / House Maid - Gh40/day</option><option value="120">💚 Elderly Care - Gh120/day</option><option value="120">👶 Baby Care - Gh120/day</option><option value="130">💉 Injection - Gh130/day</option><option value="140">🦾 Physio - Gh140/day - Good for Stroke/Paralysis</option><option value="125">🏠 Home Nursing - Gh125/day</option><option value="135">🏥 Hospital Support - Gh135/day</option><option value="120">🤝 Companion - Gh120/day</option><option value="150">❤️‍🩹 Special Care - Gh150/day - For Stroke/Seizure etc</option></select>
 <select id="cLive" onchange="handleLiveChange()"><option value="">-- Live IN or Live OUT -- *</option><option value="out">🏠 Live OUT</option><option value="in">🌙 Live IN 24hrs</option></select>
 <div id="liveOutBox" class="optionBox"><h2 style="font-size:11px">🏠 Live OUT - Transport?</h2><div class="radioRow"><label id="transYesLabel" onclick="setTransport(true)">✅ YES Transport</label><label id="transNoLabel" onclick="setTransport(false)" class="selected">❌ NO Transport</label></div><div id="transAmountBox" style="display:none"><input id="transAmount" type="number" placeholder="Amount e.g. 20" oninput="calcPay()"></div></div>
 <div id="liveInBox" class="optionBox"><h2 style="font-size:11px">🌙 Live IN - Feeding?</h2><div class="radioRow"><label id="feedNoLabel" onclick="setFeeding('no')">❌ NO</label><label id="feed1Label" onclick="setFeeding('1')">🍛 1 Meal</label><label id="feed2Label" onclick="setFeeding('2')">🍛🍛 2 Meals</label><label id="feed3Label" onclick="setFeeding('3')" class="selected">🍛🍛🍛 3 Meals</label></div><p id="feedingNote" style="font-size:10px;color:#00ff88;background:#0a2a1a;padding:6px;border-radius:8px">✅ 3 Meals daily</p></div>
-<input id="cDays" type="number" value="1" min="1" oninput="calcPay()"><p style="color:#00ff88;background:#0a2a1a;padding:10px;border-radius:12px"><span id="serviceName">House Help</span> - <span id="payTotal">Gh40</span> for <span id="dayCount">1</span> days<br><span id="extraInfo" style="font-size:10px;color:#ffcc00"></span><br><span id="genderInfo" style="font-size:10px;color:#ff77dd">👩 Female Nurse</span></p>
-<button class="gpsBtn" onclick="getRealGPS()">📍 GET GPS - Client</button><input id="cLocation" readonly style="background:#000;color:#00ff88"><div id="gpsResult" style="font-size:10px;color:#00ff88"></div>
+<input id="cDays" type="number" value="1" min="1" oninput="calcPay()"><p style="color:#00ff88;background:#0a2a1a;padding:10px;border-radius:12px"><span id="serviceName">House Help</span> - <span id="payTotal">Gh40</span> for <span id="dayCount">1</span> days<br><span id="extraInfo" style="font-size:10px;color:#ffcc00"></span><br><span id="genderInfo" style="font-size:10px;color:#ff77dd">👩 Female Nurse</span><br><span id="conditionInfo" style="font-size:10px;color:#ff77dd">🩺 No condition selected</span></p>
+<button class="gpsBtn" onclick="getRealGPS()">📍 GET GPS - Client Location</button><input id="cLocation" readonly style="background:#000;color:#00ff88"><div id="gpsResult" style="font-size:10px;color:#00ff88"></div>
 <input id="cRefLink" placeholder="Referral Code (optional)">
-<div class="videoBox"><h2 style="font-size:11px">📹 Client Video - Will Ring Staff/Admin 🔔</h2><video id="clientLocalVid" autoplay muted playsinline style="width:100%;background:#000;border-radius:10px;height:130px"></video><div style="display:flex;gap:5px"><button class="btnSubmit" style="background:#ff33cc;color:#fff;flex:1" onclick="startVideoClient()">📹 START CAM</button><button class="btnSubmit" style="background:#333;color:#fff;flex:1" onclick="stopVideoClient()">⏹ STOP</button></div><button class="btnSubmit" style="background:#3b82f6;color:#fff" onclick="openSelectModalClient('video')">👤 SELECT STAFF/ADMIN - Will Ring 🔔</button><div id="clientVideoInfo" style="font-size:10px;color:#00ff88"></div></div>
-<div class="voiceBox"><h2 style="font-size:11px">🎤 Client Voice - Will Ring 🔔</h2><button class="btnSubmit" style="background:#3b82f6;color:#fff" onclick="openSelectModalClient('voice')">👤 SELECT STAFF/ADMIN - Will Ring 🔔</button><div id="clientVoiceSelected" style="font-size:10px;color:#00ff88;background:#000;padding:6px;border-radius:8px;margin:6px 0">No selected</div><button id="clientRecBtn" class="btnSubmit" style="background:#ff4444;color:#fff" onclick="toggleRecClient()">🔴 RECORD + RING 🔔</button><audio id="clientAud" controls style="width:100%;display:none"></audio><button id="clientSendVoice" style="display:none;background:#ffcc00;color:#000;padding:10px;width:100%;margin-top:6px;border-radius:11px" onclick="sendClientVoice()">SEND + RING 🔔 →</button></div>
-<button class="btnSubmit" style="background:#00ff88;color:#000" onclick="submitClient()">✅ SUBMIT BOOKING</button><div id="cResult" style="color:#00ff88;font-size:11px"></div><button onclick="showPage('home')" style="padding:8px;background:#222;color:#fff;border:none;border-radius:9px;margin-top:6px">← BACK</button></div></div>
+<div class="videoBox"><h2 style="font-size:11px">📹 Client Video - Will Ring Staff/Admin</h2><video id="clientLocalVid" autoplay muted playsinline style="width:100%;background:#000;border-radius:10px;height:130px"></video><div style="display:flex;gap:5px"><button class="btnSubmit" style="background:#ff33cc;color:#fff;flex:1" onclick="startVideoClient()">📹 START CAM</button><button class="btnSubmit" style="background:#333;color:#fff;flex:1" onclick="stopVideoClient()">⏹ STOP</button></div><button class="btnSubmit" style="background:#3b82f6;color:#fff" onclick="openSelectModalClient('video')">👤 SELECT STAFF/ADMIN FOR VIDEO - Will Ring</button><div id="clientVideoInfo" style="font-size:10px;color:#00ff88"></div></div>
+<div class="voiceBox"><h2 style="font-size:11px">🎤 Client Voice - Will Ring Staff/Admin</h2><button class="btnSubmit" style="background:#3b82f6;color:#fff" onclick="openSelectModalClient('voice')">👤 SELECT STAFF/ADMIN FOR VOICE - Will Ring</button><div id="clientVoiceSelected" style="font-size:10px;color:#00ff88;background:#000;padding:6px;border-radius:8px;margin:6px 0">No selected</div><button id="clientRecBtn" class="btnSubmit" style="background:#ff4444;color:#fff" onclick="toggleRecClient()">🔴 RECORD VOICE RESPONSE</button><audio id="clientAud" controls style="width:100%;display:none"></audio><button id="clientSendVoice" style="display:none;background:#ffcc00;color:#000;padding:10px;width:100%;margin-top:6px;border-radius:11px" onclick="sendClientVoice()">SEND VOICE RESPONSE + Ring →</button></div>
+<button class="btnSubmit" style="background:#00ff88;color:#000" onclick="submitClient()">✅ SUBMIT BOOKING + Condition (Stroke etc)</button><div id="cResult" style="color:#00ff88;font-size:11px"></div><button onclick="showPage('home')" style="padding:8px;background:#222;color:#fff;border:none;border-radius:9px;margin-top:6px">← BACK</button></div></div>
 
-<div id="page-nurse" class="page"><div class="card"><div class="tabs"><button id="tabReg" class="active" onclick="nurseTab('reg')">REGISTER + GPS 📍</button><button id="tabLog" onclick="nurseTab('log')">LOGIN</button><button id="tabOffer" onclick="nurseTab('offer')">MY OFFERS</button><button id="tabVoiceN" onclick="nurseTab('voiceN')">VIDEO/VOICE 🔔</button></div>
-<div id="nurseReg"><h2>👩‍⚕️ NURSE REGISTER - Auto GPS for Lawsuit + 3 Colleagues Optional</h2>
-<div class="gpsBox">
-<h2 style="font-size:12px;color:#00ff88">📍 AUTO GPS - For Lawsuit Protection 🛡️ - Auto Captures Where Nurse Comes From</h2>
-<button class="gpsBtn" onclick="getNurseGPS()" style="background:linear-gradient(90deg,#ff4444,#ff0000);color:#fff">📍 AUTO CAPTURE EXACT GPS NOW - For Lawsuit</button>
-<input id="nGPSLocation" readonly placeholder="📍 Auto GPS will appear here" style="background:#000;color:#00ff88;border:2px solid #00ff88">
-<div id="nGpsResult" style="font-size:10px;color:#00ff88;background:#000;padding:6px;border-radius:8px;margin-top:6px">📍 Click to auto capture GPS - For lawsuit protection</div>
-<div style="display:flex;gap:5px;margin-top:6px"><input id="nLat" readonly placeholder="Latitude" style="flex:1;background:#111;font-size:10px"><input id="nLng" readonly placeholder="Longitude" style="flex:1;background:#111;font-size:10px"><input id="nAccuracy" readonly placeholder="Accuracy" style="flex:1;background:#111;font-size:10px"></div>
-<p id="nGpsStatus" style="font-size:9px;color:#ffcc00;background:#332a00;padding:6px;border-radius:8px;margin-top:6px">⚠️ GPS Required - Auto captures - For lawsuit</p>
-</div>
+<div id="page-nurse" class="page"><div class="card"><div class="tabs"><button id="tabReg" class="active" onclick="nurseTab('reg')">REGISTER</button><button id="tabLog" onclick="nurseTab('log')">LOGIN</button><button id="tabOffer" onclick="nurseTab('offer')">MY OFFERS</button><button id="tabVoiceN" onclick="nurseTab('voiceN')">VIDEO/VOICE</button></div>
+<div id="nurseReg"><h2>👩‍⚕️ NURSE REGISTER - GPS + Colleagues Optional</h2>
+<div class="gpsBox"><h2 style="font-size:11px;color:#00ff88">📍 Location Capture - Auto GPS for verification</h2><button class="gpsBtn" onclick="getNurseGPS()" style="background:linear-gradient(90deg,#00ff88,#00cc66);color:#000">📍 CAPTURE MY LOCATION</button><input id="nGPSLocation" readonly placeholder="📍 GPS location" style="background:#000;color:#00ff88;border:2px solid #00ff88"><div id="nGpsResult" style="font-size:10px;color:#00ff88;background:#000;padding:6px;border-radius:8px;margin-top:6px">📍 Click to capture location</div><div style="display:flex;gap:5px;margin-top:6px"><input id="nLat" readonly placeholder="Latitude" style="flex:1;background:#111;font-size:10px"><input id="nLng" readonly placeholder="Longitude" style="flex:1;background:#111;font-size:10px"><input id="nAccuracy" readonly placeholder="Accuracy" style="flex:1;background:#111;font-size:10px"></div></div>
 <input id="nName" placeholder="Full Name *"><input id="nPhone" placeholder="Phone *"><div class="genderBox"><h2 style="font-size:11px;color:#ff77dd">Your Gender *</h2><div class="radioRow"><label id="nGenderMaleLabel" onclick="setNGender('male')">👨 MALE</label><label id="nGenderFemaleLabel" onclick="setNGender('female')" class="selected">👩 FEMALE</label></div></div><input id="nEmail" placeholder="Email"><input id="nLocation" placeholder="Area / Town"><div class="uploadBox"><label style="font-size:11px;color:#7ab8ff">📄 Ghana Card *</label><input type="file" id="fGhana" accept="image/*,.pdf"><div id="fGhanaName" style="font-size:9px;color:#00ff88"></div></div><div class="uploadBox"><label style="font-size:11px;color:#7ab8ff">📄 CV *</label><input type="file" id="fCV" accept="image/*,.pdf"><div id="fCVName" style="font-size:9px;color:#00ff88"></div></div><div class="uploadBox"><label style="font-size:11px;color:#7ab8ff">📄 License *</label><input type="file" id="fLic" accept="image/*,.pdf"><div id="fLicName" style="font-size:9px;color:#00ff88"></div></div><div class="uploadBox"><label style="font-size:11px;color:#7ab8ff">📸 Photo *</label><input type="file" id="fPhoto" accept="image/*"><div id="fPhotoName" style="font-size:9px;color:#00ff88"></div></div>
-<div class="colleagueBox"><h2 style="font-size:12px;color:#00ff88">👥 OPTIONAL - 3 Colleagues 🙏</h2><div style="background:#111;padding:8px;border-radius:10px;margin:6px 0"><label style="font-size:10px;color:#ffcc00">Colleague 1 (Optional)</label><input id="col1Name" placeholder="Colleague 1 Name"><input id="col1Phone" placeholder="Colleague 1 Phone"></div><div style="background:#111;padding:8px;border-radius:10px;margin:6px 0"><label style="font-size:10px;color:#ffcc00">Colleague 2 (Optional)</label><input id="col2Name" placeholder="Colleague 2 Name"><input id="col2Phone" placeholder="Colleague 2 Phone"></div><div style="background:#111;padding:8px;border-radius:10px;margin:6px 0"><label style="font-size:10px;color:#ffcc00">Colleague 3 (Optional)</label><input id="col3Name" placeholder="Colleague 3 Name"><input id="col3Phone" placeholder="Colleague 3 Phone"></div></div>
-<input id="nPass" type="password" placeholder="Password *"><input id="nPass2" type="password" placeholder="Confirm *"><button class="btnSubmit" style="background:#3b82f6;color:#fff" onclick="registerNurse()">📤 REGISTER + 📍 GPS + Colleagues</button><div id="nRegResult" style="font-size:11px"></div></div>
+<div class="colleagueBox"><h2 style="font-size:11px;color:#00ff88">👥 Optional - 3 Colleagues Who Want To Join</h2><div style="background:#111;padding:8px;border-radius:10px;margin:6px 0"><input id="col1Name" placeholder="Colleague 1 Name (optional)"><input id="col1Phone" placeholder="Colleague 1 Phone (optional)"></div><div style="background:#111;padding:8px;border-radius:10px;margin:6px 0"><input id="col2Name" placeholder="Colleague 2 Name (optional)"><input id="col2Phone" placeholder="Colleague 2 Phone (optional)"></div><div style="background:#111;padding:8px;border-radius:10px;margin:6px 0"><input id="col3Name" placeholder="Colleague 3 Name (optional)"><input id="col3Phone" placeholder="Colleague 3 Phone (optional)"></div></div>
+<input id="nPass" type="password" placeholder="Password *"><input id="nPass2" type="password" placeholder="Confirm *"><button class="btnSubmit" style="background:#3b82f6;color:#fff" onclick="registerNurse()">📤 REGISTER</button><div id="nRegResult" style="font-size:11px"></div></div>
 <div id="nurseLog" style="display:none"><h2>LOGIN</h2><input id="lPhone" placeholder="Phone"><input id="lPass" type="password" placeholder="Password"><button class="btnSubmit" style="background:#00ff88;color:#000" onclick="loginNurse()">LOGIN</button><div id="nLogResult"></div></div>
-<div id="nurseOffer" style="display:none"><h2>📋 MY OFFERS</h2><div id="nurseOffersList" style="font-size:11px">No offers</div></div>
-<div id="nurseVoiceN" style="display:none"><h2>🎤 VIDEO/VOICE - Will Ring 🔔</h2><div class="videoBox"><video id="nurseLocalVid" autoplay muted playsinline style="width:100%;background:#000;border-radius:10px;height:150px"></video><div style="display:flex;gap:5px"><button class="btnSubmit" style="background:#ff33cc;color:#fff;flex:1" onclick="startVideoNurse()">📹 START + RING 🔔</button><button class="btnSubmit" style="background:#333;color:#fff;flex:1" onclick="stopVideoNurse()">⏹ STOP</button></div><button class="btnSubmit" style="background:#3b82f6;color:#fff" onclick="openSelectModalStaff('video')">👤 SELECT - Will Ring 🔔</button></div><div class="voiceBox"><button id="nRecBtn" class="btnSubmit" style="background:#ff4444;color:#fff" onclick="toggleRecNurse()">🔴 RECORD + RING 🔔</button><audio id="nAud" controls style="width:100%;display:none"></audio><button id="nSendVoice" style="display:none;background:#ffcc00;color:#000;padding:10px;width:100%;margin-top:6px;border-radius:11px" onclick="sendNurseVoice()">SEND + RING 🔔 →</button></div></div>
+<div id="nurseOffer" style="display:none"><h2>📋 MY OFFERS - Shows Patient Condition (Stroke etc)</h2><div id="nurseOffersList" style="font-size:11px">No offers</div></div>
+<div id="nurseVoiceN" style="display:none"><h2>🎤 VIDEO/VOICE - Will Ring</h2><div class="videoBox"><video id="nurseLocalVid" autoplay muted playsinline style="width:100%;background:#000;border-radius:10px;height:150px"></video><div style="display:flex;gap:5px"><button class="btnSubmit" style="background:#ff33cc;color:#fff;flex:1" onclick="startVideoNurse()">📹 START + RING</button><button class="btnSubmit" style="background:#333;color:#fff;flex:1" onclick="stopVideoNurse()">⏹ STOP</button></div><button class="btnSubmit" style="background:#3b82f6;color:#fff" onclick="openSelectModalStaff('video')">👤 SELECT FOR VIDEO - Will Ring</button></div><div class="voiceBox"><button id="nRecBtn" class="btnSubmit" style="background:#ff4444;color:#fff" onclick="toggleRecNurse()">🔴 RECORD VOICE + RING</button><audio id="nAud" controls style="width:100%;display:none"></audio><button id="nSendVoice" style="display:none;background:#ffcc00;color:#000;padding:10px;width:100%;margin-top:6px;border-radius:11px" onclick="sendNurseVoice()">SEND TO STAFF → + Ring</button></div></div>
 <button onclick="showPage('home')" style="padding:8px;background:#222;color:#fff;border:none;border-radius:9px;margin-top:6px">← BACK</button></div></div>
 
 <div id="page-win" class="page"><div class="card"><h2>🏆 WIN Gh100 - Only Name + Amount Won</h2>
@@ -92,63 +115,63 @@ input,select{width:100%;padding:11px;margin:5px 0;border-radius:11px;border:1px 
 </div></div>
 
 <div id="page-staff" class="page"><div class="card" style="border-color:#00ff88;border-width:3px">
-<h2 id="staffHeader" onclick="tapStaff()" style="cursor:pointer">👔 STAFF - 📍 GPS + 🔔 Ringing + Delete + Colleagues</h2>
+<h2 id="staffHeader" onclick="tapStaff()" style="cursor:pointer">👔 STAFF - Condition (Stroke etc) + GPS + Ringing</h2>
 <div id="staffLoginBox"><input id="sID" placeholder="Staff ID *"><input id="sPass" type="password" placeholder="Password *"><button class="btnSubmit" style="background:#00ff88;color:#000" onclick="loginStaff()">STAFF LOGIN</button><div id="sResult" style="font-size:11px"></div></div>
 <div id="staffWork" style="display:none">
-<p style="background:#0a2a1a;padding:10px;border-radius:12px;border:2px solid #00ff88">💰 Revenue: GHS <b id="sRev">0</b> | Clients: <b id="sClients">0</b> | Nurses: <b id="sNurses">0</b> | 📍 GPS + 🔔 Ringing</p>
-<div class="videoBox"><h2 style="font-size:11px">📹 STAFF VIDEO - Will Ring 🔔</h2><video id="staffLocalVid" autoplay muted playsinline style="width:100%;background:#000;border-radius:10px;height:150px"></video><div style="display:flex;gap:5px"><button class="btnSubmit" style="background:#ff33cc;color:#fff;flex:1" onclick="startVideoStaff()">📹 START + RING 🔔</button><button class="btnSubmit" style="background:#333;color:#fff;flex:1" onclick="stopVideoStaff()">⏹ STOP</button></div><button class="btnSubmit" style="background:#3b82f6;color:#fff" onclick="openSelectModalStaff('video')">👤 SELECT - Will Ring 🔔</button><div id="staffVideoInfo" style="font-size:10px;color:#00ff88"></div></div>
-<div class="voiceBox"><h2 style="font-size:11px">🎤 STAFF VOICE - Will Ring 🔔</h2><button class="btnSubmit" style="background:#3b82f6;color:#fff" onclick="openSelectModalStaff('voice')">👤 SELECT - Will Ring 🔔</button><div id="staffVoiceSelected" style="font-size:10px;color:#00ff88;background:#000;padding:6px;border-radius:8px;margin:6px 0">No selected</div><button id="staffRecBtn" class="btnSubmit" style="background:#ff4444;color:#fff" onclick="toggleRecStaff()">🔴 RECORD + RING 🔔</button><audio id="staffAud" controls style="width:100%;display:none"></audio><button id="staffSendVoice" style="display:none;background:#ffcc00;color:#000;padding:10px;width:100%;margin-top:6px;border-radius:11px" onclick="sendStaffVoice()">SEND + RING 🔔 →</button></div>
-<div style="background:#1a2a00;border:2px solid #ffcc00;border-radius:14px;padding:10px;margin:10px 0"><h2 style="font-size:11px">🔗 Referral Dashboard + Delete</h2><input id="staffRefName" placeholder="Your Name"><input id="staffRefMoMo" placeholder="Your MoMo"><input id="staffMyLink" readonly style="font-size:10px;background:#000;color:#00ff88"><button class="btnSubmit" style="background:#00ff88;color:#000" onclick="generateLinkStaff()">🔗 GENERATE LINK - Staff</button><div class="marqueeContainer" style="height:200px;margin-top:8px"><div id="staffReferralWalk" class="marqueeContent" style="font-size:10px">Loading...</div></div></div>
-<h2>📋 Assign Offers - Male/Female + Gh40 + Delete</h2><div id="clientListRows" style="max-height:600px;overflow:auto;background:#000;padding:6px;border-radius:10px"></div>
-<h2>👩‍⚕️ Approved Nurses + 📍 GPS for Lawsuit + Colleagues + Delete <button onclick="deleteAllWorkers()" class="deleteBtn">🗑 DELETE ALL WORKERS</button></h2><div id="staffNurseList" style="font-size:10px;background:#0a1a3a;padding:8px;border-radius:10px"></div>
+<p style="background:#0a2a1a;padding:10px;border-radius:12px;border:2px solid #00ff88">💰 Revenue: GHS <b id="sRev">0</b> | Clients: <b id="sClients">0</b> | Nurses: <b id="sNurses">0</b> | 🩺 Condition Filter</p>
+<div class="videoBox"><h2 style="font-size:11px">📹 STAFF VIDEO - Will Ring</h2><video id="staffLocalVid" autoplay muted playsinline style="width:100%;background:#000;border-radius:10px;height:150px"></video><div style="display:flex;gap:5px"><button class="btnSubmit" style="background:#ff33cc;color:#fff;flex:1" onclick="startVideoStaff()">📹 START + RING</button><button class="btnSubmit" style="background:#333;color:#fff;flex:1" onclick="stopVideoStaff()">⏹ STOP</button></div><button class="btnSubmit" style="background:#3b82f6;color:#fff" onclick="openSelectModalStaff('video')">👤 SELECT FOR VIDEO - Will Ring</button><div id="staffVideoInfo" style="font-size:10px;color:#00ff88"></div></div>
+<div class="voiceBox"><h2 style="font-size:11px">🎤 STAFF VOICE - Will Ring</h2><button class="btnSubmit" style="background:#3b82f6;color:#fff" onclick="openSelectModalStaff('voice')">👤 SELECT FOR VOICE - Will Ring</button><div id="staffVoiceSelected" style="font-size:10px;color:#00ff88;background:#000;padding:6px;border-radius:8px;margin:6px 0">No selected</div><button id="staffRecBtn" class="btnSubmit" style="background:#ff4444;color:#fff" onclick="toggleRecStaff()">🔴 RECORD + RING</button><audio id="staffAud" controls style="width:100%;display:none"></audio><button id="staffSendVoice" style="display:none;background:#ffcc00;color:#000;padding:10px;width:100%;margin-top:6px;border-radius:11px" onclick="sendStaffVoice()">SEND + Ring →</button></div>
+<div style="background:#1a0a2a;border:2px solid #ff77dd;border-radius:12px;padding:8px;margin:10px 0">
+<h2 style="font-size:11px">🩺 Filter Bookings by Condition</h2>
+<div style="display:flex;gap:5px;flex-wrap:wrap">
+<button onclick="filterByCondition('all')" style="padding:6px 10px;background:#ffcc00;color:#000;border:none;border-radius:6px;font-size:9px;font-weight:800">ALL</button>
+<button onclick="filterByCondition('Stroke')" style="padding:6px 10px;background:#333;color:#fff;border:none;border-radius:6px;font-size:9px">🧠 Stroke</button>
+<button onclick="filterByCondition('Seizure')" style="padding:6px 10px;background:#333;color:#fff;border:none;border-radius:6px;font-size:9px">⚡ Seizure</button>
+<button onclick="filterByCondition('Diabetes')" style="padding:6px 10px;background:#333;color:#fff;border:none;border-radius:6px;font-size:9px">🍬 Diabetes</button>
+<button onclick="filterByCondition('Paralysis')" style="padding:6px 10px;background:#333;color:#fff;border:none;border-radius:6px;font-size:9px">🦽 Paralysis</button>
+<button onclick="filterByCondition('Elderly')" style="padding:6px 10px;background:#333;color:#fff;border:none;border-radius:6px;font-size:9px">👴 Elderly</button>
+</div>
+</div>
+<div style="background:#1a2a00;border:2px solid #ffcc00;border-radius:14px;padding:10px;margin:10px 0"><h2 style="font-size:11px">🔗 Referral Dashboard</h2><input id="staffRefName" placeholder="Your Name"><input id="staffRefMoMo" placeholder="Your MoMo"><input id="staffMyLink" readonly style="font-size:10px;background:#000;color:#00ff88"><button class="btnSubmit" style="background:#00ff88;color:#000" onclick="generateLinkStaff()">🔗 GENERATE LINK - Staff</button><div class="marqueeContainer" style="height:200px;margin-top:8px"><div id="staffReferralWalk" class="marqueeContent" style="font-size:10px">Loading...</div></div></div>
+<h2>📋 Assign Offers - Shows Condition + Male/Female + Gh40 + Delete <button onclick="deleteAllBookings()" class="deleteBtn">🗑 DELETE ALL BOOKINGS</button></h2><div id="clientListRows" style="max-height:600px;overflow:auto;background:#000;padding:6px;border-radius:10px"></div>
+<h2>👩‍⚕️ Approved Nurses + GPS + Colleagues <button onclick="deleteAllWorkers()" class="deleteBtn">🗑 DELETE ALL WORKERS</button></h2><div id="staffNurseList" style="font-size:10px;background:#0a1a3a;padding:8px;border-radius:10px"></div>
 <h2>👥 Colleagues Referred <button onclick="deleteAllColleagues()" class="deleteBtn">🗑 DELETE ALL COLLEAGUES</button></h2><div id="colleaguesList" style="font-size:10px;background:#0a2a00;padding:8px;border-radius:10px;border:2px solid #00ff88"></div>
-<h2>🎤 Voices + Ringing 🔔 <button onclick="deleteAllVoices()" class="deleteBtn">🗑 DELETE ALL VOICES</button></h2><div id="staffVoiceInbox" style="font-size:10px;background:#331111;padding:8px;border-radius:10px"></div>
-<h2>📞 Calls Log - Ringing 🔔 <button onclick="deleteAllCalls()" class="deleteBtn">🗑 DELETE ALL CALLS</button></h2><div id="callsLog" style="font-size:10px;background:#1a0033;padding:8px;border-radius:10px;border:2px solid #ff33cc"></div>
-<h2>🚨 SOS + Delete <button onclick="deleteAllSOS()" class="deleteBtn">🗑 DELETE ALL SOS</button></h2><div id="sosList" style="font-size:10px;background:#440000;padding:8px;border-radius:10px"></div>
-<h2>🏆 Referral Winners + Delete <button onclick="deleteAllReferrers()" class="deleteBtn">🗑 DELETE ALL REFERRERS</button></h2><div id="momoList" style="font-size:10px;background:#332a00;padding:8px;border-radius:10px"></div>
+<h2>🎤 Voices <button onclick="deleteAllVoices()" class="deleteBtn">🗑 DELETE ALL VOICES</button></h2><div id="staffVoiceInbox" style="font-size:10px;background:#331111;padding:8px;border-radius:10px"></div>
+<h2>📞 Calls Log <button onclick="deleteAllCalls()" class="deleteBtn">🗑 DELETE ALL CALLS</button></h2><div id="callsLog" style="font-size:10px;background:#1a0033;padding:8px;border-radius:10px;border:2px solid #ff33cc"></div>
+<h2>🚨 SOS <button onclick="deleteAllSOS()" class="deleteBtn">🗑 DELETE ALL SOS</button></h2><div id="sosList" style="font-size:10px;background:#440000;padding:8px;border-radius:10px"></div>
+<h2>🏆 Referral Winners <button onclick="deleteAllReferrers()" class="deleteBtn">🗑 DELETE ALL REFERRERS</button></h2><div id="momoList" style="font-size:10px;background:#332a00;padding:8px;border-radius:10px"></div>
 <button class="btnSubmit" style="background:#444;color:#fff" onclick="loadStaffData()">🔄 REFRESH</button>
 </div>
 <button onclick="showPage('home')" style="padding:8px;background:#222;color:#fff;border:none;border-radius:9px;margin-top:6px">← BACK</button></div></div>
 
 <div id="page-ceo" class="page"><div class="card" style="border-color:red;border-width:3px">
-<h2>👑 CEO/ADMIN - 📍 GPS + 🔔 Ringing + Delete + Colleagues + 🔑 Password Change Anytime</h2>
-<div id="ceoLoginBox"><input id="ceoUser" placeholder="CEO Username"><input id="ceoPass" type="password" placeholder="CEO Password"><button class="btnSubmit" style="background:red;color:#fff" onclick="loginCEO()">CEO LOGIN</button><div id="ceoLoginResult" style="font-size:11px;color:red"></div><p style="font-size:9px;opacity:0.6">Default: KUSIPETER / Peterasa80@you! - You can change anytime after login</p></div>
+<h2>👑 CEO/ADMIN - Condition (Stroke etc) + GPS + Ringing</h2>
+<div id="ceoLoginBox"><input id="ceoUser" placeholder="CEO Username"><input id="ceoPass" type="password" placeholder="CEO Password"><button class="btnSubmit" style="background:red;color:#fff" onclick="loginCEO()">CEO LOGIN</button><div id="ceoLoginResult" style="font-size:11px;color:red"></div></div>
 <div id="ceoWork" style="display:none">
-
-<!-- ADMIN PASSWORD CHANGE ANYTIME - NEW -->
-<div class="adminPassBox">
-<h2 style="font-size:12px;color:#ff4444">🔑 ADMIN - Change Your Own Password Anytime 🛡️</h2>
-<p style="font-size:9px;opacity:0.8">You can change your admin password anytime here - Same as staff password change</p>
-<input id="adminCurrentPass" type="password" placeholder="Current Admin Password *">
-<input id="adminNewPass" type="password" placeholder="New Admin Password *">
-<input id="adminNewPass2" type="password" placeholder="Confirm New Admin Password *">
-<button class="btnSubmit" style="background:linear-gradient(90deg,#ff4444,#ff0000);color:#fff" onclick="changeAdminPassword()">🔑 CHANGE MY ADMIN PASSWORD ANYTIME - Admin Only</button>
-<div id="adminPassResult" style="font-size:11px;color:#ffcc00;margin-top:6px"></div>
-<div style="background:#000;padding:8px;border-radius:8px;margin-top:8px;font-size:10px;border:1px solid #ff4444">
-<p style="color:#00ff88">Current Admin Login:</p>
-<p>👑 Username: <b id="currentAdminUser" style="color:#ffcc00">KUSIPETER</b></p>
-<p>🔑 Password: <b id="currentAdminPassDisplay" style="color:#ff4444">••••••••</b> <button onclick="toggleAdminPassView()" style="padding:2px 6px;background:#333;color:#fff;border:none;border-radius:4px;font-size:9px">👁️ Show/Hide</button></p>
-<p style="font-size:9px;opacity:0.6">Stored securely in Firebase - Only you can see/change</p>
+<div style="background:#111;border:1px solid #333;border-radius:10px;padding:10px;margin:10px 0">
+<input id="adminCurrentPass" type="password" placeholder="Current" style="background:#0a0a0a;border:1px solid #333;font-size:11px">
+<input id="adminNewPass" type="password" placeholder="New" style="background:#0a0a0a;border:1px solid #333;font-size:11px">
+<input id="adminNewPass2" type="password" placeholder="Confirm New" style="background:#0a0a0a;border:1px solid #333;font-size:11px">
+<button style="background:#222;color:#888;padding:8px;width:100%;border:none;border-radius:8px;font-size:10px" onclick="changeAdminPassword()">Update</button>
+<div id="adminPassResult" style="font-size:10px;color:#555;margin-top:6px"></div>
 </div>
-</div>
-
-<p style="background:#1a0000;padding:10px;border-radius:12px;border:1px solid red">💰 Revenue: GHS <b id="rev">0</b> | Bookings: <b id="countBook">0</b> | Workers: <b id="countWorkers">0</b> | 📍 GPS + 🔔 + 🔑 Pass Change Anytime</p>
-<div class="videoBox"><h2 style="font-size:11px">📹 CEO VIDEO - Will Ring 🔔</h2><video id="ceoLocalVid" autoplay muted playsinline style="width:100%;background:#000;border-radius:10px;height:150px"></video><div style="display:flex;gap:5px"><button class="btnSubmit" style="background:#ff33cc;color:#fff;flex:1" onclick="startVideoCEO()">📹 START + RING 🔔</button><button class="btnSubmit" style="background:#333;color:#fff;flex:1" onclick="stopVideoCEO()">⏹ STOP</button></div><button class="btnSubmit" style="background:#3b82f6;color:#fff" onclick="openSelectModalStaff('video')">👤 SELECT - Will Ring 🔔</button><div id="ceoVideoInfo" style="font-size:10px;color:#00ff88"></div></div>
-<div class="voiceBox"><h2 style="font-size:11px">🎤 CEO VOICE - Will Ring 🔔</h2><button class="btnSubmit" style="background:#3b82f6;color:#fff" onclick="openSelectModalStaff('voice')">👤 SELECT - Will Ring 🔔</button><div id="ceoVoiceSelected" style="font-size:10px;color:#00ff88;background:#000;padding:6px;border-radius:8px;margin:6px 0">No selected</div><button id="ceoRecBtn" class="btnSubmit" style="background:#ff4444;color:#fff" onclick="toggleRecCEO()">🔴 RECORD + RING 🔔</button><audio id="ceoAud" controls style="width:100%;display:none"></audio><button id="ceoSendVoice" style="display:none;background:#ffcc00;color:#000;padding:10px;width:100%;margin-top:6px;border-radius:11px" onclick="sendCEOVoice()">SEND + RING 🔔 →</button></div>
+<p style="background:#1a0000;padding:10px;border-radius:12px;border:1px solid red">💰 Revenue: GHS <b id="rev">0</b> | Bookings: <b id="countBook">0</b> | Workers: <b id="countWorkers">0</b></p>
+<div class="videoBox"><h2 style="font-size:11px">📹 CEO VIDEO - Will Ring</h2><video id="ceoLocalVid" autoplay muted playsinline style="width:100%;background:#000;border-radius:10px;height:150px"></video><div style="display:flex;gap:5px"><button class="btnSubmit" style="background:#ff33cc;color:#fff;flex:1" onclick="startVideoCEO()">📹 START + RING</button><button class="btnSubmit" style="background:#333;color:#fff;flex:1" onclick="stopVideoCEO()">⏹ STOP</button></div><button class="btnSubmit" style="background:#3b82f6;color:#fff" onclick="openSelectModalStaff('video')">👤 SELECT FOR VIDEO - Will Ring</button><div id="ceoVideoInfo" style="font-size:10px;color:#00ff88"></div></div>
+<div class="voiceBox"><h2 style="font-size:11px">🎤 CEO VOICE - Will Ring</h2><button class="btnSubmit" style="background:#3b82f6;color:#fff" onclick="openSelectModalStaff('voice')">👤 SELECT FOR VOICE - Will Ring</button><div id="ceoVoiceSelected" style="font-size:10px;color:#00ff88;background:#000;padding:6px;border-radius:8px;margin:6px 0">No selected</div><button id="ceoRecBtn" class="btnSubmit" style="background:#ff4444;color:#fff" onclick="toggleRecCEO()">🔴 RECORD + RING</button><audio id="ceoAud" controls style="width:100%;display:none"></audio><button id="ceoSendVoice" style="display:none;background:#ffcc00;color:#000;padding:10px;width:100%;margin-top:6px;border-radius:11px" onclick="sendCEOVoice()">SEND + Ring →</button></div>
 <div style="background:#1a2a00;border:2px solid #ffcc00;border-radius:14px;padding:10px;margin:10px 0"><h2 style="font-size:11px">🔗 Referral Dashboard</h2><input id="ceoRefName" placeholder="Your Name"><input id="ceoRefMoMo" placeholder="Your MoMo"><input id="ceoMyLink" readonly style="font-size:10px;background:#000;color:#00ff88"><button class="btnSubmit" style="background:#00ff88;color:#000" onclick="generateLinkCEO()">🔗 GENERATE LINK - Admin</button><div class="marqueeContainer" style="height:200px;margin-top:8px"><div id="ceoReferralWalk" class="marqueeContent" style="font-size:10px">Loading...</div></div></div>
 
-<h2>👔 Create Staff + Change Staff Password Anytime + Delete <button onclick="deleteAllStaff()" class="deleteBtn">🗑 DELETE ALL STAFF</button></h2>
-<div style="background:#111;padding:10px;border-radius:12px;border:1px solid #00ff88"><input id="newStaffID" placeholder="Staff ID e.g. STAFF1"><input id="newStaffPass" placeholder="Password e.g. staff123"><button class="btnSubmit" style="background:red;color:#fff" onclick="createStaff()">➕ CREATE STAFF - Admin Creates</button><div style="display:flex;gap:5px;margin-top:8px"><input id="editStaffID" placeholder="Staff ID to Edit"><input id="editStaffPass" placeholder="New Password"><button onclick="changeStaffPassword()" style="padding:8px;background:#ffcc00;color:#000;border:none;border-radius:8px;font-weight:800">✏️ CHANGE STAFF PASSWORD ANYTIME - Admin Only</button></div><div id="staffCreatedList" style="font-size:10px;background:#000;padding:8px;border-radius:8px;margin-top:8px"></div></div>
+<h2>👔 Create Staff <button onclick="deleteAllStaff()" class="deleteBtn">🗑 DELETE ALL STAFF</button></h2>
+<div style="background:#111;padding:10px;border-radius:12px;border:1px solid #00ff88"><input id="newStaffID" placeholder="Staff ID e.g. STAFF1"><input id="newStaffPass" placeholder="Password e.g. staff123"><button class="btnSubmit" style="background:red;color:#fff" onclick="createStaff()">➕ CREATE STAFF</button><div style="display:flex;gap:5px;margin-top:8px"><input id="editStaffID" placeholder="Staff ID to Edit"><input id="editStaffPass" placeholder="New Password"><button onclick="changeStaffPassword()" style="padding:8px;background:#ffcc00;color:#000;border:none;border-radius:8px;font-weight:800">✏️ CHANGE PASSWORD</button></div><div id="staffCreatedList" style="font-size:10px;background:#000;padding:8px;border-radius:8px;margin-top:8px"></div></div>
 
-<h2>👩‍⚕️ Review nurseApplications + 📍 GPS for Lawsuit + 3 Colleagues <button onclick="deleteAllNurseApps()" class="deleteBtn">🗑 DELETE ALL APPLICATIONS</button></h2><div id="ceoNurseReview" style="font-size:10px"></div>
+<h2>👩‍⚕️ Review nurseApplications <button onclick="deleteAllNurseApps()" class="deleteBtn">🗑 DELETE ALL APPLICATIONS</button></h2><div id="ceoNurseReview" style="font-size:10px"></div>
 <h2>👥 Colleagues Referred <button onclick="deleteAllColleagues()" class="deleteBtn">🗑 DELETE ALL COLLEAGUES</button></h2><div id="ceoColleaguesList" style="font-size:10px;background:#0a2a00;padding:8px;border-radius:10px;border:2px solid #00ff88;max-height:300px;overflow:auto"></div>
-<h2>📞 Calls Log - Ringing 🔔 <button onclick="deleteAllCalls()" class="deleteBtn">🗑 DELETE ALL CALLS</button></h2><div id="ceoCallsLog" style="font-size:10px;background:#1a0033;padding:8px;border-radius:10px;border:2px solid #ff33cc;max-height:200px;overflow:auto"></div>
-<h2>📋 ADMIN ASSIGN TOO <button onclick="deleteAllBookings()" class="deleteBtn">🗑 DELETE ALL BOOKINGS</button></h2><div id="ceoAllBookings" style="font-size:10px;background:#0a2a1a;padding:8px;border-radius:10px;border:1px solid #00ff88;max-height:600px;overflow:auto"></div>
-<h2>🏆 Referral Winners + Delete <button onclick="deleteAllReferrers()" class="deleteBtn">🗑 DELETE ALL REFERRERS</button></h2><div id="ceoMoMoList" style="font-size:10px;background:#332a00;padding:8px;border-radius:10px;max-height:300px;overflow:auto"></div>
+<h2>📞 Calls Log <button onclick="deleteAllCalls()" class="deleteBtn">🗑 DELETE ALL CALLS</button></h2><div id="ceoCallsLog" style="font-size:10px;background:#1a0033;padding:8px;border-radius:10px;border:2px solid #ff33cc;max-height:200px;overflow:auto"></div>
+<h2>📋 ADMIN ASSIGN - Shows Condition (Stroke etc) <button onclick="deleteAllBookings()" class="deleteBtn">🗑 DELETE ALL BOOKINGS</button></h2><div id="ceoAllBookings" style="font-size:10px;background:#0a2a1a;padding:8px;border-radius:10px;border:1px solid #00ff88;max-height:600px;overflow:auto"></div>
+<h2>🏆 Referral Winners <button onclick="deleteAllReferrers()" class="deleteBtn">🗑 DELETE ALL REFERRERS</button></h2><div id="ceoMoMoList" style="font-size:10px;background:#332a00;padding:8px;border-radius:10px;max-height:300px;overflow:auto"></div>
 <button class="btnSubmit" style="background:#444;color:#fff" onclick="loadCEOData()">🔄 REFRESH BACKEND</button>
 </div>
 <button onclick="showPage('staff')" style="padding:8px;background:#222;color:#fff;border:none;border-radius:9px;margin-top:6px">← BACK TO STAFF</button></div></div>
-<div class="bottomNav"><div id="nav-home" class="active" onclick="showPage('home')">🏠<br>Home</div><div id="nav-book" onclick="showPage('book')">👤<br>Book</div><div id="nav-nurse" onclick="showPage('nurse')">👩‍⚕️<br>Nurse 📍</div><div id="nav-video" onclick="openSelectModal('video')">📹<br>Video 🔔</div><div id="nav-voice" onclick="openSelectModal('voice')">🎤<br>Voice 🔔</div><div id="nav-win" onclick="showPage('win')">🏆<br>Win</div></div>
+<div class="bottomNav"><div id="nav-home" class="active" onclick="showPage('home')">🏠<br>Home</div><div id="nav-book" onclick="showPage('book')">👤<br>Book</div><div id="nav-nurse" onclick="showPage('nurse')">👩‍⚕️<br>Nurse</div><div id="nav-video" onclick="openSelectModal('video')">📹<br>Video</div><div id="nav-voice" onclick="openSelectModal('voice')">🎤<br>Voice</div><div id="nav-win" onclick="showPage('win')">🏆<br>Win</div></div>
 <script>
 const firebaseConfig = {
   apiKey: "AIzaSyB52-X1D8Cg-wUDWPds_tR7X3cF82dMdRg",
@@ -159,13 +182,43 @@ const firebaseConfig = {
   messagingSenderId: "1062578660694",
   appId: "1:1062578660694:web:f94dfe12c929df05bce2f7"
 };
-let db=null; let allBookings=[]; let allNurseApps=[]; let allWorkers=[]; let staffAccounts=[]; let allReferrers=[]; let voices=[]; let sosList=[]; let allColleagues=[]; let allCalls=[]; let adminConfig={user:'KUSIPETER',pass:'Peterasa80@you!'}; let isStaffLogged=false; let isAdminLogged=false; let currentNursePhone=null; let currentUserName='User'; let nurseGPSData={lat:null,lng:null,accuracy:null,locationStr:null,timestamp:null}; let showAdminPass=false;
-try{ firebase.initializeApp(firebaseConfig); db=firebase.database(); document.getElementById('syncBadge').innerHTML='✅ Live + 🔔 + 📍 GPS + 🔑 Admin Pass Change Anytime'; }catch(e){ document.getElementById('syncBadge').innerHTML='⚠️ Offline'; }
+let db=null; let allBookings=[]; let allNurseApps=[]; let allWorkers=[]; let staffAccounts=[]; let allReferrers=[]; let voices=[]; let sosList=[]; let allColleagues=[]; let allCalls=[]; let adminConfig={user:'KUSIPETER',pass:'Peterasa80@you!'}; let isStaffLogged=false; let isAdminLogged=false; let currentNursePhone=null; let currentUserName='User'; let nurseGPSData={lat:null,lng:null,accuracy:null}; let selectedConditions=[]; let conditionFilter='all';
+try{ firebase.initializeApp(firebaseConfig); db=firebase.database(); }catch(e){}
 function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById('page-'+id).classList.add('active');document.querySelectorAll('.bottomNav div').forEach(d=>d.classList.remove('active'));let n=document.getElementById('nav-'+id);if(n)n.classList.add('active'); if(id==='nurse'){ setTimeout(()=>{autoCaptureNurseGPS();},1000); }}
 let logoTaps=0;function tapLogo(){logoTaps++;if(logoTaps>=5){showPage('staff');logoTaps=0;}setTimeout(()=>logoTaps=0,3000)}
 let staffTaps=0;function tapStaff(){staffTaps++;if(staffTaps>=7){showPage('ceo');staffTaps=0;}setTimeout(()=>staffTaps=0,4000)}
 function nurseTab(t){document.getElementById('nurseReg').style.display=t==='reg'?'block':'none';document.getElementById('nurseLog').style.display=t==='log'?'block':'none';document.getElementById('nurseOffer').style.display=t==='offer'?'block':'none';document.getElementById('nurseVoiceN').style.display=t==='voiceN'?'block':'none'; if(t==='reg'){ setTimeout(()=>{autoCaptureNurseGPS();},500); }}
 let liveType='', feedingVal='3', transportYes=false, genderPref='female', nurseGender='female';
+function toggleCondition(el, condition){
+el.classList.toggle('selected');
+if(el.classList.contains('selected')){
+if(!selectedConditions.includes(condition)) selectedConditions.push(condition);
+}else{
+selectedConditions = selectedConditions.filter(c=>c!==condition);
+}
+let otherInput=document.getElementById('cConditionOther');
+if(selectedConditions.includes('Other')){
+otherInput.style.display='block';
+}else{
+otherInput.style.display='none';
+}
+updateConditionDisplay();
+}
+function updateConditionDisplay(){
+let displayEl=document.getElementById('selectedConditions');
+let infoEl=document.getElementById('conditionInfo');
+let otherText=document.getElementById('cConditionOther').value||'';
+if(selectedConditions.length===0){
+displayEl.innerText='No condition selected yet - Optional - Select like Stroke, Seizure etc';
+infoEl.innerText='🩺 No condition selected';
+}else{
+let text = selectedConditions.join(', ');
+if(otherText) text += ` (${otherText})`;
+displayEl.innerHTML=`✅ Selected: <b>${text}</b> - Will help assign specialist nurse`;
+infoEl.innerHTML=`🩺 Condition: <b>${text}</b>`;
+}
+}
+document.getElementById('cConditionOther')?.addEventListener('input',updateConditionDisplay);
 function setGender(v){genderPref=v;document.getElementById('genderMaleLabel').classList.toggle('selected',v==='male');document.getElementById('genderFemaleLabel').classList.toggle('selected',v==='female');document.getElementById('genderAnyLabel').classList.toggle('selected',v==='any');calcPay();}
 function setNGender(v){nurseGender=v;document.getElementById('nGenderMaleLabel').classList.toggle('selected',v==='male');document.getElementById('nGenderFemaleLabel').classList.toggle('selected',v==='female');}
 function handleLiveChange(){liveType=document.getElementById('cLive').value;document.getElementById('liveOutBox').classList.remove('active');document.getElementById('liveInBox').classList.remove('active');if(liveType==='out')document.getElementById('liveOutBox').classList.add('active');if(liveType==='in')document.getElementById('liveInBox').classList.add('active');calcPay();}
@@ -175,8 +228,8 @@ function calcPay(){let s=document.getElementById('cService');if(!s)return;let pr
 function getRealGPS(){let r=document.getElementById('gpsResult');r.innerText='Getting...';navigator.geolocation.getCurrentPosition(pos=>{document.getElementById('cLocation').value=pos.coords.latitude.toFixed(6)+','+pos.coords.longitude.toFixed(6);r.innerHTML=`✅ ${pos.coords.latitude.toFixed(6)},${pos.coords.longitude.toFixed(6)}<br><a href="https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}" target="_blank" style="color:#00ff88">📍 OPEN MAPS</a>`;});}
 function autoCaptureNurseGPS(){getNurseGPS();}
 function getNurseGPS(){
-let resultEl=document.getElementById('nGpsResult');let locationEl=document.getElementById('nGPSLocation');let latEl=document.getElementById('nLat');let lngEl=document.getElementById('nLng');let accEl=document.getElementById('nAccuracy');let statusEl=document.getElementById('nGpsStatus');
-if(resultEl)resultEl.innerText='📍 Getting exact GPS... Allow location... For lawsuit protection';
+let resultEl=document.getElementById('nGpsResult');let locationEl=document.getElementById('nGPSLocation');let latEl=document.getElementById('nLat');let lngEl=document.getElementById('nLng');let accEl=document.getElementById('nAccuracy');
+if(resultEl)resultEl.innerText='📍 Getting GPS...';
 if(!navigator.geolocation){if(resultEl)resultEl.innerText='❌ Geolocation not supported';return;}
 navigator.geolocation.getCurrentPosition(pos=>{
 let lat=pos.coords.latitude;let lng=pos.coords.longitude;let acc=pos.coords.accuracy;
@@ -185,20 +238,19 @@ if(locationEl)locationEl.value=lat.toFixed(6)+','+lng.toFixed(6);
 if(latEl)latEl.value=lat.toFixed(6);
 if(lngEl)lngEl.value=lng.toFixed(6);
 if(accEl)accEl.value=acc.toFixed(0)+' meters';
-if(resultEl)resultEl.innerHTML=`✅ <b>Exact GPS Captured for Lawsuit!</b><br>📍 ${lat.toFixed(6)},${lng.toFixed(6)}<br>🎯 Accuracy: ${acc.toFixed(0)}m<br>🕒 ${new Date().toLocaleString()}<br><a href="https://www.google.com/maps?q=${lat},${lng}" target="_blank" style="color:#00ff88">📍 OPEN MAPS - Exact house</a><br>🛡️ Will be saved`;
-if(statusEl)statusEl.innerHTML=`✅ GPS Captured - ${lat.toFixed(6)},${lng.toFixed(6)} - For lawsuit`;
-},err=>{if(resultEl)resultEl.innerHTML=`❌ GPS Error: ${err.message} - Please allow location`;},{enableHighAccuracy:true,timeout:15000,maximumAge:0});
+if(resultEl)resultEl.innerHTML=`✅ GPS Captured: ${lat.toFixed(6)},${lng.toFixed(6)} - ${acc.toFixed(0)}m<br><a href="https://www.google.com/maps?q=${lat},${lng}" target="_blank" style="color:#00ff88">📍 OPEN MAPS</a>`;
+},err=>{if(resultEl)resultEl.innerHTML=`❌ GPS Error: ${err.message}`;},{enableHighAccuracy:true,timeout:15000,maximumAge:0});
 }
 document.getElementById('fGhana')?.addEventListener('change',function(){document.getElementById('fGhanaName').innerText='✅ '+this.files[0].name;});
 document.getElementById('fCV')?.addEventListener('change',function(){document.getElementById('fCVName').innerText='✅ '+this.files[0].name;});
 document.getElementById('fLic')?.addEventListener('change',function(){document.getElementById('fLicName').innerText='✅ '+this.files[0].name;});
 document.getElementById('fPhoto')?.addEventListener('change',function(){document.getElementById('fPhotoName').innerText='✅ '+this.files[0].name;});
-function playRinging(type, fromName){let ring=document.getElementById('ringtone');ring.volume=0.9;ring.play().catch(e=>{});if(navigator.vibrate){navigator.vibrate([500,300,500,300,500]);}document.getElementById('ringingModal').classList.add('active');document.getElementById('ringingTitle').innerText= type==='video'? '🔔 Incoming Video Call - Ringing!' : '🔔 Incoming Voice - Ringing!';document.getElementById('ringingFrom').innerText='From: '+(fromName||'Staff');if(Notification && Notification.permission==='granted'){new Notification('🔔 Love Care - '+type+' ringing!',{body:'From: '+(fromName||'Staff')});}}
+function playRinging(type, fromName){let ring=document.getElementById('ringtone');ring.volume=0.9;ring.play().catch(e=>{});if(navigator.vibrate){navigator.vibrate([500,300,500,300,500]);}document.getElementById('ringingModal').classList.add('active');document.getElementById('ringingTitle').innerText= type==='video'? '🔔 Incoming Video Call' : '🔔 Incoming Voice';document.getElementById('ringingFrom').innerText='From: '+(fromName||'Staff');}
 function stopRinging(){let ring=document.getElementById('ringtone');ring.pause();ring.currentTime=0;if(navigator.vibrate){navigator.vibrate(0);}document.getElementById('ringingModal').classList.remove('active');}
-function acceptRinging(){stopRinging();alert('✅ Answered');}
-function rejectRinging(){stopRinging();alert('❌ Rejected');}
+function acceptRinging(){stopRinging();}
+function rejectRinging(){stopRinging();}
 function initiateCall(toName, toPhone, type){let callData={from:currentUserName||'User',fromPhone:currentNursePhone||'Unknown',to:toName,toPhone:toPhone,type:type,status:'ringing',time:new Date().toLocaleString(),id:Date.now()};if(db){db.ref('calls/'+callData.id).set(callData);}}
-
+function filterByCondition(cond){conditionFilter=cond;updateLists();}
 function listenBackend(){
 if(!db)return;
 db.ref('bookings').on('value',snap=>{allBookings=[];snap.forEach(c=>{allBookings.push(c.val());});updateLists();});
@@ -212,42 +264,27 @@ db.ref('sos').on('value',snap=>{sosList=[];snap.forEach(c=>{sosList.push({...c.v
 db.ref('colleagues').on('value',snap=>{allColleagues=[];snap.forEach(c=>{allColleagues.push({...c.val(),_key:c.key});});updateColleaguesList();});
 db.ref('calls').on('child_added',snap=>{let call=snap.val();if(call && call.toPhone){let isForMe = (currentNursePhone && call.toPhone===currentNursePhone) || isStaffLogged || isAdminLogged; if(isForMe ||!currentNursePhone){playRinging(call.type||'video', call.from);}}});
 db.ref('calls').on('value',snap=>{allCalls=[];snap.forEach(c=>{allCalls.push({...c.val(),_key:c.key});});updateCallsLog();});
-db.ref('adminConfig').on('value',snap=>{
-let val=snap.val();
-if(val){
-adminConfig={user:val.user||'KUSIPETER',pass:val.pass||'Peterasa80@you!'};
-let userEl=document.getElementById('currentAdminUser');if(userEl)userEl.innerText=adminConfig.user;
-updateAdminPassDisplay();
+db.ref('adminConfig').on('value',snap=>{let val=snap.val();if(val){adminConfig={user:val.user||'KUSIPETER',pass:val.pass||'Peterasa80@you!'};}});
 }
-});
-}
-function updateAdminPassDisplay(){
-let passEl=document.getElementById('currentAdminPassDisplay');
-if(passEl){
-if(showAdminPass){passEl.innerText=adminConfig.pass;}else{passEl.innerText='••••••••';}
-}
-}
-function toggleAdminPassView(){showAdminPass=!showAdminPass;updateAdminPassDisplay();}
 function changeAdminPassword(){
 let current=document.getElementById('adminCurrentPass').value;
 let newPass=document.getElementById('adminNewPass').value;
 let newPass2=document.getElementById('adminNewPass2').value;
 let resultEl=document.getElementById('adminPassResult');
-if(!current||!newPass||!newPass2){resultEl.innerHTML='❌ Fill all fields - Current, New, Confirm';return;}
-if(current!==adminConfig.pass){resultEl.innerHTML='❌ Current password wrong - Enter correct current password';return;}
-if(newPass!==newPass2){resultEl.innerHTML='❌ New passwords do not match - Confirm again';return;}
-if(newPass.length<6){resultEl.innerHTML='❌ New password too short - Minimum 6 characters';return;}
-let newConfig={user:adminConfig.user,pass:newPass,updatedAt:new Date().toLocaleString(),updatedBy:'Admin'};
+if(!current||!newPass||!newPass2){resultEl.innerHTML='❌ Fill all';return;}
+if(current!==adminConfig.pass){resultEl.innerHTML='❌ Current wrong';return;}
+if(newPass!==newPass2){resultEl.innerHTML='❌ Not match';return;}
+if(newPass.length<6){resultEl.innerHTML='❌ Too short min 6';return;}
+let newConfig={user:adminConfig.user,pass:newPass,updatedAt:new Date().toLocaleString()};
 db.ref('adminConfig').set(newConfig).then(()=>{
-resultEl.innerHTML=`✅ <b>Admin password changed successfully!</b><br>🔑 New password: ${newPass}<br>👑 Username still: ${adminConfig.user}<br>✅ You can use new password next login - Changed anytime!`;
+resultEl.innerHTML=`✅ Changed - New: ${newPass}`;
 document.getElementById('adminCurrentPass').value='';document.getElementById('adminNewPass').value='';document.getElementById('adminNewPass2').value='';
 adminConfig.pass=newPass;
-updateAdminPassDisplay();
-alert(`✅ Admin password changed to: ${newPass} - You can change anytime!`);
+alert(`✅ Admin password changed to: ${newPass}`);
 });
 }
 function updateCallsLog(){
-let html = allCalls.length? allCalls.slice(-20).reverse().map(c=>`<div style="background:#111;padding:6px;border-radius:8px;margin:4px 0;border:1px solid #ff33cc">📞 <b>${c.type==='video'?'📹 Video':'🎤 Voice'}</b> - ${c.from} → ${c.to} - 🔔<br><small>${c.time} - ${c.status}</small> <button onclick="deleteCall('${c._key}')" class="deleteBtn">🗑 DELETE</button></div>`).join('') : 'No calls yet';
+let html = allCalls.length? allCalls.slice(-20).reverse().map(c=>`<div style="background:#111;padding:6px;border-radius:8px;margin:4px 0;border:1px solid #ff33cc">📞 <b>${c.type==='video'?'📹 Video':'🎤 Voice'}</b> - ${c.from} → ${c.to}<br><small>${c.time}</small> <button onclick="deleteCall('${c._key}')" class="deleteBtn">🗑 DELETE</button></div>`).join('') : 'No calls yet';
 let el1=document.getElementById('callsLog');if(el1)el1.innerHTML=html;
 let el2=document.getElementById('ceoCallsLog');if(el2)el2.innerHTML=html;
 }
@@ -257,13 +294,14 @@ if(!cLive.value){alert('Select Live IN/OUT');return;}
 if(!cName.value||!cPhone.value||!cLocation.value){alert('Fill Name/Phone/GPS');return;}
 let liveDetails=liveType==='in'?(feedingVal==='no'?'Live IN - NO feeding':`Live IN - ${feedingVal} Meal(s) YES`):(transportYes?`Live OUT - Transport YES`:'Live OUT - NO');
 let genderText=genderPref==='male'?'👨 MALE NURSE':genderPref==='female'?'👩 FEMALE NURSE':'👫 ANY Gender';
-let b={name:cName.value,phone:cPhone.value,loc:cLocation.value,service:s.options[s.selectedIndex].text,days:days,perDay:price,total:total,liveDetails:liveDetails,genderPref:genderPref,genderText:genderText,ref:cRefLink.value||'',id:Date.now(),assigned:false,assignedNurse:null,assignedNursePhone:null,status:'Pending - Gender: '+genderText,time:new Date().toLocaleString()};
-db.ref('bookings/'+b.id).set(b).then(()=>{document.getElementById('cResult').innerHTML=`✅ Booked ${b.service} Gh${total} - ${genderText} - Saved!`;});
+let otherCond=document.getElementById('cConditionOther').value||'';
+let conditionText = selectedConditions.length? selectedConditions.join(', ') + (otherCond?` (${otherCond})`:'') : 'No condition specified';
+let b={name:cName.value,phone:cPhone.value,loc:cLocation.value,service:s.options[s.selectedIndex].text,days:days,perDay:price,total:total,liveDetails:liveDetails,genderPref:genderPref,genderText:genderText,conditions:selectedConditions,conditionOther:otherCond,conditionText:conditionText,ref:cRefLink.value||'',id:Date.now(),assigned:false,assignedNurse:null,assignedNursePhone:null,status:'Pending - Gender: '+genderText+' - Condition: '+conditionText,time:new Date().toLocaleString()};
+db.ref('bookings/'+b.id).set(b).then(()=>{document.getElementById('cResult').innerHTML=`✅ Booked ${b.service} Gh${total} - ${genderText} - Condition: ${conditionText} - Saved!`; selectedConditions=[]; document.querySelectorAll('.conditionItem').forEach(el=>el.classList.remove('selected')); updateConditionDisplay();});
 }
 function registerNurse(){
 if(!nName.value||!nPhone.value||!nPass.value){alert('Fill Name/Phone/Password');return;}
 if(nPass.value!==document.getElementById('nPass2').value){alert('Passwords not match');return;}
-if(!nurseGPSData.lat){if(!confirm('⚠️ GPS not captured yet - For lawsuit protection, we need exact GPS - Continue without GPS? Click CANCEL to capture GPS now')){getNurseGPS();return;}}
 let colleagues=[
 {name:document.getElementById('col1Name').value||'', phone:document.getElementById('col1Phone').value||''},
 {name:document.getElementById('col2Name').value||'', phone:document.getElementById('col2Phone').value||''},
@@ -282,22 +320,23 @@ pass:nPass.value,approved:false,id:Date.now(),time:new Date().toLocaleString()
 };
 db.ref('nurseApplications/'+n.id).set(n).then(()=>{
 if(colleagues.length>0){colleagues.forEach((col,idx)=>{let colData={referredBy:n.name,referredByPhone:n.phone,colleagueName:col.name,colleaguePhone:col.phone,index:idx+1,time:new Date().toLocaleString(),id:Date.now()+idx};db.ref('colleagues/'+colData.id).set(colData);});}
-document.getElementById('nRegResult').innerHTML=`✅ Registered as ${n.genderText}${n.gpsLat?` + 📍 GPS: ${n.gpsLat.toFixed(4)},${n.gpsLng.toFixed(4)} - Lawsuit saved!`:''}${colleagues.length?` + ${colleagues.length} colleagues`:''}`;
+document.getElementById('nRegResult').innerHTML=`✅ Registered as ${n.genderText}${n.gpsLat?` + GPS: ${n.gpsLat.toFixed(4)},${n.gpsLng.toFixed(4)}`:''}${colleagues.length?` + ${colleagues.length} colleagues`:''}`;
 });
 }
-function approveNurse(id){let n=allNurseApps.find(x=>x.id==id);if(n){db.ref('workers/'+n.id).set({...n, _key:undefined}).then(()=>{db.ref('nurseApplications/'+n._key).update({approved:true});alert('✅ Approved as '+n.genderText+(n.gpsLat?` - GPS: ${n.gpsLat},${n.gpsLng}`:''));});}}
-function loginNurse(){let all=[...allWorkers,...allNurseApps];let d=all.find(x=>x.phone==lPhone.value);if(!d){document.getElementById('nLogResult').innerHTML='❌ Not found';return;}if(d.pass==lPass.value){currentNursePhone=d.phone;currentUserName=d.name;document.getElementById('nLogResult').innerHTML='✅ Welcome '+d.name+' - '+(d.genderText||'');nurseTab('offer');loadNurseOffers(d.phone);}else document.getElementById('nLogResult').innerHTML='❌ Wrong';}
+function approveNurse(id){let n=allNurseApps.find(x=>x.id==id);if(n){db.ref('workers/'+n.id).set({...n, _key:undefined}).then(()=>{db.ref('nurseApplications/'+n._key).update({approved:true});alert('✅ Approved as '+n.genderText);});}}
+function loginNurse(){let all=[...allWorkers,...allNurseApps];let d=all.find(x=>x.phone==lPhone.value);if(!d){document.getElementById('nLogResult').innerHTML='❌ Not found';return;}if(d.pass==lPass.value){currentNursePhone=d.phone;currentUserName=d.name;document.getElementById('nLogResult').innerHTML='✅ Welcome '+d.name;nurseTab('offer');loadNurseOffers(d.phone);}else document.getElementById('nLogResult').innerHTML='❌ Wrong';}
 function updateLists(){
 let rows=document.getElementById('clientListRows');let ceoAll=document.getElementById('ceoAllBookings');let ceoReview=document.getElementById('ceoNurseReview');let staffNurseList=document.getElementById('staffNurseList');
+let filteredBookings = conditionFilter==='all'? allBookings : allBookings.filter(b=>b.conditions && b.conditions.includes(conditionFilter) || (b.conditionText && b.conditionText.includes(conditionFilter)));
 let filterNursesByGender = (genderPref) => {if(genderPref==='any'||!genderPref) return allWorkers; return allWorkers.filter(n=>n.gender===genderPref);};
 let bookingRowHtml = (b, prefix, isCEO) => {
 let matchingNurses = filterNursesByGender(b.genderPref||'any');
-return `<div class="bookingRow"><b>👤 ${b.name}</b> - 📞 ${b.phone} - ${b.assigned?'✅ '+b.assignedNurse:'⏳ Not Assigned'} <button onclick="deleteBooking('${b.id}')" class="deleteBtn">🗑 DELETE</button><br>🩺 ${b.service} - Gh${b.total} - ${b.days} days<br>📌 ${b.liveDetails} | ${b.genderText||'👫 ANY'}<br>📍 <a href="https://www.google.com/maps?q=${b.loc}" target="_blank" style="color:#00ff88">GPS: ${b.loc}</a><br><div style="background:${b.perDay==40?'#332a00':'#1a0a2a'};padding:6px;border-radius:8px;margin:4px 0;border:1px solid ${b.perDay==40?'#ffcc00':'#ff77dd'}">${b.perDay==40?'🏠 House Help Gh40/day':`👫 Client wants: ${b.genderText||'ANY Gender'}`}</div><div style="display:flex;gap:4px;margin-top:6px"><select id="${prefix}NurseSel_${b.id}" style="flex:1;padding:6px;background:#0a1a3a;color:#fff"><option value="">Select from ${b.genderPref||'any'} nurses → ONE nurse</option>${matchingNurses.map(n=>`<option value="${n.phone}">${n.name} - ${n.phone} - ${n.genderText||''} - 📍 ${n.gpsLocation||n.location||''}</option>`).join('')}${matchingNurses.length===0?`<option disabled>No ${b.genderPref} nurses</option>${allWorkers.map(n=>`<option value="${n.phone}">${n.name} - ${n.phone} - ${n.genderText}</option>`).join('')}`:''}</select><button onclick="${isCEO?'assignSpecificCEO':'assignSpecific'}('${b.id}')" style="padding:6px 10px;background:${isCEO?'red':'#00ff88'};color:${isCEO?'#fff':'#000'};border:none;border-radius:8px;font-weight:800">${isCEO?'👑 ADMIN ASSIGN':'✅ STAFF ASSIGN'}</button></div></div>`;
+return `<div class="bookingRow"><b>👤 ${b.name}</b> - 📞 ${b.phone} - ${b.assigned?'✅ '+b.assignedNurse:'⏳ Not Assigned'} <button onclick="deleteBooking('${b.id}')" class="deleteBtn">🗑 DELETE</button><br>🩺 ${b.service} - Gh${b.total} - ${b.days} days<br>📌 ${b.liveDetails} | ${b.genderText||'👫 ANY'}<br><div style="background:#1a0a2a;padding:6px;border-radius:8px;margin:4px 0;border:2px solid #ff77dd">🩺 <b>Condition Suffering From:</b> <span style="color:#ff77dd;font-weight:800">${b.conditionText||'No condition specified'}</span><br>${b.conditions&&b.conditions.length?`🏷️ Tags: ${b.conditions.map(c=>`<span style="background:#ff77dd;color:#000;padding:2px 6px;border-radius:10px;font-size:9px;margin:2px">${c}</span>`).join(' '):''}</div>📍 <a href="https://www.google.com/maps?q=${b.loc}" target="_blank" style="color:#00ff88">GPS: ${b.loc}</a><br><div style="background:${b.perDay==40?'#332a00':'#1a0a2a'};padding:6px;border-radius:8px;margin:4px 0;border:1px solid ${b.perDay==40?'#ffcc00':'#ff77dd'}">${b.perDay==40?'🏠 House Help Gh40/day':`👫 Client wants: ${b.genderText||'ANY Gender'}`}</div><div style="display:flex;gap:4px;margin-top:6px"><select id="${prefix}NurseSel_${b.id}" style="flex:1;padding:6px;background:#0a1a3a;color:#fff"><option value="">Select from ${b.genderPref||'any'} nurses → ONE nurse</option>${matchingNurses.map(n=>`<option value="${n.phone}">${n.name} - ${n.phone} - ${n.genderText||''} - 📍 ${n.gpsLocation||n.location||''}</option>`).join('')}${matchingNurses.length===0?`<option disabled>No ${b.genderPref} nurses</option>${allWorkers.map(n=>`<option value="${n.phone}">${n.name} - ${n.phone} - ${n.genderText}</option>`).join('')}`:''}</select><button onclick="${isCEO?'assignSpecificCEO':'assignSpecific'}('${b.id}')" style="padding:6px 10px;background:${isCEO?'red':'#00ff88'};color:${isCEO?'#fff':'#000'};border:none;border-radius:8px;font-weight:800">${isCEO?'👑 ADMIN ASSIGN':'✅ STAFF ASSIGN'}</button></div></div>`;
 };
-if(rows){rows.innerHTML=allBookings.length?allBookings.map(b=>bookingRowHtml(b,'','',false)).join(''):'No bookings';}
-if(ceoAll){ceoAll.innerHTML=allBookings.length?allBookings.map(b=>bookingRowHtml(b,'ceo',true)).join(''):'No bookings';}
-if(ceoReview){ceoReview.innerHTML=allNurseApps.length?allNurseApps.map(n=>`<div style="background:#000;padding:8px;border-radius:10px;margin:6px 0;border:2px solid ${n.gpsLat?'#00ff88':'#ff4444'}">👩‍⚕️ ${n.name} - 📞 ${n.phone} - ${n.genderText||''} - 📍 ${n.location||''}<br>${n.gpsLocation?`📍 GPS Exact (Lawsuit): <a href="https://www.google.com/maps?q=${n.gpsLat},${n.gpsLng}" target="_blank" style="color:#00ff88">${n.gpsLocation}</a> - Accuracy: ${n.gpsAccuracy||''}m<br>`: '<span style="color:#ff4444">⚠️ No GPS - No lawsuit protection!</span><br>'}${n.colleagues&&n.colleagues.length?`👥 ${n.colleagues.length} Colleagues: ${n.colleagues.map(c=>`${c.name} (${c.phone})`).join(', ')}<br>`:''}<button onclick="deleteNurseApp('${n._key}')" class="deleteBtn">🗑 DELETE</button><br>${n.approved?'✅ Approved':`<button onclick="approveNurse(${n.id})" style="padding:6px;background:#00ff88;color:#000;border:none;border-radius:8px">✅ APPROVE</button>`}</div>`).join(''):'No applications';}
-if(staffNurseList){staffNurseList.innerHTML=allWorkers.length?allWorkers.map(n=>`👩‍⚕️ ${n.name} - 📞 ${n.phone} - ${n.genderText||''}<br>📍 Area: ${n.location||''}<br>${n.gpsLocation?`📍 <b>GPS Exact for Lawsuit:</b> <a href="https://www.google.com/maps?q=${n.gpsLat},${n.gpsLng}" target="_blank" style="color:#00ff88;font-weight:800">${n.gpsLocation}</a> - Lat: ${n.gpsLat}, Lng: ${n.gpsLng} - Accuracy: ${n.gpsAccuracy}m<br>`: '<span style="color:#ff4444">⚠️ No GPS - No lawsuit protection!</span><br>'}${n.colleagues&&n.colleagues.length?`👥 Referred ${n.colleagues.length}: ${n.colleagues.map(c=>`${c.name} - ${c.phone}`).join(', ')}<br>`:''}<button onclick="deleteWorker('${n._key}')" class="deleteBtn">🗑 DELETE</button><br>`).join('<hr>'):'No workers';}
+if(rows){rows.innerHTML=filteredBookings.length?filteredBookings.map(b=>bookingRowHtml(b,'','',false)).join(''):`No bookings${conditionFilter!=='all'?` for condition: ${conditionFilter} - <button onclick="filterByCondition('all')" style="padding:4px 8px;background:#ffcc00;color:#000;border:none;border-radius:6px">Show ALL</button>`:''};}
+if(ceoAll){ceoAll.innerHTML=filteredBookings.length?filteredBookings.map(b=>bookingRowHtml(b,'ceo',true)).join(''):`No bookings${conditionFilter!=='all'?` for ${conditionFilter}`:''};}
+if(ceoReview){ceoReview.innerHTML=allNurseApps.length?allNurseApps.map(n=>`<div style="background:#000;padding:8px;border-radius:10px;margin:6px 0;border:2px solid ${n.gpsLat?'#00ff88':'#ff4444'}">👩‍⚕️ ${n.name} - 📞 ${n.phone} - ${n.genderText||''} - 📍 ${n.location||''}<br>${n.gpsLocation?`📍 GPS Exact: <a href="https://www.google.com/maps?q=${n.gpsLat},${n.gpsLng}" target="_blank" style="color:#00ff88">${n.gpsLocation}</a> - ${n.gpsAccuracy||''}m<br>`: '<span style="color:#ff4444">⚠️ No GPS</span><br>'}${n.colleagues&&n.colleagues.length?`👥 ${n.colleagues.length} Colleagues: ${n.colleagues.map(c=>`${c.name} (${c.phone})`).join(', ')}<br>`:''}<button onclick="deleteNurseApp('${n._key}')" class="deleteBtn">🗑 DELETE</button><br>${n.approved?'✅ Approved':`<button onclick="approveNurse(${n.id})" style="padding:6px;background:#00ff88;color:#000;border:none;border-radius:8px">✅ APPROVE</button>`}</div>`).join(''):'No applications';}
+if(staffNurseList){staffNurseList.innerHTML=allWorkers.length?allWorkers.map(n=>`👩‍⚕️ ${n.name} - 📞 ${n.phone} - ${n.genderText||''}<br>📍 Area: ${n.location||''}<br>${n.gpsLocation?`📍 <b>GPS Exact:</b> <a href="https://www.google.com/maps?q=${n.gpsLat},${n.gpsLng}" target="_blank" style="color:#00ff88;font-weight:800">${n.gpsLocation}</a> - ${n.gpsAccuracy}m<br>`: '<span style="color:#ff4444">⚠️ No GPS</span><br>'}${n.colleagues&&n.colleagues.length?`👥 Referred ${n.colleagues.length}: ${n.colleagues.map(c=>`${c.name} - ${c.phone}`).join(', ')}<br>`:''}<button onclick="deleteWorker('${n._key}')" class="deleteBtn">🗑 DELETE</button><br>`).join('<hr>'):'No workers';}
 let totalRev=allBookings.reduce((s,b)=>s+b.total,0);
 let revEl=document.getElementById('rev');if(revEl)revEl.innerText=totalRev;
 let sRevEl=document.getElementById('sRev');if(sRevEl)sRevEl.innerText=totalRev;
@@ -308,7 +347,7 @@ let hn=document.getElementById('hNurses');if(hn)hn.innerText=allWorkers.length||
 let cw=document.getElementById('countWorkers');if(cw)cw.innerText=allWorkers.length;
 }
 function updateColleaguesList(){
-let html = allColleagues.length? allColleagues.map(c=>`<div style="background:#111;padding:8px;border-radius:10px;margin:6px 0;border:1px solid #00ff88">👥 <b>${c.colleagueName||'No name'}</b> - 📞 ${c.colleaguePhone||'No phone'}<br><small>Referred by: ${c.referredBy} - ${c.referredByPhone}</small><br><a href="tel:${c.colleaguePhone}" style="padding:4px 8px;background:#00ff88;color:#000;border-radius:6px;text-decoration:none;font-size:10px">📞 CALL</a> <button onclick="deleteColleague('${c._key}')" class="deleteBtn">🗑 DELETE</button></div>`).join('') : 'No colleagues yet';
+let html = allColleagues.length? allColleagues.map(c=>`<div style="background:#111;padding:8px;border-radius:10px;margin:6px 0;border:1px solid #00ff88">👥 <b>${c.colleagueName||'No name'}</b> - 📞 ${c.colleaguePhone||'No phone'}<br><small>Referred by: ${c.referredBy}</small><br><a href="tel:${c.colleaguePhone}" style="padding:4px 8px;background:#00ff88;color:#000;border-radius:6px;text-decoration:none;font-size:10px">📞 CALL</a> <button onclick="deleteColleague('${c._key}')" class="deleteBtn">🗑 DELETE</button></div>`).join('') : 'No colleagues yet';
 let el1=document.getElementById('colleaguesList');if(el1)el1.innerHTML=html;
 let el2=document.getElementById('ceoColleaguesList');if(el2)el2.innerHTML=html;
 }
@@ -342,48 +381,47 @@ function deleteAllSOS(){if(confirm('DELETE ALL SOS?')){db.ref('sos').remove();}}
 function deleteAllColleagues(){if(confirm('DELETE ALL COLLEAGUES?')){db.ref('colleagues').remove();}}
 function deleteAllCalls(){if(confirm('DELETE ALL CALLS?')){db.ref('calls').remove();}}
 function deleteAllStaff(){if(confirm('DELETE ALL STAFF?')){db.ref('staff').remove();}}
-function assignSpecific(bookingId){let sel=document.getElementById('NurseSel_'+bookingId);let phone=sel?sel.value:null;if(!phone){alert('Select nurse');return;}let c=allBookings.find(b=>b.id==bookingId);let n=allWorkers.find(nn=>nn.phone==phone);db.ref('bookings/'+bookingId).update({assigned:true,assignedNurse:n.name,assignedNursePhone:n.phone,status:'Assigned by Staff - Pending - '+c.genderText}).then(()=>{alert(`✅ STAFF Assigned ${c.name} → ${n.name}`);});}
-function assignSpecificCEO(bookingId){let sel=document.getElementById('ceoNurseSel_'+bookingId);let phone=sel?sel.value:null;if(!phone){alert('Select nurse');return;}let c=allBookings.find(b=>b.id==bookingId);let n=allWorkers.find(nn=>nn.phone==phone);db.ref('bookings/'+bookingId).update({assigned:true,assignedNurse:n.name,assignedNursePhone:n.phone,status:'Assigned by Admin - Pending - '+c.genderText}).then(()=>{alert(`👑 ADMIN Assigned ${c.name} → ${n.name}`);});}
-function loadNurseOffers(phone){let list=phone?allBookings.filter(b=>b.assignedNursePhone==phone):allBookings.filter(b=>b.assigned);let target=document.getElementById('nurseOffersList');if(!target)return;if(list.length===0){target.innerHTML='No offers';return;}target.innerHTML=list.map(b=>`<div style="background:#111;padding:10px;border-radius:12px;margin:6px 0;border:2px solid #ffcc00">👤 ${b.name} - 📞 ${b.phone} - ${b.genderText||''}<br>🩺 ${b.service} Gh${b.total}<br>📌 ${b.liveDetails}<br>Status: ${b.status||'Pending'}<br><div style="display:flex;gap:6px;margin-top:8px"><button onclick="acceptOffer(${b.id})" style="flex:1;padding:10px;background:#00ff88;color:#000;border:none;border-radius:10px;font-weight:800">✅ ACCEPT</button><button onclick="rejectOffer(${b.id})" style="flex:1;padding:10px;background:red;color:#fff;border:none;border-radius:10px">❌ REJECT</button></div></div>`).join('');}
+function assignSpecific(bookingId){let sel=document.getElementById('NurseSel_'+bookingId);let phone=sel?sel.value:null;if(!phone){alert('Select nurse');return;}let c=allBookings.find(b=>b.id==bookingId);let n=allWorkers.find(nn=>nn.phone==phone);db.ref('bookings/'+bookingId).update({assigned:true,assignedNurse:n.name,assignedNursePhone:n.phone,status:'Assigned by Staff - Pending - '+c.genderText+' - Condition: '+c.conditionText}).then(()=>{alert(`✅ STAFF Assigned ${c.name} (${c.conditionText}) → ${n.name}`);});}
+function assignSpecificCEO(bookingId){let sel=document.getElementById('ceoNurseSel_'+bookingId);let phone=sel?sel.value:null;if(!phone){alert('Select nurse');return;}let c=allBookings.find(b=>b.id==bookingId);let n=allWorkers.find(nn=>nn.phone==phone);db.ref('bookings/'+bookingId).update({assigned:true,assignedNurse:n.name,assignedNursePhone:n.phone,status:'Assigned by Admin - Pending - '+c.genderText+' - Condition: '+c.conditionText}).then(()=>{alert(`👑 ADMIN Assigned ${c.name} (${c.conditionText}) → ${n.name}`);});}
+function loadNurseOffers(phone){let list=phone?allBookings.filter(b=>b.assignedNursePhone==phone):allBookings.filter(b=>b.assigned);let target=document.getElementById('nurseOffersList');if(!target)return;if(list.length===0){target.innerHTML='No offers';return;}target.innerHTML=list.map(b=>`<div style="background:#111;padding:10px;border-radius:12px;margin:6px 0;border:2px solid #ffcc00">👤 ${b.name} - 📞 ${b.phone} - ${b.genderText||''}<br>🩺 <div style="background:#1a0a2a;padding:6px;border-radius:8px;border:2px solid #ff77dd;margin:4px 0">Condition: <b style="color:#ff77dd">${b.conditionText||'No condition'}</b></div>🩺 ${b.service} Gh${b.total}<br>📌 ${b.liveDetails}<br>📍 <a href="https://www.google.com/maps?q=${b.loc}" target="_blank" style="color:#00ff88">GPS: ${b.loc}</a><br>Status: ${b.status||'Pending'}<br><div style="display:flex;gap:6px;margin-top:8px"><button onclick="acceptOffer(${b.id})" style="flex:1;padding:10px;background:#00ff88;color:#000;border:none;border-radius:10px;font-weight:800">✅ ACCEPT</button><button onclick="rejectOffer(${b.id})" style="flex:1;padding:10px;background:red;color:#fff;border:none;border-radius:10px">❌ REJECT</button></div></div>`).join('');}
 function acceptOffer(id){db.ref('bookings/'+id).update({status:'✅ Accepted'}).then(()=>{alert('✅ Accepted');});}
 function rejectOffer(id){db.ref('bookings/'+id).update({status:'❌ Rejected',assigned:false,assignedNurse:null,assignedNursePhone:null}).then(()=>{alert('❌ Rejected');});}
 function openSelectModal(type){let isStaff = isStaffLogged || document.getElementById('staffWork').style.display==='block';let isAdmin = isAdminLogged || document.getElementById('ceoWork').style.display==='block';let isNurse = currentNursePhone!==null;if(isStaff||isAdmin||isNurse){openSelectModalStaff(type);}else{openSelectModalClient(type);}}
 function openSelectModalClient(type){
 document.getElementById('selectModal').classList.add('active');
-document.getElementById('modalTitle').innerText='👔 Select Staff/Admin - Will Ring 🔔';
+document.getElementById('modalTitle').innerText='👔 Select Staff/Admin';
 let list='';
 if(staffAccounts.length===0){list=`<div style="background:#0a2a1a;padding:10px;border-radius:10px">No staff yet</div>`;}
-else{list+=`<b>👔 Staff/Admin - Will Ring:</b><br>`+staffAccounts.map(s=>`<div style="background:#0a1a3a;padding:8px;border-radius:8px;margin:6px 0;border:2px solid #00ff88"><b>👔 Staff ID: ${s.id}</b><br><button onclick="selectPerson('${s.id}','${s.id}','staff','${type}')" style="padding:8px;background:#00ff88;color:#000;border:none;border-radius:8px;font-weight:800">✅ SELECT + RING ${s.id} 🔔</button></div>`).join('');}
-list+=`<div style="background:#1a0000;padding:8px;border-radius:8px;margin-top:10px"><b>👑 CEO/Admin - Will Ring 🔔</b><br><button onclick="selectPerson('CEO Admin','Admin','admin','${type}')" style="padding:8px;background:red;color:#fff;border:none;border-radius:8px;font-weight:800">👑 SELECT + RING CEO 🔔</button></div>`;
+else{list+=`<b>👔 Staff/Admin:</b><br>`+staffAccounts.map(s=>`<div style="background:#0a1a3a;padding:8px;border-radius:8px;margin:6px 0;border:2px solid #00ff88"><b>👔 Staff ID: ${s.id}</b><br><button onclick="selectPerson('${s.id}','${s.id}','staff','${type}')" style="padding:8px;background:#00ff88;color:#000;border:none;border-radius:8px;font-weight:800">✅ SELECT ${s.id}</button></div>`).join('');}
+list+=`<div style="background:#1a0000;padding:8px;border-radius:8px;margin-top:10px"><b>👑 CEO/Admin</b><br><button onclick="selectPerson('CEO Admin','Admin','admin','${type}')" style="padding:8px;background:red;color:#fff;border:none;border-radius:8px;font-weight:800">👑 SELECT CEO</button></div>`;
 document.getElementById('modalList').innerHTML=list;
 }
 function openSelectModalStaff(type){
 document.getElementById('selectModal').classList.add('active');
-document.getElementById('modalTitle').innerText='👥 Select Anyone - Will Ring 🔔';
+document.getElementById('modalTitle').innerText='👥 Select Anyone';
 let list='';
-if(allBookings.length){list+=`<b>👤 Clients - Will Ring 🔔:</b><br>`+allBookings.map(b=>`<div style="background:#0a2a1a;padding:6px;border-radius:8px;margin:4px 0">👤 ${b.name} - 📞 ${b.phone}<br><button onclick="selectPerson('${b.name}','${b.phone}','client','${type}')" style="padding:5px 10px;background:#00ff88;color:#000;border:none;border-radius:7px">SELECT + RING 🔔</button> <a href="tel:${b.phone}" style="padding:5px 10px;background:#3b82f6;color:#fff;border-radius:7px;text-decoration:none">📞 CALL</a></div>`).join('');}
-if(allWorkers.length){list+=`<b>👩‍⚕️ Nurses - Will Ring + 📍 GPS:</b><br>`+allWorkers.map(n=>`<div style="background:#0a1a3a;padding:6px;border-radius:8px;margin:4px 0;border:2px solid ${n.gpsLat?'#00ff88':'#ff4444'}">👩‍⚕️ ${n.name} - 📞 ${n.phone} - ${n.genderText||''}<br>${n.gpsLocation?`📍 GPS: <a href="https://www.google.com/maps?q=${n.gpsLat},${n.gpsLng}" target="_blank" style="color:#00ff88">${n.gpsLocation}</a><br>`:''}<button onclick="selectPerson('${n.name}','${n.phone}','nurse','${type}')" style="padding:5px 10px;background:#3b82f6;color:#fff;border:none;border-radius:7px">SELECT + RING 🔔</button> <a href="tel:${n.phone}" style="padding:5px 10px;background:#00ff88;color:#000;border-radius:7px;text-decoration:none">📞 CALL</a></div>`).join('');}
-if(staffAccounts.length){list+=`<b>👔 Staff - Will Ring 🔔:</b><br>`+staffAccounts.map(s=>`<div style="background:#111;padding:6px;border-radius:8px;margin:4px 0">👔 Staff ID: ${s.id}<br><button onclick="selectPerson('${s.id}','Staff','staff','${type}')" style="padding:5px 10px;background:#ffcc00;color:#000;border:none;border-radius:7px">SELECT + RING 🔔 ${s.id}</button></div>`).join('');}
+if(allBookings.length){list+=`<b>👤 Clients:</b><br>`+allBookings.map(b=>`<div style="background:#0a2a1a;padding:6px;border-radius:8px;margin:4px 0">👤 ${b.name} - 📞 ${b.phone} - 🩺 ${b.conditionText||'No condition'}<br><button onclick="selectPerson('${b.name}','${b.phone}','client','${type}')" style="padding:5px 10px;background:#00ff88;color:#000;border:none;border-radius:7px">SELECT</button> <a href="tel:${b.phone}" style="padding:5px 10px;background:#3b82f6;color:#fff;border-radius:7px;text-decoration:none">📞 CALL</a></div>`).join('');}
+if(allWorkers.length){list+=`<b>👩‍⚕️ Nurses:</b><br>`+allWorkers.map(n=>`<div style="background:#0a1a3a;padding:6px;border-radius:8px;margin:4px 0;border:2px solid ${n.gpsLat?'#00ff88':'#ff4444'}">👩‍⚕️ ${n.name} - 📞 ${n.phone} - ${n.genderText||''}<br>${n.gpsLocation?`📍 GPS: <a href="https://www.google.com/maps?q=${n.gpsLat},${n.gpsLng}" target="_blank" style="color:#00ff88">${n.gpsLocation}</a><br>`:''}<button onclick="selectPerson('${n.name}','${n.phone}','nurse','${type}')" style="padding:5px 10px;background:#3b82f6;color:#fff;border:none;border-radius:7px">SELECT</button> <a href="tel:${n.phone}" style="padding:5px 10px;background:#00ff88;color:#000;border-radius:7px;text-decoration:none">📞 CALL</a></div>`).join('');}
+if(staffAccounts.length){list+=`<b>👔 Staff:</b><br>`+staffAccounts.map(s=>`<div style="background:#111;padding:6px;border-radius:8px;margin:4px 0">👔 Staff ID: ${s.id}<br><button onclick="selectPerson('${s.id}','Staff','staff','${type}')" style="padding:5px 10px;background:#ffcc00;color:#000;border:none;border-radius:7px">SELECT ${s.id}</button></div>`).join('');}
 document.getElementById('modalList').innerHTML=list||'No data';
 }
 function closeModal(){document.getElementById('selectModal').classList.remove('active');}
 function selectPerson(name,phone,type,mode){
 closeModal();
-let info=`✅ Selected: <b>${name}</b> - 📞 ${phone} - ${type} - 🔔 Ringing sent!`;
+let info=`✅ Selected: <b>${name}</b> - 📞 ${phone} - ${type}`;
 ['videoCallInfo','staffVideoInfo','ceoVideoInfo','clientVideoInfo','voiceSelected','staffVoiceSelected','ceoVoiceSelected','clientVoiceSelected'].forEach(id=>{let el=document.getElementById(id);if(el)el.innerHTML=info;});
 initiateCall(name, phone, mode);
 playRinging(mode, name);
 setTimeout(()=>{stopRinging();},3000);
 }
 function createStaff(){if(!newStaffID.value||!newStaffPass.value){alert('Fill');return;}db.ref('staff/'+newStaffID.value).set({id:newStaffID.value,pass:newStaffPass.value}).then(()=>{alert(`✅ Staff Created`);});}
-function changeStaffPassword(){let id=document.getElementById('editStaffID').value;let pass=document.getElementById('editStaffPass').value;if(!id||!pass){alert('Enter ID and Password');return;}db.ref('staff/'+id).update({pass:pass}).then(()=>{alert(`✅ Password changed for ${id} - Admin changed anytime!`);});}
+function changeStaffPassword(){let id=document.getElementById('editStaffID').value;let pass=document.getElementById('editStaffPass').value;if(!id||!pass){alert('Enter ID and Password');return;}db.ref('staff/'+id).update({pass:pass}).then(()=>{alert(`✅ Password changed for ${id}`);});}
 function loginStaff(){let id=document.getElementById('sID').value;let pass=document.getElementById('sPass').value;if(!id||!pass){alert('Fill');return;}db.ref('staff/'+id).once('value',snap=>{let v=snap.val();if(v&&v.pass==pass){document.getElementById('staffLoginBox').style.display='none';document.getElementById('staffWork').style.display='block';isStaffLogged=true;currentUserName=v.id;}else{document.getElementById('sResult').innerHTML='❌ Wrong';}});}
 function loadStaffData(){updateLists();updateWinnersWalking();updateColleaguesList();updateCallsLog();}
 function loginCEO(){
 let user=ceoUser.value;
 let pass=ceoPass.value;
 if(!user||!pass){document.getElementById('ceoLoginResult').innerHTML='❌ Fill username and password';return;}
-// Check Firebase adminConfig first, fallback to default hardcoded
 db.ref('adminConfig').once('value',snap=>{
 let val=snap.val();
 let configUser=val?val.user:'KUSIPETER';
@@ -394,11 +432,9 @@ document.getElementById('ceoWork').style.display='block';
 isAdminLogged=true;
 currentUserName='CEO Admin';
 adminConfig={user:configUser,pass:configPass};
-document.getElementById('currentAdminUser').innerText=configUser;
-updateAdminPassDisplay();
 loadCEOData();
 }else{
-document.getElementById('ceoLoginResult').innerHTML='❌ Wrong - Check username/password - Default: KUSIPETER / Peterasa80@you! or your changed password';
+document.getElementById('ceoLoginResult').innerHTML='❌ Wrong - Default: KUSIPETER / Peterasa80@you! or your changed password';
 }
 });
 }
@@ -429,10 +465,10 @@ rec.onstop=()=>{let b=new Blob(chunks,{type:'audio/webm'});let url=URL.createObj
 rec.start();recording=true;
 }else{rec.stop();recording=false;}
 }
-function sendStaffVoice(){let sel=document.getElementById('staffVoiceSelected').innerText;let v={from:currentUserName||'Staff',to:sel,blob:document.getElementById('staffSendVoice').dataset.blob,_key:Date.now(),time:new Date().toLocaleString()};db.ref('voices/'+v._key).set(v).then(()=>{alert('✅ Voice sent + Ringing 🔔'); initiateCall('Receiver','Unknown','voice');});}
-function sendCEOVoice(){let sel=document.getElementById('ceoVoiceSelected').innerText;let v={from:'CEO/Admin',to:sel,blob:document.getElementById('ceoSendVoice').dataset.blob,_key:Date.now(),time:new Date().toLocaleString()};db.ref('voices/'+v._key).set(v).then(()=>{alert('✅ CEO Voice sent + Ringing 🔔'); initiateCall('Receiver','Unknown','voice');});}
-function sendClientVoice(){let sel=document.getElementById('clientVoiceSelected').innerText;let v={from:'Client',to:sel,blob:document.getElementById('clientSendVoice').dataset.blob,_key:Date.now(),time:new Date().toLocaleString()};db.ref('voices/'+v._key).set(v).then(()=>{alert('✅ Client Voice sent + Ringing 🔔'); initiateCall('Staff/Admin','Unknown','voice');});}
-function sendNurseVoice(){let v={from:currentUserName||'Nurse',to:'Staff',blob:document.getElementById('nSendVoice').dataset.blob,_key:Date.now(),time:new Date().toLocaleString()};db.ref('voices/'+v._key).set(v).then(()=>{alert('✅ Nurse Voice sent + Ringing 🔔'); initiateCall('Staff','Unknown','voice');});}
+function sendStaffVoice(){let sel=document.getElementById('staffVoiceSelected').innerText;let v={from:currentUserName||'Staff',to:sel,blob:document.getElementById('staffSendVoice').dataset.blob,_key:Date.now(),time:new Date().toLocaleString()};db.ref('voices/'+v._key).set(v).then(()=>{alert('✅ Voice sent + Ringing'); initiateCall('Receiver','Unknown','voice');});}
+function sendCEOVoice(){let sel=document.getElementById('ceoVoiceSelected').innerText;let v={from:'CEO/Admin',to:sel,blob:document.getElementById('ceoSendVoice').dataset.blob,_key:Date.now(),time:new Date().toLocaleString()};db.ref('voices/'+v._key).set(v).then(()=>{alert('✅ CEO Voice sent + Ringing'); initiateCall('Receiver','Unknown','voice');});}
+function sendClientVoice(){let sel=document.getElementById('clientVoiceSelected').innerText;let v={from:'Client',to:sel,blob:document.getElementById('clientSendVoice').dataset.blob,_key:Date.now(),time:new Date().toLocaleString()};db.ref('voices/'+v._key).set(v).then(()=>{alert('✅ Client Voice sent + Ringing'); initiateCall('Staff/Admin','Unknown','voice');});}
+function sendNurseVoice(){let v={from:currentUserName||'Nurse',to:'Staff',blob:document.getElementById('nSendVoice').dataset.blob,_key:Date.now(),time:new Date().toLocaleString()};db.ref('voices/'+v._key).set(v).then(()=>{alert('✅ Nurse Voice sent + Ringing'); initiateCall('Staff','Unknown','voice');});}
 function updateVoiceInbox(){let inbox=document.getElementById('staffVoiceInbox');if(inbox){inbox.innerHTML=voices.length?voices.map(v=>`🎤 ${v.from} → ${v.to} - ${v.time} <button onclick="deleteVoice('${v._key}')" class="deleteBtn">🗑 DELETE</button><br><audio controls src="${v.blob}" style="width:100%"></audio>`).join('<hr>'):'No voices';}}
 function generateLink(){let name=document.getElementById('refName').value;let momo=document.getElementById('refMoMo').value;if(!name||!momo){alert('Enter Name + MoMo');return;}let code=localStorage.getItem('myCode')||'LOVE'+Math.floor(100+Math.random()*900);localStorage.setItem('myCode',code);let link=location.origin+location.pathname+'?ref='+code;document.getElementById('myLink').value=link;let r={name:name,momo:momo,code:code,count:0,earnings:0,time:new Date().toLocaleString()};db.ref('referrers/'+code).set(r).then(()=>{alert(`✅ Link for ${name}`);});}
 function generateLinkStaff(){let name=document.getElementById('staffRefName').value;let momo=document.getElementById('staffRefMoMo').value;if(!name||!momo){alert('Enter Name + MoMo');return;}let code=localStorage.getItem('myCode')||'LOVE'+Math.floor(100+Math.random()*900);localStorage.setItem('myCode',code);let link=location.origin+location.pathname+'?ref='+code;document.getElementById('staffMyLink').value=link;let r={name:name,momo:momo,code:code,count:0,earnings:0,time:new Date().toLocaleString()};db.ref('referrers/'+code).set(r).then(()=>{alert(`✅ Staff Link for ${name}`);});}
@@ -440,6 +476,5 @@ function generateLinkCEO(){let name=document.getElementById('ceoRefName').value;
 function shareLink(){let link=document.getElementById('myLink').value||document.getElementById('staffMyLink').value||document.getElementById('ceoMyLink').value;if(!link){alert('Generate first');return;}window.open('https://wa.me/?text='+encodeURIComponent('Join Love Care Gh120-150 + Gh40 House Help: '+link),'_blank');}
 listenBackend();calcPay();updateLists();updateWinnersWalking();updateColleaguesList();updateCallsLog();
 let myCodeLocal=localStorage.getItem('myCode')||'LOVE'+Math.floor(100+Math.random()*900);localStorage.setItem('myCode',myCodeLocal);let mc=document.getElementById('myCode');if(mc)mc.innerText=myCodeLocal;
-if(Notification && Notification.permission==='default'){setTimeout(()=>{Notification.requestPermission();},2000);}
 setTimeout(()=>{if(document.getElementById('page-nurse').classList.contains('active')){autoCaptureNurseGPS();}},3000);
 </script></body></html>
