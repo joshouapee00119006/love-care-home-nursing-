@@ -1,92 +1,739 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>V38 SUPER PRO ORIGINAL STYLE FIXED</title>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-<style>
+<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><title>V37 STAFF CHAT FIX</title><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script><style>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600;800&display=swap');
 body{background:#f0fdf4;color:#111827;margin:0;font-family:Poppins;padding-bottom:80px}
 .header{background:linear-gradient(90deg,#16a34a,#eab308);padding:12px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:60}
 .card{background:white;border:2px solid #eab308;border-radius:18px;margin:8px;padding:12px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
 .card h2{color:#16a34a;margin:6px 0;font-size:12px}
-input,select{width:100%;padding:11px;margin:5px 0;border-radius:11px;border:1px solid #d1d5db}
+input,select{width:100%;padding:11px;margin:5px 0;border-radius:11px;border:1px solid #d1d5db;background:#ffffff;color:#111827;box-sizing:border-box}
 .btnSubmit{width:100%;padding:12px;border:none;border-radius:12px;font-weight:800;margin-top:7px;cursor:pointer}
 .page{display:none}.page.active{display:block}
-.bottomNav{position:fixed;bottom:0;left:0;right:0;background:white;display:flex;justify-content:space-around;padding:6px 0;border-top:2px solid #eab308;z-index:100}
-.bottomNav div{font-size:10px;text-align:center;cursor:pointer;opacity:.6;color:#6b7280;padding:4px}
-.bottomNav div.active{opacity:1;color:#16a34a;font-weight:800}
+.bottomNav{position:fixed;bottom:0;left:0;right:0;background:white;display:flex;justify-content:space-around;padding:6px 0;border-top:2px solid #eab308;z-index:40}
+.bottomNav div{font-size:9px;text-align:center;cursor:pointer;opacity:.6;color:#6b7280}.bottomNav div.active{opacity:1;color:#16a34a;font-weight:800}
 .bottomNav div.hiddenNav{display:none!important}
-.tabs{display:flex;gap:4px}.tabs button{flex:1;padding:7px;border-radius:9px;border:1px solid #d1d5db;background:#f3f4f6}
-.tabs button.active{background:#16a34a;color:white}
+.tabs{display:flex;gap:4px}.tabs button{flex:1;padding:7px;border-radius:9px;border:1px solid #d1d5db;background:#f3f4f6;color:#111827;font-size:10px}.tabs button.active{background:#16a34a;color:white}
+.bookingRow{background:white;border:1px solid #eab308;border-radius:12px;padding:8px;margin:6px 0;font-size:11px;color:#111827}
+.optionBox{background:#fefce8;border:2px solid #eab308;border-radius:12px;padding:10px;margin:8px 0;display:none}.optionBox.active{display:block}
+.radioRow{display:flex;gap:5px;flex-wrap:wrap}.radioRow label{flex:1;min-width:60px;background:#f3f4f6;padding:8px;border-radius:8px;font-size:10px;text-align:center;cursor:pointer;border:1px solid #d1d5db;color:#111}.radioRow label.selected{background:#ffcc00;color:#000;font-weight:800}
+.topBtns{display:flex;gap:6px;padding:8px;background:#f0fdf4}.topBtns button{flex:1;padding:10px 2px;border-radius:12px;border:2px solid;font-weight:800;font-size:10px;cursor:pointer;background:white}
+.gpsBtn{background:linear-gradient(90deg,#16a34a,#22c55e);color:white;padding:10px;border-radius:11px;border:none;font-weight:800;width:100%;cursor:pointer}
+.modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:200;justify-content:center;align-items:center;padding:15px}.modal.active{display:flex}.modalBox{background:white;border:2px solid #eab308;border-radius:16px;padding:14px;width:100%;max-width:380px;max-height:85vh;overflow:auto}
+.marqueeContainer{height:400px;overflow:hidden;position:relative;background:#fefce8;border:2px solid #eab308;border-radius:12px;padding:5px}.marqueeContent{animation:scrollUp 25s linear infinite}@keyframes scrollUp{0%{transform:translateY(100%)}100%{transform:translateY(-100%)}}.winnerWalkItem{background:white;border:1px solid #eab308;border-radius:10px;padding:10px;margin:8px 0}
+.freeWallet{background:linear-gradient(90deg,#fefce8,#f0fdf4);border:2px solid #eab308;border-radius:14px;padding:12px;margin:10px 0;text-align:center}
+.conditionBox{background:#fefce8;border:2px solid #eab308;border-radius:12px;padding:10px;margin:10px 0}.conditionGrid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0}.conditionItem{background:white;border:1px solid #d1d5db;padding:10px;border-radius:10px;font-size:11px;cursor:pointer;text-align:center}.conditionItem.selected{background:#16a34a;color:white;font-weight:800}
+.deleteBtn{background:#ef4444;color:#fff;border:none;padding:8px 12px;border-radius:8px;font-size:11px;font-weight:800;cursor:pointer;margin:3px;display:inline-block!important}.selectPersonBtn{background:linear-gradient(90deg,#16a34a,#eab308);color:#fff;padding:14px;border:none;border-radius:12px;font-weight:800;width:100%;margin:8px 0;cursor:pointer;font-size:12px;border:2px solid #eab308}.selectedPersonBox{background:#f0fdf4;border:2px solid #16a34a;color:#16a34a;padding:10px;border-radius:10px;font-size:12px;text-align:center;margin:8px 0;font-weight:800}.videoBox{background:#000;border:2px solid #ec4899;border-radius:12px;padding:8px;margin:8px 0}.voiceBox{background:#fefce8;border:2px solid #eab308;border-radius:12px;padding:12px;margin:8px 0;text-align:center}
+.assignSelect{width:60%;padding:8px;border:2px solid #16a34a;border-radius:8px;font-size:11px}
+.broadcastBar{background:#111827;padding:10px 0;overflow:hidden;white-space:nowrap;border-bottom:3px solid #eab308;position:sticky;top:50px;z-index:50}
+.broadcastText{display:inline-block;font-weight:800;font-size:13px}
+.marqueeSlow{animation:marqueeWalk 35s linear infinite}.marqueeNormal{animation:marqueeWalk 22s linear infinite}.marqueeFast{animation:marqueeWalk 10s linear infinite}
+@keyframes marqueeWalk{0%{transform:translateX(100%)}100%{transform:translateX(-100%)}}
+.rainbowText{background:linear-gradient(90deg,#eab308,#16a34a,#3b82f6,#ec4899,#eab308);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:rainbow 3s linear infinite, marqueeWalk 22s linear infinite;background-size:200% auto}
+@keyframes rainbow{0%{background-position:0%}100%{background-position:200%}}
+.blinkEmoji{animation:blink 1s infinite}@keyframes blink{0%,50%{opacity:1}51%,100%{opacity:0.3}}
+.bounceEmoji{display:inline-block;animation:bounce 1.5s infinite}@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.flashBg{animation:flashBg 1s infinite}@keyframes flashBg{0%{background:#111827}50%{background:#16a34a}100%{background:#111827}}
+.chatContainer{background:#e5ddd5;height:70vh;overflow-y:auto;padding:10px;border-radius:12px;border:2px solid #16a34a;display:flex;flex-direction:column;gap:6px}
+.msgBubble{max-width:75%;padding:10px 12px;border-radius:12px;font-size:11px;position:relative;word-wrap:break-word}
+.msgMe{align-self:flex-end;background:#dcf8c6;border-bottom-right-radius:2px;color:#111}
+.msgOther{align-self:flex-start;background:white;border-bottom-left-radius:2px;color:#111;box-shadow:0 1px 1px rgba(0,0,0,.1)}
+.msgName{font-size:9px;font-weight:800;color:#16a34a;margin-bottom:2px}
+.msgTime{font-size:8px;color:#6b7280;text-align:right;margin-top:4px}
+.chatInputBar{display:flex;gap:6px;padding:8px;background:white;border-top:2px solid #eab308;border-radius:0 0 12px 12px}
+.chatInput{flex:1;padding:12px;border-radius:20px;border:1px solid #d1d5db}
 .uploadBox{background:#f0fdf4;border:2px dashed #16a34a;border-radius:10px;padding:10px;margin:6px 0}
+.videoGrid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.momoPayBox{background:linear-gradient(90deg,#fefce8,#f0fdf4);border:3px solid #eab308;border-radius:14px;padding:14px;margin:10px 0;text-align:center}
+.payMethod{display:flex;gap:6px;margin:8px 0}.payMethod label{flex:1;background:white;border:2px solid #d1d5db;padding:12px;border-radius:10px;text-align:center;cursor:pointer;font-size:11px}.payMethod label.selected{background:#16a34a;color:white;font-weight:800;border-color:#16a34a}
+.backupBox{background:linear-gradient(90deg,#111827,#16a34a);border:3px solid #eab308;border-radius:14px;padding:14px;margin:12px 0}
 .logoutBar{background:#111827;color:white;padding:10px;border-radius:10px;display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;border:2px solid #ef4444}
-</style>
-</head>
-<body>
-<div class="header"><div onclick="showPage('home')" style="display:flex;align-items:center;gap:8px;cursor:pointer"><span style="font-size:26px">💖</span><b style="color:white">LOVE CARE</b><span style="background:white;color:#16a34a;padding:2px 8px;border-radius:10px;font-size:9px">GHANA</span></div><div onclick="showPage('win')" style="font-size:18px;cursor:pointer">🏆</div></div>
+</style></head><body>
+<div class="header"><div onclick="tapLogo()" style="display:flex;align-items:center;gap:8px;cursor:pointer"><span style="font-size:26px">💖</span><b style="color:white">LOVE CARE</b><span style="background:white;color:#16a34a;padding:2px 8px;border-radius:10px;font-size:9px">GHANA</span></div><div onclick="showPage('win')" style="font-size:18px;cursor:pointer">🏆</div></div>
+<div id="broadcastBar" class="broadcastBar"><div id="broadcastWalk" class="broadcastText marqueeNormal" style="color:#eab308">💖 LOVE CARE GHANA - Pay via MoMo or Bank Transfer - Upload Receipt! 🎁</div></div>
+<div class="topBtns"><button style="border-color:#16a34a;color:#16a34a" onclick="showPage('book')">CLIENT<br>BOOK</button><button style="border-color:#3b82f6;color:#3b82f6" onclick="showPage('nurse')">NURSE<br>PORTAL</button><button style="border-color:#ec4899;color:#ec4899" onclick="showPage('video')">VIDEO<br>CALL</button><button style="border-color:#eab308;color:#b45309" onclick="showPage('voice')">VOICE<br>CHAT</button></div>
+<div id="selectModal" class="modal"><div class="modalBox"><h2 style="color:#16a34a">SELECT WHO TO CALL</h2><div id="modalList" style="font-size:11px;margin-top:10px"></div><button class="btnSubmit" style="background:#6b7280;color:#fff" onclick="closeModal()">CLOSE</button></div></div>
 
-<div id="page-home" class="page active"><div class="card" style="text-align:center"><div style="font-size:50px">💖</div><h2 style="font-size:18px;color:#16a34a">LOVE CARE HOME NURSING GHANA</h2><button class="btnSubmit" style="background:#16a34a;color:#fff" onclick="showPage('book')">📗 BOOK A NURSE</button><button class="btnSubmit" style="background:#eab308;color:#000" onclick="showPage('win')">🏆 REFER & EARN</button><button class="btnSubmit" style="background:#111827;color:#eab308" onclick="showPage('staff')">👔 STAFF PORTAL</button><button class="btnSubmit" style="background:#111827;color:white" onclick="showPage('ceo')">👑 ADMIN DASHBOARD</button></div></div>
+<div id="page-home" class="page active"><div class="card" style="text-align:center"><div style="font-size:50px">💖</div><h2 style="font-size:18px;color:#16a34a">LOVE CARE HOME NURSING GHANA</h2><div class="freeWallet"><h2 style="font-size:13px">🎁 REFER & GET FREE WEEKS!</h2><p style="font-size:11px">Refer 2 weeks = <b style="color:#16a34a">2 DAYS FREE</b><br>Refer 1 month = <b style="color:#16a34a">5 DAYS FREE</b><br>Refer 3 months = <b style="color:#b45309">15 DAYS FREE!</b></p><input id="checkFreePhone" placeholder="Enter phone to check free days"><button class="btnSubmit" style="background:#eab308;color:#000" onclick="checkFreeBalance()">💰 CHECK MY FREE DAYS</button><div id="freeBalanceResult" style="font-size:12px;margin-top:8px;color:#16a34a"></div></div><p style="font-size:11px">Clients: <b id="hClients" style="color:#16a34a">0</b> | Nurses: <b id="hNurses" style="color:#3b82f6">0</b> | Winners: <b id="hWinners" style="color:#eab308">0</b></p><div class="momoPayBox" style="border:2px solid #16a34a"><h2 style="font-size:12px;color:#16a34a">💰 PAY VIA MOMO OR BANK</h2><p style="font-size:11px">MoMo: <b id="homeMoMoNumber" style="color:#eab308">0244 XXX XXX</b> - <span id="homeMoMoName">LOVE CARE GHANA</span><br>Bank: <b id="homeBankName" style="color:#16a34a">GCB Bank</b> - Acc: <b id="homeBankAcc">1234567890</b><br><span id="homeBankAccName">LOVE CARE GHANA</span></p></div><button class="btnSubmit" style="background:#16a34a;color:#fff" onclick="showPage('book')">📗 BOOK A NURSE</button><button class="btnSubmit" style="background:#eab308;color:#000" onclick="showPage('win')">🏆 REFER & EARN FREE DAYS</button><div style="margin-top:12px;background:white;padding:8px;border-radius:12px;border:2px solid #eab308"><h2 style="font-size:12px;color:#16a34a">🏆 Winners</h2><div class="marqueeContainer" style="height:280px"><div id="homeWinners" class="marqueeContent" style="font-size:11px">Loading...</div></div></div></div></div>
 
-<div id="page-book" class="page"><div class="card"><h2>📗 CLIENT BOOK</h2><input id="cName" placeholder="Full Name *"><input id="cPhone" placeholder="Phone *"><select id="cService"><option>House Help</option><option>Elderly Care</option></select><button class="btnSubmit" style="background:#16a34a;color:#fff" onclick="submitClient()">✅ SUBMIT</button><div id="cResult"></div><button onclick="showPage('home')">← BACK</button></div></div>
+<div id="page-book" class="page"><div class="card"><h2>📗 CLIENT BOOK</h2><input id="cName" placeholder="Full Name *"><input id="cPhone" placeholder="Phone *"><div class="conditionBox"><h2 style="font-size:12px;color:#b45309">🩺 Patient Condition?</h2><div class="conditionGrid"><div class="conditionItem" onclick="toggleCondition(this,'Stroke')">🧠 Stroke</div><div class="conditionItem" onclick="toggleCondition(this,'Seizure')">⚡ Seizure</div><div class="conditionItem" onclick="toggleCondition(this,'Diabetes')">🍬 Diabetes</div><div class="conditionItem" onclick="toggleCondition(this,'Hypertension')">❤️ High BP</div><div class="conditionItem" onclick="toggleCondition(this,'Paralysis')">🦽 Paralysis</div><div class="conditionItem" onclick="toggleCondition(this,'Dementia')">🧓 Dementia</div><div class="conditionItem" onclick="toggleCondition(this,'Cancer')">🎗️ Cancer</div><div class="conditionItem" onclick="toggleCondition(this,'Asthma')">🫁 Asthma</div><div class="conditionItem" onclick="toggleCondition(this,'Elderly')">👴 Elderly</div><div class="conditionItem" onclick="toggleCondition(this,'Baby')">👶 Baby</div><div class="conditionItem" onclick="toggleCondition(this,'Other')">📝 Other</div></div><input id="cConditionOther" placeholder="If Other, describe" style="display:none"><div id="selectedConditions" style="font-size:10px;color:#b45309;background:#fefce8;padding:8px;border-radius:8px;margin-top:6px">No condition</div></div><select id="cService" onchange="calcPay()"><option value="40">🏠 House Help - Gh40/day</option><option value="120">💚 Elderly Care - Gh120/day</option><option value="120">👶 Baby Care - Gh120/day</option><option value="125">🏠 Home Nursing - Gh125/day</option><option value="135">🏥 Hospital Support - Gh135/day</option><option value="150">❤️‍🩹 Special Care - Gh150/day</option></select><select id="cDuration" onchange="calcPay()" style="border:2px solid #eab308;background:#fefce8"><option value="1">1 Day</option><option value="7">1 Week (7 days)</option><option value="14" selected>2 Weeks (14 days)</option><option value="30">1 Month (30 days)</option><option value="60">2 Months (60 days)</option><option value="90">3 Months (90 days)</option></select><select id="cLive" onchange="handleLiveChange()"><option value="">-- Live IN or OUT -- *</option><option value="out">🏠 Live OUT</option><option value="in">🌙 Live IN 24hrs</option></select><div id="liveOutBox" class="optionBox"><div class="radioRow"><label id="transYesLabel" onclick="setTransport(true)">✅ YES Transport</label><label id="transNoLabel" onclick="setTransport(false)" class="selected">❌ NO</label></div><div id="transAmountBox" style="display:none"><input id="transAmount" type="number" placeholder="Amount" oninput="calcPay()"></div><p style="font-size:10px;color:#b45309">Transport outside app</p></div><div id="liveInBox" class="optionBox"><div class="radioRow"><label id="feedNoLabel" onclick="setFeeding('no')">❌ NO</label><label id="feed1Label" onclick="setFeeding('1')">🍛 1 Meal</label><label id="feed2Label" onclick="setFeeding('2')">🍛🍛 2 Meals</label><label id="feed3Label" onclick="setFeeding('3')" class="selected">🍛🍛🍛 3 Meals</label></div></div><p style="color:#16a34a;background:#f0fdf4;padding:10px;border-radius:12px"><span id="serviceName">House Help</span> - <b id="payTotal">Gh560</b> for <b id="dayCount">14</b> days<br><span style="font-size:10px">🎁 Referrer gets: <b id="freeRewardInfo" style="color:#eab308">2 FREE days</b></span></p><button class="gpsBtn" onclick="getRealGPS()">📍 GET GPS</button><input id="cLocation" readonly><div id="gpsResult" style="font-size:10px;color:#16a34a"></div><div style="background:#fefce8;border:2px solid #eab308;border-radius:12px;padding:10px;margin:8px 0"><label style="font-size:11px;color:#b45309">🎁 Who referred you?</label><input id="cRefLink" placeholder="Phone or Code"><div id="refCheckResult" style="font-size:10px;color:#16a34a"></div><label style="font-size:11px;margin-top:8px;display:block"><input type="checkbox" id="useFreeDays" onchange="toggleFreeDays()"> ✅ Use my FREE days</label><input id="freeDaysPhone" placeholder="Your phone to use free days" style="display:none"></div><button class="btnSubmit" style="background:#16a34a;color:#fff" onclick="submitClient()">✅ SUBMIT BOOKING</button><div id="cResult" style="color:#16a34a;font-size:11px"></div>
+<div id="momoPaySection" style="display:none" class="momoPayBox"><h2 style="color:#16a34a;font-size:14px">💰 PAY VIA MOMO OR BANK - OUTSIDE APP</h2><p style="font-size:11px">Booking saved! Choose payment method:</p>
+<div class="payMethod"><label id="payMoMoLabel" class="selected" onclick="selectPayMethod('momo')">📱<br>MoMo</label><label id="payBankLabel" onclick="selectPayMethod('bank')">🏦<br>Bank</label></div>
+<div id="momoDetailsBox" style="background:white;border:2px solid #16a34a;border-radius:12px;padding:12px;margin:8px 0"><p style="font-size:12px;margin:4px 0">MoMo Number: <b id="payMoMoNumber" style="color:#eab308;font-size:16px">0244 XXX XXX</b></p><p style="font-size:12px;margin:4px 0">MoMo Name: <b id="payMoMoName">LOVE CARE GHANA</b></p><p style="font-size:12px;margin:4px 0">Amount: <b id="payAmountMoMo" style="color:#16a34a;font-size:18px">Gh560</b></p></div>
+<div id="bankDetailsBox" style="display:none;background:white;border:2px solid #3b82f6;border-radius:12px;padding:12px;margin:8px 0"><p style="font-size:12px;margin:4px 0">Bank: <b id="payBankName" style="color:#3b82f6">GCB Bank</b></p><p style="font-size:12px;margin:4px 0">Account Number: <b id="payBankAcc" style="color:#eab308;font-size:16px">1234567890</b></p><p style="font-size:12px;margin:4px 0">Account Name: <b id="payBankAccName">LOVE CARE GHANA</b></p><p style="font-size:12px;margin:4px 0">Amount: <b id="payAmountBank" style="color:#16a34a;font-size:18px">Gh560</b></p></div>
+<div style="background:#fefce8;border:2px dashed #eab308;border-radius:12px;padding:12px;margin:8px 0"><label style="font-size:11px;color:#b45309;font-weight:800">📸 Upload Payment Proof *</label><input type="file" id="momoProofFile" accept="image/*,.pdf"><div id="momoProofPreview" style="margin-top:8px"></div><input id="momoTransactionId" placeholder="Transaction ID / Reference"><button class="btnSubmit" style="background:#25D366;color:#fff" onclick="submitMoMoProof()">✅ I HAVE PAID - SUBMIT PROOF</button><div id="momoProofResult" style="font-size:11px;margin-top:6px"></div></div>
+</div>
+<button onclick="showPage('home')" style="padding:8px;background:#e5e7eb;color:#111;border:none;border-radius:9px;margin-top:6px">← BACK</button></div></div>
 
-<div id="page-nurse" class="page"><div class="card"><div class="tabs"><button id="tabReg" class="active" onclick="nurseTab('reg')">REGISTER</button><button id="tabLog" onclick="nurseTab('log')">LOGIN</button><button id="tabOffer" onclick="nurseTab('offer')">OFFERS</button></div>
-<div id="nurseReg"><h2>👩‍⚕️ NURSE REGISTER - PICTURE FIXED</h2><input id="nName" placeholder="Full Name *"><input id="nPhone" placeholder="Phone *"><div class="uploadBox"><label style="font-size:11px;color:#16a34a;font-weight:800">📸 Profile Photo * PREVIEW WORKS</label><input type="file" id="nPhoto" accept="image/*" onchange="previewNursePic(this)"><img id="nursePicPreview" style="width:100px;height:100px;object-fit:cover;border-radius:50%;display:none;margin-top:8px;border:3px solid #16a34a"><div id="photoPreview" style="font-size:10px;color:#16a34a"></div></div><input id="nPass" type="password" placeholder="Password *"><button class="btnSubmit" style="background:#3b82f6;color:#fff" onclick="registerNurse()">📤 REGISTER</button><div id="nRegResult"></div></div>
+<div id="page-win" class="page"><div class="card"><h2>🏆 REFER & GET FREE WEEKS</h2><div style="background:#f0fdf4;border:2px solid #eab308;border-radius:14px;padding:12px;margin-bottom:12px"><p style="font-size:11px;color:#b45309">🎁 Ghana Rewards:<br>14 days = 2 FREE days<br>30 days = 5 FREE days<br>90 days = 15 FREE days!</p><input id="refName" placeholder="Your Full Name *"><input id="refMoMo" placeholder="Your MoMo / Phone *"><input id="myLink" readonly style="font-size:10px;background:#f3f4f6;color:#16a34a"><button class="btnSubmit" style="background:#16a34a;color:#fff" onclick="generateLink()">🔗 GENERATE MY CODE</button><button class="btnSubmit" style="background:#25D366;color:#fff" onclick="shareLink()">📱 SHARE WHATSAPP</button><p style="font-size:11px;margin-top:6px">My Code: <b id="myCode" style="color:#eab308">LOVE123</b><br>My Free Days: <b id="myFreeDays" style="color:#16a34a">0 days</b></p><button class="btnSubmit" style="background:#eab308;color:#000" onclick="checkMyFreeDaysByCode()">💰 CHECK MY FREE DAYS</button></div><div style="background:white;border:2px solid #eab308;border-radius:14px;padding:10px"><h2 style="font-size:12px">🏆 Winners</h2><div class="marqueeContainer"><div id="referralWinners" class="marqueeContent" style="font-size:11px">Loading...</div></div></div><button onclick="showPage('home')" style="padding:8px;background:#e5e7eb;color:#111;border:none;border-radius:9px;margin-top:10px">← BACK HOME</button></div></div>
+
+<div id="page-nurse" class="page"><div class="card"><div id="nurseLogoutBar" class="logoutBar" style="display:none"><div><b id="nurseLoginName">Nurse</b> - Logged In ✅</div><button onclick="logoutNurse()" style="background:#ef4444;color:white;border:none;padding:8px 14px;border-radius:8px;font-weight:800">🚪 LOGOUT</button></div>
+<div class="tabs"><button id="tabReg" class="active" onclick="nurseTab('reg')">REGISTER</button><button id="tabLog" onclick="nurseTab('log')">LOGIN</button><button id="tabOffer" onclick="nurseTab('offer')">MY OFFERS</button><button id="tabVideo" onclick="nurseTab('video')">VIDEO/VOICE</button></div>
+<div id="nurseReg"><h2>👩‍⚕️ NURSE REGISTER</h2>
+<input id="nName" placeholder="Full Name *"><input id="nPhone" placeholder="Phone *"><input id="nLocation" placeholder="Area *"><input id="nEmail" placeholder="Email (optional)"><select id="nSpecial"><option value="">-- Specialization * --</option><option>General Nurse</option><option>Midwifery</option><option>Community Health Nurse</option><option>Elderly Care Specialist</option><option>Baby Care Specialist</option><option>House Help</option><option>Other</option></select><input id="nExp" placeholder="Years of Experience">
+<div class="uploadBox"><label style="font-size:11px;color:#16a34a;font-weight:800">📸 Profile Photo *</label><input type="file" id="nPhoto" accept="image/*"><div id="photoPreview" style="font-size:10px;color:#16a34a"></div></div>
+<div class="uploadBox"><label style="font-size:11px;color:#16a34a;font-weight:800">📄 Nursing Certificate *</label><input type="file" id="nCert" accept="image/*,.pdf"><div id="certPreview" style="font-size:10px;color:#16a34a"></div></div>
+<div class="uploadBox"><label style="font-size:11px;color:#16a34a;font-weight:800">🪪 Ghana Card *</label><input type="file" id="nID" accept="image/*,.pdf"><div id="idPreview" style="font-size:10px;color:#16a34a"></div></div>
+<div class="uploadBox"><label style="font-size:11px;color:#16a34a;font-weight:800">📝 CV (Optional)</label><input type="file" id="nCV" accept="image/*,.pdf,.doc,.docx"><div id="cvPreview" style="font-size:10px;color:#16a34a"></div></div>
+<input id="nPass" type="password" placeholder="Create Password *"><input id="nPass2" type="password" placeholder="Confirm *">
+<button class="btnSubmit" style="background:#3b82f6;color:#fff" onclick="registerNurse()">📤 REGISTER</button><div id="nRegResult" style="font-size:11px"></div>
+</div>
 <div id="nurseLog" style="display:none"><h2>LOGIN</h2><input id="lPhone" placeholder="Phone"><input id="lPass" type="password" placeholder="Password"><button class="btnSubmit" style="background:#16a34a;color:#fff" onclick="loginNurse()">LOGIN</button><div id="nLogResult"></div></div>
-<div id="nurseOffer" style="display:none"><h2>📋 MY OFFERS</h2><div id="nurseOffersList">No offers</div><button class="btnSubmit" style="background:#25D366;color:#fff" onclick="showPage('team')">💬 TEAM CHAT</button></div></div></div>
+<div id="nurseOffer" style="display:none"><h2>📋 MY OFFERS</h2><div id="nurseOffersList" style="font-size:11px">No offers</div><div id="nurseTeamAccess" style="display:none;margin-top:10px"><button class="btnSubmit" style="background:#25D366;color:#fff" onclick="showPage('team')">💬 TEAM CHAT</button></div><div id="nurseProfileBox" style="margin-top:12px;background:#f0fdf4;padding:8px;border-radius:10px;border:1px solid #16a34a;font-size:11px"></div><button class="btnSubmit" style="background:#ef4444;color:#fff;margin-top:12px" onclick="logoutNurse()">🚪 LOGOUT NURSE</button></div>
+<div id="nurseVideo" style="display:none"><h2>VIDEO / VOICE</h2><button class="selectPersonBtn" onclick="openSelectModal('nurse')">👥 SELECT CLIENT</button><div id="nurseSelectedPerson" class="selectedPersonBox" style="display:none"></div><div class="videoBox"><div class="videoGrid"><video id="nurseLocalVid" autoplay muted playsinline style="width:100%;background:#222;border-radius:10px;height:160px"></video><video id="nurseRemoteVid" autoplay playsinline style="width:100%;background:#111;border-radius:10px;height:160px"></video></div><div style="display:flex;gap:5px;margin-top:6px"><button class="btnSubmit" style="background:#16a34a;color:#fff;flex:1" onclick="createVideoRoom('nurse')">📞 CALL</button><button class="btnSubmit" style="background:#3b82f6;color:#fff;flex:1" onclick="joinVideoRoom('nurse')">📲 JOIN</button><button class="btnSubmit" style="background:#ef4444;color:#fff;flex:1;border:2px solid white" onclick="stopVideoNurse()">⏹ END</button></div><input id="nurseRoomId" placeholder="Room ID"><div id="nurseVideoStatus" style="font-size:10px;color:#22c55e;text-align:center;margin-top:5px"></div></div><button class="btnSubmit" style="background:#ef4444;color:#fff;margin-top:10px" onclick="logoutNurse()">🚪 LOGOUT</button></div><button onclick="showPage('home')" style="padding:8px;background:#e5e7eb;color:#111;border:none;border-radius:9px;margin-top:6px">← BACK</button></div></div>
 
-<div id="page-team" class="page"><div class="card" style="border:3px solid #25D366"><h2>💬 TEAM CHAT - FIXED</h2><div id="teamLoginBox"><input id="teamName" placeholder="Name"><input id="teamPhone" placeholder="ID"><input id="teamPass" type="password" placeholder="Pass"><button class="btnSubmit" style="background:#25D366;color:#fff" onclick="loginTeamChat()">JOIN</button></div><div id="teamWork" style="display:none"><div id="teamChatContainer" style="height:300px;overflow:auto;background:#e5ddd5;padding:10px;border-radius:12px">Chat...</div><input id="teamMessageInput" placeholder="Type"><button onclick="sendTeamMessage()">Send</button></div></div></div>
+<div id="page-video" class="page"><div class="card"><h2>📹 VIDEO CALL</h2>
+<button class="selectPersonBtn" onclick="openSelectModal('video')">👥 SELECT WHO</button><div id="videoSelectedPerson" class="selectedPersonBox" style="display:none"></div>
+<div class="videoBox">
+<div class="videoGrid"><video id="globalVideo" autoplay muted playsinline style="width:100%;background:#222;border-radius:12px;height:200px"></video><video id="globalRemoteVideo" autoplay playsinline style="width:100%;background:#111;border-radius:12px;height:200px"></video></div>
+<div id="videoStatus" style="color:#22c55e;font-size:11px;text-align:center;padding:5px"></div>
+<div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap"><button class="btnSubmit" style="background:#ec4899;color:#fff;flex:1" onclick="startGlobalVideo()">📹 START CAMERA</button><button class="btnSubmit" style="background:#16a34a;color:#fff;flex:1" onclick="createVideoRoom('global')">📞 CREATE ROOM</button><button class="btnSubmit" style="background:#3b82f6;color:#fff;flex:1" onclick="joinVideoRoom('global')">📲 JOIN</button></div>
+<div style="display:flex;gap:6px;margin-top:6px"><input id="globalRoomId" placeholder="Room ID" style="flex:1"><button onclick="copyRoomId('global')" style="padding:10px;background:#eab308;border:none;border-radius:8px;font-weight:800">📋 COPY</button></div>
+<div style="display:flex;gap:6px;margin-top:6px"><button class="btnSubmit" style="background:#eab308;color:#000;flex:1" onclick="switchCamera()">🔄 SWITCH</button><button class="btnSubmit" style="background:#ef4444;color:#fff;flex:1;border:3px solid white;font-size:14px" onclick="stopGlobalVideo()">⏹ END CALL</button><button class="btnSubmit" style="background:#3b82f6;color:#fff;flex:1" onclick="startAudioOnly()">🎤 AUDIO</button></div>
+</div>
+<button onclick="showPage('home')" style="padding:8px;background:#e5e7eb;color:#111;border:none;border-radius:9px;margin-top:10px">← BACK HOME</button></div></div>
 
-<div id="page-staff" class="page"><div class="card" style="border:3px solid #16a34a"><h2>👔 STAFF PORTAL</h2><div id="staffLoginBox"><input id="sID" placeholder="Staff ID"><input id="sPass" type="password" placeholder="Password"><button class="btnSubmit" style="background:#16a34a;color:#fff" onclick="loginStaff()">LOGIN</button><div id="sResult"></div></div><div id="staffWork" style="display:none"><div id="clientListRows" style="padding:10px;border:2px solid #16a34a;border-radius:10px">Loading...</div><div id="momoList" style="padding:10px;border:2px solid #eab308;border-radius:10px;margin-top:8px">Payments...</div><button class="btnSubmit" style="background:#25D366;color:#fff" onclick="showPage('team')">💬 TEAM CHAT</button><button class="btnSubmit" style="background:#ef4444;color:#fff" onclick="logoutStaff()">LOGOUT</button></div></div></div>
+<div id="page-voice" class="page"><div class="card"><h2>🎤 VOICE CHAT</h2><button class="selectPersonBtn" onclick="openSelectModal('voice')">👥 SELECT WHO</button><div id="voiceSelectedPerson" class="selectedPersonBox" style="display:none"></div><div class="voiceBox"><div id="voiceStatus" style="font-size:12px;color:#16a34a;margin-bottom:8px">🎙️ Tap to start recording</div><button id="recBtn" class="btnSubmit" style="background:#ef4444;color:#fff;padding:16px;font-size:14px" onclick="toggleGlobalRec()">🔴 START RECORDING</button><audio id="globalAud" controls style="width:100%;margin-top:12px;background:white;border-radius:10px;display:none"></audio><div id="voiceTimer" style="font-size:12px;color:#ef4444;margin-top:6px"></div><div style="display:flex;gap:6px;margin-top:8px"><button id="sendVoiceBtn" class="btnSubmit" style="background:#16a34a;color:#fff;display:none;flex:1" onclick="sendVoice()">📤 SEND</button><button id="deleteVoiceBtn" class="btnSubmit" style="background:#ef4444;color:#fff;display:none;flex:1" onclick="deleteVoice()">🗑 DELETE</button></div></div><button onclick="showPage('home')" style="padding:8px;background:#e5e7eb;color:#111;border:none;border-radius:9px;margin-top:10px">← BACK HOME</button></div></div>
 
-<div id="page-ceo" class="page"><div class="card" style="border:3px solid #111827"><h2>👑 ADMIN DASHBOARD</h2><div id="ceoLoginBox"><input id="ceoUser" placeholder="Admin"><input id="ceoPass" type="password" placeholder="Password"><button class="btnSubmit" style="background:#111827;color:#fff" onclick="loginCEO()">LOGIN</button></div><div id="ceoWork" style="display:none"><div class="logoutBar"><div><b>👑 Admin - KUSIPETER</b></div><button onclick="logoutCEO()" style="background:#ef4444;color:white;border:none;padding:8px 14px;border-radius:8px">LOGOUT</button></div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px"><div style="background:#dc2626;color:white;padding:10px;border-radius:10px;text-align:center">SOS<br><b id="sosCount">0</b></div><div style="background:#2563eb;color:white;padding:10px;border-radius:10px;text-align:center">Nurses<br><b id="attCount">0</b></div><div style="background:#eab308;color:black;padding:10px;border-radius:10px;text-align:center">Ratings<br><b id="rateCount">0</b></div></div></div></div></div>
+<div id="page-team" class="page"><div class="card" style="border:3px solid #25D366;background:white;padding:0;overflow:hidden">
+<div style="background:#075E54;color:white;padding:12px;display:flex;justify-content:space-between;align-items:center"><div><h2 style="color:white;margin:0;font-size:14px">💬 TEAM CHAT - V37 FIXED</h2><p style="font-size:9px;margin:2px 0 0 0;opacity:0.8"><span id="teamOnlineCount">0</span> online</p></div><button onclick="showPage('home')" style="background:rgba(255,255,255,0.2);border:none;color:white;padding:6px 10px;border-radius:8px">✕</button></div>
+<div id="teamLoginBox" style="padding:16px;text-align:center"><h2 style="color:#075E54">🔒 PRIVATE TEAM CHAT</h2><p style="font-size:10px;color:#6b7280">Staff: Use Staff ID | Nurse: Use Phone | CEO: KUSIPETER</p><input id="teamName" placeholder="Your Name"><input id="teamPhone" placeholder="Staff ID or Nurse Phone or CEO ID"><input id="teamPass" type="password" placeholder="Password"><button class="btnSubmit" style="background:#25D366;color:#fff" onclick="loginTeamChat()">💬 JOIN CHAT</button><div id="teamLoginResult" style="font-size:11px;color:red;margin-top:6px"></div></div>
+<div id="teamWork" style="display:none"><div id="teamChatContainer" class="chatContainer">Loading...</div><div class="chatInputBar"><input id="teamMessageInput" class="chatInput" placeholder="Type a message..." onkeypress="if(event.key==='Enter')sendTeamMessage()"><button onclick="sendTeamMessage()" style="background:#25D366;color:white;border:none;padding:10px 16px;border-radius:50%;font-weight:800">➤</button></div><div style="padding:8px;background:white;display:flex;gap:6px"><button onclick="clearTeamChat()" class="deleteBtn" style="background:#6b7280">🧹 Clear</button><button onclick="deleteAllTeamChat()" class="deleteBtn">🗑 CEO DELETE ALL</button><button onclick="logoutTeamChat()" class="deleteBtn" style="background:#111827">🚪 LOGOUT TEAM</button></div></div>
+</div></div>
 
-<div id="page-win" class="page"><div class="card"><h2>🏆 REFER & EARN</h2><input id="refName" placeholder="Name"><input id="myLink" readonly><button class="btnSubmit" style="background:#16a34a;color:#fff" onclick="generateLink()">GENERATE CODE</button><button class="btnSubmit" style="background:#25D366;color:#fff" onclick="shareLink()">SHARE</button></div></div>
+<div id="page-staff" class="page"><div class="card" style="border:3px solid #16a34a;background:white"><div class="logoutBar" style="display:flex"><div><b>👔 Staff Portal</b></div><div><button onclick="logoutStaff()" style="background:#ef4444;color:white;border:none;padding:8px 14px;border-radius:8px;font-weight:800">🚪 LOGOUT STAFF</button></div></div><h2 id="staffHeader" onclick="tapStaff()" style="cursor:pointer;color:#16a34a;text-align:center">👔 STAFF PORTAL</h2><div id="staffLoginBox"><input id="sID" placeholder="Staff ID"><input id="sPass" type="password" placeholder="Password"><button class="btnSubmit" style="background:#16a34a;color:#fff" onclick="loginStaff()">STAFF LOGIN</button><div id="sResult" style="font-size:11px;color:red"></div></div><div id="staffWork" style="display:none;background:white;padding:5px;border-radius:12px"><div style="background:#16a34a;color:white;padding:10px;border-radius:10px;display:flex;justify-content:space-between;align-items:center"><h2 style="color:white;margin:0">📋 Assign Offers</h2><div><button onclick="deleteAllBookings()" class="deleteBtn">🗑 DELETE ALL</button> <button onclick="loadStaffData()" class="deleteBtn" style="background:#eab308;color:#000">🔄 REFRESH</button></div></div><div id="clientListRows" style="max-height:500px;overflow:auto;background:white;padding:10px;border-radius:10px;border:2px solid #16a34a;min-height:150px;color:#111;margin-top:8px">Loading...</div><div style="background:#eab308;color:#000;padding:10px;border-radius:10px;margin-top:12px;display:flex;justify-content:space-between;align-items:center"><h2 style="color:#000;margin:0">🏆 Rewards</h2><div><button onclick="deleteAllReferrers()" class="deleteBtn">🗑 DELETE</button> <button onclick="createGhostWinners()" class="deleteBtn" style="background:#16a34a;color:#fff">👻 CREATE WINNERS</button></div></div><div id="momoList" style="font-size:11px;background:#fefce8;padding:10px;border-radius:10px;border:2px solid #eab308;max-height:400px;overflow:auto;min-height:150px;color:#111;margin-top:8px">Loading...</div><button class="btnSubmit" style="background:#25D366;color:#fff" onclick="showPage('team')">💬 TEAM CHAT</button><button class="btnSubmit" style="background:#6b7280;color:#fff" onclick="loadStaffData()">🔄 REFRESH</button><button class="btnSubmit" style="background:#ef4444;color:#fff" onclick="logoutStaff()">🚪 LOGOUT STAFF</button><button class="btnSubmit" style="background:#e5e7eb;color:#111" onclick="showPage('home')">← BACK HOME</button></div></div></div>
 
-<div class="bottomNav">
-<div id="nav-home" class="active" onclick="showPage('home')">🏠<br>Home</div>
-<div id="nav-book" onclick="showPage('book')">👤<br>Book</div>
-<div id="nav-nurse" onclick="showPage('nurse')">👩‍⚕️<br>Nurse</div>
-<div id="nav-team" class="hiddenNav" onclick="showPage('team')">💬<br>Team</div>
-<div id="nav-win" onclick="showPage('win')">🏆<br>Win</div>
+<div id="page-ceo" class="page"><div class="card" style="border:3px solid #111827;background:white"><h2 style="color:#111827;text-align:center">👑 ADMIN DASHBOARD</h2><div id="ceoLoginBox"><input id="ceoUser" placeholder="Admin Username"><input id="ceoPass" type="password" placeholder="Admin Password"><button class="btnSubmit" style="background:#111827;color:#fff" onclick="loginCEO()">ADMIN LOGIN</button><div id="ceoLoginResult" style="font-size:11px;color:red"></div></div><div id="ceoWork" style="display:none;background:white;padding:5px;border-radius:12px">
+<div style="background:white;border:3px solid #dc2626;border-radius:12px;padding:10px;margin:10px 0"><h2 style="color:#dc2626;font-size:12px;margin:0 0 8px 0">🚨 SOS ALERTS - LIVE</h2><div id="ceoSOSList" style="max-height:200px;overflow:auto;font-size:11px;color:#111">No SOS yet</div></div><div style="background:white;border:3px solid #eab308;border-radius:12px;padding:10px;margin:10px 0"><h2 style="color:#16a34a;font-size:12px;margin:0 0 8px 0">⭐ RATINGS - LIVE</h2><div id="ceoRatingsList" style="max-height:200px;overflow:auto;font-size:11px;color:#111">No Ratings yet</div></div>
+<div class="logoutBar"><div><b>👑 Admin - KUSIPETER</b> ✅ Logged In</div><button onclick="logoutCEO()" style="background:#ef4444;color:white;border:none;padding:8px 14px;border-radius:8px;font-weight:800">🚪 LOGOUT ADMIN</button></div>
+
+<div class="backupBox"><h2 style="color:#eab308;margin:0 0 8px 0;font-size:14px">📥 DOWNLOAD BACKUP</h2><p style="font-size:10px;color:white;margin:0 0 10px 0">Download to your phone for legal protection</p>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+<button class="btnSubmit" style="background:#16a34a;color:#fff;font-size:11px" onclick="downloadBookingsCSV()">📥 BOOKINGS CSV</button>
+<button class="btnSubmit" style="background:#3b82f6;color:#fff;font-size:11px" onclick="downloadProofsCSV()">📥 PAYMENTS CSV</button>
+<button class="btnSubmit" style="background:#eab308;color:#000;font-size:11px" onclick="downloadNursesCSV()">📥 NURSES CSV</button>
+<button class="btnSubmit" style="background:#8b5cf6;color:#fff;font-size:11px" onclick="downloadReferrersCSV()">📥 REFERRERS CSV</button>
+</div>
+<button class="btnSubmit" style="background:linear-gradient(90deg,#eab308,#16a34a);color:#000;margin-top:8px;border:2px solid #fff" onclick="downloadFullBackupJSON()">📥 FULL BACKUP JSON</button>
+<div id="backupResult" style="font-size:11px;color:white;margin-top:8px"></div>
+</div>
+
+<div style="background:linear-gradient(90deg,#111827,#eab308);padding:12px;border-radius:12px;margin-bottom:12px;border:3px solid #eab308"><h2 style="color:#eab308;margin:0 0 8px 0;font-size:14px">💰 SET PAYMENT ACCOUNTS</h2>
+<div style="background:rgba(255,255,255,0.1);padding:8px;border-radius:8px;margin-bottom:8px"><p style="font-size:11px;color:#eab308;margin:0">📱 MOMO</p><input id="ceoMoMoNumber" placeholder="MoMo Number"><input id="ceoMoMoName" placeholder="MoMo Name"></div>
+<div style="background:rgba(255,255,255,0.1);padding:8px;border-radius:8px;margin-bottom:8px"><p style="font-size:11px;color:#16a34a;margin:0">🏦 BANK</p><input id="ceoBankName" placeholder="Bank Name"><input id="ceoBankAcc" placeholder="Account Number"><input id="ceoBankAccName" placeholder="Account Name"></div>
+<button class="btnSubmit" style="background:#16a34a;color:#fff" onclick="saveMoMoNumber()">💰 SAVE ACCOUNTS</button><div id="momoNumberResult" style="font-size:11px;color:white;margin-top:6px"></div>
+</div>
+
+<div style="background:linear-gradient(90deg,#111827,#16a34a);padding:12px;border-radius:12px;margin-bottom:12px;border:3px solid #eab308"><h2 style="color:#eab308;margin:0 0 8px 0;font-size:14px">📝 ADMIN CREATE JOB</h2><input id="adminJobName" placeholder="Client Name *"><input id="adminJobPhone" placeholder="Client Phone *"><input id="adminJobLocation" placeholder="Location *"><select id="adminJobService"><option value="40">🏠 House Help - Gh40/day</option><option value="120">💚 Elderly Care - Gh120/day</option><option value="120">👶 Baby Care - Gh120/day</option><option value="125">🏠 Home Nursing - Gh125/day</option><option value="135">🏥 Hospital Support - Gh135/day</option><option value="150">❤️‍🩹 Special Care - Gh150/day</option></select><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px"><select id="adminJobDays"><option value="1">1 Day</option><option value="7">1 Week</option><option value="14" selected>2 Weeks</option><option value="30">1 Month</option><option value="60">2 Months</option><option value="90">3 Months</option></select><select id="adminJobNurse"><option value="">-- Assign Nurse --</option></select></div><button class="btnSubmit" style="background:#eab308;color:#000" onclick="adminCreateJob()">✅ CREATE & ASSIGN</button><div id="adminJobResult" style="font-size:11px;color:white;margin-top:6px"></div></div>
+
+<div style="background:linear-gradient(90deg,#111827,#eab308);padding:12px;border-radius:12px;margin-bottom:12px;border:3px solid #eab308"><h2 style="color:#eab308;margin:0 0 8px 0;font-size:14px">📢 BROADCAST</h2><input id="broadcastInput" placeholder="Walking message..."><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px"><select id="broadcastColor"><option value="gold">🟡 Gold</option><option value="green">🟢 Green</option><option value="red">🔴 Red</option><option value="blue">🔵 Blue</option><option value="rainbow">🌈 Rainbow</option><option value="white">⚪ White</option></select><select id="broadcastSpeed"><option value="normal">⏩ Normal</option><option value="slow">🐢 Slow</option><option value="fast">🚀 Fast</option></select></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px"><select id="broadcastEmoji"><option value="none">Normal</option><option value="bounce">Bounce</option><option value="blink">Blink</option><option value="both">Both</option></select><select id="broadcastBg"><option value="dark">Dark BG</option><option value="green">Green Flash</option><option value="flash">Flashing</option></select></div><button class="btnSubmit" style="background:#eab308;color:#000;margin-top:10px" onclick="saveBroadcast()">📢 SAVE BROADCAST</button><div id="broadcastResult" style="font-size:11px;color:white;margin-top:6px"></div><div style="display:flex;gap:6px"><button class="btnSubmit" style="background:#6b7280;color:#fff;flex:1" onclick="previewBroadcast()">👁 PREVIEW</button><button class="btnSubmit" style="background:#ef4444;color:#fff;flex:1" onclick="deleteBroadcast()">🗑 DELETE</button></div></div>
+
+<div style="background:linear-gradient(90deg,#16a34a,#eab308);padding:12px;border-radius:12px;margin-bottom:12px"><h2 style="color:white;margin:0 0 8px 0;font-size:13px">👥 CREATE STAFF</h2><input id="newStaffID" placeholder="Staff ID"><input id="newStaffPass" type="password" placeholder="Password"><button class="btnSubmit" style="background:#111827;color:#fff" onclick="createStaffAccount()">✅ CREATE STAFF</button><div id="createStaffResult" style="font-size:11px;color:white;margin-top:6px"></div><div id="staffAccountsList" style="font-size:10px;background:white;padding:8px;border-radius:8px;margin-top:8px;max-height:150px;overflow:auto;color:#111">Loading...</div></div>
+
+<div style="background:#075E54;color:white;padding:10px;border-radius:10px;display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><h2 style="color:white;margin:0">💬 TEAM CHAT</h2><button onclick="showPage('team')" style="background:#25D366;color:white;border:none;padding:8px 12px;border-radius:8px;font-weight:800">💬 OPEN CHAT</button></div>
+
+<div style="background:#111827;color:white;padding:10px;border-radius:10px;display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;border:3px solid #eab308"><h2 style="color:#eab308;margin:0">💰 PAYMENT PROOFS</h2><button onclick="loadCEOData()" class="deleteBtn" style="background:#eab308;color:#000">🔄 REFRESH</button></div><div id="ceoMoMoProofs" style="font-size:11px;background:#fefce8;padding:10px;border-radius:10px;border:2px solid #eab308;max-height:600px;overflow:auto;min-height:150px;color:#111;margin-bottom:12px">Loading...</div>
+
+<div style="background:#111827;color:white;padding:10px;border-radius:10px;display:flex;justify-content:space-between;align-items:center"><h2 style="color:#eab308;margin:0">📋 ALL BOOKINGS</h2><div><button onclick="deleteAllBookings()" class="deleteBtn">🗑 DELETE ALL</button> <button onclick="loadCEOData()" class="deleteBtn" style="background:#eab308;color:#000">🔄 REFRESH</button></div></div><div id="ceoAllBookings" style="font-size:11px;background:white;padding:10px;border-radius:10px;border:2px solid #eab308;max-height:600px;overflow:auto;min-height:150px;color:#111;margin-top:8px">Loading...</div>
+
+<div style="background:#eab308;color:#000;padding:10px;border-radius:10px;margin-top:12px;display:flex;justify-content:space-between;align-items:center"><h2 style="color:#000;margin:0">👩‍⚕️ NURSES</h2><div><button onclick="loadCEOData()" class="deleteBtn" style="background:#16a34a;color:#fff">🔄 REFRESH</button></div></div><div id="ceoNurseList" style="font-size:11px;background:#f0fdf4;padding:10px;border-radius:10px;border:2px solid #16a34a;max-height:600px;overflow:auto;min-height:150px;color:#111;margin-top:8px">Loading...</div>
+
+<div style="background:#eab308;color:#000;padding:10px;border-radius:10px;margin-top:12px;display:flex;justify-content:space-between;align-items:center"><h2 style="color:#000;margin:0">🏆 Rewards</h2><div><button onclick="deleteAllReferrers()" class="deleteBtn">🗑 DELETE</button> <button onclick="createGhostWinners()" class="deleteBtn" style="background:#16a34a;color:#fff">👻 CREATE WINNERS</button></div></div><div id="ceoMoMoList" style="font-size:11px;background:#fefce8;padding:10px;border-radius:10px;border:2px solid #eab308;max-height:400px;overflow:auto;min-height:150px;color:#111;margin-top:8px">Loading...</div><button class="btnSubmit" style="background:#6b7280;color:#fff" onclick="loadCEOData()">🔄 REFRESH ALL</button><button class="btnSubmit" style="background:#ef4444;color:#fff" onclick="logoutCEO()">🚪 LOGOUT ADMIN</button><button class="btnSubmit" style="background:#eab308;color:#000" onclick="showPage('home')">🚪 EXIT</button></div></div></div>
+
+<div class="bottomNav"><div id="nav-home" class="active" onclick="showPage('home')">🏠<br>Home</div><div id="nav-book" onclick="showPage('book')">👤<br>Book</div><div id="nav-nurse" onclick="showPage('nurse')">👩‍⚕️<br>Nurse</div><div id="nav-team" class="hiddenNav" onclick="showPage('team')" style="background:#25D366;color:white;border-radius:10px;padding:2px 8px">💬<br>Team</div><div id="nav-win" onclick="showPage('win')">🏆<br>Win</div></div>
+
+<script>
+const firebaseConfig={apiKey:"AIzaSyB52-X1D8Cg-wUDWPds_tR7D8cF82dMdRg",authDomain:"web-care-618e8.firebaseapp.com",databaseURL:"https://web-care-618e8-default-rtdb.firebaseio.com",projectId:"web-care-618e8",storageBucket:"web-care-618e8.firebasestorage.app",messagingSenderId:"1062578660694",appId:"1:1062578660694:web:f94dfe12c929df05bce2f7"};let db=null,allBookings=[],allWorkers=[],staffAccounts=[],allReferrers=[],allMoMoProofs=[],currentNursePhone=null,selectedConditions=[],currentSelectedPerson=null,currentFacing='user',teamUser=null,teamMessages=[],isStaffLogged=false,isNurseLogged=false,isCEOLogged=false,localStream=null,pc=null,currentRoomId=null,lastBookingId=null,lastPayAmount=0,momoNumber='0244 XXX XXX',momoName='LOVE CARE GHANA',bankName='GCB Bank',bankAcc='1234567890',bankAccName='LOVE CARE GHANA',selectedPayMethod='momo';try{firebase.initializeApp(firebaseConfig);db=firebase.database();}catch(e){}
+let logoTaps=0,lastLogo=0,staffTaps=0,lastStaff=0;
+function tapLogo(){let now=Date.now();if(now-lastLogo>3000)logoTaps=0;logoTaps++;lastLogo=now;if(logoTaps>=5){showPage('staff');logoTaps=0;}setTimeout(()=>{if(Date.now()-lastLogo>3000)logoTaps=0;},3500);}
+function tapStaff(){let now=Date.now();if(now-lastStaff>4000)staffTaps=0;staffTaps++;lastStaff=now;if(staffTaps>=7){showPage('ceo');staffTaps=0;}setTimeout(()=>{if(Date.now()-lastStaff>4000)staffTaps=0;},4500);}
+function showPage(id){
+ if(id==='team'&&!isStaffLogged&&!isNurseLogged&&!isCEOLogged&&!teamUser){alert('🔒 PRIVATE TEAM CHAT - Only Staff, Nurses and CEO! Login first');}
+ document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));let t=document.getElementById('page-'+id);if(t)t.classList.add('active');document.querySelectorAll('.bottomNav div').forEach(d=>d.classList.remove('active'));let n=document.getElementById('nav-'+id);if(n)n.classList.add('active');window.scrollTo(0,0);
+}
+function closeModal(){document.getElementById('selectModal').classList.remove('active');}
+function openSelectModal(callerType){document.getElementById('selectModal').classList.add('active');let html=`<div style="background:#f0fdf4;border:2px solid #16a34a;border-radius:12px;padding:10px;margin:8px 0"><h2 style="font-size:12px;color:#16a34a">📋 SELECT WHO:</h2></div>`;if(allBookings.length>0){html+=allBookings.slice(0,20).map(b=>`<div style="background:white;padding:8px;border-radius:8px;margin:4px 0;display:flex;justify-content:space-between;align-items:center"><div><b>👤 ${b.name}</b><br>📞 ${b.phone}</div><button onclick="selectPersonToCall('${b.name.replace(/'/g,'')}','${b.phone}','Client')" style="padding:10px;background:#16a34a;color:#fff;border:none;border-radius:8px">✅ SELECT</button></div>`).join('');}if(allWorkers.length>0){html+=allWorkers.slice(0,20).map(n=>`<div style="background:white;padding:8px;border-radius:8px;margin:4px 0;display:flex;justify-content:space-between;align-items:center"><div><b>👩‍⚕️ ${n.name}</b><br>📞 ${n.phone}</div><button onclick="selectPersonToCall('${n.name.replace(/'/g,'')}','${n.phone}','Nurse')" style="padding:10px;background:#3b82f6;color:#fff;border:none;border-radius:8px">✅ SELECT</button></div>`).join('');}document.getElementById('modalList').innerHTML=html;}
+function selectPersonToCall(name,phone,role){currentSelectedPerson={name:name,phone:phone,role:role};closeModal();let txt=`✅ SELECTED: <b>${name}</b><br>📞 ${phone}<br>👤 ${role}`;['nurseSelectedPerson','videoSelectedPerson','voiceSelectedPerson'].forEach(id=>{let el=document.getElementById(id);if(el){el.innerHTML=txt;el.style.display='block';}});}
+function nurseTab(t){document.getElementById('nurseReg').style.display=t==='reg'?'block':'none';document.getElementById('nurseLog').style.display=t==='log'?'block':'none';document.getElementById('nurseOffer').style.display=t==='offer'?'block':'none';document.getElementById('nurseVideo').style.display=t==='video'?'block':'none';document.getElementById('tabReg').classList.toggle('active',t==='reg');document.getElementById('tabLog').classList.toggle('active',t==='log');document.getElementById('tabOffer').classList.toggle('active',t==='offer');document.getElementById('tabVideo').classList.toggle('active',t==='video');}
+let liveType='',feedingVal='3',transportYes=false;
+function toggleCondition(el,c){el.classList.toggle('selected');if(el.classList.contains('selected')){if(!selectedConditions.includes(c))selectedConditions.push(c);}else{selectedConditions=selectedConditions.filter(x=>x!==c);}let o=document.getElementById('cConditionOther');if(selectedConditions.includes('Other'))o.style.display='block';else o.style.display='none';let d=document.getElementById('selectedConditions');if(selectedConditions.length===0){d.innerText='No condition';}else{d.innerHTML=`✅ ${selectedConditions.join(', ')}`;}}
+function handleLiveChange(){liveType=document.getElementById('cLive').value;document.getElementById('liveOutBox').classList.remove('active');document.getElementById('liveInBox').classList.remove('active');if(liveType==='out')document.getElementById('liveOutBox').classList.add('active');if(liveType==='in')document.getElementById('liveInBox').classList.add('active');}
+function setFeeding(v){feedingVal=v;['no','1','2','3'].forEach(x=>{let e=document.getElementById('feed'+(x==='no'?'No':x)+'Label');if(e)e.classList.toggle('selected',v===x);});}
+function setTransport(y){transportYes=y;document.getElementById('transYesLabel').classList.toggle('selected',y);document.getElementById('transNoLabel').classList.toggle('selected',!y);document.getElementById('transAmountBox').style.display=y?'block':'none';}
+function getFreeDaysReward(days){if(days>=90)return 15;if(days>=60)return 10;if(days>=30)return 5;if(days>=14)return 2;if(days>=7)return 1;return 0;}
+function calcPay(){let s=document.getElementById('cService'),dur=document.getElementById('cDuration');if(!s||!dur)return;let p=parseInt(s.value),days=parseInt(dur.value)||14;document.getElementById('serviceName').innerText=s.options[s.selectedIndex].text.split(' - ')[0];document.getElementById('payTotal').innerText='Gh'+(p*days);document.getElementById('dayCount').innerText=days;document.getElementById('freeRewardInfo').innerText=getFreeDaysReward(days)+' FREE days for referrer';lastPayAmount=p*days;}
+function toggleFreeDays(){let chk=document.getElementById('useFreeDays'),box=document.getElementById('freeDaysPhone');box.style.display=chk.checked?'block':'none';}
+function getRealGPS(){let r=document.getElementById('gpsResult');r.innerText='Getting...';navigator.geolocation.getCurrentPosition(pos=>{document.getElementById('cLocation').value=pos.coords.latitude.toFixed(6)+','+pos.coords.longitude.toFixed(6);r.innerHTML=`✅ ${pos.coords.latitude.toFixed(6)},${pos.coords.longitude.toFixed(6)}`;},e=>{r.innerText='❌ '+e.message;});}
+function listenBackend(){if(!db)return;db.ref('bookings').on('value',s=>{allBookings=[];s.forEach(c=>{let v=c.val();v._firebaseKey=c.key;allBookings.push(v);});updateLists();});db.ref('workers').on('value',s=>{allWorkers=[];s.forEach(c=>{allWorkers.push({...c.val(),_key:c.key});});updateLists();updateCEONurseList();updateAdminNurseDropdown();});db.ref('referrers').on('value',s=>{allReferrers=[];s.forEach(c=>{allReferrers.push({...c.val(),_key:c.key});});updateWinnersWalking();});db.ref('staff').on('value',s=>{staffAccounts=[];s.forEach(c=>{let v=c.val();v._key=c.key;staffAccounts.push(v);});updateStaffAccountsList();});db.ref('broadcast').on('value',s=>{let v=s.val();if(v&&v.text){applyBroadcast(v);}else{applyBroadcast({text:'💖 LOVE CARE GHANA - Pay via MoMo or Bank Transfer - Upload Receipt! 🎁',color:'gold',speed:'normal',emoji:'none',bg:'dark'});}});db.ref('teamChat').limitToLast(100).on('value',s=>{teamMessages=[];s.forEach(c=>{teamMessages.push({...c.val(),_key:c.key});});if(teamUser){updateTeamChatUI();}});db.ref('momoProofs').on('value',s=>{allMoMoProofs=[];s.forEach(c=>{allMoMoProofs.push({...c.val(),_key:c.key});});updateMoMoProofsUI();});db.ref('settings/payment').on('value',s=>{let v=s.val();if(v){momoNumber=v.momoNumber||momoNumber;momoName=v.momoName||momoName;bankName=v.bankName||bankName;bankAcc=v.bankAcc||bankAcc;bankAccName=v.bankAccName||bankAccName;
+document.getElementById('homeMoMoNumber').innerText=momoNumber;document.getElementById('homeMoMoName').innerText=momoName;document.getElementById('homeBankName').innerText=bankName;document.getElementById('homeBankAcc').innerText=bankAcc;document.getElementById('homeBankAccName').innerText=bankAccName;
+document.getElementById('payMoMoNumber').innerText=momoNumber;document.getElementById('payMoMoName').innerText=momoName;document.getElementById('payBankName').innerText=bankName;document.getElementById('payBankAcc').innerText=bankAcc;document.getElementById('payBankAccName').innerText=bankAccName;
+document.getElementById('ceoMoMoNumber').value=momoNumber;document.getElementById('ceoMoMoName').value=momoName;document.getElementById('ceoBankName').value=bankName;document.getElementById('ceoBankAcc').value=bankAcc;document.getElementById('ceoBankAccName').value=bankAccName;
+}});}
+function applyBroadcast(v){let el=document.getElementById('broadcastWalk');let bar=document.getElementById('broadcastBar');let txt=v.text||'';if(v.emoji==='bounce'){txt=txt.replace(/([🎉🎁💖✨🔥🎊🏆📢])/g,'<span class="bounceEmoji">$1</span>');}else if(v.emoji==='blink'){txt=txt.replace(/([🎉🎁💖✨🔥🎊🏆📢])/g,'<span class="blinkEmoji">$1</span>');}else if(v.emoji==='both'){txt=txt.replace(/([🎉🎁💖✨🔥🎊🏆📢])/g,'<span class="bounceEmoji blinkEmoji">$1</span>');}el.innerHTML=txt;el.className='broadcastText';if(v.speed==='slow')el.classList.add('marqueeSlow');else if(v.speed==='fast')el.classList.add('marqueeFast');else el.classList.add('marqueeNormal');if(v.color==='rainbow'){el.classList.add('rainbowText');el.style.color='';}else if(v.color==='gold')el.style.color='#eab308';else if(v.color==='green')el.style.color='#22c55e';else if(v.color==='red')el.style.color='#ef4444';else if(v.color==='blue')el.style.color='#3b82f6';else if(v.color==='white')el.style.color='white';bar.className='broadcastBar';if(v.bg==='flash')bar.classList.add('flashBg');else if(v.bg==='green')bar.style.background='#16a34a';else {bar.style.background='#111827';}}
+
+// LOGOUT FUNCTIONS - V37
+function logoutNurse(){
+ if(confirm('Logout nurse?')){
+  currentNursePhone=null;isNurseLogged=false;
+  stopVideoNurse();
+  document.getElementById('nurseLogoutBar').style.display='none';
+  document.getElementById('nurseTeamAccess').style.display='none';
+  document.getElementById('nurseOffersList').innerHTML='No offers';
+  document.getElementById('nurseProfileBox').innerHTML='';
+  document.getElementById('nLogResult').innerHTML='';
+  document.getElementById('lPhone').value='';document.getElementById('lPass').value='';
+  nurseTab('log');showPage('home');
+  if(!isStaffLogged&&!isCEOLogged)hideTeamNav();
+  alert('✅ Nurse logged out');
+ }
+}
+function logoutStaff(){
+ if(confirm('Logout staff?')){
+  isStaffLogged=false;
+  document.getElementById('staffLoginBox').style.display='block';
+  document.getElementById('staffWork').style.display='none';
+  document.getElementById('sID').value='';document.getElementById('sPass').value='';
+  document.getElementById('sResult').innerHTML='';
+  if(!isNurseLogged&&!isCEOLogged)hideTeamNav();
+  showPage('home');alert('✅ Staff logged out');
+ }
+}
+function logoutCEO(){
+ if(confirm('Logout admin?')){
+  isCEOLogged=false;
+  document.getElementById('ceoLoginBox').style.display='block';
+  document.getElementById('ceoWork').style.display='none';
+  document.getElementById('ceoUser').value='';document.getElementById('ceoPass').value='';
+  document.getElementById('ceoLoginResult').innerHTML='';
+  if(!isNurseLogged&&!isStaffLogged)hideTeamNav();
+  showPage('home');alert('✅ Admin logged out');
+ }
+}
+
+function downloadCSV(filename, csvContent){
+ let blob = new Blob([csvContent], {type: 'text/csv;charset=utf-8;'});
+ let link = document.createElement('a');
+ link.href = URL.createObjectURL(blob);
+ link.download = filename;
+ link.click();
+ document.getElementById('backupResult').innerHTML = `✅ Downloaded ${filename}`;
+}
+function downloadJSON(filename, jsonData){
+ let blob = new Blob([JSON.stringify(jsonData, null, 2)], {type: 'application/json'});
+ let link = document.createElement('a');
+ link.href = URL.createObjectURL(blob);
+ link.download = filename;
+ link.click();
+ document.getElementById('backupResult').innerHTML = `✅ Full backup ${filename} downloaded!`;
+}
+function downloadBookingsCSV(){
+ if(allBookings.length===0){alert('No bookings');return;}
+ let headers = ['ID','Name','Phone','Location','Service','Days','Total GHS','Live Details','Conditions','Referred By','Assigned Nurse','Status','Time','Payment Verified'];
+ let rows = allBookings.map(b => [b.id||'', `"${(b.name||'').replace(/"/g,'""')}"`, b.phone||'', `"${(b.loc||'').replace(/"/g,'""')}"`, `"${(b.service||'').replace(/"/g,'""')}"`, b.days||'', b.total||'', `"${(b.liveDetails||'').replace(/"/g,'""')}"`, `"${(b.conditionText||'').replace(/"/g,'""')}"`, b.ref||'', b.assignedNurseName||b.assignedNursePhone||'', `"${(b.status||'').replace(/"/g,'""')}"`, b.time||'', b.paymentVerified?'YES':'NO'].join(','));
+ let csv = [headers.join(','),...rows].join('\n');
+ downloadCSV(`BOOKINGS_${new Date().toISOString().slice(0,10)}.csv`, csv);
+}
+function downloadProofsCSV(){
+ if(allMoMoProofs.length===0){alert('No proofs');return;}
+ let headers = ['ID','Booking ID','Client Name','Phone','Amount GHS','Payment Method','Transaction ID','Verified','Time'];
+ let rows = allMoMoProofs.map(p => [p.id||'', p.bookingId||'', `"${(p.clientName||'').replace(/"/g,'""')}"`, p.clientPhone||'', p.amount||'', p.paymentMethod||'momo', p.transactionId||'', p.verified?'YES':'NO', p.time||''].join(','));
+ let csv = [headers.join(','),...rows].join('\n');
+ downloadCSV(`PAYMENTS_${new Date().toISOString().slice(0,10)}.csv`, csv);
+}
+function downloadNursesCSV(){
+ if(allWorkers.length===0){alert('No nurses');return;}
+ let headers = ['ID','Name','Phone','Location','Specialization','Experience','Approved','Time'];
+ let rows = allWorkers.map(n => [n.id||n._key||'', `"${(n.name||'').replace(/"/g,'""')}"`, n.phone||'', `"${(n.location||'').replace(/"/g,'""')}"`, n.specialization||'', n.experience||'', n.approved?'YES':'NO', n.time||''].join(','));
+ let csv = [headers.join(','),...rows].join('\n');
+ downloadCSV(`NURSES_${new Date().toISOString().slice(0,10)}.csv`, csv);
+}
+function downloadReferrersCSV(){
+ if(allReferrers.length===0){alert('No referrers');return;}
+ let headers = ['Code','Name','Phone/MoMo','Count','Free Days','Time'];
+ let rows = allReferrers.map(r => [r.code||'', `"${(r.name||'').replace(/"/g,'""')}"`, r.momo||r.phone||'', r.count||0, r.freeDays||0, r.time||''].join(','));
+ let csv = [headers.join(','),...rows].join('\n');
+ downloadCSV(`REFERRERS_${new Date().toISOString().slice(0,10)}.csv`, csv);
+}
+function downloadFullBackupJSON(){
+ let backup = {
+  exportDate: new Date().toLocaleString(),
+  company: 'LOVE CARE GHANA',
+  bookings: allBookings,
+  paymentProofs: allMoMoProofs.map(p => ({...p, screenshot: p.screenshot? '[SCREENSHOT_REMOVED]' : ''})),
+  nurses: allWorkers.map(n => ({...n, photo: n.photo? '[PHOTO_REMOVED]' : '', certificate: n.certificate? '[CERT_REMOVED]' : '', ghanaID: n.ghanaID? '[ID_REMOVED]' : ''})),
+  referrers: allReferrers,
+  paymentSettings: {momoNumber, momoName, bankName, bankAcc, bankAccName}
+ };
+ downloadJSON(`FULL_BACKUP_${new Date().toISOString().slice(0,10)}.json`, backup);
+}
+
+function selectPayMethod(method){
+ selectedPayMethod=method;
+ document.getElementById('payMoMoLabel').classList.toggle('selected',method==='momo');
+ document.getElementById('payBankLabel').classList.toggle('selected',method==='bank');
+ document.getElementById('momoDetailsBox').style.display=method==='momo'?'block':'none';
+ document.getElementById('bankDetailsBox').style.display=method==='bank'?'block':'none';
+}
+function submitClient(){
+ let s=cService,dur=cDuration,p=parseInt(s.value),days=parseInt(dur.value)||14,total=p*days;
+ if(!cLive.value){alert('Select Live IN/OUT');return;}
+ if(!cName.value||!cPhone.value||!cLocation.value){alert('Fill Name/Phone/GPS');return;}
+ let liveDetails=liveType==='in'?(feedingVal==='no'?'Live IN - NO feeding':`Live IN - ${feedingVal} Meal(s)`):(transportYes?'Live OUT - Transport YES':'Live OUT - NO Transport');
+ let otherCond=cConditionOther?.value||'';
+ let conditionText=selectedConditions.length?selectedConditions.join(', ')+(otherCond?` (${otherCond})`:''):'No condition';
+ let useFree=document.getElementById('useFreeDays').checked;
+ let freePhone=document.getElementById('freeDaysPhone').value||'';
+ let isFreeBooking=false,finalTotal=total;
+ if(useFree&&freePhone){
+  let ref=allReferrers.find(r=>r.momo===freePhone||r.phone===freePhone||r.code===freePhone);
+  if(ref&&(ref.freeDays||0)>=days){isFreeBooking=true;finalTotal=0;}
+  else if(ref&&(ref.freeDays||0)>0){alert(`You have only ${ref.freeDays} free days, need ${days}.`);return;}
+  else{alert('No free days found.');return;}
+ }
+ let b={
+  name:cName.value,phone:cPhone.value,loc:cLocation.value,service:s.options[s.selectedIndex].text,days:days,durationText:dur.options[dur.selectedIndex].text,perDay:p,total:finalTotal,originalTotal:total,isFreeBooking:isFreeBooking,freeDaysUsed:isFreeBooking?days:0,liveDetails:liveDetails,conditions:selectedConditions,conditionText:conditionText,ref:cRefLink.value||'',id:Date.now(),assigned:false,assignedNursePhone:'',assignedNurseName:'',status:isFreeBooking?'🎁 FREE REWARD BOOKING - No Payment Needed':'⏳ Pending Payment - Awaiting MoMo/Bank Receipt',time:new Date().toLocaleString(),paymentVerified:false
+ };
+ db.ref('bookings/'+b.id).set(b).then(()=>{
+  lastBookingId=b.id;lastPayAmount=finalTotal;
+  if(isFreeBooking){
+   let ref=allReferrers.find(r=>r.momo===freePhone||r.phone===freePhone||r.code===freePhone);
+   if(ref){let left=(ref.freeDays||0)-days;db.ref('referrers/'+ref._key).update({freeDays:left});}
+   cResult.innerHTML=`🎉 FREE BOOKING!`;
+   document.getElementById('momoPaySection').style.display='none';
+  } else {
+   cResult.innerHTML=`✅ Booking saved! ID: ${b.id}<br>Pay Gh${finalTotal} via MoMo/Bank and upload receipt!`;
+   document.getElementById('momoPaySection').style.display='block';
+   document.getElementById('payAmountMoMo').innerText='Gh'+finalTotal;
+   document.getElementById('payAmountBank').innerText='Gh'+finalTotal;
+   window.scrollTo(0,document.getElementById('momoPaySection').offsetTop);
+  }
+  if(b.ref&&!isFreeBooking){
+   let refInput=b.ref.trim();
+   let referrer=allReferrers.find(r=>r.momo===refInput||r.phone===refInput||r.code===refInput||r.code===refInput.toUpperCase());
+   if(referrer){let reward=getFreeDaysReward(days);let newFree=(referrer.freeDays||0)+reward;let newCount=(referrer.count||0)+1;db.ref('referrers/'+referrer._key).update({freeDays:newFree,count:newCount});}
+  }
+ });
+}
+let momoProofImage='';
+document.getElementById('momoProofFile')?.addEventListener('change',function(e){
+ let file=e.target.files[0];
+ if(file){
+  let r=new FileReader();
+  r.onload=function(ev){
+   momoProofImage=ev.target.result;
+   document.getElementById('momoProofPreview').innerHTML=`<img src="${momoProofImage}" style="max-width:100%;border-radius:10px;border:2px solid #16a34a"><p style="font-size:10px;color:#16a34a">✅ Receipt ready</p>`;
+  };
+  r.readAsDataURL(file);
+ }
+});
+function submitMoMoProof(){
+ if(!momoProofImage){alert('Upload Proof!');return;}
+ if(!lastBookingId){alert('No booking');return;}
+ let transId=document.getElementById('momoTransactionId').value||'';
+ let proof={
+  bookingId:lastBookingId,
+  clientName:document.getElementById('cName').value,
+  clientPhone:document.getElementById('cPhone').value,
+  amount:lastPayAmount,
+  paymentMethod:selectedPayMethod,
+  momoNumber:momoNumber,
+  bankName:bankName,
+  bankAcc:bankAcc,
+  transactionId:transId,
+  screenshot:momoProofImage,
+  time:new Date().toLocaleString(),
+  timestamp:Date.now(),
+  verified:false,
+  id:Date.now()
+ };
+ document.getElementById('momoProofResult').innerHTML='⏳ Uploading...';
+ db.ref('momoProofs/'+proof.id).set(proof).then(()=>{
+  db.ref('bookings/'+lastBookingId).update({status:`💰 ${selectedPayMethod==='momo'?'MoMo':'Bank'} Receipt Uploaded - Awaiting Verification`,momoProofId:proof.id,paymentMethod:selectedPayMethod});
+  document.getElementById('momoProofResult').innerHTML=`✅ ${selectedPayMethod} receipt submitted!`;
+  alert(`✅ Receipt Submitted!`);
+ });
+}
+function updateMoMoProofsUI(){
+ let el=document.getElementById('ceoMoMoProofs');if(!el)return;
+ if(allMoMoProofs.length===0){el.innerHTML='<div style="padding:20px;text-align:center">No payment proofs yet</div>';return;}
+ el.innerHTML=allMoMoProofs.slice().reverse().map(p=>`<div style="background:white;border:2px solid ${p.verified?'#16a34a':'#eab308'};border-radius:12px;padding:10px;margin:8px 0">
+ <div style="display:flex;justify-content:space-between"><div><b>👤 ${p.clientName}</b> - 📞 ${p.clientPhone}<br>💰 Gh${p.amount} - Method: <b style="color:${p.paymentMethod==='bank'?'#3b82f6':'#16a34a'}">${p.paymentMethod==='bank'?'🏦 BANK':'📱 MOMO'}</b><br>Trans ID: ${p.transactionId||'N/A'}<br>📅 ${p.time}<br>Status: ${p.verified?'✅ VERIFIED':'⏳ Pending'}</div><img src="${p.screenshot}" style="width:80px;height:80px;object-fit:cover;border-radius:8px;border:1px solid #eab308;cursor:pointer" onclick="window.open('${p.screenshot}')"></div>
+ <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap">
+ <button onclick="viewMoMoFull('${p._key}')" class="deleteBtn" style="background:#3b82f6">👁 VIEW</button>
+ <button onclick="verifyMoMo('${p._key}','${p.bookingId}')" class="deleteBtn" style="background:#16a34a">${p.verified?'✅ Verified':'✅ VERIFY'}</button>
+ <button onclick="rejectMoMo('${p._key}','${p.bookingId}')" class="deleteBtn" style="background:#eab308;color:#000">❌ REJECT</button>
+ <button onclick="deleteMoMoProof('${p._key}')" class="deleteBtn">🗑 DELETE</button>
+ </div>
+ </div>`).join('');
+}
+function viewMoMoFull(key){let p=allMoMoProofs.find(x=>x._key===key);if(!p)return;let w=window.open('');w.document.write(`<h2>${p.paymentMethod==='bank'?'BANK':'MOMO'} - ${p.clientName} - Gh${p.amount}</h2><p>Phone: ${p.clientPhone} - Trans: ${p.transactionId}</p><img src="${p.screenshot}" style="max-width:100%">`);}
+function verifyMoMo(proofKey,bookingId){db.ref('momoProofs/'+proofKey).update({verified:true,verifiedTime:new Date().toLocaleString()}).then(()=>{if(bookingId){db.ref('bookings/'+bookingId).update({status:'✅ PAID - Verified - Ready to Assign',paymentVerified:true});}alert('✅ Verified!');});}
+function rejectMoMo(proofKey,bookingId){if(confirm('Reject?')){db.ref('momoProofs/'+proofKey).update({verified:false,rejected:true}).then(()=>{if(bookingId){db.ref('bookings/'+bookingId).update({status:'❌ Payment Rejected'});}alert('❌ Rejected');});}}
+function deleteMoMoProof(key){if(confirm('Delete proof?')){db.ref('momoProofs/'+key).remove();}}
+function saveMoMoNumber(){
+ let num=document.getElementById('ceoMoMoNumber').value.trim();
+ let name=document.getElementById('ceoMoMoName').value.trim();
+ let bName=document.getElementById('ceoBankName').value.trim();
+ let bAcc=document.getElementById('ceoBankAcc').value.trim();
+ let bAccName=document.getElementById('ceoBankAccName').value.trim();
+ if(!num||!name){alert('Enter MoMo *');return;}
+ db.ref('settings/payment').set({momoNumber:num,momoName:name,bankName:bName||bankName,bankAcc:bAcc||bankAcc,bankAccName:bAccName||bankAccName,time:new Date().toLocaleString()}).then(()=>{
+  document.getElementById('momoNumberResult').innerHTML=`✅ Saved! MoMo: ${num} - ${name}<br>Bank: ${bName} - ${bAcc}`;
+  momoNumber=num;momoName=name;bankName=bName;bankAcc=bAcc;bankAccName=bAccName;
+ });
+}
+function checkFreeBalance(){let phone=document.getElementById('checkFreePhone').value.trim();if(!phone){alert('Enter phone');return;}let ref=allReferrers.find(r=>r.momo===phone||r.phone===phone||r.code===phone);let el=document.getElementById('freeBalanceResult');if(ref){el.innerHTML=`✅ <b>${ref.name}</b><br>🎁 Free Days: <b style="font-size:16px;color:#eab308">${ref.freeDays||0} DAYS</b><br>📋 Referrals: ${ref.count||0}`;}else{el.innerHTML=`❌ No record for ${phone}.`;}
+}
+function checkMyFreeDaysByCode(){let code=localStorage.getItem('myCode');let ref=allReferrers.find(r=>r.code===code);let el=document.getElementById('myFreeDays');if(ref){el.innerText=(ref.freeDays||0)+' days';}else{el.innerText='0 days';}}
+let nurseFiles={photo:'',cert:'',id:'',cv:''};
+document.getElementById('nPhoto')?.addEventListener('change',function(e){let file=e.target.files[0];if(file){let r=new FileReader();r.onload=function(ev){nurseFiles.photo=ev.target.result;document.getElementById('photoPreview').innerHTML='✅ Photo ready';};r.readAsDataURL(file);}});
+document.getElementById('nCert')?.addEventListener('change',function(e){let file=e.target.files[0];if(file){let r=new FileReader();r.onload=function(ev){nurseFiles.cert=ev.target.result;document.getElementById('certPreview').innerHTML='✅ Cert ready';};r.readAsDataURL(file);}});
+document.getElementById('nID')?.addEventListener('change',function(e){let file=e.target.files[0];if(file){let r=new FileReader();r.onload=function(ev){nurseFiles.id=ev.target.result;document.getElementById('idPreview').innerHTML='✅ ID ready';};r.readAsDataURL(file);}});
+document.getElementById('nCV')?.addEventListener('change',function(e){let file=e.target.files[0];if(file){let r=new FileReader();r.onload=function(ev){nurseFiles.cv=ev.target.result;document.getElementById('cvPreview').innerHTML='✅ CV ready';};r.readAsDataURL(file);}});
+function registerNurse(){
+ if(!nName.value||!nPhone.value||!nPass.value||!nLocation.value){alert('Fill required *');return;}
+ if(nPass.value!==nPass2.value){alert('No match');return;}
+ if(!nurseFiles.photo||!nurseFiles.cert||!nurseFiles.id){alert('Upload Photo, Cert, ID *');return;}
+ let n={name:nName.value,phone:nPhone.value,location:nLocation.value,email:nEmail.value,specialization:document.getElementById('nSpecial').value,experience:document.getElementById('nExp').value,pass:nPass.value,photo:nurseFiles.photo,certificate:nurseFiles.cert,ghanaID:nurseFiles.id,cv:nurseFiles.cv||'',approved:false,id:Date.now(),time:new Date().toLocaleString()};
+ document.getElementById('nRegResult').innerHTML='⏳ Uploading...';
+ db.ref('workers/'+n.id).set(n).then(()=>{document.getElementById('nRegResult').innerHTML=`✅ Registered!`;});
+}
+function loginNurse(){let d=allWorkers.find(x=>x.phone==lPhone.value);if(!d){nLogResult.innerHTML='❌ Not found';return;}if(d.pass==lPass.value){currentNursePhone=d.phone;isNurseLogged=true;showTeamNav();nLogResult.innerHTML='✅ Welcome '+d.name; nurseTab('offer');document.getElementById('nurseTeamAccess').style.display='block';document.getElementById('nurseLogoutBar').style.display='flex';document.getElementById('nurseLoginName').innerText=d.name;loadNurseOffers(d.phone);showNurseProfile(d);}else nLogResult.innerHTML='❌ Wrong';}
+function showNurseProfile(nurse){let box=document.getElementById('nurseProfileBox');if(!box)return;box.innerHTML=`<b>Your Particulars:</b><br>Photo: ${nurse.photo?'✅':'❌'}<br>Cert: ${nurse.certificate?'✅':'❌'}<br>ID: ${nurse.ghanaID?'✅':'❌'}<br>Status: ${nurse.approved?'✅ Approved':'⏳ Pending'}`;}
+function updateLists(){let rows=document.getElementById('clientListRows'),ceoAll=document.getElementById('ceoAllBookings');let htmlRow=(b,isCEO)=>{let k=b._firebaseKey||b.id;let assignedInfo=b.assigned?`<br>👩‍⚕️ ${b.assignedNurseName||b.assignedNursePhone}`:'';let paidInfo=b.paymentVerified?`<br>💰 ✅ PAID`:b.momoProofId?`<br>💰 📸 Receipt Uploaded`:'';let nurseOptions=allWorkers.map(w=>`<option value="${w.phone}" ${b.assignedNursePhone===w.phone?'selected':''}>${w.name} - ${w.phone}</option>`).join('');let assignBox=isCEO?`<div style="margin-top:6px;background:#f0fdf4;padding:6px;border-radius:8px;border:1px solid #16a34a"><label style="font-size:10px">Assign:</label><br><select id="assign_${k}" class="assignSelect"><option value="">-- Nurse --</option>${nurseOptions}</select> <button onclick="assignBooking('${k}')" style="padding:8px;background:#16a34a;color:#fff;border:none;border-radius:8px">✅ ASSIGN</button>${assignedInfo}${paidInfo}</div>`:'';return `<div class="bookingRow" style="${b.paymentVerified?'border:2px solid #16a34a;background:#f0fdf4':''}"><b>👤 ${b.name}</b> ${b.isFreeBooking?'🎁 FREE':''} - 📞 ${b.phone}<br>📅 ${b.durationText||b.days+' days'} - Gh${b.total}<br>📍 ${b.loc||''}<br>Status: ${b.status||'Pending'}${paidInfo}${assignedInfo}<br><small>${b.time||''}</small><br><button onclick="deleteBooking('${k}')" class="deleteBtn">🗑 DELETE</button>${assignBox}</div>`;};if(rows)rows.innerHTML=allBookings.length?allBookings.map(b=>htmlRow(b,false)).join(''):'No bookings';if(ceoAll)ceoAll.innerHTML=allBookings.length?allBookings.map(b=>htmlRow(b,true)).join(''):'No bookings';if(hClients)hClients.innerText=allBookings.length;if(hNurses)hNurses.innerText=allWorkers.length;}
+function assignBooking(bookingKey){let sel=document.getElementById('assign_'+bookingKey);if(!sel||!sel.value){alert('Select nurse');return;}let nurse=allWorkers.find(w=>w.phone===sel.value);if(!nurse){alert('Not found');return;}db.ref('bookings/'+bookingKey).update({assigned:true,assignedNursePhone:nurse.phone,assignedNurseName:nurse.name,status:'Assigned to '+nurse.name}).then(()=>{alert('✅ Assigned '+nurse.name);});}
+function updateCEONurseList(){
+ let el=document.getElementById('ceoNurseList');if(!el)return;
+ if(allWorkers.length===0){el.innerHTML='No nurses';return;}
+ el.innerHTML=allWorkers.map(n=>`<div style="background:white;border:2px solid #16a34a;border-radius:12px;padding:10px;margin:8px 0">
+ <div style="display:flex;gap:10px"><img src="${n.photo||''}" style="width:60px;height:60px;border-radius:50%;object-fit:cover;background:#e5e7eb">
+ <div><b>👩‍⚕️ ${n.name}</b><br>📞 ${n.phone}<br>📍 ${n.location||''}<br>🎓 ${n.specialization||''}<br>Status: ${n.approved?'✅ Approved':'⏳ Pending'}</div></div>
+ <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap">
+ <button onclick="viewNurseDoc('${n._key||n.id}','photo')" class="deleteBtn" style="background:#3b82f6">📸 Photo</button>
+ <button onclick="approveNurse('${n._key||n.id}')" class="deleteBtn" style="background:#16a34a">${n.approved?'✅ Approved':'✅ APPROVE'}</button>
+ <button onclick="deleteNurse('${n._key||n.id}')" class="deleteBtn">🗑 DELETE</button>
+ </div>
+ </div>`).join('');
+}
+function viewNurseDoc(id,type){let nurse=allWorkers.find(n=>(n._key==id||n.id==id));if(!nurse){alert('Not found');return;}let data=type==='photo'?nurse.photo:nurse.certificate;if(!data){alert('No '+type);return;}let w=window.open('');w.document.write(`<h2>${type} - ${nurse.name}</h2><img src="${data}" style="max-width:100%">`);}
+function approveNurse(id){db.ref('workers/'+id).update({approved:true}).then(()=>{alert('✅ Approved');});}
+function deleteNurse(id){if(confirm('Delete nurse?')){db.ref('workers/'+id).remove();}}
+function updateWinnersWalking(){let w=allReferrers.slice().sort((a,b)=>(b.freeDays||0)-(a.freeDays||0));if(w.length===0){let placeholder=`<div style="background:white;border:2px solid #16a34a;border-radius:12px;padding:12px;margin:8px 0;text-align:center"><b>#1 🏆 Yaa Komadu (DEMO)</b><br>🎁 Won: <span style="color:#16a34a">5 DAYS FREE</span></div>`;document.getElementById('homeWinners').innerHTML=placeholder;document.getElementById('referralWinners').innerHTML=placeholder;document.getElementById('momoList').innerHTML='No winners';document.getElementById('ceoMoMoList').innerHTML='No winners';if(document.getElementById('hWinners'))document.getElementById('hWinners').innerText='DEMO';return;}let html=w.map((r,i)=>`<div style="background:white;border:2px solid #16a34a;border-radius:12px;padding:12px;margin:8px 0;text-align:center"><b>#${i+1} 🏆 ${r.name}</b><br>🎁 ${r.freeDays||0} DAYS FREE</div>`).join('');document.getElementById('homeWinners').innerHTML=html;document.getElementById('referralWinners').innerHTML=html;document.getElementById('momoList').innerHTML=w.map(r=>`<div class="winnerWalkItem">${r.name} - ${r.momo} - Free:${r.freeDays||0} days</div>`).join('');document.getElementById('ceoMoMoList').innerHTML=document.getElementById('momoList').innerHTML;if(document.getElementById('hWinners'))document.getElementById('hWinners').innerText=w.length;}
+function createGhostWinners(){if(!db)return;let names=[{name:'Yaa Komadu',momo:'0244123456',freeDays:5,count:1},{name:'Kwame Asare',momo:'0244987654',freeDays:2,count:1},{name:'Abena Osei',momo:'0201234567',freeDays:15,count:3},{name:'Kofi Mensah',momo:'0244556677',freeDays:2,count:1},{name:'Akosua Boateng',momo:'0244778899',freeDays:5,count:1}];names.forEach((g,i)=>{let id='GHOST'+Date.now()+i;db.ref('referrers/'+id).set({name:g.name,momo:g.momo,phone:g.momo,code:'LOVE'+(100+i),count:g.count,freeDays:g.freeDays,earnings:0,time:new Date().toLocaleString(),isGhost:true});});alert('✅ 5 Winners created!');}
+function deleteBooking(k){if(confirm('DELETE?')){db.ref('bookings/'+k).remove();}}
+function deleteAllBookings(){if(confirm('DELETE ALL?')){db.ref('bookings').remove();}}
+function deleteAllReferrers(){if(confirm('DELETE ALL?')){db.ref('referrers').remove();}}
+function loadNurseOffers(phone){let list=phone?allBookings.filter(b=>b.assignedNursePhone==phone):allBookings.filter(b=>b.assigned);let t=document.getElementById('nurseOffersList');if(!t)return;if(list.length===0){t.innerHTML='No offers';return;}t.innerHTML=list.map(b=>`<div style="background:white;padding:10px;border-radius:12px;margin:6px 0;border:2px solid #eab308">👤 ${b.name} - 📞 ${b.phone}<br>📅 ${b.durationText||b.days+' days'} - Gh${b.total}<br>Status: ${b.status||'Assigned'}</div>`).join('');}
+function loginStaff(){let id=sID.value.trim(),pass=sPass.value.trim();if(id==="KUSIPETER" && pass==="Peterasa80@you!"){document.getElementById('staffLoginBox').style.display='none';document.getElementById('staffWork').style.display='block';isStaffLogged=true;showTeamNav();loadStaffData();return;}db.ref('staff/'+id).once('value',s=>{let v=s.val();if(v&&v.pass==pass){staffLoginBox.style.display='none';staffWork.style.display='block';isStaffLogged=true;showTeamNav();loadStaffData();}else{sResult.innerHTML='❌ Wrong';}});}
+function loadStaffData(){updateLists();updateWinnersWalking();}
+function loginCEO(){let u=ceoUser.value.trim(),p=ceoPass.value.trim();if(u==="KUSIPETER" && p==="Peterasa80@you!"){document.getElementById('ceoLoginBox').style.display='none';document.getElementById('ceoWork').style.display='block';isCEOLogged=true;showTeamNav();loadCEOData();return;}db.ref('adminConfig').once('value',s=>{let v=s.val(),cu=v?v.user:'KUSIPETER',cp=v?v.pass:'Peterasa80@you!';if(u===cu&&p===cp){ceoLoginBox.style.display='none';ceoWork.style.display='block';isCEOLogged=true;showTeamNav();loadCEOData();}else{ceoLoginResult.innerHTML='❌ Wrong';}});}
+function loadCEOData(){updateLists();updateWinnersWalking();updateStaffAccountsList();updateCEONurseList();updateAdminNurseDropdown();updateMoMoProofsUI();}
+function createStaffAccount(){let id=document.getElementById('newStaffID').value.trim(),pass=document.getElementById('newStaffPass').value.trim();if(!id||!pass){alert('Enter ID and Password');return;}db.ref('staff/'+id).set({pass:pass,created:Date.now(),time:new Date().toLocaleString()}).then(()=>{document.getElementById('createStaffResult').innerHTML=`✅ Staff ${id} created!`;});}
+function updateStaffAccountsList(){let el=document.getElementById('staffAccountsList');if(!el)return;if(staffAccounts.length===0){el.innerHTML='No staff';return;}el.innerHTML=staffAccounts.map(s=>`<div style="padding:6px;border-bottom:1px solid #e5e7eb;display:flex;justify-content:space-between"><span>👤 ${s._key}</span><button onclick="deleteStaff('${s._key}')" class="deleteBtn">🗑</button></div>`).join('');}
+function deleteStaff(id){if(confirm('Delete staff '+id+'?')){db.ref('staff/'+id).remove();}}
+function saveBroadcast(){let txt=document.getElementById('broadcastInput').value.trim();let color=document.getElementById('broadcastColor').value;let speed=document.getElementById('broadcastSpeed').value;let emoji=document.getElementById('broadcastEmoji').value;let bg=document.getElementById('broadcastBg').value;if(!txt){alert('Type message');return;}db.ref('broadcast').set({text:txt,color:color,speed:speed,emoji:emoji,bg:bg,time:new Date().toLocaleString(),by:'CEO'}).then(()=>{document.getElementById('broadcastResult').innerHTML='✅ Saved!';});}
+function previewBroadcast(){let txt=document.getElementById('broadcastInput').value.trim()||'💖 PREVIEW';let color=document.getElementById('broadcastColor').value;let speed=document.getElementById('broadcastSpeed').value;let emoji=document.getElementById('broadcastEmoji').value;let bg=document.getElementById('broadcastBg').value;applyBroadcast({text:txt,color:color,speed:speed,emoji:emoji,bg:bg});}
+function deleteBroadcast(){if(confirm('Delete broadcast?')){db.ref('broadcast').remove();}}
+function showTeamNav(){let nav=document.getElementById('nav-team');if(nav){nav.classList.remove('hiddenNav');nav.style.display='block';}}
+function hideTeamNav(){let nav=document.getElementById('nav-team');if(nav){nav.classList.add('hiddenNav');}}
+
+// TEAM CHAT LOGIN - V37 FIXED - STAFF ID SUPPORT!
+function loginTeamChat(){
+ let name=document.getElementById('teamName').value.trim();
+ let idPhone=document.getElementById('teamPhone').value.trim();
+ let pass=document.getElementById('teamPass').value.trim();
+ if(!name||!idPhone||!pass){alert('Fill Name + ID/Phone + Password');return;}
+ document.getElementById('teamLoginResult').innerHTML='⏳ Checking...';
+
+ // CEO
+ if(idPhone.toUpperCase()==="KUSIPETER"||name.toUpperCase()==="KUSIPETER"){
+  if(pass==="Peterasa80@you!"){
+   teamUser={name:"CEO KUSIPETER",phone:"KUSIPETER",role:"CEO"};
+   isCEOLogged=true;showTeamNav();
+   document.getElementById('teamLoginBox').style.display='none';
+   document.getElementById('teamWork').style.display='block';
+   document.getElementById('teamLoginResult').innerHTML='';
+   updateTeamChatUI();return;
+  }else{document.getElementById('teamLoginResult').innerHTML='❌ Wrong CEO password';return;}
+ }
+
+ // Try direct staff ID lookup first
+ db.ref('staff/'+idPhone).once('value').then(snap=>{
+  let v=snap.val();
+  if(v && v.pass===pass){
+   teamUser={name:name,phone:idPhone,role:"Staff",staffId:idPhone};
+   isStaffLogged=true;showTeamNav();
+   document.getElementById('teamLoginBox').style.display='none';
+   document.getElementById('teamWork').style.display='block';
+   document.getElementById('teamLoginResult').innerHTML='';
+   updateTeamChatUI();
+   return;
+  }
+  // Search all staff + nurse fallback
+  db.ref('staff').once('value').then(allSnap=>{
+   let found=false;
+   allSnap.forEach(child=>{
+    let sd=child.val(); let key=child.key;
+    if((key===idPhone || sd.phone===idPhone) && sd.pass===pass){
+     found=true;
+     teamUser={name:name,phone:key,role:"Staff",staffId:key};
+     isStaffLogged=true;showTeamNav();
+     document.getElementById('teamLoginBox').style.display='none';
+     document.getElementById('teamWork').style.display='block';
+     document.getElementById('teamLoginResult').innerHTML='';
+     updateTeamChatUI();
+     return true;
+    }
+   });
+   if(!found){
+    let nurse=allWorkers.find(x=>x.phone===idPhone);
+    if(nurse&&nurse.pass===pass){
+     teamUser={name:nurse.name||name,phone:idPhone,role:"Nurse"};
+     isNurseLogged=true;showTeamNav();
+     document.getElementById('teamLoginBox').style.display='none';
+     document.getElementById('teamWork').style.display='block';
+     document.getElementById('teamLoginResult').innerHTML='';
+     updateTeamChatUI();
+    } else {
+     document.getElementById('teamLoginResult').innerHTML='❌ Wrong ID/Password<br>Staff: Use Staff ID (e.g. STAFF01)<br>Nurse: Use Phone<br>CEO: KUSIPETER';
+    }
+   }
+  });
+ }).catch(e=>{document.getElementById('teamLoginResult').innerHTML='❌ Error: '+e.message;});
+}
+
+function sendTeamMessage(){let input=document.getElementById('teamMessageInput');let text=input.value.trim();if(!text||!teamUser)return;let msg={text:text,name:teamUser.name,phone:teamUser.phone,role:teamUser.role,time:new Date().toLocaleString(),timestamp:Date.now(),id:Date.now()};db.ref('teamChat/'+msg.id).set(msg).then(()=>{input.value='';});}
+function updateTeamChatUI(){
+ if(!teamUser)return;
+ let container=document.getElementById('teamChatContainer');if(!container)return;
+ if(teamMessages.length===0){container.innerHTML='<div style="text-align:center;padding:20px;color:#6b7280">No messages yet - Say hello! 👋</div>';return;}
+ container.innerHTML=teamMessages.map(m=>{
+  let isMe=teamUser&&m.phone===teamUser.phone;
+  let cls=isMe?'msgMe':'msgOther';
+  let roleColor=m.role==='CEO'?'#eab308':m.role==='Staff'?'#16a34a':'#3b82f6';
+  return `<div class="msgBubble ${cls}"><div class="msgName" style="color:${roleColor}">${m.name} - ${m.role}</div>${m.text}<div class="msgTime">${m.time} ${teamUser&&(teamUser.role==='CEO'||isMe)?`<span onclick="deleteTeamMsg('${m._key}')" style="color:red;cursor:pointer">🗑</span>`:''}</div></div>`;
+ }).join('');
+ container.scrollTop=container.scrollHeight;
+}
+function deleteTeamMsg(key){if(confirm('Delete?')){db.ref('teamChat/'+key).remove();}}
+function clearTeamChat(){document.getElementById('teamChatContainer').innerHTML='<div style="text-align:center;padding:20px">Cleared</div>';setTimeout(updateTeamChatUI,1500);}
+function deleteAllTeamChat(){if(isCEOLogged||(teamUser&&teamUser.role==='CEO')){if(confirm('DELETE ALL CHAT?')){db.ref('teamChat').remove();}}else{alert('Only CEO can delete all');}}
+function logoutTeamChat(){teamUser=null;if(!isStaffLogged&&!isNurseLogged&&!isCEOLogged)hideTeamNav();document.getElementById('teamWork').style.display='none';document.getElementById('teamLoginBox').style.display='block';document.getElementById('teamLoginResult').innerHTML='';showPage('home');}
+function updateAdminNurseDropdown(){let sel=document.getElementById('adminJobNurse');if(!sel)return;sel.innerHTML='<option value="">-- Nurse --</option>'+allWorkers.map(w=>`<option value="${w.phone}">${w.name} - ${w.phone} ${w.approved?'✅':''}</option>`).join('');}
+function adminCreateJob(){
+ let name=document.getElementById('adminJobName').value.trim();
+ let phone=document.getElementById('adminJobPhone').value.trim();
+ let loc=document.getElementById('adminJobLocation').value.trim();
+ let serviceEl=document.getElementById('adminJobService');
+ let daysEl=document.getElementById('adminJobDays');
+ let nursePhone=document.getElementById('adminJobNurse').value;
+ if(!name||!phone||!loc){alert('Fill Name, Phone, Location');return;}
+ let serviceText=serviceEl.options[serviceEl.selectedIndex].text;
+ let days=parseInt(daysEl.value);
+ let perDay=parseInt(serviceEl.value);
+ let nurse=allWorkers.find(w=>w.phone===nursePhone);
+ let b={name:name,phone:phone,loc:loc,service:serviceText,days:days,durationText:daysEl.options[daysEl.selectedIndex].text,perDay:perDay,total:perDay*days,originalTotal:perDay*days,isFreeBooking:false,liveDetails:'Admin Created',conditions:[],conditionText:'Admin created',ref:'',id:Date.now(),assigned:!!nursePhone,assignedNursePhone:nursePhone||'',assignedNurseName:nurse?nurse.name:'',status:nurse?`Assigned to ${nurse.name}`:'Pending',time:new Date().toLocaleString(),createdByAdmin:true,paymentVerified:true};
+ db.ref('bookings/'+b.id).set(b).then(()=>{document.getElementById('adminJobResult').innerHTML=`✅ Job created for ${name}`;});
+}
+const servers={iceServers:[{urls:['stun:stun1.l.google.com:19302','stun:stun2.l.google.com:19302']}]};
+async function startGlobalVideo(){
+ try{
+  localStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:currentFacing,width:640,height:480},audio:true});
+  document.getElementById('globalVideo').srcObject=localStream;
+  document.getElementById('videoStatus').innerHTML='✅ Camera ON';
+ }catch(e){document.getElementById('videoStatus').innerHTML='❌ Camera denied: '+e.message;}
+}
+async function startAudioOnly(){
+ try{localStream=await navigator.mediaDevices.getUserMedia({audio:true,video:false});document.getElementById('videoStatus').innerHTML='🎤 Audio ON';}catch(e){document.getElementById('videoStatus').innerHTML='❌ Mic denied';}
+}
+function stopGlobalVideo(){
+ try{
+  if(localStream){localStream.getTracks().forEach(track=>{track.stop();});localStream=null;}
+  if(pc){try{pc.getSenders().forEach(s=>{try{pc.removeTrack(s);}catch(e){}});}catch(e){}pc.close();pc=null;}
+  let gVid=document.getElementById('globalVideo');let rVid=document.getElementById('globalRemoteVideo');
+  if(gVid){gVid.srcObject=null;gVid.src='';}if(rVid){rVid.srcObject=null;rVid.src='';}
+  document.getElementById('videoStatus').innerHTML='⏹ Call ended ✅';
+  if(currentRoomId && db){db.ref('videoRooms/'+currentRoomId).remove();currentRoomId=null;}
+  document.getElementById('globalRoomId').value='';
+  alert('⏹ Video call ended');
+ }catch(e){alert('⏹ Ended');}
+}
+function stopVideoNurse(){
+ try{
+  if(localStream){localStream.getTracks().forEach(track=>{track.stop();});localStream=null;}
+  if(pc){pc.close();pc=null;}
+  let lVid=document.getElementById('nurseLocalVid');let rVid=document.getElementById('nurseRemoteVid');
+  if(lVid){lVid.srcObject=null;lVid.src='';}if(rVid){rVid.srcObject=null;rVid.src='';}
+  document.getElementById('nurseVideoStatus').innerHTML='⏹ Call ended ✅';
+  if(currentRoomId && db){db.ref('videoRooms/'+currentRoomId).remove();currentRoomId=null;}
+  document.getElementById('nurseRoomId').value='';
+  alert('⏹ Video call ended');
+ }catch(e){}
+}
+function switchCamera(){currentFacing=currentFacing==='user'?'environment':'user';if(localStream)localStream.getTracks().forEach(t=>t.stop());startGlobalVideo();}
+async function createVideoRoom(type){
+ let localVid=type==='nurse'?document.getElementById('nurseLocalVid'):document.getElementById('globalVideo');
+ let remoteVid=type==='nurse'?document.getElementById('nurseRemoteVid'):document.getElementById('globalRemoteVideo');
+ let statusEl=type==='nurse'?document.getElementById('nurseVideoStatus'):document.getElementById('videoStatus');
+ let roomInput=type==='nurse'?document.getElementById('nurseRoomId'):document.getElementById('globalRoomId');
+ if(!localStream){try{localStream=await navigator.mediaDevices.getUserMedia({video:true,audio:true});localVid.srcObject=localStream;}catch(e){alert('Allow camera');return;}}
+ pc=new RTCPeerConnection(servers);
+ localStream.getTracks().forEach(track=>pc.addTrack(track,localStream));
+ pc.ontrack=event=>{remoteVid.srcObject=event.streams[0];};
+ pc.onicecandidate=event=>{if(event.candidate&&currentRoomId){db.ref('videoRooms/'+currentRoomId+'/callerCandidates').push(event.candidate.toJSON());}};
+ let roomId='ROOM'+Date.now().toString().slice(-6);currentRoomId=roomId;if(roomInput)roomInput.value=roomId;statusEl.innerHTML=`📞 Room: ${roomId} - Share ID!`;
+ let offer=await pc.createOffer();await pc.setLocalDescription(offer);await db.ref('videoRooms/'+roomId).set({offer:{type:offer.type,sdp:offer.sdp},created:Date.now()});
+ db.ref('videoRooms/'+roomId+'/answer').on('value',async snapshot=>{let answer=snapshot.val();if(answer&&!pc.currentRemoteDescription){await pc.setRemoteDescription(new RTCSessionDescription(answer));statusEl.innerHTML=`✅ Connected ${roomId} LIVE!`;}});
+ db.ref('videoRooms/'+roomId+'/calleeCandidates').on('child_added',async snapshot=>{let candidate=snapshot.val();if(candidate){await pc.addIceCandidate(new RTCIceCandidate(candidate));}});
+}
+async function joinVideoRoom(type){
+ let localVid=type==='nurse'?document.getElementById('nurseLocalVid'):document.getElementById('globalVideo');
+ let remoteVid=type==='nurse'?document.getElementById('nurseRemoteVid'):document.getElementById('globalRemoteVideo');
+ let statusEl=type==='nurse'?document.getElementById('nurseVideoStatus'):document.getElementById('videoStatus');
+ let roomInput=type==='nurse'?document.getElementById('nurseRoomId'):document.getElementById('globalRoomId');
+ let roomId=roomInput.value.trim();if(!roomId){alert('Enter Room ID');return;}
+ if(!localStream){try{localStream=await navigator.mediaDevices.getUserMedia({video:true,audio:true});localVid.srcObject=localStream;}catch(e){alert('Allow camera');return;}}
+ currentRoomId=roomId;statusEl.innerHTML=`📲 Joining ${roomId}...`;
+ let roomSnapshot=await db.ref('videoRooms/'+roomId).once('value');let room=roomSnapshot.val();if(!room||!room.offer){statusEl.innerHTML='❌ Room not found';return;}
+ pc=new RTCPeerConnection(servers);localStream.getTracks().forEach(track=>pc.addTrack(track,localStream));pc.ontrack=event=>{remoteVid.srcObject=event.streams[0];};pc.onicecandidate=event=>{if(event.candidate){db.ref('videoRooms/'+roomId+'/calleeCandidates').push(event.candidate.toJSON());}};
+ await pc.setRemoteDescription(new RTCSessionDescription(room.offer));let answer=await pc.createAnswer();await pc.setLocalDescription(answer);await db.ref('videoRooms/'+roomId+'/answer').set({type:answer.type,sdp:answer.sdp});
+ db.ref('videoRooms/'+roomId+'/callerCandidates').on('child_added',async snapshot=>{let candidate=snapshot.val();if(candidate){await pc.addIceCandidate(new RTCIceCandidate(candidate));}});
+ statusEl.innerHTML=`✅ Joined ${roomId} LIVE!`;
+}
+function copyRoomId(type){let roomInput=type==='nurse'?document.getElementById('nurseRoomId'):document.getElementById('globalRoomId');let id=roomInput.value||currentRoomId;if(!id){alert('No Room ID');return;}navigator.clipboard.writeText(id).then(()=>{alert('📋 Copied '+id);});}
+let mediaRecorder=null,audioChunks=[],isRecording=false,recTimer=null,recSeconds=0;
+async function toggleGlobalRec(){if(!currentSelectedPerson){alert('SELECT WHO first');openSelectModal('voice');return;}if(!isRecording){try{let stream=await navigator.mediaDevices.getUserMedia({audio:true});mediaRecorder=new MediaRecorder(stream);audioChunks=[];mediaRecorder.ondataavailable=e=>audioChunks.push(e.data);mediaRecorder.onstop=()=>{let blob=new Blob(audioChunks,{type:'audio/webm'});let url=URL.createObjectURL(blob);let aud=document.getElementById('globalAud');aud.src=url; aud.style.display='block';document.getElementById('sendVoiceBtn').style.display='inline-block';document.getElementById('deleteVoiceBtn').style.display='inline-block';document.getElementById('voiceStatus').innerHTML='✅ Recorded';};mediaRecorder.start();isRecording=true;recSeconds=0;document.getElementById('recBtn').innerHTML='⏹ STOP';document.getElementById('recBtn').style.background='#111827';document.getElementById('voiceStatus').innerHTML='🔴 Recording...';recTimer=setInterval(()=>{recSeconds++;document.getElementById('voiceTimer').innerHTML=`⏱️ ${recSeconds}s`;},1000);}catch(e){alert('Allow mic');}}else{if(mediaRecorder)mediaRecorder.stop();isRecording=false;clearInterval(recTimer);document.getElementById('recBtn').innerHTML='🔴 START RECORDING';document.getElementById('recBtn').style.background='#ef4444';document.getElementById('voiceTimer').innerHTML=`✅ ${recSeconds}s`;if(mediaRecorder&&mediaRecorder.stream)mediaRecorder.stream.getTracks().forEach(t=>t.stop());}}
+function sendVoice(){if(!currentSelectedPerson){alert('Select person');return;}alert('✅ Voice sent to '+currentSelectedPerson.name);}
+function deleteVoice(){let aud=document.getElementById('globalAud');aud.pause();aud.src='';aud.style.display='none';document.getElementById('sendVoiceBtn').style.display='none';document.getElementById('deleteVoiceBtn').style.display='none';document.getElementById('voiceTimer').innerHTML='';document.getElementById('voiceStatus').innerHTML='🗑 Deleted';audioChunks=[];}
+function generateLink(){let name=refName.value,momo=refMoMo.value;if(!name||!momo){alert('Enter Name + MoMo');return;}let code=localStorage.getItem('myCode')||'LOVE'+Math.floor(100+Math.random()*900);localStorage.setItem('myCode',code);let link=location.origin+location.pathname+'?ref='+code;myLink.value=link;let r={name:name,momo:momo,phone:momo,code:code,count:0,freeDays:0,earnings:0,time:new Date().toLocaleString()};db.ref('referrers/'+code).set(r).then(()=>{alert('✅ Link for '+name);});}
+function shareLink(){let link=myLink.value;if(!link){alert('Generate first');return;}window.open('https://wa.me/?text='+encodeURIComponent('Join Love Care Ghana - '+link),'_blank');}
+listenBackend();calcPay();updateLists();updateWinnersWalking();
+let myCodeLocal=localStorage.getItem('myCode')||'LOVE'+Math.floor(100+Math.random()*900);localStorage.setItem('myCode',myCodeLocal);if(document.getElementById('myCode'))document.getElementById('myCode').innerText=myCodeLocal;
+setTimeout(()=>{updateWinnersWalking();},1000);
+document.getElementById('cRefLink')?.addEventListener('input',function(){let v=this.value.trim();if(!v){document.getElementById('refCheckResult').innerText='';return;}let ref=allReferrers.find(r=>r.momo===v||r.phone===v||r.code===v.toUpperCase());if(ref){document.getElementById('refCheckResult').innerHTML=`✅ Found: ${ref.name}`;}else{document.getElementById('refCheckResult').innerText='⚠️ Not found';}});
+<!-- SOS & RATING ADD-ON FOR V37 - SHORT SAFE LINES -->
+<style>
+#sosFloat{
+position:fixed;
+bottom:90px;
+right:12px;
+z-index:999;
+}
+#sosFloat button{
+background:#dc2626;
+color:white;
+border:2px solid white;
+padding:12px 20px;
+border-radius:30px;
+font-weight:900;
+box-shadow:0 4px 12px rgba(0,0,0,.3);
+}
+#rateBox{
+display:none;
+position:fixed;
+top:0;left:0;right:0;bottom:0;
+background:rgba(0,0,0,.6);
+z-index:9999;
+justify-content:center;
+align-items:center;
+}
+#rateBox.show{display:flex}
+.rateCard{
+background:white;
+padding:16px;
+border-radius:16px;
+width:90%;
+max-width:340px;
+border:3px solid #eab308;
+}
+</style>
+
+<div id="sosFloat">
+<button onclick="sendSOSV37()">🚨 SOS</button>
+</div>
+
+<div id="rateBox" onclick="if(event.target==this)closeRate()">
+<div class="rateCard">
+<h3 style="color:#16a34a;text-align:center">⭐ RATE NURSE</h3>
+<p id="rateNurseName" style="text-align:center;font-size:12px"></p>
+<div style="text-align:center;font-size:28px;margin:10px 0">
+<span onclick="setRate(1)">⭐</span>
+<span onclick="setRate(2)">⭐</span>
+<span onclick="setRate(3)">⭐</span>
+<span onclick="setRate(4)">⭐</span>
+<span onclick="setRate(5)">⭐</span>
+</div>
+<textarea id="rateComment" placeholder="Comment (optional)" style="width:100%;padding:8px;border-radius:8px;border:1px solid #ddd"></textarea>
+<button style="width:100%;background:#16a34a;color:white;padding:10px;border:none;border-radius:10px;margin-top:8px;font-weight:800" onclick="submitRating()">SUBMIT RATING</button>
+<button style="width:100%;background:#e5e7eb;padding:8px;border:none;border-radius:8px;margin-top:6px" onclick="closeRate()">CANCEL</button>
+</div>
 </div>
 
 <script>
-var db=firebase.database(); var isStaffLogged=false,isNurseLogged=false,isCEOLogged=false,teamUser=null;
-function showPage(id){
-if(id==='team'&&!isStaffLogged&&!isNurseLogged&&!isCEOLogged&&!teamUser){alert('🔒 TEAM CHAT - Login first');return;}
-document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
-var t=document.getElementById('page-'+id); if(t){t.classList.add('active');}
-document.querySelectorAll('.bottomNav div').forEach(function(d){d.classList.remove('active');});
-var n=document.getElementById('nav-'+id); if(n){n.classList.add('active');}
-window.scrollTo(0,0);
+// SOS FOR V37 - KEEP FORMAT
+function sendSOSV37(){
+if(!confirm('🚨 SEND SOS TO CEO? CEO will call + get location'))return;
+if(navigator.geolocation){
+navigator.geolocation.getCurrentPosition(function(p){
+let lat=p.coords.latitude;
+let lng=p.coords.longitude;
+if(typeof db!=='undefined'&&db){
+db.ref('sosAlerts').push({
+name:localStorage.getItem('clientName')||'Client',
+phone:localStorage.getItem('clientPhone')||'',
+lat:lat,lng:lng,
+time:Date.now(),
+msg:'SOS Emergency'
+});
 }
-function nurseTab(type){
-document.getElementById('nurseReg').style.display='none';document.getElementById('nurseLog').style.display='none';document.getElementById('nurseOffer').style.display='none';
-if(type==='reg'){document.getElementById('nurseReg').style.display='block';}
-if(type==='log'){document.getElementById('nurseLog').style.display='block';}
-if(type==='offer'){document.getElementById('nurseOffer').style.display='block';}
+alert('✅ SOS SENT! CEO will call you now!\nLocation:'+lat.toFixed(4));
+window.location.href='tel:+233244000000';
+},function(){alert('Enable GPS for SOS');});
+}else{alert('GPS not supported');}
 }
-function previewNursePic(input){
-if(input.files&&input.files[0]){
-var r=new FileReader(); r.onload=function(e){
-var img=document.getElementById('nursePicPreview'); img.src=e.target.result; img.style.display='block';
-document.getElementById('photoPreview').innerText='✅ Photo: '+input.files[0].name;
-}; r.readAsDataURL(input.files[0]);
+
+// RATING FOR V37
+let currentRate=0;
+let currentRateNurse='';
+function openRate(nurseName){
+currentRateNurse=nurseName||'Nurse';
+document.getElementById('rateNurseName').innerText='Rating: '+currentRateNurse;
+document.getElementById('rateBox').classList.add('show');
 }
+function closeRate(){
+document.getElementById('rateBox').classList.remove('show');
 }
-function submitClient(){var n=document.getElementById('cName').value; var p=document.getElementById('cPhone').value; if(!n||!p){alert('Enter Name & Phone');return;} db.ref('bookings').push({name:n,phone:p,time:Date.now()}); document.getElementById('cResult').innerText='✅ Saved!';}
-function registerNurse(){var n=document.getElementById('nName').value; var p=document.getElementById('nPhone').value; if(!n||!p){alert('Enter Name & Phone');return;} if(!document.getElementById('nPhoto').files[0]){alert('Select Photo - NOW FIXED WITH PREVIEW!');return;} document.getElementById('nRegResult').innerText='✅ Registered: '+n; db.ref('nurses').push({name:n,phone:p,time:Date.now()});}
-function loginNurse(){isNurseLogged=true; document.getElementById('nav-team').classList.remove('hiddenNav'); document.getElementById('nLogResult').innerText='✅ Login OK - Team Unlocked!'; nurseTab('offer');}
-function loginStaff(){isStaffLogged=true; document.getElementById('nav-team').classList.remove('hiddenNav'); document.getElementById('staffLoginBox').style.display='none'; document.getElementById('staffWork').style.display='block';}
-function logoutStaff(){isStaffLogged=false; document.getElementById('staffLoginBox').style.display='block'; document.getElementById('staffWork').style.display='none'; document.getElementById('nav-team').classList.add('hiddenNav'); showPage('home');}
-function loginCEO(){isCEOLogged=true; document.getElementById('nav-team').classList.remove('hiddenNav'); document.getElementById('ceoLoginBox').style.display='none'; document.getElementById('ceoWork').style.display='block';}
-function logoutCEO(){isCEOLogged=false; document.getElementById('ceoLoginBox').style.display='block'; document.getElementById('ceoWork').style.display='none'; document.getElementById('nav-team').classList.add('hiddenNav'); showPage('home');}
-function loginTeamChat(){teamUser=document.getElementById('teamName').value; document.getElementById('teamLoginBox').style.display='none'; document.getElementById('teamWork').style.display='block';}
-function generateLink(){var name=document.getElementById('refName').value||'User'; var code=name.substring(0,3).toUpperCase()+Math.floor(Math.random()*9000); document.getElementById('myLink').value=location.href.split('?')[0]+'?ref='+code;}
-function shareLink(){var l=document.getElementById('myLink').value; if(!l){alert('Generate first');return;} prompt('Copy:',l);}
-function sendTeamMessage(){var inp=document.getElementById('teamMessageInput'); if(!inp.value)return; var c=document.getElementById('teamChatContainer'); c.innerHTML+='<div style="background:white;padding:8px;border-radius:8px;margin:4px 0"><b>'+(teamUser||'User')+':</b> '+inp.value+'</div>'; inp.value='';}
+function setRate(n){
+currentRate=n;
+alert('You selected '+n+' stars');
+}
+function submitRating(){
+if(currentRate==0){alert('Select stars');return;}
+if(typeof db!=='undefined'&&db){
+db.ref('ratings').push({
+nurse:currentRateNurse,
+stars:currentRate,
+comment:document.getElementById('rateComment').value,
+time:Date.now(),
+client:localStorage.getItem('clientName')||'Client'
+});
+}
+alert('✅ Thank you! Rating saved: '+currentRate+' stars for '+currentRateNurse);
+closeRate();
+currentRate=0;
+document.getElementById('rateComment').value='';
+}
+// SHOW RATE BUTTON AFTER JOB DONE - call openRate('NurseName') in your existing job-complete function
+// FOR CEO - Add this inside CEO page to see SOS & Ratings
+function loadSOSAndRatingsCEO(){
+if(typeof db==='undefined')return;
+db.ref('sosAlerts').on('value',function(s){
+let h='';s.forEach(function(c){let v=c.val();h+='<div style="background:#fee2e2;border:2px solid #dc2626;padding:8px;border-radius:8px;margin:6px 0;font-size:11px">🚨 <b>'+v.name+'</b> - '+(new Date(v.time).toLocaleString())+'<br>📍 '+(v.lat||'')+','+(v.lng||'')+' <button onclick="window.location.href=`https://maps.google.com/?q='+v.lat+','+v.lng+'`">View Map</button></div>';});
+let el=document.getElementById('ceoSOSList');if(el)el.innerHTML=h||'No SOS';
+});
+db.ref('ratings').on('value',function(s){
+let h='';s.forEach(function(c){let v=c.val();h+='<div style="background:#fefce8;border:1px solid #eab308;padding:8px;border-radius:8px;margin:6px 0;font-size:11px">⭐ '+v.stars+' stars - <b>'+v.nurse+'</b><br>'+ (v.comment||'')+'<br><small>'+v.client+'</small></div>';});
+let el=document.getElementById('ceoRatingsList');if(el)el.innerHTML=h||'No Ratings yet';
+});
+}
+// Auto load for CEO
+setTimeout(loadSOSAndRatingsCEO,2000);
 </script>
-</body>
-</html>
+</body></html>
