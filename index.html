@@ -52,6 +52,18 @@ input,select{width:100%;padding:11px;margin:5px 0;border-radius:11px;border:1px 
 <div id="selectModal" class="modal"><div class="modalBox"><h2 style="color:#16a34a">SELECT WHO TO CALL</h2><div id="modalList" style="font-size:11px;margin-top:10px"></div><button class="btnSubmit" style="background:#6b7280;color:#fff" onclick="closeModal()">CLOSE</button></div></div>
 
 <div id="page-home" class="page active"><div class="card" style="text-align:center"><div style="font-size:50px">💖</div><h2 style="font-size:18px;color:#16a34a">LOVE CARE HOME NURSING GHANA</h2><div class="freeWallet"><h2 style="font-size:13px">🎁 REFER & GET FREE WEEKS!</h2><p style="font-size:11px">Refer 2 weeks = <b style="color:#16a34a">2 DAYS FREE</b><br>Refer 1 month = <b style="color:#16a34a">5 DAYS FREE</b><br>Refer 3 months = <b style="color:#b45309">15 DAYS FREE!</b></p><input id="checkFreePhone" placeholder="Enter phone to check free days"><button class="btnSubmit" style="background:#eab308;color:#000" onclick="checkFreeBalance()">💰 CHECK MY FREE DAYS</button><div id="freeBalanceResult" style="font-size:12px;margin-top:8px;color:#16a34a"></div></div><p style="font-size:11px">Clients: <b id="hClients" style="color:#16a34a">0</b> | Nurses: <b id="hNurses" style="color:#3b82f6">0</b> | Winners: <b id="hWinners" style="color:#eab308">0</b></p><div class="momoPayBox" style="border:2px solid #16a34a"><h2 style="font-size:12px;color:#16a34a">💰 PAY VIA MOMO OR BANK</h2><p style="font-size:11px">MoMo: <b id="homeMoMoNumber" style="color:#eab308">0244 XXX XXX</b> - <span id="homeMoMoName">LOVE CARE GHANA</span><br>Bank: <b id="homeBankName" style="color:#16a34a">GCB Bank</b> - Acc: <b id="homeBankAcc">1234567890</b><br><span id="homeBankAccName">LOVE CARE GHANA</span></p></div><button class="btnSubmit" style="background:#16a34a;color:#fff" onclick="showPage('book')">📗 BOOK A NURSE</button><button class="btnSubmit" style="background:#eab308;color:#000" onclick="showPage('win')">🏆 REFER & EARN FREE DAYS</button><div style="margin-top:12px;background:white;padding:8px;border-radius:12px;border:2px solid #eab308"><h2 style="font-size:12px;color:#16a34a">🏆 Winners</h2><div class="marqueeContainer" style="height:280px"><div id="homeWinners" class="marqueeContent" style="font-size:11px">Loading...</div></div></div></div></div>
+<!-- 🚨 SOS V38 - PASTE HERE -->
+<div style="background:linear-gradient(135deg,#dc2626,#991b1b);border-radius:18px;padding:16px;margin:12px 0;border:2px solid #fca5a5;box-shadow:0 6px 20px rgba(220,38,38,0.4);">
+  <div style="display:flex;align-items:center;justify-content:space-between;">
+    <div style="color:white;">
+      <div style="font-weight:900;font-size:16px;">🚨 EMERGENCY SOS</div>
+      <div style="font-size:12px;opacity:0.9;margin-top:2px;">Need urgent nurse now?</div>
+    </div>
+    <button onclick="sendSOS()" style="background:white;color:#dc2626;font-weight:900;padding:12px 20px;border-radius:50px;border:none;box-shadow:0 4px 12px rgba(0,0,0,0.3);">SOS</button>
+  </div>
+  <div id="sosStatus" style="display:none;margin-top:10px;background:white;border-radius:10px;padding:10px;font-size:13px;color:#991b1b;font-weight:700;"></div>
+</div>
+<div id="rateNurseSection" style="display:none;margin-bottom:16px;"></div>
 
 <div id="page-book" class="page"><div class="card"><h2>📗 CLIENT BOOK</h2><input id="cName" placeholder="Full Name *"><input id="cPhone" placeholder="Phone *"><div class="conditionBox"><h2 style="font-size:12px;color:#b45309">🩺 Patient Condition?</h2><div class="conditionGrid"><div class="conditionItem" onclick="toggleCondition(this,'Stroke')">🧠 Stroke</div><div class="conditionItem" onclick="toggleCondition(this,'Seizure')">⚡ Seizure</div><div class="conditionItem" onclick="toggleCondition(this,'Diabetes')">🍬 Diabetes</div><div class="conditionItem" onclick="toggleCondition(this,'Hypertension')">❤️ High BP</div><div class="conditionItem" onclick="toggleCondition(this,'Paralysis')">🦽 Paralysis</div><div class="conditionItem" onclick="toggleCondition(this,'Dementia')">🧓 Dementia</div><div class="conditionItem" onclick="toggleCondition(this,'Cancer')">🎗️ Cancer</div><div class="conditionItem" onclick="toggleCondition(this,'Asthma')">🫁 Asthma</div><div class="conditionItem" onclick="toggleCondition(this,'Elderly')">👴 Elderly</div><div class="conditionItem" onclick="toggleCondition(this,'Baby')">👶 Baby</div><div class="conditionItem" onclick="toggleCondition(this,'Other')">📝 Other</div></div><input id="cConditionOther" placeholder="If Other, describe" style="display:none"><div id="selectedConditions" style="font-size:10px;color:#b45309;background:#fefce8;padding:8px;border-radius:8px;margin-top:6px">No condition</div></div><select id="cService" onchange="calcPay()"><option value="40">🏠 House Help - Gh40/day</option><option value="120">💚 Elderly Care - Gh120/day</option><option value="120">👶 Baby Care - Gh120/day</option><option value="125">🏠 Home Nursing - Gh125/day</option><option value="135">🏥 Hospital Support - Gh135/day</option><option value="150">❤️‍🩹 Special Care - Gh150/day</option></select><select id="cDuration" onchange="calcPay()" style="border:2px solid #eab308;background:#fefce8"><option value="1">1 Day</option><option value="7">1 Week (7 days)</option><option value="14" selected>2 Weeks (14 days)</option><option value="30">1 Month (30 days)</option><option value="60">2 Months (60 days)</option><option value="90">3 Months (90 days)</option></select><select id="cLive" onchange="handleLiveChange()"><option value="">-- Live IN or OUT -- *</option><option value="out">🏠 Live OUT</option><option value="in">🌙 Live IN 24hrs</option></select><div id="liveOutBox" class="optionBox"><div class="radioRow"><label id="transYesLabel" onclick="setTransport(true)">✅ YES Transport</label><label id="transNoLabel" onclick="setTransport(false)" class="selected">❌ NO</label></div><div id="transAmountBox" style="display:none"><input id="transAmount" type="number" placeholder="Amount" oninput="calcPay()"></div><p style="font-size:10px;color:#b45309">Transport outside app</p></div><div id="liveInBox" class="optionBox"><div class="radioRow"><label id="feedNoLabel" onclick="setFeeding('no')">❌ NO</label><label id="feed1Label" onclick="setFeeding('1')">🍛 1 Meal</label><label id="feed2Label" onclick="setFeeding('2')">🍛🍛 2 Meals</label><label id="feed3Label" onclick="setFeeding('3')" class="selected">🍛🍛🍛 3 Meals</label></div></div><p style="color:#16a34a;background:#f0fdf4;padding:10px;border-radius:12px"><span id="serviceName">House Help</span> - <b id="payTotal">Gh560</b> for <b id="dayCount">14</b> days<br><span style="font-size:10px">🎁 Referrer gets: <b id="freeRewardInfo" style="color:#eab308">2 FREE days</b></span></p><button class="gpsBtn" onclick="getRealGPS()">📍 GET GPS</button><input id="cLocation" readonly><div id="gpsResult" style="font-size:10px;color:#16a34a"></div><div style="background:#fefce8;border:2px solid #eab308;border-radius:12px;padding:10px;margin:8px 0"><label style="font-size:11px;color:#b45309">🎁 Who referred you?</label><input id="cRefLink" placeholder="Phone or Code"><div id="refCheckResult" style="font-size:10px;color:#16a34a"></div><label style="font-size:11px;margin-top:8px;display:block"><input type="checkbox" id="useFreeDays" onchange="toggleFreeDays()"> ✅ Use my FREE days</label><input id="freeDaysPhone" placeholder="Your phone to use free days" style="display:none"></div><button class="btnSubmit" style="background:#16a34a;color:#fff" onclick="submitClient()">✅ SUBMIT BOOKING</button><div id="cResult" style="color:#16a34a;font-size:11px"></div>
 <div id="momoPaySection" style="display:none" class="momoPayBox"><h2 style="color:#16a34a;font-size:14px">💰 PAY VIA MOMO OR BANK - OUTSIDE APP</h2><p style="font-size:11px">Booking saved! Choose payment method:</p>
@@ -77,6 +89,16 @@ input,select{width:100%;padding:11px;margin:5px 0;border-radius:11px;border:1px 
 </div>
 <div id="nurseLog" style="display:none"><h2>LOGIN</h2><input id="lPhone" placeholder="Phone"><input id="lPass" type="password" placeholder="Password"><button class="btnSubmit" style="background:#16a34a;color:#fff" onclick="loginNurse()">LOGIN</button><div id="nLogResult"></div></div>
 <div id="nurseOffer" style="display:none"><h2>📋 MY OFFERS</h2><div id="nurseOffersList" style="font-size:11px">No offers</div><div id="nurseTeamAccess" style="display:none;margin-top:10px"><button class="btnSubmit" style="background:#25D366;color:#fff" onclick="showPage('team')">💬 TEAM CHAT</button></div><div id="nurseProfileBox" style="margin-top:12px;background:#f0fdf4;padding:8px;border-radius:10px;border:1px solid #16a34a;font-size:11px"></div><button class="btnSubmit" style="background:#ef4444;color:#fff;margin-top:12px" onclick="logoutNurse()">🚪 LOGOUT NURSE</button></div>
+<!-- 📍 ATTENDANCE V38 -->
+<div style="background:linear-gradient(135deg,#3b82f6,#1d4ed8);border-radius:16px;padding:14px;color:white;margin:12px 0;">
+<div style="font-weight:900;font-size:15px;">📍 MY ATTENDANCE - Tap when at client house</div>
+<div style="font-size:12px;opacity:0.9;margin:6px 0;">GPS location will be sent to CEO Peter</div>
+<div style="display:flex;gap:8px;margin-top:10px;">
+<button onclick="checkInAttendance('IN')" style="flex:1;background:#10b981;color:white;font-weight:900;padding:12px;border-radius:12px;border:none;">✅ CHECK IN</button>
+<button onclick="checkInAttendance('OUT')" style="flex:1;background:#f59e0b;color:white;font-weight:900;padding:12px;border-radius:12px;border:none;">🏠 CHECK OUT</button>
+</div>
+<div id="attendanceStatus" style="display:none;margin-top:10px;background:rgba(0,0,0,0.2);border-radius:10px;padding:10px;font-size:12px;"></div>
+</div>
 <div id="nurseVideo" style="display:none"><h2>VIDEO / VOICE</h2><button class="selectPersonBtn" onclick="openSelectModal('nurse')">👥 SELECT CLIENT</button><div id="nurseSelectedPerson" class="selectedPersonBox" style="display:none"></div><div class="videoBox"><div class="videoGrid"><video id="nurseLocalVid" autoplay muted playsinline style="width:100%;background:#222;border-radius:10px;height:160px"></video><video id="nurseRemoteVid" autoplay playsinline style="width:100%;background:#111;border-radius:10px;height:160px"></video></div><div style="display:flex;gap:5px;margin-top:6px"><button class="btnSubmit" style="background:#16a34a;color:#fff;flex:1" onclick="createVideoRoom('nurse')">📞 CALL</button><button class="btnSubmit" style="background:#3b82f6;color:#fff;flex:1" onclick="joinVideoRoom('nurse')">📲 JOIN</button><button class="btnSubmit" style="background:#ef4444;color:#fff;flex:1;border:2px solid white" onclick="stopVideoNurse()">⏹ END</button></div><input id="nurseRoomId" placeholder="Room ID"><div id="nurseVideoStatus" style="font-size:10px;color:#22c55e;text-align:center;margin-top:5px"></div></div><button class="btnSubmit" style="background:#ef4444;color:#fff;margin-top:10px" onclick="logoutNurse()">🚪 LOGOUT</button></div><button onclick="showPage('home')" style="padding:8px;background:#e5e7eb;color:#111;border:none;border-radius:9px;margin-top:6px">← BACK</button></div></div>
 
 <div id="page-video" class="page"><div class="card"><h2>📹 VIDEO CALL</h2>
@@ -103,6 +125,22 @@ input,select{width:100%;padding:11px;margin:5px 0;border-radius:11px;border:1px 
 <div id="page-ceo" class="page"><div class="card" style="border:3px solid #111827;background:white"><h2 style="color:#111827;text-align:center">👑 ADMIN DASHBOARD</h2><div id="ceoLoginBox"><input id="ceoUser" placeholder="Admin Username"><input id="ceoPass" type="password" placeholder="Admin Password"><button class="btnSubmit" style="background:#111827;color:#fff" onclick="loginCEO()">ADMIN LOGIN</button><div id="ceoLoginResult" style="font-size:11px;color:red"></div></div><div id="ceoWork" style="display:none;background:white;padding:5px;border-radius:12px">
 <div class="logoutBar"><div><b>👑 Admin - KUSIPETER</b> ✅ Logged In</div><button onclick="logoutCEO()" style="background:#ef4444;color:white;border:none;padding:8px 14px;border-radius:8px;font-weight:800">🚪 LOGOUT ADMIN</button></div>
 
+<!-- 🚨 CEO SOS + ATTENDANCE + RATINGS V38 SUPER -->
+<div style="margin:12px 0;">
+<div style="background:#fef2f2;border:2px solid #dc2626;border-radius:16px;padding:12px;margin-bottom:12px;">
+<div style="font-weight:900;color:#dc2626;font-size:16px;">🚨 EMERGENCY SOS ALERTS (LIVE)</div>
+<div id="sosAlertsList" style="margin-top:10px;max-height:350px;overflow-y:auto;background:white;border-radius:10px;padding:8px;"><div style="padding:15px;text-align:center;color:#6b7280">⏳ Loading SOS alerts...</div></div>
+</div>
+<div style="background:#eff6ff;border:2px solid #2563eb;border-radius:16px;padding:12px;margin-bottom:12px;">
+<div style="font-weight:900;color:#1d4ed8;font-size:16px;">📍 NURSE ATTENDANCE (LIVE GPS)</div>
+<div id="attendanceCEOList" style="margin-top:10px;max-height:350px;overflow-y:auto;background:white;border-radius:10px;padding:8px;"><div style="padding:15px;text-align:center;color:#6b7280">⏳ Loading attendance...</div></div>
+</div>
+<div style="background:#fffbeb;border:2px solid #f59e0b;border-radius:16px;padding:12px;">
+<div style="font-weight:900;color:#d97706;font-size:16px;">⭐ CLIENT RATINGS (Live)</div>
+<div id="ratingsCEOList" style="margin-top:10px;max-height:350px;overflow-y:auto;background:white;border-radius:10px;padding:8px;"><div style="padding:15px;text-align:center;color:#6b7280">⏳ Loading ratings...</div></div>
+</div>
+</div>
+<script>setTimeout(()=>{try{listenSOS();listenAttendanceCEO();listenRatingsCEO();console.log('CEO LIVE READY')}catch(e){console.log(e)}},2500);</script>
 <div class="backupBox"><h2 style="color:#eab308;margin:0 0 8px 0;font-size:14px">📥 DOWNLOAD BACKUP</h2><p style="font-size:10px;color:white;margin:0 0 10px 0">Download to your phone for legal protection</p>
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
 <button class="btnSubmit" style="background:#16a34a;color:#fff;font-size:11px" onclick="downloadBookingsCSV()">📥 BOOKINGS CSV</button>
@@ -236,7 +274,17 @@ function downloadProofsCSV(){
  let csv = [headers.join(','),...rows].join('\n');
  downloadCSV(`PAYMENTS_${new Date().toISOString().slice(0,10)}.csv`, csv);
 }
-function downloadNursesCSV(){
+function dow<!-- 📍 ATTENDANCE V38 -->
+<div style="background:linear-gradient(135deg,#3b82f6,#1d4ed8);border-radius:16px;padding:14px;color:white;margin:12px 0;">
+<div style="font-weight:900;font-size:15px;">📍 MY ATTENDANCE - Tap when at client house</div>
+<div style="font-size:12px;opacity:0.9;margin:6px 0;">GPS location will be sent to CEO Peter</div>
+<div style="display:flex;gap:8px;margin-top:10px;">
+<button onclick="checkInAttendance('IN')" style="flex:1;background:#10b981;color:white;font-weight:900;padding:12px;border-radius:12px;border:none;">✅ CHECK IN</button>
+<button onclick="checkInAttendance('OUT')" style="flex:1;background:#f59e0b;color:white;font-weight:900;padding:12px;border-radius:12px;border:none;">🏠 CHECK OUT</button>
+</div>
+<div id="attendanceStatus" style="display:none;margin-top:10px;background:rgba(0,0,0,0.2);border-radius:10px;padding:10px;font-size:12px;"></div>
+<div id="myAttendanceHistory" style="margin-top:10px;font-size:11px;opacity:0.9"></div>
+</div>nloadNursesCSV(){
  if(allWorkers.length===0){alert('No nurses');return;}
  let headers = ['ID','Name','Phone','Location','Specialization','Experience','Approved','Time'];
  let rows = allWorkers.map(n => [n.id||n._key||'', `"${(n.name||'').replace(/"/g,'""')}"`, n.phone||'', `"${(n.location||'').replace(/"/g,'""')}"`, n.specialization||'', n.experience||'', n.approved?'YES':'NO', n.time||''].join(','));
@@ -270,6 +318,68 @@ function selectPayMethod(method){
  document.getElementById('momoDetailsBox').style.display=method==='momo'?'block':'none';
  document.getElementById('bankDetailsBox').style.display=method==='bank'?'block':'none';
 }
+// ===== 🚨 SOS + 📍 ATTENDANCE + ⭐ RATING V38 =====
+async function sendSOS(){
+  const phone = document.getElementById('clientPhone')?.value || prompt("Enter your phone for SOS:");
+  if(!phone) return alert("Phone required!");
+  const reason = prompt("🚨 What is emergency?\nExample: Mother fell, need nurse NOW!");
+  if(!reason) return;
+  const sEl = document.getElementById('sosStatus');
+  sEl.style.display='block'; sEl.innerHTML="📍 Getting location... Sending SOS...";
+  navigator.geolocation.getCurrentPosition(async pos=>{
+    const sosData={id:Date.now(),phone:phone,reason:reason,lat:pos.coords.latitude,lng:pos.coords.longitude,time:new Date().toLocaleString(),timestamp:Date.now(),status:"NEW",clientName:document.getElementById('clientName')?.value||"SOS Client"};
+    try{
+      await db.ref('sosAlerts/'+sosData.id).set(sosData);
+      await db.ref('bookings/'+sosData.id).set({id:sosData.id,clientName:sosData.clientName,phone:phone,service:"🚨 EMERGENCY SOS - "+reason,location:`https://maps.google.com/?q=${pos.coords.latitude},${pos.coords.longitude}`,status:"SOS",createdAt:sosData.time});
+      sEl.innerHTML=`✅ SOS SENT! We will call you in 2 mins!<br>📍 Location sent<br>⏰ ${sosData.time}`;
+      alert("🚨 SOS SENT! Peter will call NOW!");
+    }catch(e){sEl.innerHTML="❌ "+e.message;}
+  },err=>{sEl.innerHTML="❌ Enable GPS! "+err.message;});
+}
+function listenSOS(){
+  db.ref('sosAlerts').orderByChild('timestamp').limitToLast(20).on('value',snap=>{
+    const c=document.getElementById('sosAlertsList'); if(!c) return;
+    const data=snap.val(); if(!data){c.innerHTML="<div style='padding:10px;color:#6b7280'>No emergencies 🟢</div>";return;}
+    const list=Object.values(data).reverse();
+    c.innerHTML=list.map(s=>`<div style="background:${s.status==='NEW'?'#fef2f2':'#f3f4f6'};border:2px solid ${s.status==='NEW'?'#dc2626':'#d1d5db'};border-radius:12px;padding:12px;margin-bottom:10px;"><div style="display:flex;justify-content:space-between;"><b style="color:#dc2626">🚨 ${s.clientName} - ${s.phone}</b><span style="font-size:11px;background:#dc2626;color:white;padding:3px 8px;border-radius:20px">${s.status}</span></div><div style="margin:6px 0;font-weight:700">${s.reason}</div><div style="font-size:12px;color:#6b7280">📍 <a href="https://maps.google.com/?q=${s.lat},${s.lng}" target="_blank" style="color:#2563eb">View Location</a> | ⏰ ${s.time}</div><div style="margin-top:8px;display:flex;gap:6px;"><button onclick="db.ref('sosAlerts/${s.id}').update({status:'RESPONDED'})" style="background:#16a34a;color:white;border:none;padding:6px 12px;border-radius:20px;font-weight:700;">✅ Responded</button><a href="tel:${s.phone}" style="background:#2563eb;color:white;padding:6px 12px;border-radius:20px;text-decoration:none;font-weight:700">📞 Call</a></div></div>`).join('');
+  });
+}
+async function checkInAttendance(type){
+  const nursePhone=localStorage.getItem('nursePhone')||prompt("Enter nurse phone:"); if(!nursePhone) return;
+  const statusEl=document.getElementById('attendanceStatus'); if(!statusEl) return alert("Paste attendance HTML first!"); statusEl.style.display='block'; statusEl.innerHTML="📍 Getting GPS...";
+  navigator.geolocation.getCurrentPosition(async pos=>{
+    const att={id:Date.now(),nursePhone:nursePhone,nurseName:localStorage.getItem('nurseName')||"Nurse",type:type,lat:pos.coords.latitude,lng:pos.coords.longitude,time:new Date().toLocaleString(),timestamp:Date.now(),date:new Date().toDateString()};
+    try{await db.ref('attendance/'+att.id).set(att); statusEl.innerHTML=`✅ ${type==='IN'?'Checked IN':'Checked OUT'}!<br>⏰ ${att.time}`; alert(`✅ Attendance ${type} recorded!`);}catch(e){statusEl.innerHTML="❌ "+e.message;}
+  },err=>{statusEl.innerHTML="❌ Enable GPS: "+err.message;});
+}
+function listenAttendanceCEO(){
+  db.ref('attendance').orderByChild('timestamp').limitToLast(30).on('value',snap=>{
+    const container=document.getElementById('attendanceCEOList'); if(!container) return;
+    const data=snap.val(); if(!data){container.innerHTML="<div style='padding:10px;color:#6b7280'>No attendance yet</div>";return;}
+    const list=Object.values(data).reverse();
+    container.innerHTML=list.map(a=>`<div style="background:white;border-radius:10px;padding:10px;margin-bottom:6px;border-left:4px solid ${a.type==='IN'?'#16a34a':'#f59e0b'};font-size:12px;"><b>${a.nurseName} - ${a.nursePhone}</b> ${a.type==='IN'?'✅ IN':'🏠 OUT'}<br>⏰ ${a.time} | 📅 ${a.date}<br><a href="https://maps.google.com/?q=${a.lat},${a.lng}" target="_blank" style="color:#2563eb">📍 View Location</a></div>`).join('');
+  });
+}
+function showRatingPopup(bookingId,nursePhone,nurseName){
+  const stars=prompt(`⭐ RATE ${nurseName}\n\nHow many stars? 1-5\n5=Excellent`); if(!stars) return; const s=parseInt(stars); if(s<1||s>5) return alert("1-5 only!");
+  const comment=prompt("Any comment? (optional)"); const rating={id:Date.now(),bookingId:bookingId,nursePhone:nursePhone,nurseName:nurseName,stars:s,comment:comment||"",time:new Date().toLocaleString(),timestamp:Date.now()};
+  db.ref('ratings/'+rating.id).set(rating).then(()=>{db.ref('ratings').orderByChild('nursePhone').equalTo(nursePhone).once('value',snap=>{const all=snap.val()?Object.values(snap.val()):[]; const avg=all.reduce((sum,r)=>sum+r.stars,0)/all.length; db.ref('nurses/'+nursePhone).update({rating:avg.toFixed(1),ratingCount:all.length});}); alert(`✅ Thank you! Rated ${s} stars!`);});
+}
+function listenRatingsCEO(){
+  db.ref('ratings').orderByChild('timestamp').limitToLast(20).on('value',snap=>{
+    const container=document.getElementById('ratingsCEOList'); if(!container) return;
+    const data=snap.val(); if(!data){container.innerHTML="<div style='padding:10px;color:#6b7280'>No ratings yet</div>";return;}
+    const list=Object.values(data).reverse();
+    container.innerHTML=list.map(r=>`<div style="background:white;border-radius:10px;padding:10px;margin-bottom:6px;font-size:12px;"><b>${r.nurseName}</b> - ${'⭐'.repeat(r.stars)} (${r.stars}/5)<br><span style="color:#6b7280">${r.comment||"No comment"}</span><br><span style="font-size:10px;color:#9ca3af">${r.time}</span></div>`).join('');
+  });
+}
+function checkIfShouldRate(phone){
+  if(!phone) return;
+  db.ref('bookings').orderByChild('phone').equalTo(phone).once('value',snap=>{
+    const data=snap.val(); if(!data) return; const bookings=Object.values(data).filter(b=>b.status==='ASSIGNED'&&b.assignedNursePhone);
+    if(bookings.length>0){const b=bookings[0]; const div=document.getElementById('rateNurseSection'); if(div){div.style.display='block'; div.innerHTML=`<div style="background:linear-gradient(135deg,#f59e0b,#d97706);border-radius:16px;padding:14px;color:white;text-align:center;"><div style="font-weight:900;">⭐ Rate Your Nurse: ${b.assignedNurseName||b.assignedNursePhone}</div><div style="font-size:12px;margin:6px 0;">How was service?</div><button onclick="showRatingPopup('${b.id}','${b.assignedNursePhone}','${b.assignedNurseName||'Nurse'}')" style="background:white;color:#d97706;font-weight:900;padding:10px 20px;border-radius:50px;border:none;margin-top:6px;">⭐ TAP TO RATE</button></div>`;}}
+  });
+}das
 function submitClient(){
  let s=cService,dur=cDuration,p=parseInt(s.value),days=parseInt(dur.value)||14,total=p*days;
  if(!cLive.value){alert('Select Live IN/OUT');return;}
@@ -607,4 +717,8 @@ listenBackend();calcPay();updateLists();updateWinnersWalking();
 let myCodeLocal=localStorage.getItem('myCode')||'LOVE'+Math.floor(100+Math.random()*900);localStorage.setItem('myCode',myCodeLocal);if(document.getElementById('myCode'))document.getElementById('myCode').innerText=myCodeLocal;
 setTimeout(()=>{updateWinnersWalking();},1000);
 document.getElementById('cRefLink')?.addEventListener('input',function(){let v=this.value.trim();if(!v){document.getElementById('refCheckResult').innerText='';return;}let ref=allReferrers.find(r=>r.momo===v||r.phone===v||r.code===v.toUpperCase());if(ref){document.getElementById('refCheckResult').innerHTML=`✅ Found: ${ref.name}`;}else{document.getElementById('refCheckResult').innerText='⚠️ Not found';}});
-</script></body></html>
+
+</script>
+<div id="clientSOSFloat" style="position:fixed;bottom:90px;right:16px;z-index:9999;display:none;"><button onclick="sendSOS()" style="background:#dc2626;color:white;font-weight:900;padding:14px 20px;border-radius:50px;border:3px solid white;box-shadow:0 4px 15px rgba(0,0,0,0.3);">🚨 SOS HELP</button></div>
+<div id="rateNurseSection" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:10000;justify-content:center;align-items:center;"></div>
+</body></html>
