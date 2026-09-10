@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LOVE CARE GHANA - Admin FIXED ALL DOCS</title>
+<style>
+body{font-family:Arial,sans-serif;background:#f5f5f5;margin:0;padding:10px}
+.header{background:linear-gradient(90deg,#00c853,#ffeb3b);padding:12px;border-radius:12px;display:flex;justify-content:space-between;align-items:center;color:#000;font-weight:bold;position:sticky;top:0;z-index:10}
+.nurse-card{background:#fff;border:3px solid #00c853;border-radius:16px;padding:12px;margin:12px 0;display:flex;gap:12px;box-shadow:0 2px 5px rgba(0,0,0,0.1)}
+.nurse-card img{width:85px;height:85px;border-radius:50%;object-fit:cover;border:2px solid #00c853;flex-shrink:0}
+.badge{font-size:11px;padding:3px 8px;border-radius:10px;color:#fff}
+.pending{background:#ff9800}.approved{background:#00c853}
+.btn{padding:7px 11px;border:none;border-radius:8px;margin:3px;font-size:12px;font-weight:bold;cursor:pointer;display:inline-block}
+.btn-photo{background:#2196f3;color:#fff}.btn-ghana{background:#9c27b0;color:#fff}
+.btn-cert{background:#ff9800;color:#fff}.btn-cv{background:#607d8b;color:#fff}
+.btn-approve{background:#00c853;color:#fff}.btn-delete{background:#f44336;color:#fff}
+.modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:99;justify-content:center;align-items:center;padding:15px;box-sizing:border-box}
+.modal-content{background:#fff;border-radius:12px;width:95%;max-width:700px;max-height:92vh;overflow:auto;padding:12px}
+</style>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+</head>
+<body>
+<div class="header">
+  <span>💖 LOVE CARE - ADMIN FIXED</span>
+  <button onclick="loadNurses()" style="background:#fff;color:#00c853;border:none;padding:7px 14px;border-radius:8px;font-weight:bold">🔄 REFRESH</button>
+</div>
+<div id="stats" style="padding:8px;font-size:13px"></div>
+<div id="nursesList">Loading...</div>
+
+<div id="docModal" class="modal" onclick="this.style.display='none'">
+  <div class="modal-content" onclick="event.stopPropagation()">
+    <button onclick="document.getElementById('docModal').style.display='none'" class="btn btn-delete" style="float:right">X Close</button>
+    <div id="docView" style="margin-top:35px"></div>
+  </div>
+</div>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyB52-X1D8Cg-wUDWPds_tR7X3cF82dMdRg",
+  authDomain: "web-care-618e8.firebaseapp.com",
+  databaseURL: "https://web-care-618e8-default-rtdb.firebaseio.com",
+  projectId: "web-care-618e8",
+  storageBucket: "web-care-618e8.firebasestorage.app",
+  messagingSenderId: "1062578660694",
+  appId: "1:1062578660694:web:f94dfe12c929df05bce2f7"
+};
+if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+let allNursesCache = {};
+
+function loadNurses(){
+  document.getElementById('nursesList').innerHTML = '<p>⏳ Loading...</p>';
+  db.ref('/').once('value').then(snap=>{
+    const all = snap.val() || {};
+    let nurses = {};
+    if(all.workers){
+      Object.entries(all.workers).forEach(([k,v])=>{
+        if(v && typeof v==='object') nurses[k] = {...v, _key:k, _path:`workers/${k}`};
+      });
+    }
+    Object.entries(all).forEach(([k,v])=>{
+      if(/^0\d{9,}$/.test(k) && v && typeof v==='object' && v.name){
+        if(!nurses[k]) nurses[k] = {...v, _key:k, _path:k};
+      }
+    });
+    allNursesCache = nurses;
+    renderNurses(nurses);
+    document.getElementById('stats').innerHTML = `Total: <b>${Object.keys(nurses).length}</b> | Pending: <b>${Object.values(nurses).filter(n=>!n.approved).length}</b> | Approved: <b>${Object.values(nurses).filter(n=>n.approved).length}</b>`;
+  });
+}
+
+function renderNurses(nurses){
+  const list = document.getElementById('nursesList');
+  if(Object.keys(nurses).length===0){ list.innerHTML='<p>No nurses found</p>'; return;}
+  let html='';
+  Object.values(nurses).sort((a,b)=>(a.approved?1:0)-(b.approved?1:0)).forEach(n=>{
+    const phone = n.phone || n._key;
+    const photo = n.photo || n.documents?.photo || '';
+    const ghana = n.ghanaID || n.documents?.ghanaCard || n.documents?.ghanaID || '';
+    const cert = n.certificate || n.documents?.certificate || '';
+    const cv = n.cv || n.documents?.cv || '';
+    const status = n.approved? '<span class="badge approved">✅ Approved</span>' : '<span class="badge pending">⏳ Pending</span>';
+    html+=`<div class="nurse-card">
+      <img src="${photo || 'https://via.placeholder.com/85?text=No+Photo'}" onerror="this.src='https://via.placeholder.com/85?text=No+Photo'">
+      <div style="flex:1;min-width:0">
+        <div style="font-weight:bold">👩‍⚕️ ${n.name || 'No Name'}</div>
+        <div style="font-size:12px">📞 ${phone}</div>
+        <div style="font-size:12px">🎓 ${n.qualification || n.skill || ''}</div>
+        <div>Status: ${status}</div>
+        <div style="margin-top:8px">
+          <button class="btn btn-photo" onclick="viewDoc('${phone}','photo')">📷 Photo ${photo?'✅':''}</button>
+          <button class="btn btn-ghana" onclick="viewDoc('${phone}','ghana')">💳 Ghana ${ghana?'✅':'❌'}</button>
+          <button class="btn btn-cert" onclick="viewDoc('${phone}','cert')">🎓 Cert ${cert?'✅':'❌'}</button>
+          <button class="btn btn-cv" onclick="viewDoc('${phone}','cv')">📄 CV ${cv?'✅':'❌'}</button>
+          <br>
+          <button class="btn btn-approve" onclick="approveNurse('${n._path}')">✅ APPROVE</button>
+          <button class="btn btn-delete" onclick="deleteNurse('${n._path}')">🗑️ DELETE</button>
+        </div>
+      </div>
+    </div>`;
+  });
+  list.innerHTML = html;
+}
+
+function viewDoc(phone, type){
+  const nurse = allNursesCache[phone];
+  let data='';
+  if(type==='photo') data = nurse.photo || nurse.documents?.photo || '';
+  if(type==='ghana') data = nurse.ghanaID || nurse.documents?.ghanaCard || nurse.documents?.ghanaID || '';
+  if(type==='cert') data = nurse.certificate || nurse.documents?.certificate || '';
+  if(type==='cv') data = nurse.cv || nurse.documents?.cv || '';
+  if(!data){ alert('❌ No '+type+' for '+nurse.name); return;}
+  const modal = document.getElementById('docModal');
+  const view = document.getElementById('docView');
+  let inner = `<h3>${type.toUpperCase()} - ${nurse.name}</h3>`;
+  if(data.startsWith('data:image')){
+    inner += `<img src="${data}" style="width:100%;max-width:650px"><br><br><a href="${data}" download="${phone}_${type}.jpg" class="btn btn-photo">⬇️ Download</a>`;
+  } else if(data.startsWith('data:application')){
+    inner += `<iframe src="${data}" style="width:100%;height:75vh"></iframe><br><br><a href="${data}" download="${phone}_${type}.pdf" class="btn btn-approve">⬇️ Download PDF</a>`;
+  } else {
+    inner += `<img src="${data}" style="width:100%">`;
+  }
+  view.innerHTML = inner;
+  modal.style.display='flex';
+}
+function approveNurse(path){
+  if(!confirm('Approve this nurse?')) return;
+  db.ref(path).update({approved:true}).then(()=>{ alert('✅ Approved!'); loadNurses(); });
+}
+function deleteNurse(path){
+  if(!confirm('DELETE permanently?')) return;
+  db.ref(path).remove().then(()=>{ alert('Deleted'); loadNurses(); });
+}
+loadNurses();
+</script>
+</body>
+</html>
