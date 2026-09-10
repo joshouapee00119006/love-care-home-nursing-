@@ -1,4 +1,4 @@
-<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><title>V36 LOGOUT + VIDEO END FIX</title><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script><style>
+<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><title>V37 STAFF CHAT FIX</title><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script><style>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600;800&display=swap');
 body{background:#f0fdf4;color:#111827;margin:0;font-family:Poppins;padding-bottom:80px}
 .header{background:linear-gradient(90deg,#16a34a,#eab308);padding:12px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:60}
@@ -93,8 +93,8 @@ input,select{width:100%;padding:11px;margin:5px 0;border-radius:11px;border:1px 
 <div id="page-voice" class="page"><div class="card"><h2>🎤 VOICE CHAT</h2><button class="selectPersonBtn" onclick="openSelectModal('voice')">👥 SELECT WHO</button><div id="voiceSelectedPerson" class="selectedPersonBox" style="display:none"></div><div class="voiceBox"><div id="voiceStatus" style="font-size:12px;color:#16a34a;margin-bottom:8px">🎙️ Tap to start recording</div><button id="recBtn" class="btnSubmit" style="background:#ef4444;color:#fff;padding:16px;font-size:14px" onclick="toggleGlobalRec()">🔴 START RECORDING</button><audio id="globalAud" controls style="width:100%;margin-top:12px;background:white;border-radius:10px;display:none"></audio><div id="voiceTimer" style="font-size:12px;color:#ef4444;margin-top:6px"></div><div style="display:flex;gap:6px;margin-top:8px"><button id="sendVoiceBtn" class="btnSubmit" style="background:#16a34a;color:#fff;display:none;flex:1" onclick="sendVoice()">📤 SEND</button><button id="deleteVoiceBtn" class="btnSubmit" style="background:#ef4444;color:#fff;display:none;flex:1" onclick="deleteVoice()">🗑 DELETE</button></div></div><button onclick="showPage('home')" style="padding:8px;background:#e5e7eb;color:#111;border:none;border-radius:9px;margin-top:10px">← BACK HOME</button></div></div>
 
 <div id="page-team" class="page"><div class="card" style="border:3px solid #25D366;background:white;padding:0;overflow:hidden">
-<div style="background:#075E54;color:white;padding:12px;display:flex;justify-content:space-between;align-items:center"><div><h2 style="color:white;margin:0;font-size:14px">💬 TEAM CHAT</h2><p style="font-size:9px;margin:2px 0 0 0;opacity:0.8"><span id="teamOnlineCount">0</span> online</p></div><button onclick="showPage('home')" style="background:rgba(255,255,255,0.2);border:none;color:white;padding:6px 10px;border-radius:8px">✕</button></div>
-<div id="teamLoginBox" style="padding:16px;text-align:center"><h2 style="color:#075E54">🔒 PRIVATE TEAM CHAT</h2><input id="teamName" placeholder="Your Name"><input id="teamPhone" placeholder="Staff/Nurse Phone or CEO"><input id="teamPass" type="password" placeholder="Password"><button class="btnSubmit" style="background:#25D366;color:#fff" onclick="loginTeamChat()">💬 JOIN</button><div id="teamLoginResult" style="font-size:11px;color:red;margin-top:6px"></div></div>
+<div style="background:#075E54;color:white;padding:12px;display:flex;justify-content:space-between;align-items:center"><div><h2 style="color:white;margin:0;font-size:14px">💬 TEAM CHAT - V37 FIXED</h2><p style="font-size:9px;margin:2px 0 0 0;opacity:0.8"><span id="teamOnlineCount">0</span> online</p></div><button onclick="showPage('home')" style="background:rgba(255,255,255,0.2);border:none;color:white;padding:6px 10px;border-radius:8px">✕</button></div>
+<div id="teamLoginBox" style="padding:16px;text-align:center"><h2 style="color:#075E54">🔒 PRIVATE TEAM CHAT</h2><p style="font-size:10px;color:#6b7280">Staff: Use Staff ID | Nurse: Use Phone | CEO: KUSIPETER</p><input id="teamName" placeholder="Your Name"><input id="teamPhone" placeholder="Staff ID or Nurse Phone or CEO ID"><input id="teamPass" type="password" placeholder="Password"><button class="btnSubmit" style="background:#25D366;color:#fff" onclick="loginTeamChat()">💬 JOIN CHAT</button><div id="teamLoginResult" style="font-size:11px;color:red;margin-top:6px"></div></div>
 <div id="teamWork" style="display:none"><div id="teamChatContainer" class="chatContainer">Loading...</div><div class="chatInputBar"><input id="teamMessageInput" class="chatInput" placeholder="Type a message..." onkeypress="if(event.key==='Enter')sendTeamMessage()"><button onclick="sendTeamMessage()" style="background:#25D366;color:white;border:none;padding:10px 16px;border-radius:50%;font-weight:800">➤</button></div><div style="padding:8px;background:white;display:flex;gap:6px"><button onclick="clearTeamChat()" class="deleteBtn" style="background:#6b7280">🧹 Clear</button><button onclick="deleteAllTeamChat()" class="deleteBtn">🗑 CEO DELETE ALL</button><button onclick="logoutTeamChat()" class="deleteBtn" style="background:#111827">🚪 LOGOUT TEAM</button></div></div>
 </div></div>
 
@@ -126,7 +126,7 @@ input,select{width:100%;padding:11px;margin:5px 0;border-radius:11px;border:1px 
 
 <div style="background:linear-gradient(90deg,#16a34a,#eab308);padding:12px;border-radius:12px;margin-bottom:12px"><h2 style="color:white;margin:0 0 8px 0;font-size:13px">👥 CREATE STAFF</h2><input id="newStaffID" placeholder="Staff ID"><input id="newStaffPass" type="password" placeholder="Password"><button class="btnSubmit" style="background:#111827;color:#fff" onclick="createStaffAccount()">✅ CREATE STAFF</button><div id="createStaffResult" style="font-size:11px;color:white;margin-top:6px"></div><div id="staffAccountsList" style="font-size:10px;background:white;padding:8px;border-radius:8px;margin-top:8px;max-height:150px;overflow:auto;color:#111">Loading...</div></div>
 
-<div style="background:#075E54;color:white;padding:10px;border-radius:10px;display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><h2 style="color:white;margin:0">💬 TEAM CHAT</h2><button onclick="showPage('team')" style="background:#25D366;color:white;border:none;padding:8px 12px;border-radius:8px;font-weight:800">💬 OPEN</button></div>
+<div style="background:#075E54;color:white;padding:10px;border-radius:10px;display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><h2 style="color:white;margin:0">💬 TEAM CHAT</h2><button onclick="showPage('team')" style="background:#25D366;color:white;border:none;padding:8px 12px;border-radius:8px;font-weight:800">💬 OPEN CHAT</button></div>
 
 <div style="background:#111827;color:white;padding:10px;border-radius:10px;display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;border:3px solid #eab308"><h2 style="color:#eab308;margin:0">💰 PAYMENT PROOFS</h2><button onclick="loadCEOData()" class="deleteBtn" style="background:#eab308;color:#000">🔄 REFRESH</button></div><div id="ceoMoMoProofs" style="font-size:11px;background:#fefce8;padding:10px;border-radius:10px;border:2px solid #eab308;max-height:600px;overflow:auto;min-height:150px;color:#111;margin-bottom:12px">Loading...</div>
 
@@ -144,7 +144,7 @@ let logoTaps=0,lastLogo=0,staffTaps=0,lastStaff=0;
 function tapLogo(){let now=Date.now();if(now-lastLogo>3000)logoTaps=0;logoTaps++;lastLogo=now;if(logoTaps>=5){showPage('staff');logoTaps=0;}setTimeout(()=>{if(Date.now()-lastLogo>3000)logoTaps=0;},3500);}
 function tapStaff(){let now=Date.now();if(now-lastStaff>4000)staffTaps=0;staffTaps++;lastStaff=now;if(staffTaps>=7){showPage('ceo');staffTaps=0;}setTimeout(()=>{if(Date.now()-lastStaff>4000)staffTaps=0;},4500);}
 function showPage(id){
- if(id==='team'&&!isStaffLogged&&!isNurseLogged&&!isCEOLogged&&!teamUser){alert('🔒 PRIVATE TEAM CHAT - Only Staff, Nurses and CEO!');}
+ if(id==='team'&&!isStaffLogged&&!isNurseLogged&&!isCEOLogged&&!teamUser){alert('🔒 PRIVATE TEAM CHAT - Only Staff, Nurses and CEO! Login first');}
  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));let t=document.getElementById('page-'+id);if(t)t.classList.add('active');document.querySelectorAll('.bottomNav div').forEach(d=>d.classList.remove('active'));let n=document.getElementById('nav-'+id);if(n)n.classList.add('active');window.scrollTo(0,0);
 }
 function closeModal(){document.getElementById('selectModal').classList.remove('active');}
@@ -167,7 +167,7 @@ document.getElementById('ceoMoMoNumber').value=momoNumber;document.getElementByI
 }});}
 function applyBroadcast(v){let el=document.getElementById('broadcastWalk');let bar=document.getElementById('broadcastBar');let txt=v.text||'';if(v.emoji==='bounce'){txt=txt.replace(/([🎉🎁💖✨🔥🎊🏆📢])/g,'<span class="bounceEmoji">$1</span>');}else if(v.emoji==='blink'){txt=txt.replace(/([🎉🎁💖✨🔥🎊🏆📢])/g,'<span class="blinkEmoji">$1</span>');}else if(v.emoji==='both'){txt=txt.replace(/([🎉🎁💖✨🔥🎊🏆📢])/g,'<span class="bounceEmoji blinkEmoji">$1</span>');}el.innerHTML=txt;el.className='broadcastText';if(v.speed==='slow')el.classList.add('marqueeSlow');else if(v.speed==='fast')el.classList.add('marqueeFast');else el.classList.add('marqueeNormal');if(v.color==='rainbow'){el.classList.add('rainbowText');el.style.color='';}else if(v.color==='gold')el.style.color='#eab308';else if(v.color==='green')el.style.color='#22c55e';else if(v.color==='red')el.style.color='#ef4444';else if(v.color==='blue')el.style.color='#3b82f6';else if(v.color==='white')el.style.color='white';bar.className='broadcastBar';if(v.bg==='flash')bar.classList.add('flashBg');else if(v.bg==='green')bar.style.background='#16a34a';else {bar.style.background='#111827';}}
 
-// LOGOUT FUNCTIONS - NEW V36 FIX
+// LOGOUT FUNCTIONS - V37
 function logoutNurse(){
  if(confirm('Logout nurse?')){
   currentNursePhone=null;isNurseLogged=false;
@@ -179,7 +179,8 @@ function logoutNurse(){
   document.getElementById('nLogResult').innerHTML='';
   document.getElementById('lPhone').value='';document.getElementById('lPass').value='';
   nurseTab('log');showPage('home');
-  hideTeamNav();alert('✅ Nurse logged out');
+  if(!isStaffLogged&&!isCEOLogged)hideTeamNav();
+  alert('✅ Nurse logged out');
  }
 }
 function logoutStaff(){
@@ -431,29 +432,77 @@ function previewBroadcast(){let txt=document.getElementById('broadcastInput').va
 function deleteBroadcast(){if(confirm('Delete broadcast?')){db.ref('broadcast').remove();}}
 function showTeamNav(){let nav=document.getElementById('nav-team');if(nav){nav.classList.remove('hiddenNav');nav.style.display='block';}}
 function hideTeamNav(){let nav=document.getElementById('nav-team');if(nav){nav.classList.add('hiddenNav');}}
+
+// TEAM CHAT LOGIN - V37 FIXED - STAFF ID SUPPORT!
 function loginTeamChat(){
  let name=document.getElementById('teamName').value.trim();
- let phone=document.getElementById('teamPhone').value.trim();
+ let idPhone=document.getElementById('teamPhone').value.trim();
  let pass=document.getElementById('teamPass').value.trim();
- if(!name||!phone||!pass){alert('Fill all');return;}
- if(phone.toUpperCase()==="KUSIPETER"||name.toUpperCase()==="KUSIPETER"){
-  if(pass==="Peterasa80@you!"){teamUser={name:"CEO KUSIPETER",phone:"KUSIPETER",role:"CEO"};isCEOLogged=true;showTeamNav();document.getElementById('teamLoginBox').style.display='none';document.getElementById('teamWork').style.display='block';updateTeamChatUI();return;}else{document.getElementById('teamLoginResult').innerHTML='❌ Wrong CEO password';return;}
+ if(!name||!idPhone||!pass){alert('Fill Name + ID/Phone + Password');return;}
+ document.getElementById('teamLoginResult').innerHTML='⏳ Checking...';
+
+ // CEO
+ if(idPhone.toUpperCase()==="KUSIPETER"||name.toUpperCase()==="KUSIPETER"){
+  if(pass==="Peterasa80@you!"){
+   teamUser={name:"CEO KUSIPETER",phone:"KUSIPETER",role:"CEO"};
+   isCEOLogged=true;showTeamNav();
+   document.getElementById('teamLoginBox').style.display='none';
+   document.getElementById('teamWork').style.display='block';
+   document.getElementById('teamLoginResult').innerHTML='';
+   updateTeamChatUI();return;
+  }else{document.getElementById('teamLoginResult').innerHTML='❌ Wrong CEO password';return;}
  }
- db.ref('staff/'+phone).once('value',s=>{
-  let v=s.val();
-  if(v&&v.pass===pass){teamUser={name:name,phone:phone,role:"Staff"};isStaffLogged=true;showTeamNav();document.getElementById('teamLoginBox').style.display='none';document.getElementById('teamWork').style.display='block';updateTeamChatUI();}
-  else {
-   let nurse=allWorkers.find(x=>x.phone===phone);
-   if(nurse&&nurse.pass===pass){teamUser={name:nurse.name||name,phone:phone,role:"Nurse"};isNurseLogged=true;showTeamNav();document.getElementById('teamLoginBox').style.display='none';document.getElementById('teamWork').style.display='block';updateTeamChatUI();}
-   else {document.getElementById('teamLoginResult').innerHTML='❌ Wrong';}
+
+ // Try direct staff ID lookup first
+ db.ref('staff/'+idPhone).once('value').then(snap=>{
+  let v=snap.val();
+  if(v && v.pass===pass){
+   teamUser={name:name,phone:idPhone,role:"Staff",staffId:idPhone};
+   isStaffLogged=true;showTeamNav();
+   document.getElementById('teamLoginBox').style.display='none';
+   document.getElementById('teamWork').style.display='block';
+   document.getElementById('teamLoginResult').innerHTML='';
+   updateTeamChatUI();
+   return;
   }
- });
+  // Search all staff + nurse fallback
+  db.ref('staff').once('value').then(allSnap=>{
+   let found=false;
+   allSnap.forEach(child=>{
+    let sd=child.val(); let key=child.key;
+    if((key===idPhone || sd.phone===idPhone) && sd.pass===pass){
+     found=true;
+     teamUser={name:name,phone:key,role:"Staff",staffId:key};
+     isStaffLogged=true;showTeamNav();
+     document.getElementById('teamLoginBox').style.display='none';
+     document.getElementById('teamWork').style.display='block';
+     document.getElementById('teamLoginResult').innerHTML='';
+     updateTeamChatUI();
+     return true;
+    }
+   });
+   if(!found){
+    let nurse=allWorkers.find(x=>x.phone===idPhone);
+    if(nurse&&nurse.pass===pass){
+     teamUser={name:nurse.name||name,phone:idPhone,role:"Nurse"};
+     isNurseLogged=true;showTeamNav();
+     document.getElementById('teamLoginBox').style.display='none';
+     document.getElementById('teamWork').style.display='block';
+     document.getElementById('teamLoginResult').innerHTML='';
+     updateTeamChatUI();
+    } else {
+     document.getElementById('teamLoginResult').innerHTML='❌ Wrong ID/Password<br>Staff: Use Staff ID (e.g. STAFF01)<br>Nurse: Use Phone<br>CEO: KUSIPETER';
+    }
+   }
+  });
+ }).catch(e=>{document.getElementById('teamLoginResult').innerHTML='❌ Error: '+e.message;});
 }
+
 function sendTeamMessage(){let input=document.getElementById('teamMessageInput');let text=input.value.trim();if(!text||!teamUser)return;let msg={text:text,name:teamUser.name,phone:teamUser.phone,role:teamUser.role,time:new Date().toLocaleString(),timestamp:Date.now(),id:Date.now()};db.ref('teamChat/'+msg.id).set(msg).then(()=>{input.value='';});}
 function updateTeamChatUI(){
  if(!teamUser)return;
  let container=document.getElementById('teamChatContainer');if(!container)return;
- if(teamMessages.length===0){container.innerHTML='<div style="text-align:center;padding:20px;color:#6b7280">No messages yet</div>';return;}
+ if(teamMessages.length===0){container.innerHTML='<div style="text-align:center;padding:20px;color:#6b7280">No messages yet - Say hello! 👋</div>';return;}
  container.innerHTML=teamMessages.map(m=>{
   let isMe=teamUser&&m.phone===teamUser.phone;
   let cls=isMe?'msgMe':'msgOther';
@@ -464,8 +513,8 @@ function updateTeamChatUI(){
 }
 function deleteTeamMsg(key){if(confirm('Delete?')){db.ref('teamChat/'+key).remove();}}
 function clearTeamChat(){document.getElementById('teamChatContainer').innerHTML='<div style="text-align:center;padding:20px">Cleared</div>';setTimeout(updateTeamChatUI,1500);}
-function deleteAllTeamChat(){if(isCEOLogged||(teamUser&&teamUser.role==='CEO')){if(confirm('DELETE ALL CHAT?')){db.ref('teamChat').remove();}}else{alert('Only CEO');}}
-function logoutTeamChat(){teamUser=null;if(!isStaffLogged&&!isNurseLogged&&!isCEOLogged)hideTeamNav();document.getElementById('teamWork').style.display='none';document.getElementById('teamLoginBox').style.display='block';showPage('home');}
+function deleteAllTeamChat(){if(isCEOLogged||(teamUser&&teamUser.role==='CEO')){if(confirm('DELETE ALL CHAT?')){db.ref('teamChat').remove();}}else{alert('Only CEO can delete all');}}
+function logoutTeamChat(){teamUser=null;if(!isStaffLogged&&!isNurseLogged&&!isCEOLogged)hideTeamNav();document.getElementById('teamWork').style.display='none';document.getElementById('teamLoginBox').style.display='block';document.getElementById('teamLoginResult').innerHTML='';showPage('home');}
 function updateAdminNurseDropdown(){let sel=document.getElementById('adminJobNurse');if(!sel)return;sel.innerHTML='<option value="">-- Nurse --</option>'+allWorkers.map(w=>`<option value="${w.phone}">${w.name} - ${w.phone} ${w.approved?'✅':''}</option>`).join('');}
 function adminCreateJob(){
  let name=document.getElementById('adminJobName').value.trim();
@@ -493,52 +542,30 @@ async function startGlobalVideo(){
 async function startAudioOnly(){
  try{localStream=await navigator.mediaDevices.getUserMedia({audio:true,video:false});document.getElementById('videoStatus').innerHTML='🎤 Audio ON';}catch(e){document.getElementById('videoStatus').innerHTML='❌ Mic denied';}
 }
-
-// VIDEO END FIX - NEW V36 - WORKS 100% NOW
 function stopGlobalVideo(){
  try{
-  console.log('Stopping global video...');
-  if(localStream){
-   localStream.getTracks().forEach(track=>{track.stop();console.log('Stopped track',track.kind);});
-   localStream=null;
-  }
-  if(pc){
-   pc.getSenders().forEach(sender=>{try{pc.removeTrack(sender);}catch(e){}});
-   pc.close();pc=null;
-  }
-  let gVid=document.getElementById('globalVideo');
-  let rVid=document.getElementById('globalRemoteVideo');
-  if(gVid){gVid.srcObject=null;gVid.src='';}
-  if(rVid){rVid.srcObject=null;rVid.src='';}
+  if(localStream){localStream.getTracks().forEach(track=>{track.stop();});localStream=null;}
+  if(pc){try{pc.getSenders().forEach(s=>{try{pc.removeTrack(s);}catch(e){}});}catch(e){}pc.close();pc=null;}
+  let gVid=document.getElementById('globalVideo');let rVid=document.getElementById('globalRemoteVideo');
+  if(gVid){gVid.srcObject=null;gVid.src='';}if(rVid){rVid.srcObject=null;rVid.src='';}
   document.getElementById('videoStatus').innerHTML='⏹ Call ended ✅';
-  if(currentRoomId && db){
-   db.ref('videoRooms/'+currentRoomId).remove().then(()=>{console.log('Room deleted');});
-   currentRoomId=null;
-  }
+  if(currentRoomId && db){db.ref('videoRooms/'+currentRoomId).remove();currentRoomId=null;}
   document.getElementById('globalRoomId').value='';
   alert('⏹ Video call ended');
- }catch(e){console.log('End error',e);alert('⏹ Ended');}
+ }catch(e){alert('⏹ Ended');}
 }
 function stopVideoNurse(){
  try{
-  console.log('Stopping nurse video...');
-  if(localStream){
-   localStream.getTracks().forEach(track=>{track.stop();});
-   localStream=null;
-  }
+  if(localStream){localStream.getTracks().forEach(track=>{track.stop();});localStream=null;}
   if(pc){pc.close();pc=null;}
-  let lVid=document.getElementById('nurseLocalVid');
-  let rVid=document.getElementById('nurseRemoteVid');
-  if(lVid){lVid.srcObject=null;lVid.src='';}
-  if(rVid){rVid.srcObject=null;rVid.src='';}
+  let lVid=document.getElementById('nurseLocalVid');let rVid=document.getElementById('nurseRemoteVid');
+  if(lVid){lVid.srcObject=null;lVid.src='';}if(rVid){rVid.srcObject=null;rVid.src='';}
   document.getElementById('nurseVideoStatus').innerHTML='⏹ Call ended ✅';
-  if(currentRoomId && db){db.ref('videoRooms/'+currentRoomId).remove();}
-  currentRoomId=null;
+  if(currentRoomId && db){db.ref('videoRooms/'+currentRoomId).remove();currentRoomId=null;}
   document.getElementById('nurseRoomId').value='';
   alert('⏹ Video call ended');
- }catch(e){console.log('End error nurse',e);}
+ }catch(e){}
 }
-
 function switchCamera(){currentFacing=currentFacing==='user'?'environment':'user';if(localStream)localStream.getTracks().forEach(t=>t.stop());startGlobalVideo();}
 async function createVideoRoom(type){
  let localVid=type==='nurse'?document.getElementById('nurseLocalVid'):document.getElementById('globalVideo');
