@@ -62,6 +62,7 @@ function load(){
           <button class="btn cert" onclick="openDoc('${id}','cert','${n.certificate||n.cert||''}')">🎓 Cert</button>
           <button class="btn cv" onclick="openDoc('${id}','cv','${n.cv||''}')">📄 CV</button>
           <button class="btn showpw" onclick="togglePassword('${id}','${safePw}')">👁️ Show PW</button>
+          <button class="btn" style="background:#e1f5fe;color:#0288d1" onclick="alert('📅 Registered: ${n.time||'No time'}\n👩‍⚕️ ${n.name}')">⏰ Time</button>
           <button class="btn reset" onclick="showReset('${id}')">🔑 Reset</button>
           <button class="btn approve" onclick="approve('${id}')">${isApproved?'✅ Approved':'✅ APPROVE'}</button>
           <button class="btn delete" onclick="del('${id}')">🗑️ DELETE</button>
