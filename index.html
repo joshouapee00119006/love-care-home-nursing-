@@ -433,41 +433,71 @@ function deleteBroadcast(){if(confirm('Delete broadcast?')){db.ref('broadcast').
 function showTeamNav(){let nav=document.getElementById('nav-team');if(nav){nav.classList.remove('hiddenNav');nav.style.display='block';}}
 function hideTeamNav(){let nav=document.getElementById('nav-team');if(nav){nav.classList.add('hiddenNav');}}
 
-
-// V39 NO-LOGIN TEAM CHAT - CEO/NURSE/STAFF AUTO - NO PASSWORD NEEDED
+// TEAM CHAT LOGIN - V37 FIXED - STAFF ID SUPPORT!
 function loginTeamChat(){
-  let name='', id='', role='STAFF';
-  if(localStorage.getItem('isCEOLogged')==='true'){
-    name='CEO KUSIPETER'; id='KUSIPETER'; role='CEO'; isCEOLogged=true;
-  } else if(localStorage.getItem('nursePhone') || window.currentNursePhone){
-    name=localStorage.getItem('nurseName')||window.currentNursePhone||'Nurse'; 
-    id=localStorage.getItem('nursePhone')||window.currentNursePhone||'NURSE'; 
-    role='NURSE'; isNurseLogged=true;
-  } else if(localStorage.getItem('staffID')){
-    name=localStorage.getItem('staffName')||localStorage.getItem('staffID')||'Staff';
-    id=localStorage.getItem('staffID')||'STAFF'; role='STAFF'; isStaffLogged=true;
-  } else if(window.teamUser && teamUser.name){
-    name=teamUser.name; id=teamUser.phone; role=teamUser.role||'STAFF';
-  } else {
-    name='Team Member'; id='USER'+Date.now();
+ let name=document.getElementById('teamName').value.trim();
+ let idPhone=document.getElementById('teamPhone').value.trim();
+ let pass=document.getElementById('teamPass').value.trim();
+ if(!name||!idPhone||!pass){alert('Fill Name + ID/Phone + Password');return;}
+ document.getElementById('teamLoginResult').innerHTML='â³ Checking...';
+
+ // CEO
+ if(idPhone.toUpperCase()==="KUSIPETER"||name.toUpperCase()==="KUSIPETER"){
+  if(pass==="Peterasa80@you!"){
+   teamUser={name:"CEO KUSIPETER",phone:"KUSIPETER",role:"CEO"};
+   isCEOLogged=true;showTeamNav();
+   document.getElementById('teamLoginBox').style.display='none';
+   document.getElementById('teamWork').style.display='block';
+   document.getElementById('teamLoginResult').innerHTML='';
+   updateTeamChatUI();return;
+  }else{document.getElementById('teamLoginResult').innerHTML='âŒ Wrong CEO password';return;}
+ }
+
+ // Try direct staff ID lookup first
+ db.ref('staff/'+idPhone).once('value').then(snap=>{
+  let v=snap.val();
+  if(v && v.pass===pass){
+   teamUser={name:name,phone:idPhone,role:"Staff",staffId:idPhone};
+   isStaffLogged=true;showTeamNav();
+   document.getElementById('teamLoginBox').style.display='none';
+   document.getElementById('teamWork').style.display='block';
+   document.getElementById('teamLoginResult').innerHTML='';
+   updateTeamChatUI();
+   return;
   }
-  let lb=document.getElementById('teamLoginBox');
-  let wb=document.getElementById('teamWork');
-  if(lb) lb.style.display='none';
-  if(wb) wb.style.display='block';
-  teamUser={name:name, phone:id, role:role};
-  isStaffLogged=true;
-  if(role==='CEO') isCEOLogged=true;
-  if(role==='NURSE') isNurseLogged=true;
-  localStorage.setItem('teamUser', name);
-  localStorage.setItem('teamID', id);
-  if(typeof showTeamNav==='function') showTeamNav();
-  if(typeof updateTeamChatUI==='function') updateTeamChatUI();
-  if(typeof openTeamChat==='function') openTeamChat(name,id);
-  if(typeof loadTeamChat==='function') loadTeamChat();
+  // Search all staff + nurse fallback
+  db.ref('staff').once('value').then(allSnap=>{
+   let found=false;
+   allSnap.forEach(child=>{
+    let sd=child.val(); let key=child.key;
+    if((key===idPhone || sd.phone===idPhone) && sd.pass===pass){
+     found=true;
+     teamUser={name:name,phone:key,role:"Staff",staffId:key};
+     isStaffLogged=true;showTeamNav();
+     document.getElementById('teamLoginBox').style.display='none';
+     document.getElementById('teamWork').style.display='block';
+     document.getElementById('teamLoginResult').innerHTML='';
+     updateTeamChatUI();
+     return true;
+    }
+   });
+   if(!found){
+    let nurse=allWorkers.find(x=>x.phone===idPhone);
+    if(nurse&&nurse.pass===pass){
+     teamUser={name:nurse.name||name,phone:idPhone,role:"Nurse"};
+     isNurseLogged=true;showTeamNav();
+     document.getElementById('teamLoginBox').style.display='none';
+     document.getElementById('teamWork').style.display='block';
+     document.getElementById('teamLoginResult').innerHTML='';
+     updateTeamChatUI();
+    } else {
+     document.getElementById('teamLoginResult').innerHTML='âŒ Wrong ID/Password<br>Staff: Use Staff ID (e.g. STAFF01)<br>Nurse: Use Phone<br>CEO: KUSIPETER';
+    }
+   }
+  });
+ }).catch(e=>{document.getElementById('teamLoginResult').innerHTML='âŒ Error: '+e.message;});
 }
-function joinTeamChat(){return loginTeamChat();}
-function showTeamChatSection(){return loginTeamChat();}
+
 function sendTeamMessage(){let input=document.getElementById('teamMessageInput');let text=input.value.trim();if(!text||!teamUser)return;let msg={text:text,name:teamUser.name,phone:teamUser.phone,role:teamUser.role,time:new Date().toLocaleString(),timestamp:Date.now(),id:Date.now()};db.ref('teamChat/'+msg.id).set(msg).then(()=>{input.value='';});}
 function updateTeamChatUI(){
  if(!teamUser)return;
