@@ -477,60 +477,59 @@ function loginTeamChat(){
      document.getElementById('teamLoginBox').style.display='none';
      document.getElementById('teamWork').style.display='block';
      document.getElementById('teamLoginResult').innerHTML='';
-     updateTeamChatUI();
-     return true;
-    }
-   });
-   if(!found){
-    let nurse=allWorkers.find(x=>x.phone===idPhone);
-    if(nurse&&nurse.pass===pass){
-     teamUser={name:nurse.name||name,phone:idPhone,role:"Nurse"};
-     isNurseLogged=true;showTeamNav();
-     document.getElementById('teamLoginBox').style.display='none';
-     document.getElementById('teamWork').style.display='block';
-     document.getElementById('teamLoginResult').innerHTML='';
-     updateTeamChatUI();
-    } else {
-     document.getElementById('teamLoginResult').innerHTML='❌ Wrong ID/Password<br>Staff: Use Staff ID (e.g. STAFF01)<br>Nurse: Use Phone<br>CEO: KUSIPETER';
-    }
-   }
-  });
- }).catch(e=>{document.getElementById('teamLoginResult').innerHTML='❌ Error: '+e.message;});
-}
+// TEAM CHAT - V39 NO LOGIN FOR ALL - CEO, STAFF, NURSE
+function loginTeamChat(){
+  let name='', id='', role='STAFF';
+  
+  // CEO logged?
+  if(localStorage.getItem('isCEOLogged')==='true' || localStorage.getItem('ceoUser')){
+    name='CEO KUSIPETER'; id='KUSIPETER'; role='CEO'; isCEOLogged=true;
+  }
+  // Nurse logged?
+  else if(localStorage.getItem('nursePhone') || localStorage.getItem('isNurseLogged')==='true'){
+    name=localStorage.getItem('nurseName')||'Nurse'; 
+    id=localStorage.getItem('nursePhone'); 
+    role='NURSE';
+  }
+  // Staff logged?
+  else if(localStorage.getItem('staffID') || localStorage.getItem('isStaffLogged')==='true'){
+    name=localStorage.getItem('staffName')||localStorage.getItem('staffID')||'Staff';
+    id=localStorage.getItem('staffID')||'STAFF';
+    role='STAFF';
+  }
+  // Already have teamUser?
+  else if(window.teamUser && teamUser.name){
+    name=teamUser.name; id=teamUser.phone; role=teamUser.role||'STAFF';
+  }
+  else {
+    // Fallback - still allow no login
+    name='Team Member'; id='USER'+Date.now(); role='STAFF';
+  }
 
-function sendTeamMessage(){let input=document.getElementById('teamMessageInput');let text=input.value.trim();if(!text||!teamUser)return;let msg={text:text,name:teamUser.name,phone:teamUser.phone,role:teamUser.role,time:new Date().toLocaleString(),timestamp:Date.now(),id:Date.now()};db.ref('teamChat/'+msg.id).set(msg).then(()=>{input.value='';});}
-function updateTeamChatUI(){
- if(!teamUser)return;
- let container=document.getElementById('teamChatContainer');if(!container)return;
- if(teamMessages.length===0){container.innerHTML='<div style="text-align:center;padding:20px;color:#6b7280">No messages yet - Say hello! 👋</div>';return;}
- container.innerHTML=teamMessages.map(m=>{
-  let isMe=teamUser&&m.phone===teamUser.phone;
-  let cls=isMe?'msgMe':'msgOther';
-  let roleColor=m.role==='CEO'?'#eab308':m.role==='Staff'?'#16a34a':'#3b82f6';
-  return `<div class="msgBubble ${cls}"><div class="msgName" style="color:${roleColor}">${m.name} - ${m.role}</div>${m.text}<div class="msgTime">${m.time} ${teamUser&&(teamUser.role==='CEO'||isMe)?`<span onclick="deleteTeamMsg('${m._key}')" style="color:red;cursor:pointer">🗑</span>`:''}</div></div>`;
- }).join('');
- container.scrollTop=container.scrollHeight;
+  // FORCE HIDE LOGIN BOX, SHOW CHAT
+  let lb=document.getElementById('teamLoginBox');
+  let wb=document.getElementById('teamWork');
+  let cb=document.getElementById('teamChatBox');
+  if(lb) lb.style.display='none';
+  if(wb) wb.style.display='block';
+  if(cb) cb.style.display='block';
+
+  teamUser={name:name, phone:id, role:role};
+  isStaffLogged=true;
+  localStorage.setItem('teamUser', name);
+  localStorage.setItem('teamID', id);
+  
+  if(typeof showTeamNav==='function') showTeamNav();
+  if(typeof updateTeamChatUI==='function') updateTeamChatUI();
+  if(typeof openTeamChat==='function') openTeamChat(name,id);
+  if(typeof loadTeamChat==='function') loadTeamChat();
 }
-function deleteTeamMsg(key){if(confirm('Delete?')){db.ref('teamChat/'+key).remove();}}
-function clearTeamChat(){document.getElementById('teamChatContainer').innerHTML='<div style="text-align:center;padding:20px">Cleared</div>';setTimeout(updateTeamChatUI,1500);}
-function deleteAllTeamChat(){if(isCEOLogged||(teamUser&&teamUser.role==='CEO')){if(confirm('DELETE ALL CHAT?')){db.ref('teamChat').remove();}}else{alert('Only CEO can delete all');}}
-function logoutTeamChat(){teamUser=null;if(!isStaffLogged&&!isNurseLogged&&!isCEOLogged)hideTeamNav();document.getElementById('teamWork').style.display='none';document.getElementById('teamLoginBox').style.display='block';document.getElementById('teamLoginResult').innerHTML='';showPage('home');}
-function updateAdminNurseDropdown(){let sel=document.getElementById('adminJobNurse');if(!sel)return;sel.innerHTML='<option value="">-- Nurse --</option>'+allWorkers.map(w=>`<option value="${w.phone}">${w.name} - ${w.phone} ${w.approved?'✅':''}</option>`).join('');}
-function adminCreateJob(){
- let name=document.getElementById('adminJobName').value.trim();
- let phone=document.getElementById('adminJobPhone').value.trim();
- let loc=document.getElementById('adminJobLocation').value.trim();
- let serviceEl=document.getElementById('adminJobService');
- let daysEl=document.getElementById('adminJobDays');
- let nursePhone=document.getElementById('adminJobNurse').value;
- if(!name||!phone||!loc){alert('Fill Name, Phone, Location');return;}
- let serviceText=serviceEl.options[serviceEl.selectedIndex].text;
- let days=parseInt(daysEl.value);
- let perDay=parseInt(serviceEl.value);
- let nurse=allWorkers.find(w=>w.phone===nursePhone);
- let b={name:name,phone:phone,loc:loc,service:serviceText,days:days,durationText:daysEl.options[daysEl.selectedIndex].text,perDay:perDay,total:perDay*days,originalTotal:perDay*days,isFreeBooking:false,liveDetails:'Admin Created',conditions:[],conditionText:'Admin created',ref:'',id:Date.now(),assigned:!!nursePhone,assignedNursePhone:nursePhone||'',assignedNurseName:nurse?nurse.name:'',status:nurse?`Assigned to ${nurse.name}`:'Pending',time:new Date().toLocaleString(),createdByAdmin:true,paymentVerified:true};
- db.ref('bookings/'+b.id).set(b).then(()=>{document.getElementById('adminJobResult').innerHTML=`✅ Job created for ${name}`;});
-}
+function joinTeamChat(){return loginTeamChat();}
+
+// AUTO OPEN when team page shown
+window.showTeamChatSection =function(){
+  loginTeamChat();
+
 const servers={iceServers:[{urls:['stun:stun1.l.google.com:19302','stun:stun2.l.google.com:19302']}]};
 async function startGlobalVideo(){
  try{
