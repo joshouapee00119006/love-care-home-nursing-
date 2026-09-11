@@ -433,6 +433,7 @@ function deleteBroadcast(){if(confirm('Delete broadcast?')){db.ref('broadcast').
 function showTeamNav(){let nav=document.getElementById('nav-team');if(nav){nav.classList.remove('hiddenNav');nav.style.display='block';}}
 function hideTeamNav(){let nav=document.getElementById('nav-team');if(nav){nav.classList.add('hiddenNav');}}
 
+
 // V39 NO-LOGIN TEAM CHAT - CEO/NURSE/STAFF AUTO - NO PASSWORD NEEDED
 function loginTeamChat(){
   let name='', id='', role='STAFF';
