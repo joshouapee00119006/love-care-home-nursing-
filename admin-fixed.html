@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ADMIN V3 - LOVE CARE - WITH UPDATE FILES</title>
+<title>ADMIN V4 - FINAL FIXED</title>
 <style>
 body{background:#121212;color:#fff;font-family:sans-serif;padding:10px;margin:0}
 .card{background:#1e1e1e;border-left:4px solid #0f0;border-radius:12px;padding:12px;margin:14px 0}
@@ -29,9 +29,12 @@ input{padding:8px;border-radius:6px;border:none;width:65%}
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 </head>
 <body>
-<h2 style="background:#00c853;padding:14px;border-radius:12px;text-align:center;margin:0 0 10px 0">🔐 LOVE CARE BOSS ADMIN V3 - UPDATE FILES</h2>
-<div id="list">Loading workers...</div>
+<h2 style="background:#00c853;padding:14px;border-radius:12px;text-align:center">🔐 LOVE CARE BOSS ADMIN V4</h2>
+<div id="status" style="background:#333;padding:10px;border-radius:8px;margin-bottom:10px;font-size:12px">🔌 Connecting with REAL Key: AIzaSyB52-X... </div>
+<div id="list">⏳ Loading workers...</div>
+
 <script>
+// YOUR REAL API KEY - 100% REAL
 const firebaseConfig = {
   apiKey: "AIzaSyB52-X1D8Cg-wUDWPds_tR7X3cF82dMdRg",
   authDomain: "web-care-618e8.firebaseapp.com",
@@ -41,135 +44,90 @@ const firebaseConfig = {
   messagingSenderId: "1062578660694",
   appId: "1:1062578660694:web:f94dfe12c929df05bce2f7"
 };
-if(!firebase.apps.length){firebase.initializeApp(firebaseConfig)}
+try{
+ if(!firebase.apps.length){firebase.initializeApp(firebaseConfig)}
+}catch(e){document.getElementById('status').innerHTML='❌ Config Error: '+e.message}
+
 var db = firebase.database();
 
 function load(){
-db.ref('workers').on('value',snap=>{
- var data=snap.val()||{};
- var html='';
- var keys=Object.keys(data);
- if(keys.length===0){html='<p style="text-align:center;padding:20px">No workers</p>'}
- keys.forEach(id=>{
-   var n=data[id]||{};
-   var isApproved=n.approved||n.isApproved;
-   var photoUrl = n.photo || n.profile || 'https://via.placeholder.com/60?text=No+Photo';
-   html+=`
-   <div class="card">
-   <div style="display:flex;gap:12px">
-   <img src="${photoUrl}" style="width:65px;height:65px;border-radius:50%;object-fit:cover;border:3px solid ${isApproved?'#0f0':'#f90'}" onerror="this.src='https://via.placeholder.com/60'">
-   <div style="line-height:1.5">
-   <b>👤 ${n.name||'No Name'}</b><br>
-   <span>📧 ${n.email||''}</span><br>
-   <span>📞 ${n.phone||''}</span><br>
-   <span>⭐ ${n.experience||''} | 📍 ${n.location||n.age||''}</span><br>
-   <span class="badge ${isApproved?'approved':'pending'}">${isApproved?'✅ APPROVED':'⏳ PENDING'}</span>
-   <span class="badge" style="background:#333">ID:${id}</span>
-   </div>
-   </div>
-   <div class="btns">
-   <button class="btn photo" onclick="openDoc('${id}','photo')">📷 Photo</button>
-   <button class="btn ghana" onclick="openDoc('${id}','ghana')">💳 Ghana</button>
-   <button class="btn cert" onclick="openDoc('${id}','cert')">🎓 Certificate</button>
-   <button class="btn cv" onclick="openDoc('${id}','cv')">📄 CV</button>
-   <button class="btn showpw" onclick="togglePassword('${id}')">👁️ PW</button>
-   <button class="btn" style="background:#e1f5fe;color:#0288d1" onclick="showTime('${id}')">⏰ Time</button>
-   <button class="btn edit" onclick="editDetails('${id}')">✏️ Edit Particulars</button>
-   <button class="btn reset" onclick="showReset('${id}')">🔑 Reset PW</button>
-   <button class="btn approve" onclick="approve('${id}')">${isApproved?'✅ Done':'✅ Approve'}</button>
-   <button class="btn delete" onclick="del('${id}')">🗑️</button>
-   </div>
-   <div class="btns" style="border-top:1px dashed #555;padding-top:8px;margin-top:8px">
-   <small style="width:100%;color:#ff9800;font-weight:bold">📁 UPDATE WITH NEW FILES:</small>
-   <button class="btn" style="background:#0d47a1;color:#fff" onclick="updateNewFile('${id}','photo')">📤 New Photo</button>
-   <button class="btn" style="background:#4e342e;color:#ffab91" onclick="updateNewFile('${id}','ghana')">📤 New Ghana ID</button>
-   <button class="btn" style="background:#1b5e20;color:#a5d6a7" onclick="updateNewFile('${id}','cert')">📤 New Certificate</button>
-   <button class="btn" style="background:#3e2723;color:#ffcc80" onclick="updateNewFile('${id}','cv')">📤 New CV</button>
-   </div>
-   <div class="doc-view" id="view-${id}"></div>
-   <div class="pw-box" id="pwbox-${id}">
-   <b>🔑 Password for ${n.name||''}:</b><br>
-   <div style="margin:8px 0">Current: <b id="curr-${id}" style="color:#0f0">${n.pass||n.password||'No password'}</b></div>
-   <input type="text" id="newpw-${id}" placeholder="New password">
-   <button class="btn reset" onclick="saveNewPassword('${id}')">💾 Save</button>
-   <button class="btn delete" onclick="hideReset('${id}')">Close</button>
-   </div>
-   </div>
-   `;
+ db.ref('workers').on('value', snap=>{
+  document.getElementById('status').innerHTML='✅ CONNECTED! Firebase OK - Workers found: '+(snap.numChildren())+' | Real Key Used: YES';
+  var data=snap.val()||{};
+  var html='';
+  var keys=Object.keys(data);
+  if(keys.length===0){html='<p style="text-align:center;padding:20px">No workers in database</p>'}
+  keys.forEach(id=>{
+    var n=data[id]||{};
+    var isApproved=n.approved||n.isApproved;
+    var photoUrl = n.photo || n.profile || 'https://via.placeholder.com/60?text=No';
+    html+=`
+    <div class="card">
+    <div style="display:flex;gap:12px">
+    <img src="${photoUrl}" style="width:65px;height:65px;border-radius:50%;object-fit:cover;border:3px solid ${isApproved?'#0f0':'#f90'}" onerror="this.src='https://via.placeholder.com/60'">
+    <div style="line-height:1.5">
+    <b>👤 ${n.name||'No Name'}</b><br>
+    <span>📧 ${n.email||''}</span><br>
+    <span>📞 ${n.phone||''}</span><br>
+    <span>⭐ ${n.experience||''} | 📍 ${n.location||n.age||''}</span><br>
+    <span class="badge ${isApproved?'approved':'pending'}">${isApproved?'✅ APPROVED':'⏳ PENDING'}</span>
+    <span class="badge" style="background:#333">ID:${id}</span>
+    </div>
+    </div>
+    <div class="btns">
+    <button class="btn photo" onclick="openDoc('${id}','photo')">📷 Photo</button>
+    <button class="btn ghana" onclick="openDoc('${id}','ghana')">💳 Ghana</button>
+    <button class="btn cert" onclick="openDoc('${id}','cert')">🎓 Certificate</button>
+    <button class="btn cv" onclick="openDoc('${id}','cv')">📄 CV</button>
+    <button class="btn showpw" onclick="togglePassword('${id}')">👁️ PW</button>
+    <button class="btn" style="background:#e1f5fe;color:#0288d1" onclick="showTime('${id}')">⏰ Time</button>
+    <button class="btn edit" onclick="editDetails('${id}')">✏️ Edit</button>
+    <button class="btn reset" onclick="showReset('${id}')">🔑 Reset</button>
+    <button class="btn approve" onclick="approve('${id}')">${isApproved?'✅ Done':'✅ Approve'}</button>
+    <button class="btn delete" onclick="del('${id}')">🗑️</button>
+    </div>
+    <div class="btns" style="border-top:1px dashed #555;padding-top:8px;margin-top:8px">
+    <small style="width:100%;color:#ff9800;font-weight:bold">📁 UPDATE WITH NEW FILES:</small>
+    <button class="btn" style="background:#0d47a1;color:#fff" onclick="updateNewFile('${id}','photo')">📤 New Photo</button>
+    <button class="btn" style="background:#4e342e;color:#ffab91" onclick="updateNewFile('${id}','ghana')">📤 New Ghana</button>
+    <button class="btn" style="background:#1b5e20;color:#a5d6a7" onclick="updateNewFile('${id}','cert')">📤 New Cert</button>
+    <button class="btn" style="background:#3e2723;color:#ffcc80" onclick="updateNewFile('${id}','cv')">📤 New CV</button>
+    </div>
+    <div class="doc-view" id="view-${id}"></div>
+    <div class="pw-box" id="pwbox-${id}">
+    <b>🔑 Password:</b> <span id="curr-${id}" style="color:#0f0">${n.pass||n.password||'None'}</span><br><br>
+    <input type="text" id="newpw-${id}" placeholder="New password">
+    <button class="btn reset" onclick="saveNewPassword('${id}')">💾 Save</button>
+    <button class="btn delete" onclick="hideReset('${id}')">Close</button>
+    </div>
+    </div>`;
+  });
+  document.getElementById('list').innerHTML=html;
+ }, function(err){
+  document.getElementById('status').innerHTML='❌ FIREBASE RULES BLOCKED!';
+  document.getElementById('list').innerHTML='<div style="background:#d50000;padding:20px;border-radius:12px"><h3>❌ PERMISSION DENIED</h3><p>Error: '+err.message+'</p><p><b>FIX:</b><br>1. Go to Firebase Console<br>2. Realtime Database -> Rules<br>3. Paste:<br><code style="background:#000;padding:10px;display:block;margin:10px 0">{<br> "rules": {<br> ".read": true,<br> ".write": true<br> }<br>}</code>4. Click Publish<br>5. Refresh this page</p><p>Your REAL API Key is correct: AIzaSyB52-X...</p></div>';
  });
- document.getElementById('list').innerHTML=html;
-});
 }
 load();
 
 function openDoc(id,type){
- var view = document.getElementById('view-'+id);
- view.style.display='block';
- view.innerHTML='⏳ Loading...';
+ var view=document.getElementById('view-'+id); view.style.display='block'; view.innerHTML='⏳ Loading...';
  db.ref('workers/'+id).once('value').then(s=>{
   var n=s.val()||{};
-  var map = {
-    photo: n.photo || n.profile || '',
-    ghana: n.ghana || n.ghanaID || n.ghanaCard || '',
-    cert: n.cert || n.certificate || '',
-    cv: n.cv || n.resume || ''
-  };
-  var url = map[type] || '';
+  var map={photo:n.photo||n.profile||'', ghana:n.ghana||n.ghanaID||n.ghanaCard||'', cert:n.cert||n.certificate||'', cv:n.cv||n.resume||''};
+  var url=map[type]||'';
   if(!url){view.innerHTML='<div style="color:orange">❌ No '+type+'<br>Fields: '+Object.keys(n).join(', ')+'</div>';return;}
-  if(url.startsWith('data:application')){
-    view.innerHTML='<div style="text-align:center"><b>📄 '+type.toUpperCase()+' PDF</b><br><br><a href="'+url+'" target="_blank" download="'+type+'-'+id+'.pdf" style="background:#0f0;color:#000;padding:12px 20px;border-radius:10px;text-decoration:none;display:inline-block">📥 OPEN / DOWNLOAD</a><br><br><button class="btn delete" onclick="document.getElementById(\'view-'+id+'\').style.display=\'none\'">Close</button></div>';
-  } else {
-    view.innerHTML='<img src="'+url+'" style="width:100%;max-height:600px;object-fit:contain;border-radius:10px" onerror="this.outerHTML=\'<iframe src=\\''+url+'\\' style=\\'width:100%;height:500px\\'></iframe>\'"><br><button class="btn delete" onclick="document.getElementById(\'view-'+id+'\').style.display=\'none\'">Close</button> <a href="'+url+'" target="_blank" style="color:#0f0">Open Full</a>';
-  }
+  if(url.startsWith('data:application')){view.innerHTML='<div style="text-align:center"><b>📄 '+type.toUpperCase()+' PDF</b><br><br><a href="'+url+'" target="_blank" download="'+type+'-'+id+'.pdf" style="background:#0f0;color:#000;padding:12px 20px;border-radius:10px;text-decoration:none;display:inline-block">📥 OPEN / DOWNLOAD</a><br><br><button class="btn delete" onclick="document.getElementById(\'view-'+id+'\').style.display=\'none\'">Close</button></div>';}
+  else{view.innerHTML='<img src="'+url+'" style="width:100%;max-height:600px;object-fit:contain;border-radius:10px"><br><button class="btn delete" onclick="document.getElementById(\'view-'+id+'\').style.display=\'none\'">Close</button> <a href="'+url+'" target="_blank" style="color:#0f0">Open Full</a>';}
  });
 }
-
-function showTime(id){
- db.ref('workers/'+id).once('value').then(s=>{
-  var n=s.val()||{};
-  alert('👩‍⚕️ '+(n.name||id)+'\n📅 Registered: '+(n.time||n.registeredAt||'Not set')+'\n🕐 Last Login: '+(n.lastLogin||'Never')+'\n⭐ Exp: '+(n.experience||'N/A'));
- });
-}
-function togglePassword(id){ var b=document.getElementById('pwbox-'+id); b.style.display=b.style.display==='block'?'none':'block'; }
+function showTime(id){db.ref('workers/'+id).once('value').then(s=>{var n=s.val()||{}; alert('👩‍⚕️ '+(n.name||id)+'\n📅 Reg: '+(n.time||n.registeredAt||'Not set')+'\n🕐 Last: '+(n.lastLogin||'Never'));});}
+function togglePassword(id){var b=document.getElementById('pwbox-'+id); b.style.display=b.style.display==='block'?'none':'block';}
 function showReset(id){document.getElementById('pwbox-'+id).style.display='block';}
 function hideReset(id){document.getElementById('pwbox-'+id).style.display='none';}
-function saveNewPassword(id){
- var np=document.getElementById('newpw-'+id).value.trim();
- if(!np){alert('Enter password');return;}
- db.ref('workers/'+id).update({pass:np,password:np}).then(()=>{document.getElementById('curr-'+id).textContent=np; alert('✅ Password updated: '+np);});
-}
-function editDetails(id){
- db.ref('workers/'+id).once('value').then(s=>{
-  var n=s.val()||{};
-  var newName=prompt('✏️ Name:',n.name||''); if(newName===null) return;
-  var newPhone=prompt('📞 Phone:',n.phone||''); if(newPhone===null) return;
-  var newExp=prompt('⭐ Experience:',n.experience||''); if(newExp===null) return;
-  var newLoc=prompt('📍 Location:',n.location||''); if(newLoc===null) return;
-  var newEmail=prompt('📧 Email:',n.email||''); if(newEmail===null) return;
-  db.ref('workers/'+id).update({name:newName,phone:newPhone,experience:newExp,location:newLoc,email:newEmail}).then(()=>alert('✅ Particulars Updated!'));
- });
-}
-function updateNewFile(id, docType){
-  var input=document.createElement('input');
-  input.type='file';
-  input.accept='image/*,.pdf';
-  input.onchange=e=>{
-    var file=e.target.files[0]; if(!file) return;
-    if(file.size>900000){alert('File too big! Max 900KB. Compress photo!');return;}
-    var reader=new FileReader();
-    reader.onload=ev=>{
-      var base64=ev.target.result;
-      var update={};
-      if(docType==='photo'){update.photo=base64; update.profile=base64;}
-      if(docType==='ghana'){update.ghanaID=base64; update.ghana=base64; update.ghanaCard=base64;}
-      if(docType==='cert'){update.certificate=base64; update.cert=base64;}
-      if(docType==='cv'){update.cv=base64;}
-      db.ref('workers/'+id).update(update).then(()=>alert('✅ '+docType.toUpperCase()+' UPDATED! New file saved to Firebase!'));
-    };
-    reader.readAsDataURL(file);
-  };
-  input.click();
-}
+function saveNewPassword(id){var np=document.getElementById('newpw-'+id).value.trim(); if(!np){alert('Enter password');return;} db.ref('workers/'+id).update({pass:np,password:np}).then(()=>{document.getElementById('curr-'+id).textContent=np; alert('✅ Password: '+np);});}
+function editDetails(id){db.ref('workers/'+id).once('value').then(s=>{var n=s.val()||{}; var nn=prompt('Name:',n.name||''); if(nn===null) return; var ph=prompt('Phone:',n.phone||''); if(ph===null) return; var ex=prompt('Experience:',n.experience||''); if(ex===null) return; var lo=prompt('Location:',n.location||''); if(lo===null) return; var em=prompt('Email:',n.email||''); if(em===null) return; db.ref('workers/'+id).update({name:nn,phone:ph,experience:ex,location:lo,email:em}).then(()=>alert('✅ Updated!'));});}
+function updateNewFile(id,docType){var input=document.createElement('input'); input.type='file'; input.accept='image/*,.pdf'; input.onchange=e=>{var file=e.target.files[0]; if(!file) return; if(file.size>900000){alert('File too big! <900KB');return;} var r=new FileReader(); r.onload=ev=>{var b64=ev.target.result; var up={}; if(docType==='photo'){up.photo=b64; up.profile=b64;} if(docType==='ghana'){up.ghanaID=b64; up.ghana=b64; up.ghanaCard=b64;} if(docType==='cert'){up.certificate=b64; up.cert=b64;} if(docType==='cv'){up.cv=b64;} db.ref('workers/'+id).update(up).then(()=>alert('✅ '+docType.toUpperCase()+' UPDATED!'));}; r.readAsDataURL(file);}; input.click();}
 function approve(id){db.ref('workers/'+id).update({approved:true,isApproved:true}).then(()=>alert('✅ Approved!'))}
 function del(id){if(confirm('Delete '+id+'?')){db.ref('workers/'+id).remove().then(()=>alert('Deleted'))}}
 </script>
