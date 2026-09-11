@@ -3,112 +3,126 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DIGITAL NURSE GHANA - V47</title>
+<title>DIGITAL NURSE - V47 FINAL FIXED</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,-apple-system,Segoe UI,Roboto}
-body{background:#f6f8fb}
-.header{background:linear-gradient(90deg,#4CAF50,#8BC34A);padding:12px 14px;display:flex;align-items:center;justify-content:space-between;color:white}
-.logo{display:flex;align-items:center;gap:8px;font-weight:800;font-size:18px}
-.logo-icon{width:34px;height:34px;background:white;border-radius:12px;display:flex;align-items:center;justify-content:center;position:relative;box-shadow:0 0 20px rgba(0,255,200,0.6)}
-.pulse{position:absolute;width:100%;height:100%;border:2px solid #00e5ff;border-radius:12px;animation:pulse 2s infinite}
-@keyframes pulse{0%{transform:scale(1);opacity:1}100%{transform:scale(1.5);opacity:0}}
-.badge{background:white;color:#2E7D32;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700}
-.phone-bar{background:linear-gradient(90deg,#0D47A1,#1565C0);color:white;padding:6px 12px;font-size:12px;font-weight:600;overflow:hidden;white-space:nowrap}
-.card{background:white;margin:12px;border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,0.06);overflow:hidden;border:1px solid #e8f0ff}
-.card-title{padding:12px 14px;color:#0D8A2E;font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
-.sub{font-size:12px;color:#666;font-weight:400;margin-top:2px}
-.map-box{position:relative;border:2px solid #4CAF50;border-radius:12px;margin:0 10px;overflow:hidden}
-.map-box.hidden{display:none!important}
-#homeMap{height:380px;width:100%}
-.btn-open{background:linear-gradient(135deg,#ff6a00,#ffb700);color:white;border:none;padding:8px 14px;border-radius:20px;font-weight:700;font-size:12px;cursor:pointer}
-.btn-row{display:flex;gap:8px;padding:10px}
-.btn{flex:1;padding:12px;border:none;border-radius:12px;font-weight:700;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
-.btn-blue{background:#0D47A1;color:white}
-.btn-yellow{background:#FFC107;color:#000}
-.btn-black{background:#111;color:white}
-.selected{font-size:11px;color:#555;padding:0 12px 8px}
-.google-embed{margin:10px;border-radius:12px;overflow:hidden;border:1px solid #ddd}
-.google-embed iframe{width:100%;height:120px;border:0}
-.live-nurses{padding:10px}
-.nurse-card{background:linear-gradient(135deg,#001233,#004aad);color:white;border-radius:12px;padding:10px;margin:8px 0;display:flex;align-items:center;gap:10px;border-left:4px solid #00ff88}
-.dot{width:10px;height:10px;background:#00ff88;border-radius:50%;animation:blink 1s infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:0.4}}
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:white;display:flex;justify-content:space-around;padding:8px 0 12px;border-top:1px solid #eee;z-index:999}
-.nav-item{font-size:11px;text-align:center;color:#888;font-weight:600}
-.nav-item.active{color:#4CAF50}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
+body{background:#f0f7ff}
+.header{background:linear-gradient(135deg,#001e4d 0%,#004aad 50%,#00b4d8 100%);color:white;padding:12px 15px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:1000;box-shadow:0 4px 20px rgba(0,0,0,0.2)}
+.digital-logo{display:flex;align-items:center;gap:10px;cursor:pointer}
+.logo-icon{width:50px;height:50px;background:white;border-radius:14px;display:flex;align-items:center;justify-content:center;position:relative;box-shadow:0 0 20px rgba(0,180,216,0.5)}
+.pulse-ring{position:absolute;width:100%;height:100%;border:2px solid #00d9ff;border-radius:14px;animation:pulseRing 2s infinite}
+@keyframes pulseRing{0%{transform:scale(1);opacity:1}100%{transform:scale(1.4);opacity:0}}
+.logo-text h1{font-size:20px;font-weight:800;letter-spacing:1px;line-height:1}
+.logo-text h1 span{color:#00e5ff}
+.logo-text p{font-size:9px;letter-spacing:3px;opacity:0.9;margin-top:2px}
+.live-badge{background:#ff0033;color:white;padding:4px 10px;border-radius:20px;font-size:10px;font-weight:800;animation:blink 1s infinite;display:flex;align-items:center;gap:4px}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.6}}
+.container{max-width:1400px;margin:auto;padding:10px}
+.card{background:white;border-radius:16px;padding:14px;margin-bottom:12px;box-shadow:0 4px 15px rgba(0,0,0,0.06);border:1px solid #e3f2fd}
+.btn{border:none;padding:11px 16px;border-radius:10px;font-weight:700;cursor:pointer;transition:0.2s;font-size:13px;display:inline-flex;align-items:center;gap:6px}
+.btn-map{background:linear-gradient(135deg,#ff6a00,#ff9500);color:white}
+.btn-dark{background:#001e4d;color:white}
+.btn-success{background:linear-gradient(135deg,#00b050,#00d68f);color:white}
+.map-wrapper{margin-top:12px;border-radius:14px;overflow:hidden;border:2px solid #004aad;transition:all 0.4s ease}
+.map-wrapper.hidden{display:none}
+.leaflet-map{height:380px;width:100%}
+.google-frame{width:100%;height:380px;border:0}
+.uber-nurse-card{background:linear-gradient(135deg,#001e4d,#004aad);color:white;border-radius:14px;padding:12px;margin:8px 0;display:flex;align-items:center;gap:12px}
+.nurse-dot{width:12px;height:12px;background:#00ff88;border-radius:50%;box-shadow:0 0 0 4px rgba(0,255,136,0.3);animation:pulseDot 1.5s infinite}
+@keyframes pulseDot{0%{box-shadow:0 0 0 0 rgba(0,255,136,0.7)}70%{box-shadow:0 0 0 10px rgba(0,255,136,0)}100%{box-shadow:0 0 0 0 rgba(0,255,136,0)}}
+.winner-vertical{writing-mode:vertical-lr;transform:rotate(180deg);display:inline-flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#ffd700,#ffb700);color:#001e4d;padding:8px 6px;border-radius:20px;font-weight:800;font-size:11px;letter-spacing:2px}
+.winner-row{display:flex;gap:10px;align-items:center;background:linear-gradient(135deg,#fff9c4,#ffecb3);border:2px solid #ffb700;border-radius:14px;padding:10px;margin:8px 0}
+.tab-btn{padding:10px 14px;border-radius:10px;border:2px solid #d6eaff;background:white;font-weight:700;cursor:pointer;font-size:12px}
+.tab-btn.active{background:#004aad;color:white}
+.status-on{width:100%;padding:10px;border-radius:10px;font-weight:700;font-size:12px;text-align:center;margin:8px 0;border:2px solid}
+.on{background:#c8e6c9;color:#1b5e20;border-color:#00c853}
+.off{background:#ffcdd2;color:#b71c1c;border-color:#ff1744}
 .hidden{display:none!important}
-.input{width:100%;padding:10px;border:2px solid #e0e0e0;border-radius:10px;margin:6px 0}
-.btn-uber{background:linear-gradient(135deg,#00b050,#00d68f);color:white;border:none;padding:10px 14px;border-radius:10px;font-weight:700;width:100%;margin:6px 0}
+.input{width:100%;padding:10px 12px;border:2px solid #e3f2fd;border-radius:10px;margin:6px 0}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:768px){.grid-2{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <div class="header">
-<div class="logo">
-<div class="logo-icon"><div class="pulse"></div>💙</div>
-<div><span style="color:white">DIGITAL</span> <span style="color:#FFEB3B">NURSE</span> <span class="badge">GHANA</span></div>
+<div class="digital-logo" onclick="goToStaff()" title="Click to open Staff">
+<div class="logo-icon"><div class="pulse-ring"></div>
+<svg viewBox="0 0 100 100"><path d="M10 50 L30 50 L40 20 L55 80 L65 50 L90 50" stroke="#004aad" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="50" cy="50" r="6" fill="#00b4d8"/></svg>
 </div>
-<div style="font-size:20px">🏆</div>
+<div class="logo-text"><h1>DIGITAL <span>NURSE</span></h1><p>CLICK LOGO FOR STAFF - UBER TRACKING</p></div>
 </div>
-<div class="phone-bar">📍 LIVE TRACKING • 0544121814 / 0502957280 💙 • UBER MODE ACTIVE</div>
+<div style="display:flex;gap:8px"><div class="live-badge">LIVE GPS</div><div style="background:rgba(255,255,255,0.2);padding:6px 10px;border-radius:20px;font-size:10px;font-weight:800">GHANA</div></div>
+</div>
 
-<!-- HOME PLATFORM - YOUR SCREENSHOT 1 FORMAT -->
+<div class="container">
+<div class="card" style="background:linear-gradient(135deg,#001233,#002a7a);color:white">
+<h3 style="color:#00e5ff">👑 CEO DASHBOARD - V47 FIXED</h3>
+<div style="margin:10px 0;display:flex;gap:8px;flex-wrap:wrap">
+<button class="btn btn-map" onclick="toggleMap('wrapper_ceo')">🗺️ OPEN / CLOSE Google Map</button>
+<button class="btn btn-dark" onclick="centerAllLiveNurses('ceoMap')">📍 Locate All Nurses LIVE</button>
+<button class="btn btn-success" onclick="startCeoLiveListen()">🔴 Start UBER Live Tracking</button>
+</div>
+<div id="wrapper_ceo" class="map-wrapper hidden"><div id="ceoMap" class="leaflet-map"></div><iframe id="google_ceo" class="google-frame" src="https://www.google.com/maps?q=5.6037,-0.1870&z=12&output=embed"></iframe><div style="padding:8px;background:#001e4d;color:white;font-size:11px;display:flex;justify-content:space-between"><span>🛰️ UBER MODE</span><span id="ceoLiveCount">0 Live</span></div></div>
+<div id="ceoLiveList"></div>
+</div>
+
+<div class="grid-2">
+<div class="card" id="staffSection">
+<h3>👔 STAFF PLATFORM - Logo Opens Here</h3>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0">
+<button class="btn btn-map" onclick="toggleMap('wrapper_staff')">🗺️ OPEN / CLOSE Map</button>
+<button class="btn btn-dark" onclick="centerAllLiveNurses('staffMap')">📍 Locate LIVE</button>
+<button class="btn" style="background:#004aad;color:white" onclick="toggleHiddenNurses()">👁️ Show/Hide Nurses</button>
+</div>
+<div id="wrapper_staff" class="map-wrapper hidden"><div id="staffMap" class="leaflet-map"></div><iframe id="google_staff" class="google-frame" src="https://www.google.com/maps?q=5.6037,-0.1870&z=12&output=embed"></iframe></div>
+<div id="staffLiveList"></div>
+<div id="hiddenNurses" class="hidden" style="background:#f8f9ff;padding:10px;border-radius:10px;margin-top:8px;border:2px dashed #004aad"><h4>🔒 Hidden Nurses List</h4><div id="hiddenNursesList"></div></div>
+</div>
+
+<div class="card" style="border:2px solid #00b050">
+<h3>🧑‍⚕️ NURSE - UBER MODE</h3>
+<input id="nursePhoneInput" class="input" placeholder="Nurse ID / Phone">
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0">
+<button class="btn btn-success" onclick="startNurseUberTracking()">🟢 START DUTY & LIVE GPS</button>
+<button class="btn btn-dark" onclick="stopNurseUberTracking()">🔴 STOP DUTY</button>
+<button class="btn btn-map" onclick="toggleMap('wrapper_nurse')">🗺️ OPEN / CLOSE My Map</button>
+</div>
+<div id="nurseTrackingStatus" class="status-on off">⚪ Tracking OFF</div>
+<div id="wrapper_nurse" class="map-wrapper hidden"><div id="nurseMap" class="leaflet-map"></div><iframe id="google_nurse" class="google-frame" src="https://www.google.com/maps?q=5.6037,-0.1870&z=12&output=embed"></iframe><div style="padding:8px;background:#00b050;color:white;font-size:11px;display:flex;justify-content:space-between"><span>📍 LIVE like UBER</span><span id="nurseSpeed">0 km/h</span></div></div>
+</div>
+</div>
+
+<div class="grid-2">
 <div class="card">
-<div class="card-title">
-<div>🗺️ Google Map - Home Platform - Live Location<br><span class="sub">Tap map to pick client location - Live GPS - Ghana Coverage</span></div>
-<button class="btn-open" onclick="toggleMap('wrap_home')">🗺️ OPEN / CLOSE MAP</button>
-</div>
-<div id="wrap_home" class="map-box">
-<div id="homeMap"></div>
-<div style="position:absolute;bottom:10px;left:10px;right:10px;background:rgba(255,255,255,0.95);padding:8px;border-radius:10px;font-size:11px;display:flex;justify-content:space-between;align-items:center">
-<span>🛰️ <span id="liveCount">0 Nurses Live - UBER Mode</span></span>
-<button onclick="locateAll()" style="background:#4CAF50;color:white;border:none;padding:6px 10px;border-radius:8px;font-size:11px">📍 Locate All</button>
-</div>
-</div>
-<div class="btn-row">
-<button class="btn btn-blue" onclick="myLocation()">📍 My Location</button>
-<button class="btn btn-yellow" onclick="openGoogle()">🌍 Open Google Maps</button>
-<button class="btn btn-black" onclick="shareLoc()">📤 Share Location</button>
-</div>
-<div class="selected">Selected: <span id="selText">Accra, Ghana | Lat: 5.6037 Lng: -0.1870</span></div>
-<div class="google-embed"><iframe id="gHome" src="https://www.google.com/maps?q=5.6037,-0.1870&z=14&output=embed"></iframe></div>
-
-<!-- UBER LIVE NURSES LIST - NEW FEATURE -->
-<div class="live-nurses" id="liveList"></div>
-</div>
-
-<!-- NURSES PLATFORM - UBER MODE -->
-<div class="card">
-<div class="card-title">🧑‍⚕️ Nurses Platform - UBER LIVE TRACKING <button class="btn-open" onclick="toggleMap('wrap_nurse')">🗺️ OPEN / CLOSE</button></div>
-<div style="padding:0 12px">
-<input id="nursePhone" class="input" placeholder="Enter Nurse ID / Phone">
-<button class="btn-uber" onclick="nurseStart()">🟢 START DUTY & GO LIVE (Like Uber)</button>
-<button class="btn-uber" style="background:#111" onclick="nurseStop()">🔴 STOP DUTY</button>
-<div id="nurseStatus" style="font-size:12px;padding:8px;text-align:center;color:red">OFFLINE</div>
-</div>
-<div id="wrap_nurse" class="map-box hidden"><div id="nurseMap" style="height:300px"></div></div>
-</div>
-
-<!-- BOOKING & WINNERS KEPT FROM V47 -->
-<div class="card">
-<div class="card-title">📊 Daily / Weekly / Monthly - Separated <button class="btn-open" onclick="toggleMap('wrap_book')">🗺️ OPEN / CLOSE</button></div>
-<div id="wrap_book" class="hidden" style="padding:12px"><div id="bookList"></div></div>
+<h3>🏠 CLIENT - Track Nurse Like Uber</h3>
+<button class="btn btn-map" onclick="toggleMap('wrapper_client')">🗺️ OPEN / CLOSE Map</button>
+<div id="wrapper_client" class="map-wrapper hidden"><div id="clientMap" class="leaflet-map"></div><iframe id="google_client" class="google-frame" src="https://www.google.com/maps?q=5.6037,-0.1870&z=12&output=embed"></iframe></div>
+<div id="clientLiveNurse"></div>
 </div>
 
 <div class="card">
-<div class="card-title">🏆 Winners Walk - Vertical (Kept)</div>
-<div id="winners" style="padding:10px;display:flex;gap:10px;overflow-x:auto"></div>
+<h3>📊 DAILY / WEEKLY / MONTHLY - RESTORED</h3>
+<div style="display:flex;gap:8px;margin:10px 0;flex-wrap:wrap">
+<button class="tab-btn active" onclick="showTab('daily')" id="tab_daily">📅 DAILY - Live Out</button>
+<button class="tab-btn" onclick="showTab('weekly')" id="tab_weekly">📆 WEEKLY</button>
+<button class="tab-btn" onclick="showTab('monthly')" id="tab_monthly">🗓️ MONTHLY - Live In</button>
+</div>
+<div id="panel_daily" class="tab-panel"><div id="daily_list"></div></div>
+<div id="panel_weekly" class="tab-panel hidden"><div id="weekly_list"></div></div>
+<div id="panel_monthly" class="tab-panel hidden"><div id="monthly_list"></div></div>
+<div style="margin-top:12px"><button class="btn btn-map" onclick="toggleMap('wrapper_bookings')">🗺️ OPEN / CLOSE Booking Map</button><div id="wrapper_bookings" class="map-wrapper hidden"><div id="bookingsMap" class="leaflet-map"></div><iframe id="google_bookings" class="google-frame" src="https://www.google.com/maps?q=5.6037,-0.1870&z=12&output=embed"></iframe></div></div>
+</div>
 </div>
 
-<div style="height:80px"></div>
-<div class="bottom-nav">
-<div class="nav-item active">🏠<br>Home</div>
-<div class="nav-item">👩‍⚕️<br>Nurses</div>
-<div class="nav-item">📅<br>Book</div>
-<div class="nav-item">🏆<br>Win</div>
+<div class="card" style="background:linear-gradient(135deg,#fff9c4,#ffecb3);border:2px solid #ffb700">
+<h3>🏆 WINNERS WALK - VERTICAL - RESTORED</h3>
+<div id="winners_vertical" style="display:flex;gap:12px;overflow-x:auto;padding:10px 0"></div>
+</div>
 </div>
 
 <script>
@@ -122,86 +136,79 @@ const firebaseConfig = {
   appId: "1:1062578660694:web:f94dfe12c929df05bce2f7"
 };
 if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-const db=firebase.database();
-let map, nurseMap, markers={}, liveData={}, watchId=null, nurseId="", currentLat=5.6037, currentLng=-0.1870;
-
-function initMap(){
-if(map) return;
-map=L.map('homeMap').setView([5.6037,-0.1870],12);
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-map.on('click',e=>{
-currentLat=e.latlng.lat; currentLng=e.latlng.lng;
-document.getElementById('selText').innerText=`Accra, Ghana | Lat: ${currentLat.toFixed(4)} Lng: ${currentLng.toFixed(4)}`;
-document.getElementById('gHome').src=`https://www.google.com/maps?q=${currentLat},${currentLng}&z=15&output=embed`;
-});
-nurseMap=L.map('nurseMap').setView([5.6037,-0.1870],13);
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(nurseMap);
-db.ref('liveLocations').on('value',snap=>{
-liveData=snap.val()||{};
-renderLive();
+const db = firebase.database();
+let maps={}, liveMarkers={}, watchId=null, nursePhone="233000000000", liveLocations={}, bookingsData={};
+function initAllMaps(){
+['ceoMap','staffMap','nurseMap','clientMap','bookingsMap'].forEach(id=>{
+if(document.getElementById(id) &&!maps[id]){
+maps[id]=L.map(id).setView([5.6037,-0.1870],12);
+L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png',{maxZoom:19}).addTo(maps[id]);
+}
 });
 }
-function toggleMap(id){
-const el=document.getElementById(id);
-el.classList.toggle('hidden');
-initMap();
-setTimeout(()=>{map&&map.invalidateSize(); nurseMap&&nurseMap.invalidateSize()},400);
+function goToStaff(){document.getElementById('staffSection').scrollIntoView({behavior:'smooth'}); if(document.getElementById('wrapper_staff').classList.contains('hidden')) toggleMap('wrapper_staff');}
+function toggleHiddenNurses(){document.getElementById('hiddenNurses').classList.toggle('hidden');}
+function toggleMap(id){const el=document.getElementById(id); el.classList.toggle('hidden'); if(!el.classList.contains('hidden')){initAllMaps(); setTimeout(()=>{Object.values(maps).forEach(m=>{if(m) m.invalidateSize()});},300);}}
+function showTab(t){document.querySelectorAll('.tab-panel').forEach(p=>p.classList.add('hidden')); document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active')); document.getElementById('panel_'+t).classList.remove('hidden'); document.getElementById('tab_'+t).classList.add('active');}
+function startNurseUberTracking(){
+nursePhone=document.getElementById('nursePhoneInput').value.trim() || prompt("Enter ID","233") || "233000000000";
+if(!navigator.geolocation){alert("No GPS");return;}
+document.getElementById('nurseTrackingStatus').className='status-on on';
+document.getElementById('nurseTrackingStatus').innerHTML="🟢 LIVE ON - UBER MODE";
+if(document.getElementById('wrapper_nurse').classList.contains('hidden')) toggleMap('wrapper_nurse');
+watchId=navigator.geolocation.watchPosition(pos=>{
+const lat=pos.coords.latitude,lng=pos.coords.longitude,speed=pos.coords.speed||0;
+const data={lat,lng,speed,phone:nursePhone,name:"Nurse "+nursePhone.slice(-4),status:"on_duty",timestamp:Date.now(),moving:speed>0.5};
+db.ref('liveLocations/'+nursePhone).set(data);
+if(maps.nurseMap){
+if(!liveMarkers['me']) liveMarkers['me']=L.marker([lat,lng],{icon:L.divIcon({html:'<div style="background:#00b050;color:white;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;border:3px solid white">🧑‍⚕️</div>',iconSize:[44,44]})}).addTo(maps.nurseMap);
+liveMarkers['me'].setLatLng([lat,lng]); maps.nurseMap.setView([lat,lng],16);
+document.getElementById('google_nurse').src=`https://www.google.com/maps?q=${lat},${lng}&z=17&output=embed`;
+document.getElementById('nurseSpeed').innerText=(speed*3.6).toFixed(1)+' km/h';
+}
+},{},{enableHighAccuracy:true});
+}
+function stopNurseUberTracking(){if(watchId) navigator.geolocation.clearWatch(watchId); db.ref('liveLocations/'+nursePhone).update({status:"off_duty"}); document.getElementById('nurseTrackingStatus').className='status-on off'; document.getElementById('nurseTrackingStatus').innerHTML="🔴 OFF";}
+function startCeoLiveListen(){
+initAllMaps();
+db.ref('liveLocations').on('value',s=>{liveLocations=s.val()||{}; renderLive();});
+db.ref('bookings').on('value',s=>{bookingsData=s.val()||{}; renderBookings(); renderWinners();});
 }
 function renderLive(){
-const list=document.getElementById('liveList');
-list.innerHTML="";
-let c=0;
-Object.values(liveData).forEach(n=>{
-if(!n.lat || n.status!=="on_duty") return;
-c++;
-// update marker on home map
-const key=n.phone;
-if(!markers[key]){
-markers[key]=L.marker([n.lat,n.lng],{icon:L.divIcon({html:`<div style="background:#001233;color:white;padding:4px 10px;border-radius:20px;font-size:11px;border:2px solid #00ff88">🧑‍⚕️ ${n.name}</div>`,iconSize:[80,30]})}).addTo(map);
-markers[key].bindPopup(`<b>💙 DIGITAL NURSE</b><br>${n.name}<br>${n.phone}<br>🚀 ${(n.speed*3.6).toFixed(1)} km/h<br><a href="https://www.google.com/maps?q=${n.lat},${n.lng}" target="_blank">Open Google Maps</a>`);
-}else markers[key].setLatLng([n.lat,n.lng]);
-list.innerHTML+=`<div class="nurse-card"><div class="dot"></div><div><b>${n.name}</b> • ${n.phone}<br><small>📍 ${n.lat.toFixed(4)},${n.lng.toFixed(4)} | 🚀 ${(n.speed*3.6).toFixed(1)}km/h ${n.moving?'● MOVING LIKE UBER':''}</small></div><button onclick="map.setView([${n.lat},${n.lng}],17)" style="margin-left:auto;background:#ffb700;border:none;padding:6px 10px;border-radius:8px;font-weight:700">📍 VIEW</button></div>`;
+const ceo=document.getElementById('ceoLiveList'), staff=document.getElementById('staffLiveList'), client=document.getElementById('clientLiveNurse');
+ceo.innerHTML=""; staff.innerHTML=""; client.innerHTML=""; let c=0;
+Object.values(liveLocations).forEach(n=>{
+if(!n.lat||n.status!=="on_duty") return; c++;
+['ceoMap','staffMap','clientMap'].forEach(mapId=>{
+if(maps[mapId]){
+const k=mapId+"_"+n.phone;
+if(!liveMarkers[k]){liveMarkers[k]=L.marker([n.lat,n.lng],{icon:L.divIcon({html:`<div style="background:#001e4d;color:white;padding:5px 10px;border-radius:20px;font-size:11px;border:2px solid #00ff88">🧑‍⚕️ ${n.name}</div>`,iconSize:[110,30]})}).addTo(maps[mapId]);}
+else liveMarkers[k].setLatLng([n.lat,n.lng]);
+}
 });
-document.getElementById('liveCount').innerText=`${c} Nurses Live - UBER Mode - Exactly where they reached`;
+const html=`<div class="uber-nurse-card"><div class="nurse-dot"></div><div style="flex:1"><b>${n.name}</b> • ${n.phone}<br><small>📍 ${n.lat.toFixed(4)},${n.lng.toFixed(4)} | 🚀 ${(n.speed*3.6).toFixed(1)} km/h ${n.moving?'● MOVING LIKE UBER':''}</small></div><button class="btn btn-map" style="padding:6px 10px;font-size:11px" onclick="focusNurse('${n.phone}')">📍 VIEW</button></div>`;
+ceo.innerHTML+=html; staff.innerHTML+=html; client.innerHTML+=html;
+});
+document.getElementById('ceoLiveCount').innerText=c+" Live";
 }
-function nurseStart(){
-nurseId=document.getElementById('nursePhone').value.trim()||prompt("Enter ID");
-if(!nurseId) return;
-if(!navigator.geolocation){alert("No GPS");return;}
-document.getElementById('nurseStatus').innerText="🟢 LIVE - UBER MODE - CEO sees you moving";
-document.getElementById('nurseStatus').style.color="green";
-if(document.getElementById('wrap_nurse').classList.contains('hidden')) toggleMap('wrap_nurse');
-watchId=navigator.geolocation.watchPosition(p=>{
-const lat=p.coords.latitude,lng=p.coords.longitude,sp=p.coords.speed||0;
-db.ref('liveLocations/'+nurseId).set({lat,lng,speed:sp,phone:nurseId,name:"Nurse "+nurseId.slice(-4),status:"on_duty",timestamp:Date.now(),moving:sp>0.5});
-},e=>alert(e.message),{enableHighAccuracy:true,maximumAge:0});
-}
-function nurseStop(){
-if(watchId) navigator.geolocation.clearWatch(watchId);
-if(nurseId) db.ref('liveLocations/'+nurseId).update({status:"off_duty"});
-document.getElementById('nurseStatus').innerText="🔴 OFFLINE";
-document.getElementById('nurseStatus').style.color="red";
-}
-function myLocation(){
-navigator.geolocation.getCurrentPosition(p=>{
-currentLat=p.coords.latitude; currentLng=p.coords.longitude;
-map.setView([currentLat,currentLng],16);
-document.getElementById('selText').innerText=`My Location | Lat: ${currentLat.toFixed(4)} Lng: ${currentLng.toFixed(4)}`;
-document.getElementById('gHome').src=`https://www.google.com/maps?q=${currentLat},${currentLng}&z=16&output=embed`;
+function focusNurse(phone){const n=liveLocations[phone]; if(!n) return; ['ceoMap','staffMap','clientMap'].forEach(id=>{if(maps[id]) maps[id].setView([n.lat,n.lng],17);});}
+function centerAllLiveNurses(mapId){if(!maps[mapId]) initAllMaps(); const locs=Object.values(liveLocations).filter(n=>n.status==="on_duty"&&n.lat); if(locs.length===0){alert("No live nurses");return;} const b=new L.featureGroup(locs.map(n=>L.marker([n.lat,n.lng]))); maps[mapId].fitBounds(b.getBounds().pad(0.3));}
+function renderBookings(){
+const d=document.getElementById('daily_list'), w=document.getElementById('weekly_list'), m=document.getElementById('monthly_list');
+if(d) d.innerHTML=""; if(w) w.innerHTML=""; if(m) m.innerHTML="";
+Object.values(bookingsData).forEach(b=>{
+const type=(b.durationType||'daily').toLowerCase();
+const html=`<div style="background:white;border:2px solid #d6eaff;border-radius:12px;padding:10px;margin:6px 0"><b>${b.clientName||'Client'}</b><br><small>📍 ${b.location||''} | ${type.toUpperCase()} | ${type.includes('month')?'Live IN - Feeding by Client':'Live OUT - Transport to Nurse'}</small></div>`;
+if(type.includes('daily')&&d) d.innerHTML+=html; else if(type.includes('week')&&w) w.innerHTML+=html; else if(type.includes('month')&&m) m.innerHTML+=html;
 });
 }
-function openGoogle(){window.open(`https://www.google.com/maps?q=${currentLat},${currentLng}`,'_blank');}
-function shareLoc(){
-if(navigator.share){navigator.share({title:'DIGITAL NURSE Location',text:`My location: https://www.google.com/maps?q=${currentLat},${currentLng}`});}
-else{prompt("Copy location:",`https://www.google.com/maps?q=${currentLat},${currentLng}`);}
+function renderWinners(){
+const cont=document.getElementById('winners_vertical'); if(!cont) return; cont.innerHTML="";
+const wins=Object.values(bookingsData).filter(b=>b.winner||b.rating>=4).slice(0,15);
+if(wins.length===0){cont.innerHTML='<div style="padding:10px;font-size:12px">No winners yet</div>';return;}
+wins.forEach(b=>{cont.innerHTML+=`<div class="winner-row"><div class="winner-vertical">WINNER</div><div><b>${b.nurseName||'Nurse'}</b><br><small>⭐ ${b.rating||5}</small></div></div>`;});
 }
-function locateAll(){
-const pts=Object.values(liveData).filter(n=>n.status==="on_duty"&&n.lat);
-if(pts.length==0){alert("No live nurses");return;}
-const b=L.latLngBounds(pts.map(n=>[n.lat,n.lng]));
-map.fitBounds(b.pad(0.3));
-}
-window.onload=initMap;
+window.onload=()=>{initAllMaps(); startCeoLiveListen();}
 </script>
 </body>
 </html>
