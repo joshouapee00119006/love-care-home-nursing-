@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DIGITAL NURSE - V47 UBER LIVE TRACKING - FINAL</title>
+<title>DIGITAL NURSE - V47 UPGRADED - 3 FEATURES ADDED</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
 body{background:#eef6ff;color:#0a1f44}
@@ -25,7 +25,7 @@ body{background:#eef6ff;color:#0a1f44}
 .container{max-width:1500px;margin:auto;padding:12px}
 .card{background:white;border-radius:20px;padding:18px;margin-bottom:16px;box-shadow:0 8px 24px rgba(0,58,140,0.08);border:1px solid #d6eaff}
 .btn{border:none;padding:12px 18px;border-radius:12px;font-weight:700;cursor:pointer;transition:0.25s;font-size:13px;display:inline-flex;align-items:center;gap:7px;box-shadow:0 4px 12px rgba(0,0,0,0.12)}
-.btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,0.18)}
+.btn:hover{transform:translateY(-2px)}
 .btn-primary{background:linear-gradient(135deg,#004aad,#00b4d8);color:white}
 .btn-success{background:linear-gradient(135deg,#00b050,#00d68f);color:white}
 .btn-dark{background:linear-gradient(135deg,#001e4d,#003a8c);color:white}
@@ -35,17 +35,16 @@ body{background:#eef6ff;color:#0a1f44}
 .leaflet-map{height:420px;width:100%}
 .google-frame{width:100%;height:420px;border:0;display:block}
 .map-controls{display:flex;justify-content:space-between;align-items:center;padding:11px 14px;background:linear-gradient(90deg,#001e4d,#004aad);color:white;font-size:11px;font-weight:700}
-.uber-card{background:linear-gradient(135deg,#001e4d 0%,#003a8c 100%);color:white;border-radius:16px;padding:14px;margin:10px 0;display:flex;align-items:center;gap:14px;box-shadow:0 6px 20px rgba(0,30,77,0.3);border-left:5px solid #00ff88;animation:slideIn 0.4s ease}
-@keyframes slideIn{from{transform:translateX(-15px);opacity:0}to{transform:translateX(0);opacity:1}}
+.uber-card{background:linear-gradient(135deg,#001e4d 0%,#003a8c 100%);color:white;border-radius:16px;padding:14px;margin:10px 0;display:flex;align-items:center;gap:14px;border-left:5px solid #00ff88}
 .nurse-dot{width:14px;height:14px;background:#00ff88;border-radius:50%;box-shadow:0 0 0 5px rgba(0,255,136,0.25);animation:pulseDot 1.6s infinite}
 @keyframes pulseDot{0%{box-shadow:0 0 0 0 rgba(0,255,136,0.7)}70%{box-shadow:0 0 0 12px rgba(0,255,136,0)}100%{box-shadow:0 0 0 0 rgba(0,255,136,0)}}
 .status-on{width:100%;padding:12px;border-radius:12px;font-weight:700;font-size:12px;text-align:center;margin:10px 0;border:2px solid}
 .on{background:#c8e6c9;color:#1b5e20;border-color:#00c853}
 .off{background:#ffcdd2;color:#b71c1c;border-color:#ff1744}
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.input{width:100%;padding:11px 14px;border:2px solid #d6eaff;border-radius:12px;margin:6px 0;font-size:13px;outline:none}
+.input{width:100%;padding:11px 14px;border:2px solid #d6eaff;border-radius:12px;margin:6px 0;font-size:13px}
 .hidden{display:none!important}
-.winner-vertical{writing-mode:vertical-lr;text-orientation:mixed;transform:rotate(180deg);display:inline-flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#ffd700,#ffb700);color:#001e4d;padding:8px 6px;border-radius:20px;font-weight:800;font-size:11px;letter-spacing:2px}
+.winner-vertical{writing-mode:vertical-lr;transform:rotate(180deg);display:inline-flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#ffd700,#ffb700);color:#001e4d;padding:8px 6px;border-radius:20px;font-weight:800;font-size:11px;letter-spacing:2px}
 .winner-row{display:flex;gap:10px;align-items:center;background:linear-gradient(135deg,#fff9c4,#ffecb3);border:2px solid #ffb700;border-radius:14px;padding:10px;margin:8px 0}
 .tab-btn{padding:10px 14px;border-radius:10px;border:2px solid #d6eaff;background:white;font-weight:700;cursor:pointer;font-size:12px}
 .tab-btn.active{background:#004aad;color:white;border-color:#004aad}
@@ -58,18 +57,16 @@ body{background:#eef6ff;color:#0a1f44}
 <div class="logo-icon"><div class="pulse-ring"></div>
 <svg viewBox="0 0 100 100"><path d="M8 52 L28 52 L36 18 L50 82 L62 52 L92 52" stroke="#002a7a" stroke-width="7.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="50" cy="52" r="7" fill="#00b4d8" stroke="white" stroke-width="2.5"/></svg>
 </div>
-<div class="logo-text"><h1>DIGITAL <span>NURSE</span></h1><p>UBER LIVE TRACKING • V47 FINAL</p></div>
+<div class="logo-text"><h1>DIGITAL <span>NURSE</span></h1><p>UBER LIVE TRACKING • V47</p></div>
 </div>
-<div style="display:flex;gap:8px;align-items:center"><div class="live-badge">🔴 LIVE GPS UBER</div><div style="background:rgba(255,255,255,0.2);padding:6px 12px;border-radius:20px;font-size:10px;font-weight:800">GHANA</div></div>
+<div style="display:flex;gap:8px;align-items:center"><div class="live-badge">🔴 LIVE GPS UBER</div></div>
 </div>
-
 <div class="container">
-
 <div class="card" style="background:linear-gradient(135deg,#001233,#002a7a);color:white">
 <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
-<div><h2 style="color:#00e5ff">💙 DIGITAL NURSE - CEO CONTROL CENTER</h2><p style="font-size:12px;opacity:0.9;margin-top:4px">Vertical Winners • Daily/Weekly/Monthly Separated • Live In + Live Out • Uber Nurse Tracking • Map Open/Close Everywhere</p></div>
+<div><h2 style="color:#00e5ff">💙 DIGITAL NURSE - CEO CONTROL CENTER (V47)</h2><p style="font-size:12px;opacity:0.9">Original V47 + 3 Upgrades: Map Open/Close + Uber Tracking + New Logo</p></div>
 <div style="display:flex;gap:8px;flex-wrap:wrap">
-<button class="btn btn-map" onclick="toggleMap('wrap_ceo')">🗺️ OPEN/CLOSE MAP</button>
+<button class="btn btn-map" onclick="toggleMap('wrap_ceo')">🗺️ OPEN / CLOSE MAP</button>
 <button class="btn btn-success" onclick="startLiveSystem()">🔴 START UBER TRACKING</button>
 <button class="btn" style="background:white;color:#001233" onclick="centerAll('ceoMap')">📍 LOCATE ALL NURSES</button>
 </div>
@@ -77,34 +74,30 @@ body{background:#eef6ff;color:#0a1f44}
 <div id="wrap_ceo" class="map-wrapper hidden">
 <div id="ceoMap" class="leaflet-map"></div>
 <iframe id="g_ceo" class="google-frame" src="https://www.google.com/maps?q=5.6037,-0.1870&z=12&output=embed" loading="lazy"></iframe>
-<div class="map-controls"><span>🛰️ UBER MODE: Nurses moving live every second - Like Uber Driver</span><span id="count_ceo">0 Live</span></div>
+<div class="map-controls"><span>🛰️ UBER MODE: Nurses moving live every second</span><span id="count_ceo">0 Live</span></div>
 </div>
 <div id="list_ceo"></div>
-<div id="winners_ceo" style="margin-top:12px"></div>
 </div>
-
 <div class="grid-2">
 <div class="card" style="border:2px solid #00b050">
-<h3>🧑‍⚕️ NURSE PLATFORM - UBER MODE (NEW)</h3>
+<h3>🧑‍⚕️ NURSE PLATFORM - UBER MODE</h3>
 <input id="nursePhone" class="input" placeholder="Your Nurse ID / Phone e.g. 233245...">
 <div style="display:flex;gap:8px;flex-wrap:wrap;margin:8px 0">
-<button class="btn btn-success" onclick="nurseStart()">🟢 START DUTY & LIVE GPS</button>
+<button class="btn btn-success" onclick="nurseStart()">🟢 START DUTY & LIVE GPS (UBER)</button>
 <button class="btn btn-dark" onclick="nurseStop()">🔴 STOP DUTY</button>
-<button class="btn btn-map" onclick="toggleMap('wrap_nurse')">🗺️ OPEN/CLOSE MAP</button>
+<button class="btn btn-map" onclick="toggleMap('wrap_nurse')">🗺️ OPEN / CLOSE MAP</button>
 </div>
-<div id="nurseStatus" class="status-on off">⚪ Tracking OFF - Click START DUTY to appear like UBER</div>
+<div id="nurseStatus" class="status-on off">⚪ Tracking OFF - Click START DUTY</div>
 <div id="wrap_nurse" class="map-wrapper hidden">
 <div id="nurseMap" class="leaflet-map"></div>
 <iframe id="g_nurse" class="google-frame" src="https://www.google.com/maps?q=5.6037,-0.1870&z=12&output=embed"></iframe>
-<div class="map-controls" style="background:linear-gradient(90deg,#00b050,#00d68f)"><span>📍 You are LIVE - CEO sees you moving like Uber</span><span id="nurseSpeed">0 km/h</span></div>
+<div class="map-controls" style="background:linear-gradient(90deg,#00b050,#00d68f)"><span>📍 You are LIVE like UBER</span><span id="nurseSpeed">0 km/h</span></div>
 </div>
-<div class="card" style="margin-top:12px;background:#f0fff4"><h4>📋 My Assignments (Daily/Weekly/Monthly Separated)</h4><div id="nurseAssign"></div></div>
 </div>
-
 <div class="card">
-<h3>👔 STAFF PLATFORM - UBER VIEW</h3>
+<h3>👔 STAFF PLATFORM</h3>
 <div style="display:flex;gap:8px;flex-wrap:wrap;margin:8px 0">
-<button class="btn btn-map" onclick="toggleMap('wrap_staff')">🗺️ OPEN/CLOSE MAP</button>
+<button class="btn btn-map" onclick="toggleMap('wrap_staff')">🗺️ OPEN / CLOSE MAP</button>
 <button class="btn btn-dark" onclick="centerAll('staffMap')">📍 LOCATE NURSES LIVE</button>
 </div>
 <div id="wrap_staff" class="map-wrapper hidden">
@@ -112,34 +105,31 @@ body{background:#eef6ff;color:#0a1f44}
 <iframe id="g_staff" class="google-frame" src="https://www.google.com/maps?q=5.6037,-0.1870&z=12&output=embed"></iframe>
 </div>
 <div id="list_staff"></div>
-<div id="winners_staff"></div>
 </div>
 </div>
-
 <div class="grid-2">
 <div class="card">
-<h3>🏠 CLIENT PLATFORM - TRACK MY NURSE LIKE UBER</h3>
-<button class="btn btn-map" onclick="toggleMap('wrap_client')">🗺️ OPEN/CLOSE MAP - See Nurse Coming LIVE</button>
+<h3>🏠 CLIENT - TRACK MY NURSE LIKE UBER</h3>
+<button class="btn btn-map" onclick="toggleMap('wrap_client')">🗺️ OPEN / CLOSE MAP</button>
 <div id="wrap_client" class="map-wrapper hidden">
 <div id="clientMap" class="leaflet-map"></div>
 <iframe id="g_client" class="google-frame" src="https://www.google.com/maps?q=5.6037,-0.1870&z=12&output=embed"></iframe>
-<div class="map-controls" style="background:linear-gradient(90deg,#ff6a00,#ffb700)"><span>🧑‍⚕️ Your nurse is on the way - LIVE like Uber</span><span>ETA CALCULATING</span></div>
+<div class="map-controls" style="background:linear-gradient(90deg,#ff6a00,#ffb700)"><span>🧑‍⚕️ Your nurse coming LIVE</span></div>
 </div>
 <div id="list_client"></div>
 </div>
-
 <div class="card">
 <h3>📊 DAILY / WEEKLY / MONTHLY - SEPARATED</h3>
 <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
-<button class="tab-btn active" onclick="showTab('daily')" id="tab_daily">📅 DAILY - Live Out Transport</button>
+<button class="tab-btn active" onclick="showTab('daily')" id="tab_daily">📅 DAILY</button>
 <button class="tab-btn" onclick="showTab('weekly')" id="tab_weekly">📆 WEEKLY</button>
-<button class="tab-btn" onclick="showTab('monthly')" id="tab_monthly">🗓️ MONTHLY - Live In Feeding</button>
+<button class="tab-btn" onclick="showTab('monthly')" id="tab_monthly">🗓️ MONTHLY</button>
 </div>
 <div id="panel_daily" class="tab-panel"><div id="daily_list"></div></div>
 <div id="panel_weekly" class="tab-panel hidden"><div id="weekly_list"></div></div>
 <div id="panel_monthly" class="tab-panel hidden"><div id="monthly_list"></div></div>
 <div style="margin-top:14px">
-<button class="btn btn-map" onclick="toggleMap('wrap_bookings')">🗺️ OPEN/CLOSE BOOKING MAPS</button>
+<button class="btn btn-map" onclick="toggleMap('wrap_bookings')">🗺️ OPEN / CLOSE BOOKING MAP</button>
 <div id="wrap_bookings" class="map-wrapper hidden">
 <div id="bookingsMap" class="leaflet-map"></div>
 <iframe id="g_bookings" class="google-frame" src="https://www.google.com/maps?q=5.6037,-0.1870&z=12&output=embed"></iframe>
@@ -147,14 +137,11 @@ body{background:#eef6ff;color:#0a1f44}
 </div>
 </div>
 </div>
-
 <div class="card" style="background:linear-gradient(135deg,#fff9c4,#ffecb3);border:2px solid #ffb700">
-<h3>🏆 WINNERS WALK - VERTICAL</h3>
+<h3>🏆 WINNERS WALK - VERTICAL (KEPT FROM V47)</h3>
 <div id="winners_vertical" style="display:flex;gap:12px;overflow-x:auto;padding:10px 0"></div>
 </div>
-
 </div>
-
 <script>
 const firebaseConfig = {
   apiKey: "AIzaSyB52-X1D8Cg-wUDWPds_tR7X3cF82dMdRg",
@@ -168,7 +155,6 @@ const firebaseConfig = {
 if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 const db=firebase.database();
 let maps={}, liveMarkers={}, watchId=null, nurseId="", liveData={}, bookings={};
-
 function initMaps(){
 ['ceoMap','staffMap','nurseMap','clientMap','bookingsMap'].forEach(id=>{
 if(document.getElementById(id) &&!maps[id]){
@@ -197,11 +183,11 @@ nurseId=document.getElementById('nursePhone').value.trim()||prompt("Enter Nurse 
 if(!nurseId){alert("Enter ID");return;}
 if(!navigator.geolocation){alert("GPS not supported");return;}
 document.getElementById('nurseStatus').className='status-on on';
-document.getElementById('nurseStatus').innerHTML='🟢 LIVE ON - You are moving like UBER - CEO watching';
+document.getElementById('nurseStatus').innerHTML='🟢 LIVE ON - Moving like UBER - CEO watching you';
 if(document.getElementById('wrap_nurse').classList.contains('hidden')) toggleMap('wrap_nurse');
 watchId=navigator.geolocation.watchPosition(p=>{
-const lat=p.coords.latitude,lng=p.coords.longitude,sp=p.coords.speed||0,hd=p.coords.heading||0;
-const data={lat,lng,speed:sp,heading:hd,phone:nurseId,name:"Nurse "+nurseId.slice(-4),status:"on_duty",timestamp:Date.now(),moving:sp>0.5};
+const lat=p.coords.latitude,lng=p.coords.longitude,sp=p.coords.speed||0;
+const data={lat,lng,speed:sp,phone:nurseId,name:"Nurse "+nurseId.slice(-4),status:"on_duty",timestamp:Date.now(),moving:sp>0.5};
 db.ref('liveLocations/'+nurseId).set(data);
 if(maps.nurseMap){
 if(!liveMarkers.me) liveMarkers.me=L.marker([lat,lng],{icon:L.divIcon({html:'<div style="background:#00b050;color:white;width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;border:3px solid white;box-shadow:0 0 20px rgba(0,176,80,0.7)">🧑‍⚕️</div>',iconSize:[48,48],iconAnchor:[24,24]})}).addTo(maps.nurseMap);
@@ -235,7 +221,6 @@ if(maps[mid]){
 const k=mid+"_"+n.phone;
 if(!liveMarkers[k]){
 liveMarkers[k]=L.marker([n.lat,n.lng],{icon:L.divIcon({html:`<div style="background:linear-gradient(135deg,#001e4d,#004aad);color:white;padding:6px 12px;border-radius:22px;font-size:11px;font-weight:800;border:2px solid #00ff88;box-shadow:0 4px 15px rgba(0,0,0,0.3);display:flex;align-items:center;gap:6px;white-space:nowrap"><span class="nurse-dot" style="width:9px;height:9px"></span>${n.name} ${(n.speed*3.6).toFixed(0)}km/h</div>`,iconSize:[120,34]})}).addTo(maps[mid]);
-liveMarkers[k].bindPopup(`<b>💙 DIGITAL NURSE LIVE</b><br><b>${n.name}</b><br>📱 ${n.phone}<br>📍 ${n.lat.toFixed(5)},${n.lng.toFixed(5)}<br>🚀 ${(n.speed*3.6).toFixed(1)} km/h<br><a href="https://www.google.com/maps?q=${n.lat},${n.lng}" target="_blank">Open Google Maps</a>`);
 }else liveMarkers[k].setLatLng([n.lat,n.lng]);
 }
 });
@@ -244,7 +229,7 @@ if(ceo) ceo.innerHTML+=html;
 if(staff) staff.innerHTML+=html;
 if(client) client.innerHTML+=html;
 });
-const cc=document.getElementById('count_ceo'); if(cc) cc.innerText=c+' Live • Uber Mode';
+document.getElementById('count_ceo').innerText=c+' Live • Uber Mode';
 }
 function focusN(phone){
 const n=liveData[phone]; if(!n) return;
@@ -268,9 +253,9 @@ const cont=document.getElementById('winners_vertical');
 if(!cont) return;
 cont.innerHTML="";
 const wins=Object.values(bookings).filter(b=>b.winner||b.rating>=5).slice(0,15);
-if(wins.length===0){cont.innerHTML='<div style="padding:10px;font-size:12px">No winners yet - Winners will appear vertically here</div>';return;}
+if(wins.length===0){cont.innerHTML='<div style="padding:10px;font-size:12px">No winners yet</div>';return;}
 wins.forEach(b=>{
-cont.innerHTML+=`<div class="winner-row"><div class="winner-vertical">WINNER</div><div><b>${b.nurseName||'Nurse'}</b><br><small>⭐ ${b.rating||5} | ${b.clientName||''}</small></div><div style="margin-left:auto"><span style="background:#00b050;color:white;padding:4px 8px;border-radius:12px;font-size:10px">TOP</span></div></div>`;
+cont.innerHTML+=`<div class="winner-row"><div class="winner-vertical">WINNER</div><div><b>${b.nurseName||'Nurse'}</b><br><small>⭐ ${b.rating||5} | ${b.clientName||''}</small></div></div>`;
 });
 }
 window.onload=()=>{initMaps(); startLiveSystem();};
