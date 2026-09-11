@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ADMIN - LOVE CARE - FIXED</title>
+<title>ADMIN FINAL - LOVE CARE</title>
 <style>
-body{background:#121212;color:#fff;font-family:sans-serif;padding:10px}
+body{background:#121212;color:#fff;font-family:sans-serif;padding:10px;margin:0}
 .card{background:#1e1e1e;border-left:4px solid #0f0;border-radius:12px;padding:12px;margin:12px 0}
 .badge{padding:4px 8px;border-radius:10px;font-size:12px}
 .approved{background:#00c853;color:#fff}
 .pending{background:#ff9100;color:#fff}
-.btn{border:none;padding:6px 10px;border-radius:8px;margin:2px;font-size:13px;cursor:pointer}
+.btn{border:none;padding:7px 11px;border-radius:8px;margin:3px;font-size:13px;cursor:pointer;font-weight:bold}
 .photo{background:#2a2a72;color:#8ab4f8}
 .ghana{background:#3e2723;color:#ffab91}
 .cert{background:#1b5e20;color:#a5d6a7}
@@ -19,16 +19,19 @@ body{background:#121212;color:#fff;font-family:sans-serif;padding:10px}
 .approve{background:#00c853;color:#fff}
 .delete{background:#d50000;color:#fff}
 .reset{background:#0288d1;color:#fff}
-.doc-view{margin-top:8px;background:#222;padding:8px;border-radius:8px}
-.pw-box{display:none;margin-top:8px;background:#2a2a2a;padding:10px;border-radius:8px}
-.btns{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.edit{background:#ff9800;color:#fff}
+.doc-view{margin-top:10px;background:#222;padding:10px;border-radius:10px;display:none}
+.pw-box{display:none;margin-top:10px;background:#2a2a2a;padding:10px;border-radius:10px}
+.btns{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
+input{padding:8px;border-radius:6px;border:none;width:65%}
 </style>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 </head>
 <body>
-<h2 style="background:#00c853;padding:12px;border-radius:10px;text-align:center">🔐 BOSS ADMIN + PASSWORD RECOVERY</h2>
-<div id="list">Loading...</div>
+<h2 style="background:#00c853;padding:14px;border-radius:12px;text-align:center;margin:0 0 10px 0">🔐 LOVE CARE BOSS ADMIN - FINAL</h2>
+<div id="list">Loading workers... Please wait</div>
+
 <script>
 const firebaseConfig = {
   apiKey: "AIzaSyB52-X1D8Cg-wUDWPds_tR7X3cF82dMdRg",
@@ -47,40 +50,44 @@ db.ref('workers').on('value',snap=>{
  var data=snap.val()||{};
  var html='';
  var keys=Object.keys(data);
- if(keys.length===0){html='<p style="text-align:center">No workers</p>'}
+ if(keys.length===0){html='<p style="text-align:center;padding:20px">No workers found</p>'}
  keys.forEach(id=>{
    var n=data[id]||{};
    var isApproved=n.approved||n.isApproved;
+   var photoUrl = n.photo || n.profile || 'https://via.placeholder.com/60?text=No+Photo';
    html+=`
    <div class="card">
-   <div style="display:flex;gap:10px">
-   <img src="${n.photo||'https://via.placeholder.com/60'}" style="width:60px;height:60px;border-radius:50%;object-fit:cover;border:2px solid ${isApproved?'#0f0':'#f90'}">
-   <div>
+   <div style="display:flex;gap:12px">
+   <img src="${photoUrl}" style="width:65px;height:65px;border-radius:50%;object-fit:cover;border:3px solid ${isApproved?'#0f0':'#f90'}" onerror="this.src='https://via.placeholder.com/60'">
+   <div style="line-height:1.5">
    <b>👤 ${n.name||'No Name'}</b><br>
    <span>📧 ${n.email||''}</span><br>
-   <span>📞 ${n.phone||n.phoneNumber||''}</span><br>
-   <span>📍 ${n.age||''} | ${n.category||'Nurse'}</span><br>
+   <span>📞 ${n.phone||''}</span><br>
+   <span>⭐ ${n.experience||''} Exp | 📍 Loc: ${n.location||n.age||''}</span><br>
    <span class="badge ${isApproved?'approved':'pending'}">${isApproved?'✅ APPROVED':'⏳ PENDING'}</span>
+   <span class="badge" style="background:#333">🆔 ${id}</span>
    </div>
    </div>
    <div class="btns">
    <button class="btn photo" onclick="openDoc('${id}','photo')">📷 Photo</button>
-   <button class="btn ghana" onclick="openDocFixed('${id}')">💳 Ghana</button>
-   <button class="btn cert" onclick="openDoc('${id}','cert')">🎓 Cert</button>
+   <button class="btn ghana" onclick="openDoc('${id}','ghana')">💳 Ghana</button>
+   <button class="btn cert" onclick="openDoc('${id}','cert')">🎓 Certificate</button>
    <button class="btn cv" onclick="openDoc('${id}','cv')">📄 CV</button>
-   <button class="btn showpw" onclick="togglePassword('${id}')">👁️ Show PW</button>
+   <button class="btn showpw" onclick="togglePassword('${id}')">👁️ PW</button>
    <button class="btn" style="background:#e1f5fe;color:#0288d1" onclick="showTime('${id}')">⏰ Time</button>
+   <button class="btn edit" onclick="editDetails('${id}')">✏️ Edit</button>
    <button class="btn reset" onclick="showReset('${id}')">🔑 Reset</button>
-   <button class="btn approve" onclick="approve('${id}')">${isApproved?'✅ Approved':'✅ Approve'}</button>
-   <button class="btn delete" onclick="del('${id}')">🗑️ DELETE</button>
+   <button class="btn approve" onclick="approve('${id}')">${isApproved?'✅ Done':'✅ Approve'}</button>
+   <button class="btn delete" onclick="del('${id}')">🗑️</button>
    </div>
    <div class="doc-view" id="view-${id}"></div>
    <div class="pw-box" id="pwbox-${id}">
    <b>🔑 Password for ${n.name||''}:</b><br>
-   <div style="margin:8px 0">Current: <b id="curr-${id}">${n.pass||n.password||'No password'}</b></div>
-   <input type="text" id="newpw-${id}" placeholder="New password" style="width:70%;padding:6px;border-radius:6px">
+   <div style="margin:8px 0">Current: <b id="curr-${id}" style="color:#0f0">${n.pass||n.password||'No password set'}</b></div>
+   <input type="text" id="newpw-${id}" placeholder="New password e.g. LCstaff002">
    <button class="btn reset" onclick="saveNewPassword('${id}')">💾 Save</button>
-   <button class="btn delete" onclick="hideReset('${id}')">❌ Close</button>
+   <button class="btn delete" onclick="hideReset('${id}')">Close</button>
+   <div style="font-size:11px;color:#aaa;margin-top:6px">Will save to BOTH pass + password fields</div>
    </div>
    </div>
    `;
@@ -90,34 +97,40 @@ db.ref('workers').on('value',snap=>{
 }
 load();
 
-function openDoc(id,field){
+function openDoc(id,type){
+ var view = document.getElementById('view-'+id);
+ view.style.display='block';
+ view.innerHTML='⏳ Loading...';
  db.ref('workers/'+id).once('value').then(s=>{
   var n=s.val()||{};
-  var url=n[field]||'';
-  if(!url){document.getElementById('view-'+id).innerHTML='<div style="color:red">❌ No document</div>';return;}
-  document.getElementById('view-'+id).innerHTML='<iframe src="'+url+'" style="width:100%;height:400px"></iframe><br><a href="'+url+'" target="_blank" style="color:#0f0">Open Full</a> <button onclick="document.getElementById(\'view-'+id+'\').innerHTML=\'\'">Close</button>';
- });
-}
-
-function openDocFixed(id){
- db.ref('workers/'+id).once('value').then(s=>{
-  var n=s.val()||{};
-  var url=n.ghana||n.ghanaCard||n.ghana_card||n.ghanaUrl||n.ghanaID||n.idCard||'';
-  var allKeys=Object.keys(n).join(', ');
+  var map = {
+    photo: n.photo || n.profile || n.image || '',
+    ghana: n.ghana || n.ghanaID || n.ghanaCard || n.idCard || '',
+    cert: n.cert || n.certificate || n.certUrl || '',
+    cv: n.cv || n.resume || n.cvUrl || ''
+  };
+  var url = map[type] || '';
   if(!url){
-    document.getElementById('view-'+id).innerHTML='<div style="color:orange;padding:8px">❌ Ghana field empty!<br>Fields: '+allKeys+'<br>Check Firebase names</div>';
+    view.innerHTML='<div style="color:orange">❌ No '+type+' found<br><small>Fields available: '+Object.keys(n).join(', ')+'</small><br><br><button class="btn delete" onclick="this.parentElement.parentElement.style.display=\'none\'">Close</button></div>';
     return;
   }
-  document.getElementById('view-'+id).innerHTML='<iframe src="'+url+'" style="width:100%;height:400px"></iframe><br><a href="'+url+'" target="_blank" style="color:#0f0">Open Full</a> <button onclick="document.getElementById(\'view-'+id+'\').innerHTML=\'\'">Close</button>';
+  if(url.startsWith('data:application/pdf') || url.startsWith('data:application')){
+    view.innerHTML='<div style="text-align:center"><b>📄 '+type.toUpperCase()+' PDF Found!</b><br><br><a href="'+url+'" target="_blank" download="'+type+'-'+id+'.pdf" style="background:#00c853;color:#fff;padding:12px 20px;border-radius:10px;text-decoration:none;display:inline-block;font-weight:bold">📥 OPEN / DOWNLOAD '+type.toUpperCase()+'</a><br><br><button class="btn delete" onclick="document.getElementById(\'view-'+id+'\').style.display=\'none\'">❌ Close</button></div>';
+  } else if(url.startsWith('data:image')){
+    view.innerHTML='<img src="'+url+'" style="width:100%;max-height:600px;object-fit:contain;border-radius:10px"><br><br><a href="'+url+'" target="_blank" style="color:#0f0">Open Full</a> | <button class="btn delete" onclick="document.getElementById(\'view-'+id+'\').style.display=\'none\'">Close</button>';
+  } else {
+    view.innerHTML='<iframe src="'+url+'" style="width:100%;height:500px;border-radius:10px;background:#fff" onerror="this.outerHTML=\'<img src='+url+' style=width:100%>\'"></iframe><br><a href="'+url+'" target="_blank" style="color:#0f0">Open Full Link</a> | <button class="btn delete" onclick="document.getElementById(\'view-'+id+'\').style.display=\'none\'">Close</button>';
+  }
  });
 }
+function openDocFixed(id){openDoc(id,'ghana');}
 
 function showTime(id){
  db.ref('workers/'+id).once('value').then(s=>{
   var n=s.val()||{};
-  var reg=n.time||n.registeredAt||'Not set';
+  var reg=n.time||n.registeredAt||n.createdAt||'Not saved yet';
   var last=n.lastLogin||'Never logged in yet';
-  alert('👩‍⚕️ '+(n.name||id)+'\n📧 '+(n.email||'')+'\n\n📅 Registered: '+reg+'\n🕐 Last Online: '+last);
+  alert('👩‍⚕️ '+(n.name||id)+'\n📧 '+(n.email||'')+'\n📞 '+(n.phone||'')+'\n\n📅 Registered: '+reg+'\n🕐 Last Login: '+last+'\n⭐ Experience: '+(n.experience||'N/A'));
  });
 }
 
@@ -133,11 +146,36 @@ function saveNewPassword(id){
  if(!np){alert('Enter new password');return;}
  db.ref('workers/'+id).update({pass:np,password:np}).then(()=>{
    document.getElementById('curr-'+id).textContent=np;
-   alert('✅ Password updated for BOTH fields! New: '+np);
+   alert('✅ SUCCESS! Password updated to: '+np+'\nSaved in BOTH fields!');
  });
 }
-function approve(id){db.ref('workers/'+id).update({approved:true,isApproved:true}).then(()=>alert('✅ Approved'))}
-function del(id){if(confirm('Delete '+id+'?')){db.ref('workers/'+id).remove().then(()=>alert('Deleted'))}}
+
+function editDetails(id){
+ db.ref('workers/'+id).once('value').then(s=>{
+  var n=s.val()||{};
+  var newName = prompt('✏️ Edit Name:', n.name||'');
+  if(newName===null) return;
+  var newPhone = prompt('📞 Edit Phone:', n.phone||'');
+  if(newPhone===null) return;
+  var newExp = prompt('⭐ Edit Experience (e.g. 2 years):', n.experience||'');
+  if(newExp===null) return;
+  var newLoc = prompt('📍 Edit Location/Age:', n.location||'');
+  if(newLoc===null) return;
+  var newEmail = prompt('📧 Edit Email:', n.email||'');
+  if(newEmail===null) return;
+
+  db.ref('workers/'+id).update({
+    name: newName,
+    phone: newPhone,
+    experience: newExp,
+    location: newLoc,
+    email: newEmail
+  }).then(()=>alert('✅ Particulars Updated!\nName: '+newName+'\nPhone: '+newPhone+'\nThis will show immediately!'));
+ });
+}
+
+function approve(id){db.ref('workers/'+id).update({approved:true,isApproved:true}).then(()=>alert('✅ Approved!'))}
+function del(id){if(confirm('⚠️ DELETE worker '+id+'? This cannot be undone!')){db.ref('workers/'+id).remove().then(()=>alert('🗑️ Deleted'))}}
 </script>
 </body>
 </html>
