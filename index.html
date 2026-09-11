@@ -139,14 +139,15 @@ input,select{width:100%;padding:11px;margin:5px 0;border-radius:11px;border:1px 
 <div class="bottomNav"><div id="nav-home" class="active" onclick="showPage('home')">🏠<br>Home</div><div id="nav-book" onclick="showPage('book')">👤<br>Book</div><div id="nav-nurse" onclick="showPage('nurse')">👩‍⚕️<br>Nurse</div><div id="nav-team" class="hiddenNav" onclick="showPage('team')" style="background:#25D366;color:white;border-radius:10px;padding:2px 8px">💬<br>Team</div><div id="nav-win" onclick="showPage('win')">🏆<br>Win</div></div>
 
 <script>
-const firebaseConfig={apiKey:"AIzaSyB52-X1D8Cg-wUDWPds_tR7D8cF82dMdRg",authDomain:"web-care-618e8.firebaseapp.com",databaseURL:"https://web-care-618e8-default-rtdb.firebaseio.com",projectId:"web-care-618e8",storageBucket:"web-care-618e8.firebasestorage.app",messagingSenderId:"1062578660694",appId:"1:1062578660694:web:f94dfe12c929df05bce2f7"};let db=null,allBookings=[],allWorkers=[],staffAccounts=[],allReferrers=[],allMoMoProofs=[],currentNursePhone=null,selectedConditions=[],currentSelectedPerson=null,currentFacing='user',teamUser=null,teamMessages=[],isStaffLogged=false,isNurseLogged=false,isCEOLogged=false,localStream=null,pc=null,currentRoomId=null,lastBookingId=null,lastPayAmount=0,momoNumber='0244 XXX XXX',momoName='LOVE CARE GHANA',bankName='GCB Bank',bankAcc='1234567890',bankAccName='LOVE CARE GHANA',selectedPayMethod='momo';try{firebase.initializeApp(firebaseConfig);db=firebase.database();}catch(e){}
-let logoTaps=0,lastLogo=0,staffTaps=0,lastStaff=0;
-function tapLogo(){let now=Date.now();if(now-lastLogo>3000)logoTaps=0;logoTaps++;lastLogo=now;if(logoTaps>=5){showPage('staff');logoTaps=0;}setTimeout(()=>{if(Date.now()-lastLogo>3000)logoTaps=0;},3500);}
-function tapStaff(){let now=Date.now();if(now-lastStaff>4000)staffTaps=0;staffTaps++;lastStaff=now;if(staffTaps>=7){showPage('ceo');staffTaps=0;}setTimeout(()=>{if(Date.now()-lastStaff>4000)staffTaps=0;},4500);}
-function showPage(id){
- if(id==='team'&&!isStaffLogged&&!isNurseLogged&&!isCEOLogged&&!teamUser){alert('🔒 PRIVATE TEAM CHAT - Only Staff, Nurses and CEO! Login first');}
- document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));let t=document.getElementById('page-'+id);if(t)t.classList.add('active');document.querySelectorAll('.bottomNav div').forEach(d=>d.classList.remove('active'));let n=document.getElementById('nav-'+id);if(n)n.classList.add('active');window.scrollTo(0,0);
-}
+const firebaseConfig = {
+  apiKey: "AIzaSyB52-X1D8Cg-wUDWPds_tR7X3cF82dMdRg",
+  authDomain: "web-care-618e8.firebaseapp.com",
+  databaseURL: "https://web-care-618e8-default-rtdb.firebaseio.com",
+  projectId: "web-care-618e8",
+  storageBucket: "web-care-618e8.firebasestorage.app",
+  messagingSenderId: "1062578660694",
+  appId: "1:1062578660694:web:f94dfe12c929df05bce2f7"
+};
 function closeModal(){document.getElementById('selectModal').classList.remove('active');}
 function openSelectModal(callerType){document.getElementById('selectModal').classList.add('active');let html=`<div style="background:#f0fdf4;border:2px solid #16a34a;border-radius:12px;padding:10px;margin:8px 0"><h2 style="font-size:12px;color:#16a34a">📋 SELECT WHO:</h2></div>`;if(allBookings.length>0){html+=allBookings.slice(0,20).map(b=>`<div style="background:white;padding:8px;border-radius:8px;margin:4px 0;display:flex;justify-content:space-between;align-items:center"><div><b>👤 ${b.name}</b><br>📞 ${b.phone}</div><button onclick="selectPersonToCall('${b.name.replace(/'/g,'')}','${b.phone}','Client')" style="padding:10px;background:#16a34a;color:#fff;border:none;border-radius:8px">✅ SELECT</button></div>`).join('');}if(allWorkers.length>0){html+=allWorkers.slice(0,20).map(n=>`<div style="background:white;padding:8px;border-radius:8px;margin:4px 0;display:flex;justify-content:space-between;align-items:center"><div><b>👩‍⚕️ ${n.name}</b><br>📞 ${n.phone}</div><button onclick="selectPersonToCall('${n.name.replace(/'/g,'')}','${n.phone}','Nurse')" style="padding:10px;background:#3b82f6;color:#fff;border:none;border-radius:8px">✅ SELECT</button></div>`).join('');}document.getElementById('modalList').innerHTML=html;}
 function selectPersonToCall(name,phone,role){currentSelectedPerson={name:name,phone:phone,role:role};closeModal();let txt=`✅ SELECTED: <b>${name}</b><br>📞 ${phone}<br>👤 ${role}`;['nurseSelectedPerson','videoSelectedPerson','voiceSelectedPerson'].forEach(id=>{let el=document.getElementById(id);if(el){el.innerHTML=txt;el.style.display='block';}});}
