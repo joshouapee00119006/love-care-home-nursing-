@@ -1,145 +1,101 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>LOVE CARE - ADMIN V2 FIXED</title>
+<title>ADMIN - LOVE CARE - Password Recovery</title>
 <style>
-body{font-family:Arial,sans-serif;background:#f5f5f5;margin:0;padding:10px}
-.header{background:linear-gradient(90deg,#00c853,#ffeb3b);padding:12px;border-radius:12px;display:flex;justify-content:space-between;align-items:center;color:#000;font-weight:bold;position:sticky;top:0;z-index:10}
-.nurse-card{background:#fff;border:3px solid #00c853;border-radius:16px;padding:12px;margin:12px 0;display:flex;gap:12px;box-shadow:0 2px 5px rgba(0,0,0,0.1)}
-.nurse-card img{width:85px;height:85px;border-radius:50%;object-fit:cover;border:2px solid #00c853;flex-shrink:0}
-.badge{font-size:11px;padding:3px 8px;border-radius:10px;color:#fff}
-.pending{background:#ff9800}.approved{background:#00c853}
-.btn{padding:8px 12px;border:none;border-radius:8px;margin:3px;font-size:13px;font-weight:bold;cursor:pointer;display:inline-block}
-.btn-photo{background:#2196f3;color:#fff}.btn-ghana{background:#9c27b0;color:#fff}
-.btn-cert{background:#ff9800;color:#fff}.btn-cv{background:#607d8b;color:#fff}
-.btn-approve{background:#00c853;color:#fff}.btn-delete{background:#f44336;color:#fff}
-.modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.92);z-index:99;justify-content:center;align-items:center;padding:10px;box-sizing:border-box}
-.modal-content{background:#fff;border-radius:12px;width:98%;max-width:750px;max-height:95vh;overflow:auto;padding:10px;text-align:center}
+body{font-family:Arial;background:#f0f2f5;margin:0;padding:10px}
+.header{background:linear-gradient(90deg,#00c853,#ffeb3b);padding:15px;border-radius:12px;text-align:center;font-weight:bold;font-size:18px;position:sticky;top:0;z-index:10}
+.card{background:#fff;border-radius:16px;padding:16px;margin:14px 0;box-shadow:0 4px 12px rgba(0,0,0,0.1);border-left:5px solid #00c853}
+.top{display:flex;gap:12px;align-items:center}
+.top img{width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid #00c853}
+.info{flex:1;font-size:14px}
+.badge{padding:3px 8px;border-radius:20px;font-size:11px;font-weight:bold;color:#fff}
+.badge.approved{background:#00c853}.badge.pending{background:#ff9800}
+.btns{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.btn{padding:8px 12px;border:none;border-radius:8px;font-weight:bold;cursor:pointer;font-size:13px}
+.btn.photo{background:#e3f2fd;color:#1976d2}
+.btn.ghana{background:#fce4ec;color:#c62828}
+.btn.cert{background:#e8f5e9;color:#2e7d32}
+.btn.cv{background:#fff3e0;color:#ef6c00}
+.btn.showpw{background:#f3e5f5;color:#7b1fa2}
+.btn.approve{background:#00c853;color:#fff}
+.btn.delete{background:#f44336;color:#fff}
+.btn.reset{background:#2196f3;color:#fff}
+.doc-view{margin-top:12px;display:none;background:#fafafa;border:2px dashed #ccc;border-radius:12px;padding:12px;text-align:center}
+.doc-view img{max-width:100%;max-height:400px;border-radius:8px}
+.doc-view a.download{display:inline-block;margin-top:10px;padding:10px 18px;background:#00c853;color:#fff;text-decoration:none;border-radius:8px;font-weight:bold}
+.pw-box{margin-top:10px;background:#f9fbe7;border:1px solid #c5e1a5;border-radius:10px;padding:10px;display:none}
+.pw-box input{width:60%;padding:8px;border-radius:6px;border:1px solid #ccc}
 </style>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 </head>
 <body>
-<div class="header">
-<span>💖 LOVE CARE - ADMIN V2 FIXED</span>
-<button onclick="loadNurses()" style="background:#fff;color:#00c853;border:none;padding:7px 14px;border-radius:8px;font-weight:bold">🔄 REFRESH</button>
-</div>
-<div id="stats" style="padding:8px;font-size:13px"></div>
-<div id="nursesList">Loading...</div>
-<div id="docModal" class="modal" onclick="closeModal()">
-<div class="modal-content" onclick="event.stopPropagation()">
-<button onclick="closeModal()" class="btn btn-delete" style="float:right">X Close</button>
-<div id="docView" style="margin-top:40px"></div>
-</div>
-</div>
+<div class="header">🔒 BOSS ADMIN + PASSWORD RECOVERY</div>
+<div id="list" style="margin-top:10px">Loading nurses...</div>
 <script>
-const firebaseConfig = {
-  apiKey: "AIzaSyB52-X1D8Cg-wUDWPds_tR7X3cF82dMdRg",
-  authDomain: "web-care-618e8.firebaseapp.com",
-  databaseURL: "https://web-care-618e8-default-rtdb.firebaseio.com",
-  projectId: "web-care-618e8",
-  storageBucket: "web-care-618e8.firebasestorage.app",
-  messagingSenderId: "1062578660694",
-  appId: "1:1062578660694:web:f94dfe12c929df05bce2f7"
-};
-if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
-let allNursesCache = {};
-function loadNurses(){
-  document.getElementById('nursesList').innerHTML = '<p>⏳ Loading...</p>';
-  db.ref('workers').once('value').then(snap=>{
-    const all = snap.val() || {};
-    let nurses = {};
-    Object.entries(all).forEach(([k,v])=>{
-      if(v && typeof v==='object') nurses[k] = {...v, _key:k, _path:`workers/${k}`};
-    });
-    allNursesCache = nurses;
-    renderNurses(nurses);
-    document.getElementById('stats').innerHTML = `Total: <b>${Object.keys(nurses).length}</b> | Pending: <b>${Object.values(nurses).filter(n=>!n.approved).length}</b> | Approved: <b>${Object.values(nurses).filter(n=>n.approved).length}</b>`;
-  });
-}
-function renderNurses(nurses){
-  const list = document.getElementById('nursesList');
-  if(Object.keys(nurses).length===0){ list.innerHTML='<p>No nurses found</p>'; return;}
-  let html='';
-  Object.values(nurses).sort((a,b)=>(a.approved?1:0)-(b.approved?1:0)).forEach(n=>{
-    const key = n._key;
-    const phone = n.phone || key;
-    const photo = n.photo || '';
-    const ghana = n.ghanaID || '';
-    const cert = n.certificate || '';
-    const cv = n.cv || '';
-    const status = n.approved? '<span class="badge approved">✅ Approved</span>' : '<span class="badge pending">⏳ Pending</span>';
-    html+=`<div class="nurse-card">
-      <img src="${photo || 'https://via.placeholder.com/85?text=No+Photo'}" onerror="this.src='https://via.placeholder.com/85?text=No+Photo'">
-      <div style="flex:1;min-width:0">
-        <div style="font-weight:bold">👩‍⚕️ ${n.name || 'No Name'}</div>
-        <div style="font-size:12px">📞 ${phone}</div>
-        <div style="font-size:12px">🎓 ${n.specialization || ''} | ${n.experience || ''}</div>
-        <div>Status: ${status}</div>
-        <div style="margin-top:8px">
-          <button class="btn btn-photo" onclick="viewDoc('${key}','photo')">📷 Photo ${photo?'✅':''}</button>
-          <button class="btn btn-ghana" onclick="viewDoc('${key}','ghana')">💳 Ghana ${ghana?'✅':'❌'}</button>
-          <button class="btn btn-cert" onclick="viewDoc('${key}','cert')">🎓 Cert ${cert?'✅':'❌'}</button>
-          <button class="btn btn-cv" onclick="viewDoc('${key}','cv')">📄 CV ${cv?'✅':'❌'}</button>
-          <br>
-          <button class="btn btn-approve" onclick="approveNurse('${n._path}')">✅ APPROVE</button>
-          <button class="btn btn-delete" onclick="deleteNurse('${n._path}')">🗑️ DELETE</button>
+const firebaseConfig = {apiKey:"AIzaSyB52-X1D8Cg-wUDWPds_tR7X3cF82dMdRg",authDomain:"web-care-618e8.firebaseapp.com",databaseURL:"https://web-care-618e8-default-rtdb.firebaseio.com",projectId:"web-care-618e8",storageBucket:"web-care-618e8.firebasestorage.app",messagingSenderId:"1062578660694",appId:"1:1062578660694:web:f94dfe12c929df05bce2f7"};
+if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+const db=firebase.database();
+function load(){
+  db.ref('workers').on('value',snap=>{
+    const data=snap.val()||{};
+    const list=document.getElementById('list');
+    let html='';
+    Object.entries(data).forEach(([id,n])=>{
+      const isApproved=n.approved?true:false;
+      const safePw=(n.password||'').replace(/'/g,'');
+      html+=`<div class="card">
+        <div class="top">
+          <img src="${n.photo||'https://via.placeholder.com/80?text=Nurse'}">
+          <div class="info">
+            <b>👩‍⚕️ ${n.name||'No name'}</b><br>📧 ${n.email||''}<br>📞 ${n.phone||''}<br>📍 ${n.location||''} | 🎓 ${n.specialization||''}<br>
+            <span class="badge ${isApproved?'approved':'pending'}">${isApproved?'✅ APPROVED':'⏳ PENDING'}</span>
+            <div style="margin-top:4px;font-size:12px;background:#eee;padding:4px 8px;border-radius:6px;display:inline-block">🔑 Pass: <span id="pw-${id}">••••••</span></div>
+          </div>
         </div>
-      </div>
-    </div>`;
+        <div class="btns">
+          <button class="btn photo" onclick="openDoc('${id}','photo','${n.photo||''}')">📷 Photo</button>
+          <button class="btn ghana" onclick="openDoc('${id}','ghana','${n.ghanaCard||n.ghana||''}')">💳 Ghana</button>
+          <button class="btn cert" onclick="openDoc('${id}','cert','${n.certificate||n.cert||''}')">🎓 Cert</button>
+          <button class="btn cv" onclick="openDoc('${id}','cv','${n.cv||''}')">📄 CV</button>
+          <button class="btn showpw" onclick="togglePassword('${id}','${safePw}')">👁️ Show PW</button>
+          <button class="btn reset" onclick="showReset('${id}')">🔑 Reset</button>
+          <button class="btn approve" onclick="approve('${id}')">${isApproved?'✅ Approved':'✅ APPROVE'}</button>
+          <button class="btn delete" onclick="del('${id}')">🗑️ DELETE</button>
+        </div>
+        <div class="doc-view" id="view-${id}"></div>
+        <div class="pw-box" id="pwbox-${id}">
+          <b>🔑 Password for ${n.name||''}</b><br>
+          <div style="margin:8px 0">Current: <b id="curr-${id}">${n.password||'No password set'}</b></div>
+          <input type="text" id="newpw-${id}" placeholder="New: e.g. Love1234">
+          <button class="btn reset" onclick="saveNewPassword('${id}')">💾 Save</button>
+          <button class="btn delete" onclick="hideReset('${id}')">Close</button>
+        </div>
+      </div>`;
+    });
+    if(Object.keys(data).length===0) html='<p style="text-align:center;padding:40px">No nurses yet</p>';
+    list.innerHTML=html;
   });
-  list.innerHTML = html;
 }
-function viewDoc(key, type){
-  const nurse = allNursesCache[key];
-  if(!nurse){ alert('Nurse not found '+key); return;}
-  let data='';
-  if(type==='photo') data = nurse.photo || '';
-  if(type==='ghana') data = nurse.ghanaID || '';
-  if(type==='cert') data = nurse.certificate || '';
-  if(type==='cv') data = nurse.cv || '';
-  if(!data){ alert('❌ No '+type+' for '+nurse.name); return;}
-  const modal = document.getElementById('docModal');
-  const view = document.getElementById('docView');
-  let inner = `<h2 style="margin:0">${type.toUpperCase()} - ${nurse.name}</h2><p>📞 ${nurse.phone}</p>`;
-  if(data.startsWith('data:image')){
-    inner += `<img src="${data}" style="width:100%;max-width:700px;border-radius:10px"><br><br>
-    <a href="${data}" download="${nurse.phone}_${type}.jpg" class="btn btn-photo" style="padding:12px 20px;font-size:16px">⬇️ DOWNLOAD IMAGE</a>
-    <br><br><button onclick="openNewTab('${key}','${type}')" class="btn btn-ghana">🔗 Open in New Tab</button>`;
-  } else if(data.startsWith('data:application')){
-    inner += `<div style="background:#eee;padding:10px;border-radius:8px">PDF Document - Click below to view or download</div><br>
-    <button onclick="openNewTab('${key}','${type}')" class="btn btn-approve" style="padding:12px 20px;font-size:16px">📄 OPEN PDF IN NEW TAB</button><br><br>
-    <a href="${data}" download="${nurse.phone}_${type}.pdf" class="btn btn-photo" style="padding:12px 20px;font-size:16px">⬇️ DOWNLOAD PDF</a><br><br>
-    <iframe src="${data}" style="width:100%;height:70vh;border:2px solid #00c853;border-radius:8px"></iframe>`;
-  } else {
-    inner += `<img src="${data}" style="width:100%"><br><a href="${data}" target="_blank" class="btn btn-photo">Open</a>`;
-  }
-  view.innerHTML = inner;
-  modal.style.display='flex';
+function openDoc(id,type,url){
+  const view=document.getElementById('view-'+id);
+  if(!url){view.style.display='block';view.innerHTML='❌ No document';return;}
+  const isPdf=url.toLowerCase().includes('.pdf')||url.toLowerCase().includes('pdf');
+  view.style.display='block';
+  if(isPdf){view.innerHTML=`<b>${type.toUpperCase()}</b><br><a href="${url}" target="_blank" style="display:inline-block;margin:10px;padding:12px 20px;background:#2196f3;color:#fff;border-radius:8px;text-decoration:none;font-weight:bold">📄 OPEN PDF IN NEW TAB</a><br><a class="download" href="${url}" target="_blank" download>⬇️ DOWNLOAD PDF</a>`;}
+  else{view.innerHTML=`<b>${type.toUpperCase()}</b><br><img src="${url}"><br><a class="download" href="${url}" target="_blank" download>⬇️ DOWNLOAD</a><br><button class="btn delete" onclick="document.getElementById('view-${id}').style.display='none'">Close</button>`;}
+  view.scrollIntoView({behavior:'smooth'});
 }
-function openNewTab(key, type){
-  const nurse = allNursesCache[key];
-  let data='';
-  if(type==='photo') data = nurse.photo || '';
-  if(type==='ghana') data = nurse.ghanaID || '';
-  if(type==='cert') data = nurse.certificate || '';
-  if(type==='cv') data = nurse.cv || '';
-  const w = window.open();
-  if(data.startsWith('data:image')) w.document.write(`<img src="${data}" style="width:100%">`);
-  else w.document.write(`<iframe src="${data}" style="width:100%;height:100vh;border:none"></iframe>`);
-}
-function closeModal(){ document.getElementById('docModal').style.display='none'; }
-function approveNurse(path){
-  if(!confirm('Approve this nurse?')) return;
-  db.ref(path).update({approved:true}).then(()=>{ alert('✅ Approved!'); loadNurses(); });
-}
-function deleteNurse(path){
-  if(!confirm('DELETE permanently?')) return;
-  db.ref(path).remove().then(()=>{ alert('Deleted'); loadNurses(); });
-}
-loadNurses();
+function togglePassword(id,pw){const el=document.getElementById('pw-'+id); if(el.innerText==='••••••'){el.innerText=pw||'No password';} else{el.innerText='••••••';} showReset(id);}
+function showReset(id){document.getElementById('pwbox-'+id).style.display='block';}
+function hideReset(id){document.getElementById('pwbox-'+id).style.display='none';}
+function saveNewPassword(id){const newPw=document.getElementById('newpw-'+id).value.trim(); if(!newPw){alert('Type new password!');return;} if(newPw.length<4){alert('Too short!');return;} db.ref('workers/'+id).update({password:newPw}).then(()=>{alert('✅ New password: '+newPw+' - Tell nurse!'); document.getElementById('curr-'+id).innerText=newPw; document.getElementById('pw-'+id).innerText=newPw; document.getElementById('newpw-'+id).value='';});}
+function approve(id){db.ref('workers/'+id).update({approved:true}).then(()=>alert('✅ Approved!')); }
+function del(id){if(confirm('Delete this nurse?')) db.ref('workers/'+id).remove().then(()=>alert('Deleted'));}
+load();
 </script>
 </body>
 </html>
