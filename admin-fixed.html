@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ADMIN FINAL - LOVE CARE</title>
+<title>ADMIN V3 - LOVE CARE - WITH UPDATE FILES</title>
 <style>
 body{background:#121212;color:#fff;font-family:sans-serif;padding:10px;margin:0}
-.card{background:#1e1e1e;border-left:4px solid #0f0;border-radius:12px;padding:12px;margin:12px 0}
+.card{background:#1e1e1e;border-left:4px solid #0f0;border-radius:12px;padding:12px;margin:14px 0}
 .badge{padding:4px 8px;border-radius:10px;font-size:12px}
 .approved{background:#00c853;color:#fff}
 .pending{background:#ff9100;color:#fff}
@@ -29,9 +29,8 @@ input{padding:8px;border-radius:6px;border:none;width:65%}
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 </head>
 <body>
-<h2 style="background:#00c853;padding:14px;border-radius:12px;text-align:center;margin:0 0 10px 0">🔐 LOVE CARE BOSS ADMIN - FINAL</h2>
-<div id="list">Loading workers... Please wait</div>
-
+<h2 style="background:#00c853;padding:14px;border-radius:12px;text-align:center;margin:0 0 10px 0">🔐 LOVE CARE BOSS ADMIN V3 - UPDATE FILES</h2>
+<div id="list">Loading workers...</div>
 <script>
 const firebaseConfig = {
   apiKey: "AIzaSyB52-X1D8Cg-wUDWPds_tR7X3cF82dMdRg",
@@ -50,7 +49,7 @@ db.ref('workers').on('value',snap=>{
  var data=snap.val()||{};
  var html='';
  var keys=Object.keys(data);
- if(keys.length===0){html='<p style="text-align:center;padding:20px">No workers found</p>'}
+ if(keys.length===0){html='<p style="text-align:center;padding:20px">No workers</p>'}
  keys.forEach(id=>{
    var n=data[id]||{};
    var isApproved=n.approved||n.isApproved;
@@ -63,9 +62,9 @@ db.ref('workers').on('value',snap=>{
    <b>👤 ${n.name||'No Name'}</b><br>
    <span>📧 ${n.email||''}</span><br>
    <span>📞 ${n.phone||''}</span><br>
-   <span>⭐ ${n.experience||''} Exp | 📍 Loc: ${n.location||n.age||''}</span><br>
+   <span>⭐ ${n.experience||''} | 📍 ${n.location||n.age||''}</span><br>
    <span class="badge ${isApproved?'approved':'pending'}">${isApproved?'✅ APPROVED':'⏳ PENDING'}</span>
-   <span class="badge" style="background:#333">🆔 ${id}</span>
+   <span class="badge" style="background:#333">ID:${id}</span>
    </div>
    </div>
    <div class="btns">
@@ -75,19 +74,25 @@ db.ref('workers').on('value',snap=>{
    <button class="btn cv" onclick="openDoc('${id}','cv')">📄 CV</button>
    <button class="btn showpw" onclick="togglePassword('${id}')">👁️ PW</button>
    <button class="btn" style="background:#e1f5fe;color:#0288d1" onclick="showTime('${id}')">⏰ Time</button>
-   <button class="btn edit" onclick="editDetails('${id}')">✏️ Edit</button>
-   <button class="btn reset" onclick="showReset('${id}')">🔑 Reset</button>
+   <button class="btn edit" onclick="editDetails('${id}')">✏️ Edit Particulars</button>
+   <button class="btn reset" onclick="showReset('${id}')">🔑 Reset PW</button>
    <button class="btn approve" onclick="approve('${id}')">${isApproved?'✅ Done':'✅ Approve'}</button>
    <button class="btn delete" onclick="del('${id}')">🗑️</button>
+   </div>
+   <div class="btns" style="border-top:1px dashed #555;padding-top:8px;margin-top:8px">
+   <small style="width:100%;color:#ff9800;font-weight:bold">📁 UPDATE WITH NEW FILES:</small>
+   <button class="btn" style="background:#0d47a1;color:#fff" onclick="updateNewFile('${id}','photo')">📤 New Photo</button>
+   <button class="btn" style="background:#4e342e;color:#ffab91" onclick="updateNewFile('${id}','ghana')">📤 New Ghana ID</button>
+   <button class="btn" style="background:#1b5e20;color:#a5d6a7" onclick="updateNewFile('${id}','cert')">📤 New Certificate</button>
+   <button class="btn" style="background:#3e2723;color:#ffcc80" onclick="updateNewFile('${id}','cv')">📤 New CV</button>
    </div>
    <div class="doc-view" id="view-${id}"></div>
    <div class="pw-box" id="pwbox-${id}">
    <b>🔑 Password for ${n.name||''}:</b><br>
-   <div style="margin:8px 0">Current: <b id="curr-${id}" style="color:#0f0">${n.pass||n.password||'No password set'}</b></div>
-   <input type="text" id="newpw-${id}" placeholder="New password e.g. LCstaff002">
+   <div style="margin:8px 0">Current: <b id="curr-${id}" style="color:#0f0">${n.pass||n.password||'No password'}</b></div>
+   <input type="text" id="newpw-${id}" placeholder="New password">
    <button class="btn reset" onclick="saveNewPassword('${id}')">💾 Save</button>
    <button class="btn delete" onclick="hideReset('${id}')">Close</button>
-   <div style="font-size:11px;color:#aaa;margin-top:6px">Will save to BOTH pass + password fields</div>
    </div>
    </div>
    `;
@@ -104,78 +109,69 @@ function openDoc(id,type){
  db.ref('workers/'+id).once('value').then(s=>{
   var n=s.val()||{};
   var map = {
-    photo: n.photo || n.profile || n.image || '',
-    ghana: n.ghana || n.ghanaID || n.ghanaCard || n.idCard || '',
-    cert: n.cert || n.certificate || n.certUrl || '',
-    cv: n.cv || n.resume || n.cvUrl || ''
+    photo: n.photo || n.profile || '',
+    ghana: n.ghana || n.ghanaID || n.ghanaCard || '',
+    cert: n.cert || n.certificate || '',
+    cv: n.cv || n.resume || ''
   };
   var url = map[type] || '';
-  if(!url){
-    view.innerHTML='<div style="color:orange">❌ No '+type+' found<br><small>Fields available: '+Object.keys(n).join(', ')+'</small><br><br><button class="btn delete" onclick="this.parentElement.parentElement.style.display=\'none\'">Close</button></div>';
-    return;
-  }
-  if(url.startsWith('data:application/pdf') || url.startsWith('data:application')){
-    view.innerHTML='<div style="text-align:center"><b>📄 '+type.toUpperCase()+' PDF Found!</b><br><br><a href="'+url+'" target="_blank" download="'+type+'-'+id+'.pdf" style="background:#00c853;color:#fff;padding:12px 20px;border-radius:10px;text-decoration:none;display:inline-block;font-weight:bold">📥 OPEN / DOWNLOAD '+type.toUpperCase()+'</a><br><br><button class="btn delete" onclick="document.getElementById(\'view-'+id+'\').style.display=\'none\'">❌ Close</button></div>';
-  } else if(url.startsWith('data:image')){
-    view.innerHTML='<img src="'+url+'" style="width:100%;max-height:600px;object-fit:contain;border-radius:10px"><br><br><a href="'+url+'" target="_blank" style="color:#0f0">Open Full</a> | <button class="btn delete" onclick="document.getElementById(\'view-'+id+'\').style.display=\'none\'">Close</button>';
+  if(!url){view.innerHTML='<div style="color:orange">❌ No '+type+'<br>Fields: '+Object.keys(n).join(', ')+'</div>';return;}
+  if(url.startsWith('data:application')){
+    view.innerHTML='<div style="text-align:center"><b>📄 '+type.toUpperCase()+' PDF</b><br><br><a href="'+url+'" target="_blank" download="'+type+'-'+id+'.pdf" style="background:#0f0;color:#000;padding:12px 20px;border-radius:10px;text-decoration:none;display:inline-block">📥 OPEN / DOWNLOAD</a><br><br><button class="btn delete" onclick="document.getElementById(\'view-'+id+'\').style.display=\'none\'">Close</button></div>';
   } else {
-    view.innerHTML='<iframe src="'+url+'" style="width:100%;height:500px;border-radius:10px;background:#fff" onerror="this.outerHTML=\'<img src='+url+' style=width:100%>\'"></iframe><br><a href="'+url+'" target="_blank" style="color:#0f0">Open Full Link</a> | <button class="btn delete" onclick="document.getElementById(\'view-'+id+'\').style.display=\'none\'">Close</button>';
+    view.innerHTML='<img src="'+url+'" style="width:100%;max-height:600px;object-fit:contain;border-radius:10px" onerror="this.outerHTML=\'<iframe src=\\''+url+'\\' style=\\'width:100%;height:500px\\'></iframe>\'"><br><button class="btn delete" onclick="document.getElementById(\'view-'+id+'\').style.display=\'none\'">Close</button> <a href="'+url+'" target="_blank" style="color:#0f0">Open Full</a>';
   }
  });
 }
-function openDocFixed(id){openDoc(id,'ghana');}
 
 function showTime(id){
  db.ref('workers/'+id).once('value').then(s=>{
   var n=s.val()||{};
-  var reg=n.time||n.registeredAt||n.createdAt||'Not saved yet';
-  var last=n.lastLogin||'Never logged in yet';
-  alert('👩‍⚕️ '+(n.name||id)+'\n📧 '+(n.email||'')+'\n📞 '+(n.phone||'')+'\n\n📅 Registered: '+reg+'\n🕐 Last Login: '+last+'\n⭐ Experience: '+(n.experience||'N/A'));
+  alert('👩‍⚕️ '+(n.name||id)+'\n📅 Registered: '+(n.time||n.registeredAt||'Not set')+'\n🕐 Last Login: '+(n.lastLogin||'Never')+'\n⭐ Exp: '+(n.experience||'N/A'));
  });
 }
-
-function togglePassword(id){
- var box=document.getElementById('pwbox-'+id);
- box.style.display=box.style.display==='block'?'none':'block';
-}
+function togglePassword(id){ var b=document.getElementById('pwbox-'+id); b.style.display=b.style.display==='block'?'none':'block'; }
 function showReset(id){document.getElementById('pwbox-'+id).style.display='block';}
 function hideReset(id){document.getElementById('pwbox-'+id).style.display='none';}
-
 function saveNewPassword(id){
  var np=document.getElementById('newpw-'+id).value.trim();
- if(!np){alert('Enter new password');return;}
- db.ref('workers/'+id).update({pass:np,password:np}).then(()=>{
-   document.getElementById('curr-'+id).textContent=np;
-   alert('✅ SUCCESS! Password updated to: '+np+'\nSaved in BOTH fields!');
- });
+ if(!np){alert('Enter password');return;}
+ db.ref('workers/'+id).update({pass:np,password:np}).then(()=>{document.getElementById('curr-'+id).textContent=np; alert('✅ Password updated: '+np);});
 }
-
 function editDetails(id){
  db.ref('workers/'+id).once('value').then(s=>{
   var n=s.val()||{};
-  var newName = prompt('✏️ Edit Name:', n.name||'');
-  if(newName===null) return;
-  var newPhone = prompt('📞 Edit Phone:', n.phone||'');
-  if(newPhone===null) return;
-  var newExp = prompt('⭐ Edit Experience (e.g. 2 years):', n.experience||'');
-  if(newExp===null) return;
-  var newLoc = prompt('📍 Edit Location/Age:', n.location||'');
-  if(newLoc===null) return;
-  var newEmail = prompt('📧 Edit Email:', n.email||'');
-  if(newEmail===null) return;
-
-  db.ref('workers/'+id).update({
-    name: newName,
-    phone: newPhone,
-    experience: newExp,
-    location: newLoc,
-    email: newEmail
-  }).then(()=>alert('✅ Particulars Updated!\nName: '+newName+'\nPhone: '+newPhone+'\nThis will show immediately!'));
+  var newName=prompt('✏️ Name:',n.name||''); if(newName===null) return;
+  var newPhone=prompt('📞 Phone:',n.phone||''); if(newPhone===null) return;
+  var newExp=prompt('⭐ Experience:',n.experience||''); if(newExp===null) return;
+  var newLoc=prompt('📍 Location:',n.location||''); if(newLoc===null) return;
+  var newEmail=prompt('📧 Email:',n.email||''); if(newEmail===null) return;
+  db.ref('workers/'+id).update({name:newName,phone:newPhone,experience:newExp,location:newLoc,email:newEmail}).then(()=>alert('✅ Particulars Updated!'));
  });
 }
-
+function updateNewFile(id, docType){
+  var input=document.createElement('input');
+  input.type='file';
+  input.accept='image/*,.pdf';
+  input.onchange=e=>{
+    var file=e.target.files[0]; if(!file) return;
+    if(file.size>900000){alert('File too big! Max 900KB. Compress photo!');return;}
+    var reader=new FileReader();
+    reader.onload=ev=>{
+      var base64=ev.target.result;
+      var update={};
+      if(docType==='photo'){update.photo=base64; update.profile=base64;}
+      if(docType==='ghana'){update.ghanaID=base64; update.ghana=base64; update.ghanaCard=base64;}
+      if(docType==='cert'){update.certificate=base64; update.cert=base64;}
+      if(docType==='cv'){update.cv=base64;}
+      db.ref('workers/'+id).update(update).then(()=>alert('✅ '+docType.toUpperCase()+' UPDATED! New file saved to Firebase!'));
+    };
+    reader.readAsDataURL(file);
+  };
+  input.click();
+}
 function approve(id){db.ref('workers/'+id).update({approved:true,isApproved:true}).then(()=>alert('✅ Approved!'))}
-function del(id){if(confirm('⚠️ DELETE worker '+id+'? This cannot be undone!')){db.ref('workers/'+id).remove().then(()=>alert('🗑️ Deleted'))}}
+function del(id){if(confirm('Delete '+id+'?')){db.ref('workers/'+id).remove().then(()=>alert('Deleted'))}}
 </script>
 </body>
 </html>
