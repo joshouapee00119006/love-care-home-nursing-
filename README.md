@@ -1,43 +1,92 @@
 # 💖 LOVE CARE HOME NURSING - GHANA
-### Hosting healthcare workers online to get connected to patients
+### _Hosting healthcare workers, delivering love to your home_
 
-📍 East Legon Mempeasem, Accra | 📞 +233 59 944 7418
+![Ghana](https://img.shields.io/badge/Ghana-HealthCare-red)
+![Live](https://img.shields.io/badge/Status-LIVE-green)
+![Nurses](https://img.shields.io/badge/Nurses-Uber%20Tracking-blue)
 
----
-
-## 🔗 MY 3 LINKS - TAP TO OPEN
-
-### 1. 🔒 PRIVATE ADMIN - BOSS ONLY (SECRET!)
-👉 https://joshouapee00119006.github.io/love-care-home-nursing-/admin-fixed.html
-
-What you do here:
-- See ALL new nurse registrations
-- Tap buttons: Photo, Ghana Card, Cert, CV
-- For PDF tap GREEN "OPEN PDF IN NEW TAB" - Works 100%!
-- Tap APPROVE = Nurse shows on Team Page
-- Tap DELETE = Remove
-
-⚠️ Keep in bookmarks! Don't share!
+**Love Care** is Ghana's #1 Digital Home Nursing Platform connecting clients to professional nurses with LIVE Uber-style GPS tracking.
 
 ---
 
-### 2. 👩‍⚕️ PUBLIC TEAM PAGE - FOR CUSTOMERS
-👉 https://joshouapee00119006.github.io/love-care-home-nursing-/team.html
+### 🌐 LIVE WEBSITE LINKS
 
-Customers see approved nurses + Book button
-
----
-
-### 3. 🌐 MAIN WEBSITE
+**Main Website:**
 👉 https://joshouapee00119006.github.io/love-care-home-nursing-/
 
+**Direct File Links:**
+- 🏠 Client Booking (Real-index): 
+  https://joshouapee00119006.github.io/love-care-home-nursing-/Real-index.html
+- 👑 CEO Dashboard (index):
+  https://joshouapee00119006.github.io/love-care-home-nursing-/index.html
+- 👔 Staff Dashboard (admin-fixed):
+  https://joshouapee00119006.github.io/love-care-home-nursing-/admin-fixed.html
+- 👩‍⚕️ Team / Nurses:
+  https://joshouapee00119006.github.io/love-care-home-nursing-/team.html
+- 🗺️ Google Map View:
+  https://joshouapee00119006.github.io/love-care-home-nursing-/Googlemap.html
+
+> Replace `love-care-home-nursing-` with your exact repo name if different.
+
 ---
 
-## 📱 HOW IT WORKS
-1. Nurse registers on Main Site
-2. YOU open ADMIN link
-3. Check documents
-4. APPROVE
-5. Nurse shows on TEAM page!
+### ✨ FEATURES - V47 FINAL
 
-© 2026 LOVE CARE HOME NURSING
+#### 1. 🏠 CLIENT PLATFORM
+- Book nurse: Daily / Weekly / Monthly / Live-In / Live-Out
+- Services: Stroke Care, Elderly Care, Baby Care, Hospital Assistance
+- Track assigned nurse LIVE on map like Uber
+- **🗺️ OPEN/CLOSE Map Button** to save data
+
+#### 2. 🧑‍⚕️ NURSE PLATFORM - UBER MODE
+- START DUTY - Live GPS tracking starts
+- CEO & Staff see nurse moving live on map
+- Speed, moving status, location updates every second
+- STOP DUTY - End tracking
+
+#### 3. 👔 STAFF PLATFORM
+- View all live nurses on map
+- Approve bookings
+- Hidden nurses list
+- **OPEN/CLOSE Map**
+
+#### 4. 👑 CEO DASHBOARD
+- Locate All Nurses LIVE in one click
+- Start Uber Live Tracking for all
+- Winners Walk
+- Full control center
+
+---
+
+### 🛠️ TECH STACK
+- HTML5, CSS3, JavaScript
+- Leaflet Maps + Google Maps Embed
+- Firebase Realtime Database (Live GPS)
+- GitHub Pages Hosting
+
+---
+
+### 📍 HOW IT WORKS
+1. Client books a nurse on `Real-index.html`
+2. Nurse clicks START DUTY - location goes live to Firebase
+3. CEO/Staff sees nurse moving live like Uber driver
+4. Client tracks nurse coming to their house
+
+---
+
+### 📞 CONTACT - LOVE CARE GHANA
+- **Location:** Accra, Ghana
+- **Service:** Home Nursing, Elderly Care, Stroke Care, Baby Care
+- **Platform:** Digital Nurse - Uber Tracking System V47
+
+---
+
+### 🚀 DEPLOYMENT
+This site is hosted on GitHub Pages:
+1. Settings > Pages > Source: main / root
+2. Save and wait 2 mins
+3. Your site is live!
+
+Made with 💙 in Ghana for Ghana.
+
+© 2026 LOVE CARE HOME NURSING - All Rights Reserved
