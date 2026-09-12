@@ -1,0 +1,16 @@
+{
+  "name": "LOVE CARE GLOBAL - Nurse Booking Ghana",
+  "short_name": "LOVE CARE",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#16a34a",
+  "theme_color": "#16a34a",
+  "description": "Book verified nurses near you - Ghana's #1 Nurse Agency - GPS + Video Call",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/3004/3004458.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
