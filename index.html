@@ -120,6 +120,18 @@ input,select,textarea{width:100%;padding:11px;margin:5px 0;border-radius:10px;bo
 
 <div id="page-home" class="page active">
 <div class="eversendBox"><h3 style="margin:0 0 8px 0">💖 LOVE CARE - Full Features</h3><div class="payOption">📍 GPS Auto location</div><div class="payOption">📱 Phone Codes +233 +234 +1</div><div class="payOption">💬 Chat Admin Delete/Edit/Master Delete</div><div class="payOption">💰 15% CEO / 85% Nurse</div><div class="payOption">📢 CEO Announcement Color + Speed LIVE</div><div class="payOption">🎥 Intro Video + 📹 WhatsApp Video Call NEW!</div></div>
+  <!-- NURSE BRIGHTNESS CONTROL -->
+<div style="background:#fff;padding:12px;border-radius:12px;margin:10px;border:2px solid #4CAF50">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+    <b>👩‍⚕️ Nurse Brightness</b>
+    <span id="brightValue" style="background:#4CAF50;color:white;padding:2px 8px;border-radius:10px;font-size:12px">8%</span>
+  </div>
+  <div style="display:flex;gap:10px;align-items:center">
+    <span>Dim</span>
+    <input type="range" id="nurseBright" min="0" max="30" value="8" style="flex:1">
+    <span>Bright</span>
+  </div>
+</div>
 <div class="card" style="border:3px solid #00b050"><h2>📝 BOOK NURSE - GPS + Phone Code (13 Services)</h2><input id="cName" placeholder="Full Name"><div class="phoneRow"><select id="cPhoneCode"><option value="+233">🇬🇭 +233 Ghana</option><option value="+234">🇳🇬 +234 Nigeria</option><option value="+1">🇺🇸 +1 USA</option><option value="+44">🇬🇧 +44 UK</option><option value="+27">🇿🇦 +27 SA</option><option value="+971">🇦🇪 +971 UAE</option><option value="+91">🇮🇳 +91 India</option><option value="+254">🇰🇪 +254 Kenya</option></select><input id="cPhone" placeholder="Phone e.g. 544121814"></div><input id="cEmail" placeholder="Email - Receipt"><div class="locationRow"><input id="cLocation" placeholder="📍 Tap GPS Auto"><button onclick="autoGPSForBooking('cLocation','clientGpsStatus')">📍 GPS Auto</button></div><small id="clientGpsStatus" class="gpsBadge hidden"></small><select id="cService"><option value="">-- Select 13 Services --</option><option>Elderly Care</option><option>Baby Care & Nanny</option><option>Hospital Support & Accompaniment</option><option>Post-Surgery Care</option><option>Disability & Special Needs Support</option><option>Maternity & Newborn Care</option><option>Night Nurse / Sleepover Care</option><option>Palliative & End-of-Life Care</option><option>Physiotherapy Support</option><option>Injection, Wound Dressing & Medication Administration</option><option>Diabetes & Hypertension Monitoring</option><option>Dementia & Alzheimer's Care</option><option>Child Special Needs & Autism Support</option></select><input id="cBudget" type="number" placeholder="YOUR Rate e.g. 200 - Min 80"><select id="cCurrency"><option value="GHS">GHS</option><option value="USD">USD</option><option value="GBP">GBP</option><option value="NGN">NGN</option></select><button class="btnSubmit" style="background:linear-gradient(90deg,#00b050,#065f46)" onclick="submitBookingWithPaystackClosest()">📍 BOOK - 15/85 Closest</button><button class="btnSubmit" style="background:#eab308;color:#111" onclick="submitBookingWithoutPayClosest()">📅 Book Without Pay</button></div>
 <div class="card" style="border:3px solid #00b050"><h2>🗺️ LIVE Nurses</h2><div style="display:flex;gap:5px;flex-wrap:wrap;margin:8px 0"><button class="btnMap" onclick="toggleLoveCareMap()">🗺️ Map</button><button class="btnSubmit" style="width:auto;background:#00b050" onclick="startLoveCareLive()">🔴 LIVE</button></div><div id="loveCareMapWrapper" class="map-wrapper hidden"><iframe id="loveCareGoogleMap" class="google-frame" src="https://www.google.com/maps?q=5.6037,-0.1870&z=2&output=embed"></iframe><div style="padding:6px;background:#16a34a;color:white;font-size:11px;display:flex;justify-content:space-between"><span>🛰️ <span id="currentCountryName">Ghana</span></span><span id="loveCareLiveCount" class="live-badge">0 LIVE</span></div></div><div id="loveCareLiveList"></div></div>
 </div>
@@ -383,5 +395,21 @@ loadAnnouncementLive();
     <a href="terms.html" style="color:#ff69b4;">Terms of Service</a> | 
     <a href="mailto:lovecareglobal@gmail.com?subject=Delete My Account Request&body=Please delete my account and all my data. My email is: ">Delete Account</a>
 </footer>
-    </body>
+    <script>
+const brightSlider = document.getElementById('nurseBright');
+const brightLabel = document.getElementById('brightValue');
+let savedBright = localStorage.getItem('nurseBright');
+if(savedBright !== null){ brightSlider.value = savedBright; }
+function applyBright(){
+  let val = brightSlider.value / 100;
+  document.documentElement.style.setProperty('--nurse-opacity', val);
+  brightLabel.textContent = brightSlider.value + '%';
+  localStorage.setItem('nurseBright', brightSlider.value);
+}
+if(brightSlider){
+  brightSlider.addEventListener('input', applyBright);
+  applyBright();
+}
+    </script>
+</body>
     </html>
