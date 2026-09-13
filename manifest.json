@@ -1,26 +1,29 @@
 {
-  "background_color": "#ffffff",
-  "dir": "ltr",
+  "name": "LOVE CARE GLOBAL",
+  "short_name": "LOVE CARE",
+  "description": "Book nurses 15/85 profit share - GPS SOS video call Ghana",
+  "start_url": "./index.html",
   "display": "standalone",
-  "name": "joshouapee00119006.github",
-  "orientation": "any",
-  "scope": "/",
-  "short_name": "joshouapee00119006.github",
-  "start_url": "/",
+  "background_color": "#16a34a",
   "theme_color": "#16a34a",
   "icons": [
     {
-      "src": "https://joshouapee00119006.github.io/love-care-home-nursing-/icon-512.png",
-      "type": "image/jpeg",
-      "sizes": "1600x1600",
-      "isSquare": true,
-      "isPng": true,
-      "isWebp": false,
-      "isJpg": true,
-      "width": 1600,
-      "is512x512": false,
-      "is256x256": false,
-      "is192x192": false
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }
