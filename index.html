@@ -42,6 +42,37 @@ input,select,textarea{width:100%;padding:11px;margin:5px 0;border-radius:10px;bo
 .uploadBox{border:2px dashed #16a34a;border-radius:12px;padding:10px;margin:6px 0;background:#f0fdf4}
 .gpsBadge{font-size:9px;color:#00b050;background:#f0fdf4;padding:3px 8px;border-radius:10px;border:1px solid #00b050;margin-top:3px;display:inline-block}
 .colorRow{display:flex;gap:10px;align-items:center;margin:8px 0}.colorRow label{font-size:11px;font-weight:800;flex:1;display:flex;align-items:center;gap:6px}.colorRow input[type=color]{width:50px;height:38px;padding:2px;border-radius:8px;border:2px solid #ccc;cursor:pointer}
+  body::before, body::after{
+    content:"";
+    position:fixed;
+    width:400px;
+    height:400px;
+    background-size:contain;
+    background-repeat:no-repeat;
+    opacity:0.06;
+    z-index:-1;
+    pointer-events:none;
+  }
+  body::before{
+    background-image:url('https://cdn-icons-png.flaticon.com/512/3774/3774290.png');
+    top:10%;
+    left:5%;
+    animation:float1 18s infinite ease-in-out alternate;
+  }
+  body::after{
+    background-image:url('https://cdn-icons-png.flaticon.com/512/3774/3774294.png');
+    bottom:15%;
+    right:5%;
+    animation:float2 22s infinite ease-in-out alternate;
+  }
+  @keyframes float1{
+    0%{transform:translateY(0)}
+    100%{transform:translateY(-40px)}
+  }
+  @keyframes float2{
+    0%{transform:translateY(0)}
+    100%{transform:translateY(-30px)}
+  }
 </style>
 </head>
 <body>
