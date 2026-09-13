@@ -87,6 +87,25 @@ This site is hosted on GitHub Pages:
 2. Save and wait 2 mins
 3. Your site is live!
 
+   # LOVE CARE GLOBAL - Home Nursing Ghana 🇬🇭
+
+Live Website: https://joshouapee00119006.github.io/love-care-home-nursing-/
+
+### OFFICIAL LEGAL LINKS FOR GOOGLE PLAY STORE
+
+**Privacy Policy:**
+https://joshouapee00119006.github.io/love-care-home-nursing-/privacy.html
+
+**Terms of Service:**
+https://joshouapee00119006.github.io/love-care-home-nursing-/terms.html
+
+**Delete Account:**
+https://joshouapee00119006.github.io/love-care-home-nursing-/privacy.html
+Or email: lovecareglobal@gmail.com with subject "Delete My Account"
+
+---
+Nurse Uber tracking system for Ghana. Find closest licensed nurse.
+
 Made with 💙 in Ghana for Ghana.
 
 © 2026 LOVE CARE HOME NURSING - All Rights Reserved
