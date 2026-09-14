@@ -5,7 +5,13 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>LOVE CARE GLOBAL - Home Nursing</title>
 <link rel="icon" type="image/png" href="./logo.png">
+<link rel="apple-touch-icon" href="./logo.png">
+<link rel="manifest" href="./manifest.json">
 <meta name="theme-color" content="#16a34a">
+<meta name="description" content="LOVE CARE GLOBAL - Professional Home Nursing Services - Elderly Care, Baby Care, Hospital Support, Post-Surgery Care, Disability Support, Maternity Care, Night Nurse, Palliative Care, Physiotherapy, Injection and Wound Care, Diabetes Monitoring, Dementia Care, Child Special Needs - GPS Auto, 13 Services, 15% CEO 85% Nurse">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Love Care">
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 <script src="https://js.paystack.co/v1/inline.js"></script>
@@ -566,6 +572,19 @@ document.addEventListener('DOMContentLoaded', function(){
     });
   });
 });
+
+
+// PWA - Register Service Worker for PWABuilder
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('./sw.js')
+      .then(function(registration) {
+        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+      }, function(err) {
+        console.log('ServiceWorker registration failed: ', err);
+      });
+  });
+}
 
 window.onload=function(){
   try{
