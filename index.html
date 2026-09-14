@@ -200,7 +200,7 @@ input,select,textarea{width:100%;padding:12px;margin:6px 0;border-radius:10px;bo
 
 <!-- STAFF LOGIN -->
 <div id="page-staff-login" class="page">
-<div class="card" style="margin:20px"><h2 id="staffLogo" onclick="tapStaffLogo()" style="cursor:pointer">Staff Portal - Tap 7x for CEO</h2><input id="staffLoginID" placeholder="Staff ID"><input id="staffLoginPass" type="password" placeholder="Password"><button class="btnSubmit" onclick="loginStaff()">Login</button><div id="staffLoginResult" style="font-size:11px;color:red"></div></div>
+<div class="card" style="margin:20px"><h2 id="staffLogo" onclick="tapStaffLogo()" title="Staff Portal" style="cursor:pointer">Staff Portal</h2><input id="staffLoginID" placeholder="Staff ID"><input id="staffLoginPass" type="password" placeholder="Password"><button class="btnSubmit" onclick="loginStaff()">Login</button><div id="staffLoginResult" style="font-size:11px;color:red"></div></div>
 </div>
 
 <!-- STAFF DASHBOARD -->
@@ -214,7 +214,7 @@ input,select,textarea{width:100%;padding:12px;margin:6px 0;border-radius:10px;bo
 
 <!-- CEO LOGIN -->
 <div id="page-ceo-login" class="page">
-<div class="card" style="margin:20px;border:3px solid #111827"><h2>CEO Login</h2><input id="ceoLoginID" placeholder="CEO ID - KUSIPETER"><input id="ceoLoginPass" type="password" placeholder="Password"><button class="btnSubmit" style="background:#111827" onclick="loginCEO()">CEO Login</button><div id="ceoLoginResult" style="font-size:11px;color:red;margin-top:8px"></div><p style="font-size:10px;color:#666">ID: KUSIPETER / Pass: Peterasa80@you!</p></div>
+<div class="card" style="margin:20px;border:3px solid #111827"><h2>CEO Login</h2><input id="ceoLoginID" placeholder="CEO ID"><input id="ceoLoginPass" type="password" placeholder="Password"><button class="btnSubmit" style="background:#111827" onclick="loginCEO()">CEO Login</button><div id="ceoLoginResult" style="font-size:11px;color:red;margin-top:8px"></div></div>
 </div>
 
 <!-- CEO DASHBOARD - FULL 6 TABS -->
@@ -496,7 +496,7 @@ function loginCEO(){
     if(id==='KUSIPETER' && pass==='Peterasa80@you!'){
       localStorage.setItem('isCEOLogged','true');
       var dashName=document.getElementById('ceoDashName');
-      if(dashName) dashName.innerText='CEO KUSIPETER';
+      if(dashName) dashName.innerText='CEO';
       var ls=document.getElementById('loginStatus');
       if(ls){ ls.innerText='CEO'; ls.style.display='inline-block'; }
       // FORCE open CEO dashboard with direct DOM manipulation
@@ -513,8 +513,8 @@ function loginCEO(){
       console.log('CEO dashboard opened');
       alert('CEO Login Success! Dashboard opened');
     }else{
-      if(r) r.innerText='Access denied - Use ID: KUSIPETER Pass: Peterasa80@you!';
-      alert('CEO Login Failed - Check ID KUSIPETER and Pass Peterasa80@you!');
+      if(r) r.innerText='Access denied';
+      alert('Login Failed - Access Denied');
     }
   }catch(e){ console.log('CEO login error '+e.message); alert('Login error '+e.message); }
 }
@@ -619,7 +619,7 @@ window.onload=function(){
   <p style="display:flex;align-items:center;justify-content:center;gap:10px"><img src="./logo.png" style="height:28px;background:white;border-radius:6px;padding:2px"> (c) 2026 LOVE CARE GLOBAL - Accra Ghana</p>
   <p><a href="privacy.html" style="color:#ff69b4;">Privacy Policy</a> | <a href="terms.html" style="color:#ff69b4;">Terms</a></p>
   <p style="margin-top:15px"><a href="mailto:lovecareglobal@gmail.com?subject=DELETE MY ACCOUNT REQUEST&body=Please delete my account and all my data. My email is: " style="background:#ef4444;color:white;padding:12px 24px;border-radius:12px;text-decoration:none;font-weight:800;font-size:14px;border:3px solid white;box-shadow:0 4px 10px rgba(0,0,0,0.3);display:inline-block;">DELETE MY ACCOUNT</a></p>
-  <p style="font-size:9px;color:#aaa;margin-top:8px">CEO: KUSIPETER / Peterasa80@you! - Tap logo 5x for Staff, Tap Staff title 7x for CEO</p>
+  
 </footer>
 
 </body>
