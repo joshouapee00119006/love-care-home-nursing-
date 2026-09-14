@@ -2,108 +2,164 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>LOVE CARE GLOBAL - Full + Color + Speed + Video + CV + PIN NEW</title>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-<script src="https://js.paystack.co/v1/inline.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KUSI Care - Professional Nursing Services</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap');
-body{margin:0;font-family:Poppins;background:#f0fdf4;padding-bottom:80px}
-.header{background:linear-gradient(90deg,#16a34a,#eab308);padding:12px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;color:white}
-.announcementBar{background:#111827;color:#eab308;padding:10px 0;overflow:hidden;white-space:nowrap;position:sticky;top:62px;z-index:99;border-bottom:3px solid #eab308}
-.announcementBar span{display:inline-block;padding-left:100%;animation:marquee 22s linear infinite;font-weight:800;font-size:13px}
-@keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-100%)}}
-.card{background:white;border:2px solid #eab308;border-radius:16px;margin:8px;padding:12px;box-shadow:0 2px 6px rgba(0,0,0,.08)}
-.card h2{color:#16a34a;margin:6px 0;font-size:13px}
-input,select,textarea{width:100%;padding:11px;margin:5px 0;border-radius:10px;border:1px solid #ccc;box-sizing:border-box;font-family:Poppins}
-.btnSubmit{width:100%;padding:11px;border:none;border-radius:10px;font-weight:800;margin-top:6px;cursor:pointer;background:#16a34a;color:white}
-.uploadBox{border:2px dashed #16a34a;border-radius:12px;padding:10px;margin:6px 0;background:#f0fdf4}
-.page{display:none}.page.active{display:block}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:#f8fafc;padding-bottom:80px}
+.topNav{background:#111;color:#fff;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+.page{display:none;padding:16px;max-width:900px;margin:0 auto}
+.page.active{display:block}
+.card{background:#fff;border-radius:12px;padding:16px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,.08);border:1px solid #e2e8f0}
+.btn{padding:10px 16px;border-radius:8px;border:none;cursor:pointer;font-weight:600}
+.btn-primary{background:#111;color:#fff;width:100%;padding:14px}
+.btn-small{padding:6px 10px;font-size:12px}
+.input,select,textarea{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:8px;margin:6px 0 12px}
+.statGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}
+.statBox{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:12px;text-align:center}
+.statBox b{display:block;font-size:22px}
+.statBox span{font-size:12px;color:#64748b}
+.tabBar{display:flex;gap:6px;overflow-x:auto;padding:8px 0;margin:10px 0}
+.tabBtn{white-space:nowrap;padding:8px 12px;border-radius:20px;border:1px solid #e2e8f0;background:#fff;cursor:pointer;font-size:13px}
+.tabBtn.active{background:#111;color:#fff}
+.bottomNav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #e2e8f0;display:flex;justify-content:space-around;padding:8px 0;z-index:100}
+.bottomNav div{font-size:11px;text-align:center;cursor:pointer;padding:4px 8px;border-radius:8px}
+.bottomNav div.active{background:#111;color:#fff}
+h2{margin-bottom:10px}
+a{color:#7c3aed}
 </style>
 </head>
 <body>
-<div id="page-nurse-public" class="page active">
-<div class="card" style="border:3px solid #00b050"><h2>👩‍⚕️ Nurse Registration - GPS + Code + Uploads + Intro Video + CV + PIN NEW!</h2>
-<input id="nRegName" placeholder="Full Name">
-<div class="phoneRow"><select id="nRegPhoneCode"><option value="+233">🇬🇭+233 Ghana</option><option value="+234">🇳🇬+234</option><option value="+1">🇺🇸+1 USA</option><option value="+44">🇬🇧+44 UK</option></select><input id="nRegPhone" placeholder="Phone"></div>
-<input id="nRegPass" type="password" placeholder="Password min 6">
-<select id="nRegGender"><option value="">-- Gender --</option><option>Female</option><option>Male</option></select>
-<input id="nRegAge" type="number" placeholder="Age e.g. 28">
-<input id="nRegLocation" placeholder="📍 Tap GPS Auto - Your Area!">
-<input id="nRegExperience" type="number" placeholder="Years Experience">
-<select id="nRegSpecialty"><option value="">-- Specialty --</option><option>General Nurse</option><option>Midwife</option><option>Elderly Care Specialist</option></select>
-<input id="nRegLanguages" placeholder="Languages e.g. English, Twi">
+<div class="topNav"><div><b>KUSI Care</b> 🏥</div><div style="font-size:12px">Ghana's #1 Nursing</div></div>
 
-<!-- OLD BOXES - UNCHANGED -->
-<div class="uploadBox"><label style="font-size:11px;font-weight:800">📸 Profile Photo (Required)</label><input id="nRegPhoto" type="file" accept="image/*"></div>
-<label style="font-size:11px;font-weight:800;margin-top:8px;display:block">🪪 ID Card</label><input id="nRegID" type="file" accept="image/*,application/pdf">
-<label style="font-size:11px;font-weight:800;margin-top:8px;display:block">📜 Certificate</label><input id="nRegCert" type="file" accept="image/*,application/pdf">
+<div id="page-home" class="page active">
+<div class="card" style="background:linear-gradient(135deg,#111,#334155);color:#fff">
+<h2>Professional Nursing at Your Doorstep</h2>
+<p style="margin:8px 0;opacity:.9">Licensed nurses, verified, GPS-tracked, 15%/85% transparent.</p>
+<button class="btn" style="background:#fff;color:#111;margin-top:10px" onclick="showPage('booking-public')">📅 Book a Nurse Now</button>
+</div>
+<div class="card"><h3>Why KUSI?</h3><p>✅ Verified Nurses<br>✅ CEO Dashboard<br>✅ Instant Receipts<br>✅ Student Portal</p></div>
+</div>
 
-<!-- NEW BOXES - CV + PIN - ADDED -->
-<label style="font-size:11px;font-weight:800;margin-top:10px;display:block;color:#0d47a1;background:#e3f2fd;padding:6px;border-radius:6px">📄 CV / Resume (Required - NEW)</label><input id="nRegCV" type="file" accept="image/*,application/pdf,.doc,.docx">
-<label style="font-size:11px;font-weight:800;margin-top:8px;display:block;color:#0d47a1;background:#e3f2fd;padding:6px;border-radius:6px">🪪 NMC PIN Card Photo (Required - NEW)</label><input id="nRegPINCard" type="file" accept="image/*,application/pdf">
-<label style="font-size:11px;font-weight:800;margin-top:8px;display:block;color:#0d47a1;background:#e3f2fd;padding:6px;border-radius:6px">🔢 NMC PIN Number (Required - NEW)</label><input id="nRegPINNumber" placeholder="e.g RMN 12345 / RGN 67890">
+<div id="page-student-register" class="page">
+<div class="card" style="border:3px solid #7c3aed">
+<h2>👨‍🎓 Student Registration</h2>
+<p style="font-size:13px;color:#64748b">Join KUSI Care as Nursing Student</p>
+<input id="stuName" class="input" placeholder="Full Name">
+<input id="stuPhone" class="input" placeholder="Phone (0xx xxx xxxx)">
+<input id="stuSchool" class="input" placeholder="School / Institution">
+<input id="stuLevel" class="input" placeholder="Level (e.g. 200, Diploma 2)">
+<select id="stuRegion" class="input"><option>Greater Accra</option><option>Ashanti</option><option>Western</option><option>Central</option><option>Eastern</option><option>Volta</option><option>Northern</option><option>Other</option></select>
+<label style="font-size:12px;display:flex;gap:6px;margin:8px 0"><input type="checkbox" id="stuTerms"> I agree to <a href="#" onclick="alert('Terms: Must be enrolled in accredited nursing program.')">Terms</a> and <a href="#" onclick="alert('Privacy: Data stored securely in Ghana, no sharing without consent.')">Privacy Policy</a></label>
+<button class="btn btn-primary" style="background:#7c3aed" onclick="registerStudent()">🎓 Register as Student</button>
+<div id="stuMsg" style="margin-top:10px;font-size:13px"></div>
+</div>
+</div>
 
-<label style="font-size:11px;font-weight:800;margin-top:10px;display:block;color:#e91e63">🎥 NEW - 30-sec Intro Video (Clients will watch this!)</label><input id="nRegIntroVideo" type="file" accept="video/*" capture="user">
-</div><button class="btnSubmit" onclick="registerNurseFull()">✅ Register</button><div id="nRegStatus" style="font-size:10px;color:green;margin-top:5px"></div></div>
+<div id="page-nurse-public" class="page">
+<div class="card"><h2>👩‍⚕️ Apply as Nurse</h2>
+<input id="nurseName" class="input" placeholder="Full Name">
+<input id="nursePhone" class="input" placeholder="Phone">
+<input id="nurseLicense" class="input" placeholder="NMC License No">
+<button class="btn btn-primary" onclick="registerNurse()">Submit Application</button>
+<div id="nurseMsg"></div></div>
+</div>
+
+<div id="page-booking-public" class="page">
+<div class="card"><h2>📅 Book a Nurse</h2>
+<input id="bookName" class="input" placeholder="Patient Name">
+<input id="bookPhone" class="input" placeholder="Your Phone">
+<input id="bookAddress" class="input" placeholder="Address + GPS Area">
+<select id="bookService" class="input"><option>Home Nursing</option><option>Wound Care</option><option>Elderly Care</option><option>Injection</option><option>Post-Surgery</option></select>
+<button class="btn btn-primary" onclick="bookNurse()">Book Now</button>
+<div id="bookMsg"></div></div>
+</div>
+
+<div id="page-staff-login" class="page">
+<div class="card" style="border:3px solid #111">
+<h2>Staff Login 🔐</h2>
+<input id="staffUser" class="input" placeholder="Username (KUSIPETER for CEO)">
+<input id="staffPass" type="password" class="input" placeholder="Password">
+<button class="btn btn-primary" onclick="staffLogin()">Login</button>
+<div style="margin-top:12px;font-size:12px;color:#64748b">CEO Demo:<br>User: <b>KUSIPETER</b><br>Pass: <b>Peterasa80@you!</b></div>
+<div id="loginMsg" style="color:red"></div></div>
+</div>
+
+<div id="page-ceo-dashboard" class="page">
+<div class="card" style="border:3px solid #111">
+<h2>CEO 👑 - <span id="ceoDashName">CEO</span> - Nurse Assign Closest 📅 + Admin + GPS</h2>
+<div class="statGrid">
+<div class="statBox"><b id="totalBookings">0</b><span>Bookings</span></div>
+<div class="statBox"><b id="totalNurses">0</b><span>Nurses</span></div>
+<div class="statBox"><b id="totalPending">0</b><span>Pending</span></div>
+<div class="statBox"><b id="totalEarnings">0</b><span>💰 CEO 15%</span></div>
+<div class="statBox"><b id="totalNurseEarnings">0</b><span>👩‍⚕️ Nurse 85%</span></div>
+<div class="statBox"><b id="totalReceipts">0</b><span>Receipts</span></div>
+<div class="statBox" style="border:2px solid #7c3aed"><b id="totalStudents">0</b><span>Students</span></div>
+</div>
+<div class="tabBar">
+<button class="tabBtn active" onclick="switchCEOTab('bookings')">📅 Assign Closest 📅</button>
+<button class="tabBtn" onclick="switchCEOTab('nurses')">👩‍⚕️ Nurses</button>
+<button class="tabBtn" onclick="switchCEOTab('earnings')">💰 15/85 💳</button>
+<button class="tabBtn" onclick="switchCEOTab('finance')">💵 Finance 💰</button>
+<button class="tabBtn" style="background:#eab308;color:#111" onclick="switchCEOTab('announcement')">📢 Announcement</button>
+<button class="tabBtn" onclick="switchCEOTab('students')" style="background:#7c3aed;color:white">👨‍🎓 Students</button>
+</div>
+</div>
+
+<div id="ceo-tab-bookings" class="card"><h2>Bookings - Assign Closest 📅</h2>
+<div style="display:flex;gap:5px;margin-bottom:10px">
+<input id="ceoBookingSearch" placeholder="Search" class="input" style="margin:0" oninput="filterCEOBookings()">
+<select id="ceoBookingFilter" onchange="filterCEOBookings()" class="input" style="margin:0;width:140px"><option value="all">All</option><option value="pending_assignment">Pending</option><option value="assigned">Assigned</option></select>
+</div><div id="ceoBookingsList">Loading...</div></div>
+
+<div id="ceo-tab-nurses" class="card" style="display:none"><h2>Nurses</h2><div id="ceoNursesList">Loading...</div></div>
+<div id="ceo-tab-earnings" class="card" style="display:none"><h2>Earnings 15/85</h2><div id="ceoEarningsList"></div></div>
+<div id="ceo-tab-finance" class="card" style="display:none"><h2>Finance</h2><div id="ceoFinanceList"></div></div>
+<div id="ceo-tab-announcement" class="card" style="display:none"><h2>Announcement</h2><textarea id="announceText" class="input"></textarea><button class="btn btn-primary" style="background:#eab308;color:#111" onclick="postAnnouncement()">Post</button><div id="announceMsg"></div></div>
+
+<div id="ceo-tab-students" class="card" style="display:none;border:3px solid #7c3aed">
+<h2>👨‍🎓 Students - Management</h2>
+<div style="display:flex;gap:6px;margin-bottom:10px">
+<input id="ceoStudentSearch" class="input" style="margin:0" placeholder="Search student" oninput="filterCEOStudents()">
+<select id="ceoStudentFilter" class="input" style="margin:0;width:120px" onchange="filterCEOStudents()"><option value="all">All</option><option value="Greater Accra">Greater Accra</option><option value="Ashanti">Ashanti</option></select>
+</div>
+<div id="ceoStudentsList">Loading students...</div>
+</div>
+</div>
+
+<div class="bottomNav">
+<div onclick="showPage('student-register')">👨‍🎓<br>Student</div>
+<div class="active" onclick="showPage('home')">🏠<br>Home</div>
+<div onclick="showPage('nurse-public')">👩‍⚕️<br>Nurse</div>
+<div onclick="showPage('booking-public')">📅<br>Book</div>
+<div onclick="showPage('staff-login')">🔐<br>Staff</div>
+</div>
+
 <script>
-// YOUR OLD FIREBASE CONFIG - UNCHANGED
-const firebaseConfig = {apiKey:"YOUR_KEY",databaseURL:"YOUR_URL"};
-if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
-
-function registerNurseFull(){
-let name=document.getElementById('nRegName').value.trim();
-let fullPhone=document.getElementById('nRegPhone').value.trim();
-let phone=document.getElementById('nRegPhone').value.trim();
-let pass=document.getElementById('nRegPass').value.trim();
-let loc=document.getElementById('nRegLocation').value.trim();
-if(!name||!phone||!pass||!loc){alert('Name Phone Pass Location required - Use GPS Auto!');return;}
-
-let photoFile=document.getElementById('nRegPhoto').files[0];
-let idFile=document.getElementById('nRegID').files[0];
-let certFile=document.getElementById('nRegCert').files[0];
-let cvFile=document.getElementById('nRegCV').files[0];
-let pinCardFile=document.getElementById('nRegPINCard').files[0];
-let pinNumber=document.getElementById('nRegPINNumber').value.trim();
-let introVideoFile=document.getElementById('nRegIntroVideo').files[0];
-
-if(!photoFile){alert('Upload Photo required');return;}
-if(!certFile){alert('Upload Cert required');return;}
-if(!cvFile){alert('❌ Upload CV required - NEW!');return;}
-if(!pinCardFile){alert('❌ Upload NMC PIN Card required - NEW!');return;}
-if(!pinNumber){alert('❌ Enter PIN Number');return;}
-
-let w={name:name,phone:fullPhone,rawPhone:phone,password:pass,location:loc,time:new Date().toLocaleString(),timestamp:Date.now(),status:'pending_approval',photoName:photoFile?photoFile.name:'',idName:idFile?idFile.name:'',certName:certFile?certFile.name:'',cvName:cvFile?cvFile.name:'No CV',pinCardName:pinCardFile?pinCardFile.name:'No PIN Card',pinNumber:pinNumber,introVideoName:introVideoFile?introVideoFile.name:'',hasPhoto:!!photoFile,hasCV:!!cvFile,hasPinCard:!!pinCardFile,approved:false};
-
-document.getElementById('nRegStatus').innerText='⏳ Registering with CV + PIN...';
-if(db) db.ref('workers/'+fullPhone.replace(/\+/g,'')).set(w).then(()=>{
-document.getElementById('nRegStatus').innerText='✅ Registered '+fullPhone+' CV:'+cvFile.name+' PIN:'+pinNumber+' CEO will approve!';
-alert('✅ Registered with CV + PIN! CEO will approve');
-});
-}
-</script>
-<script>
-// CLIENT MIN 80 VALIDATION - UNCHANGED + ADDED
-function submitBookingWithPaystackClosest(){
-let budget=document.getElementById('cBudget').value.trim()||"80";
-if(parseFloat(budget)<80){alert('❌ Minimum is 80 GHS Boss! Rejected!');return;}
-// Your old booking code continues here - Keep your Paystack, GPS, 15/85...
-console.log('Booking amount valid:',budget);
-}
-
-function loadCEOnursesWithDocs(){
-if(!db) return;
-db.ref('workers').once('value',s=>{
-let data=s.val()||{};
-let html='';
-Object.values(data).forEach(w=>{
-html+=`<div style="border:2px solid #00b050;padding:10px;margin:6px 0"><b>${w.name}</b> - ${w.phone}<br><small>📸${w.photoName} | 📜${w.certName} | 📄 CV:${w.cvName||'❌'} | 🪪 PIN:${w.pinCardName||'❌'} | 🔢 No:${w.pinNumber||'❌'}</small></div>`;
-});
-document.getElementById('ceoNursesList').innerHTML=html;
-});
-}
+let bookings=JSON.parse(localStorage.getItem('kusi_bookings')||'[]');
+let nurses=JSON.parse(localStorage.getItem('kusi_nurses')||'[]');
+let students=JSON.parse(localStorage.getItem('kusi_students')||'[]');
+function saveAll(){localStorage.setItem('kusi_bookings',JSON.stringify(bookings));localStorage.setItem('kusi_nurses',JSON.stringify(nurses));localStorage.setItem('kusi_students',JSON.stringify(students));}
+function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));let el=document.getElementById('page-'+id);if(el)el.classList.add('active');window.scrollTo(0,0);if(id==='ceo-dashboard')loadCEOStats();}
+function switchCEOTab(tab){document.querySelectorAll('[id^=ceo-tab-]').forEach(c=>c.style.display='none');document.querySelectorAll('.tabBar .tabBtn').forEach(b=>b.classList.remove('active'));let t=document.getElementById('ceo-tab-'+tab);if(t)t.style.display='block';event.target.classList.add('active');if(tab==='bookings')loadCEOBookings();if(tab==='nurses')loadCEONurses();if(tab==='students')loadCEOStudents();if(tab==='finance')loadFinance();if(tab==='earnings')loadEarnings();}
+function registerStudent(){let name=document.getElementById('stuName').value.trim();let phone=document.getElementById('stuPhone').value.trim();let school=document.getElementById('stuSchool').value.trim();let level=document.getElementById('stuLevel').value.trim();let region=document.getElementById('stuRegion').value;let terms=document.getElementById('stuTerms').checked;let msg=document.getElementById('stuMsg');if(!name||!phone||!school){msg.innerHTML='<span style=color:red>Fill name, phone, school</span>';return}if(!terms){msg.innerHTML='<span style=color:red>Agree to Terms & Privacy</span>';return}students.push({id:Date.now(),name,phone,school,level,region,date:new Date().toLocaleString()});saveAll();msg.innerHTML='<span style=color:green>✅ Registered! ID: STU'+Date.now()+'</span>';document.getElementById('stuName').value='';document.getElementById('stuPhone').value='';document.getElementById('stuSchool').value='';loadCEOStats();}
+function registerNurse(){let name=document.getElementById('nurseName').value.trim();let phone=document.getElementById('nursePhone').value.trim();let lic=document.getElementById('nurseLicense').value.trim();if(!name||!phone){document.getElementById('nurseMsg').innerHTML='Fill fields';return}nurses.push({id:Date.now(),name,phone,license:lic,status:'pending',date:new Date().toLocaleString()});saveAll();document.getElementById('nurseMsg').innerHTML='<span style=color:green>✅ Application sent!</span>';}
+function bookNurse(){let name=document.getElementById('bookName').value.trim();let phone=document.getElementById('bookPhone').value.trim();let addr=document.getElementById('bookAddress').value.trim();let serv=document.getElementById('bookService').value;if(!name||!phone){document.getElementById('bookMsg').innerHTML='Fill name & phone';return}bookings.push({id:Date.now(),patientName:name,phone,address:addr,service:serv,status:'pending_assignment',date:new Date().toLocaleString(),amount:300});saveAll();document.getElementById('bookMsg').innerHTML='<span style=color:green>✅ Booking received!</span>';}
+function staffLogin(){let u=document.getElementById('staffUser').value.trim();let p=document.getElementById('staffPass').value;if(u==='KUSIPETER'&&p==='Peterasa80@you!'){document.getElementById('ceoDashName').textContent='KUSIPETER';showPage('ceo-dashboard');loadCEOStats();loadCEOBookings();}else{document.getElementById('loginMsg').textContent='Invalid login';}}
+function loadCEOStats(){document.getElementById('totalBookings').textContent=bookings.length;document.getElementById('totalNurses').textContent=nurses.length;document.getElementById('totalPending').textContent=bookings.filter(b=>b.status==='pending_assignment').length;let total=bookings.reduce((s,b)=>s+(b.amount||0),0);document.getElementById('totalEarnings').textContent='GHS '+(total*0.15).toFixed(0);document.getElementById('totalNurseEarnings').textContent='GHS '+(total*0.85).toFixed(0);document.getElementById('totalReceipts').textContent=bookings.length;document.getElementById('totalStudents').textContent=students.length;}
+function loadCEOBookings(filter='all',search=''){let list=document.getElementById('ceoBookingsList');if(bookings.length===0){list.innerHTML='No bookings yet.';return}let f=bookings;if(filter!=='all')f=f.filter(b=>b.status===filter);if(search)f=f.filter(b=>(b.patientName+b.phone).toLowerCase().includes(search.toLowerCase()));list.innerHTML=f.map(b=>`<div style="border:1px solid #e2e8f0;padding:10px;border-radius:8px;margin-bottom:8px"><b>${b.patientName}</b> - ${b.service}<br><small>${b.phone} | ${b.address||''} | ${b.date}</small><br>Status: <b>${b.status}</b> | GHS ${b.amount} <button class="btn btn-small" style="background:#111;color:#fff;margin-left:6px" onclick="assignBooking(${b.id})">Assign</button></div>`).reverse().join('');}
+function filterCEOBookings(){let s=document.getElementById('ceoBookingSearch').value;let f=document.getElementById('ceoBookingFilter').value;loadCEOBookings(f,s);}
+function assignBooking(id){let b=bookings.find(x=>x.id===id);if(b){b.status='assigned';saveAll();loadCEOStats();loadCEOBookings();}}
+function loadCEONurses(){let list=document.getElementById('ceoNursesList');if(nurses.length===0){list.innerHTML='No nurses.';return}list.innerHTML=nurses.map(n=>`<div style="border:1px solid #e2e8f0;padding:8px;border-radius:8px;margin-bottom:6px"><b>${n.name}</b> - ${n.phone}<br>License: ${n.license}</div>`).reverse().join('');}
+function loadCEOStudents(){let list=document.getElementById('ceoStudentsList');if(students.length===0){list.innerHTML='No students yet. 0 Students';return}list.innerHTML=students.map(s=>`<div style="border:2px solid #7c3aed;padding:10px;border-radius:10px;margin-bottom:8px;background:#f5f3ff"><b>👨‍🎓 ${s.name}</b> (${s.level})<br>📞 ${s.phone} | 🏫 ${s.school}<br>📍 ${s.region} | 🗓️ ${s.date}<br><button class="btn btn-small" style="background:#7c3aed;color:#fff" onclick="approveStudent(${s.id})">Approve</button> <button class="btn btn-small" onclick="deleteStudent(${s.id})">Delete</button></div>`).reverse().join('');}
+function filterCEOStudents(){let q=document.getElementById('ceoStudentSearch').value.toLowerCase();let f=document.getElementById('ceoStudentFilter').value;let filtered=students.filter(s=>{let matchQ=(s.name+s.school+s.phone).toLowerCase().includes(q);let matchF=f==='all'||s.region===f;return matchQ&&matchF;});let list=document.getElementById('ceoStudentsList');if(filtered.length===0){list.innerHTML='No matching students';return}list.innerHTML=filtered.map(s=>`<div style="border:2px solid #7c3aed;padding:10px;border-radius:10px;margin-bottom:8px;background:#f5f3ff"><b>👨‍🎓 ${s.name}</b> (${s.level})<br>📞 ${s.phone} | 🏫 ${s.school}<br>📍 ${s.region}</div>`).reverse().join('');}
+function approveStudent(id){alert('Student '+id+' Approved!');}
+function deleteStudent(id){students=students.filter(s=>s.id!==id);saveAll();loadCEOStudents();loadCEOStats();}
+function loadFinance(){document.getElementById('ceoFinanceList').innerHTML=`<p>Total: GHS ${bookings.reduce((s,b)=>s+(b.amount||0),0)}</p><p>CEO 15%: GHS ${(bookings.reduce((s,b)=>s+(b.amount||0),0)*0.15).toFixed(2)}</p><p>Nurse 85%: GHS ${(bookings.reduce((s,b)=>s+(b.amount||0),0)*0.85).toFixed(2)}</p>`;}
+function loadEarnings(){loadFinance();document.getElementById('ceoEarningsList').innerHTML=document.getElementById('ceoFinanceList').innerHTML;}
+function postAnnouncement(){let t=document.getElementById('announceText').value;if(t){localStorage.setItem('announcement',t);document.getElementById('announceMsg').innerHTML='<span style=color:green>Posted!</span>';}}
+loadCEOStats();
 </script>
 </body>
 </html>
