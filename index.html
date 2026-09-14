@@ -106,8 +106,9 @@ input,select,textarea{width:100%;padding:12px;margin:6px 0;border-radius:10px;bo
 <div class="locationRow"><input id="cLocation" placeholder="Tap GPS Auto - Location"><button type="button" onclick="autoGPS('cLocation','clientGpsStatus')">GPS Auto</button></div>
 <small id="clientGpsStatus" class="gpsBadge hidden"></small>
 <select id="cService"><option value="">-- Select Service --</option><option>Elderly Care</option><option>Baby Care and Nanny</option><option>Hospital Support</option><option>Post-Surgery Care</option><option>Disability Support</option><option>Maternity and Newborn</option><option>Night Nurse</option><option>Palliative Care</option><option>Physiotherapy</option><option>Injection and Wound Care</option><option>Diabetes Monitoring</option><option>Dementia Care</option><option>Child Special Needs</option></select>
-<input id="cBudget" type="number" placeholder="Rate e.g. 200 - Min 80">
-<select id="cCurrency"><option>GHS</option><option>USD</option><option>GBP</option><option>NGN</option></select>
+<div style="display:flex;gap:6px;align-items:center"><input id="cBudget" type="number" placeholder="Rate e.g. 200 - Min 90 GHS" oninput="checkRateMinimum()" onchange="checkRateMinimum()" style="flex:1"><select id="cCurrency" onchange="checkRateMinimum()" style="width:110px"><option>GHS</option><option>USD</option><option>GBP</option><option>NGN</option><option>ZAR</option><option>KES</option><option>INR</option><option>AED</option><option>EUR</option></select></div>
+<div id="rateEquivalent" style="background:#fffbeb;border:2px solid #eab308;border-radius:10px;padding:8px;margin:6px 0;font-size:11px;display:none"></div>
+<div style="background:#f0fdf4;border:2px dashed #16a34a;border-radius:10px;padding:8px;margin:6px 0;font-size:10px"><b>MINIMUM RATE - Equal in all currencies:</b><br>90 GHS = 6 USD = 5 GBP = 9450 NGN = 108 ZAR = 747 KES = 486 INR = 22 AED = 6 EUR<br><span style="color:#ef4444;font-weight:800">Below 90 GHS equivalent NOT allowed</span></div>
 <button class="btnSubmit" style="background:linear-gradient(90deg,#00b050,#065f46)" onclick="submitBooking()">BOOK - Find Closest Nurse</button>
 <button class="btnSubmit" style="background:#eab308;color:#111" onclick="submitBookingNoPay()">Book Without Pay</button>
 </div>
@@ -160,7 +161,9 @@ input,select,textarea{width:100%;padding:12px;margin:6px 0;border-radius:10px;bo
 <div class="locationRow"><input id="cLocation2" placeholder="Tap GPS Auto"><button type="button" onclick="autoGPS('cLocation2','clientGpsStatus2')">GPS</button></div>
 <small id="clientGpsStatus2" class="gpsBadge hidden"></small>
 <select id="cService2"><option>Elderly Care</option><option>Baby Care</option><option>Hospital Support</option><option>Post-Surgery</option></select>
-<input id="cBudget2" type="number" placeholder="Rate e.g. 200">
+<input id="cBudget2" type="number" placeholder="Rate e.g. 200 - Min 90 GHS" oninput="checkRateMinimum2()" onchange="checkRateMinimum2()">
+<div id="rateEquivalent2" style="background:#fffbeb;border:2px solid #eab308;border-radius:10px;padding:8px;margin:6px 0;font-size:11px;display:none"></div>
+<div style="background:#f0fdf4;border:2px dashed #16a34a;border-radius:10px;padding:6px;margin:4px 0;font-size:10px"><b>MIN: 90 GHS</b> = 6 USD = 5 GBP = 9450 NGN = 108 ZAR</div>
 <button class="btnSubmit" style="background:#00b050" onclick="submitBooking2()">Book Now</button>
 </div>
 </div>
@@ -273,6 +276,87 @@ input,select,textarea{width:100%;padding:12px;margin:6px 0;border-radius:10px;bo
 var firebaseConfig={apiKey:"AIzaSyB52-X1D8Cg-wUDWPds_tR7D8cF82dMdRg",authDomain:"web-care-618e8.firebaseapp.com",databaseURL:"https://web-care-618e8-default-rtdb.firebaseio.com",projectId:"web-care-618e8",storageBucket:"web-care-618e8.firebasestorage.app",messagingSenderId:"1062578660694",appId:"1:1062578660694:web:f94dfe12c929df05bce2f7"};
 var db=null,allBookings=[],allWorkers=[],logoTapCount=0,staffLogoTapCount=0,currentCountry='GH',currentCurrency='GHS',clientLat=null,clientLng=null,nurseRegLat=null,nurseRegLng=null;
 var countries={GH:{name:'Ghana',currency:'GHS',lat:5.6037,lng:-0.1870},NG:{name:'Nigeria',currency:'NGN',lat:9.0820,lng:8.6753},ZA:{name:'South Africa',currency:'ZAR',lat:-30.5595,lng:22.9375},KE:{name:'Kenya',currency:'KES',lat:-0.0236,lng:37.9062},IN:{name:'India',currency:'INR',lat:20.5937,lng:78.9629},US:{name:'USA',currency:'USD',lat:39.8283,lng:-98.5795},UK:{name:'UK',currency:'GBP',lat:55.3781,lng:-3.4360},AE:{name:'UAE',currency:'AED',lat:23.4241,lng:53.8478}};
+
+// EQUAL CURRENCY EQUIVALENT - 90 GHS MINIMUM = SAME VALUE EVERYWHERE
+var MIN_RATE_GHS = 90;
+var currencyRates = {
+  'GHS': 1.0,
+  'USD': 0.0645,
+  'GBP': 0.0513,
+  'NGN': 105.0,
+  'ZAR': 1.2,
+  'KES': 8.3,
+  'INR': 5.4,
+  'AED': 0.237,
+  'EUR': 0.059
+};
+var currencyMin = {
+  'GHS': 90,
+  'USD': 6,
+  'GBP': 5,
+  'NGN': 9450,
+  'ZAR': 108,
+  'KES': 747,
+  'INR': 486,
+  'AED': 22,
+  'EUR': 6
+};
+function getMinForCurrency(cur){
+  return currencyMin[cur] || 90;
+}
+function convertToGHS(amount, fromCur){
+  var rate = currencyRates[fromCur] || 1;
+  if(rate === 0) return amount;
+  return amount / rate;
+}
+function checkRateMinimum(){
+  try{
+    var budgetEl=document.getElementById('cBudget');
+    var currencyEl=document.getElementById('cCurrency');
+    if(!budgetEl || !currencyEl) return true;
+    var amount=parseFloat(budgetEl.value);
+    var cur=currencyEl.value;
+    if(isNaN(amount) || amount <=0) return true;
+    var min=getMinForCurrency(cur);
+    var ghsEquiv=convertToGHS(amount, cur);
+    var equivDiv=document.getElementById('rateEquivalent');
+    if(equivDiv){
+      equivDiv.style.display='block';
+      equivDiv.innerHTML='Entered: <b>'+amount+' '+cur+'</b> = <b>'+ghsEquiv.toFixed(2)+' GHS</b><br>Minimum: <b>'+min+' '+cur+'</b> (90 GHS equivalent)<br>'+(ghsEquiv < 90 ? '<span style="color:#ef4444;font-weight:800">TOO LOW - Minimum is '+min+' '+cur+'</span>' : '<span style="color:#00b050;font-weight:800">OK - Meets minimum</span>');
+    }
+    if(ghsEquiv < 89.9){
+      budgetEl.style.border='3px solid #ef4444';
+      return false;
+    }else{
+      budgetEl.style.border='2px solid #00b050';
+      return true;
+    }
+  }catch(e){ return true; }
+}
+function checkRateMinimum2(){
+  try{
+    var budgetEl=document.getElementById('cBudget2');
+    if(!budgetEl) return true;
+    var amount=parseFloat(budgetEl.value);
+    if(isNaN(amount)) return true;
+    // cBudget2 is always GHS
+    var equivDiv=document.getElementById('rateEquivalent2');
+    if(equivDiv){
+      equivDiv.style.display='block';
+      if(amount < 90){
+        equivDiv.innerHTML='<span style="color:#ef4444;font-weight:800">TOO LOW - Minimum is 90 GHS</span><br>90 GHS = 6 USD = 5 GBP = 9450 NGN = 108 ZAR = 747 KES = 486 INR = 22 AED';
+        budgetEl.style.border='3px solid #ef4444';
+        return false;
+      }else{
+        equivDiv.innerHTML='<span style="color:#00b050;font-weight:800">OK - '+amount+' GHS meets minimum 90 GHS</span><br>Equivalent: '+(amount*0.0645).toFixed(2)+' USD | '+(amount*0.0513).toFixed(2)+' GBP | '+(amount*105).toFixed(0)+' NGN | '+(amount*1.2).toFixed(0)+' ZAR';
+        budgetEl.style.border='2px solid #00b050';
+        return true;
+      }
+    }
+    return amount >= 90;
+  }catch(e){ return true; }
+}
+
 try{firebase.initializeApp(firebaseConfig);db=firebase.database();}catch(e){}
 
 // CORE NAVIGATION - SIMPLE AND BULLETPROOF
@@ -350,9 +434,47 @@ function showFileName(inputId,statusId){ try{ var inp=document.getElementById(in
 function autoGPS(inputId,statusId){ try{ var statusEl=document.getElementById(statusId); var inputEl=document.getElementById(inputId); if(statusEl){statusEl.classList.remove('hidden'); statusEl.innerText='Getting GPS...';} if(!navigator.geolocation){alert('GPS not supported');return;} navigator.geolocation.getCurrentPosition(function(pos){ var lat=pos.coords.latitude,lng=pos.coords.longitude; if(inputId==='cLocation'||inputId==='cLocation2'){clientLat=lat;clientLng=lng;} if(inputId==='nRegLocation'){nurseRegLat=lat;nurseRegLng=lng;} if(inputEl){ fetch('https://nominatim.openstreetmap.org/reverse?format=json&lat='+lat+'&lon='+lng).then(function(r){return r.json();}).then(function(data){ inputEl.value=data.display_name||lat.toFixed(5)+','+lng.toFixed(5); if(statusEl) statusEl.innerText='GPS: '+lat.toFixed(4)+','+lng.toFixed(4); }).catch(function(){ inputEl.value=lat.toFixed(5)+','+lng.toFixed(5); if(statusEl) statusEl.innerText='GPS: '+lat.toFixed(4)+','+lng.toFixed(4); }); } },function(err){ if(statusEl) statusEl.innerText='GPS failed'; alert(err.message); },{enableHighAccuracy:true,timeout:10000}); }catch(e){} }
 function getFullPhone(codeId,phoneId){ try{ var codeEl=document.getElementById(codeId); var phoneEl=document.getElementById(phoneId); var code=codeEl?codeEl.value:'+233'; var phone=phoneEl?phoneEl.value.trim():''; phone=phone.replace(/^0+/, ''); if(phone.indexOf('+')===0) return phone; return code+phone; }catch(e){return '';} }
 function registerNurse(){ try{ var name=document.getElementById('nRegName').value.trim(); var phone=document.getElementById('nRegPhone').value.trim(); var fullPhone=getFullPhone('nRegPhoneCode','nRegPhone'); var pass=document.getElementById('nRegPass').value.trim(); var loc=document.getElementById('nRegLocation').value.trim(); if(!name||!phone||!pass||!loc){alert('Name Phone Pass Location required');return;} var w={name:name,phone:fullPhone,password:pass,location:loc,time:new Date().toLocaleString(),timestamp:Date.now(),country:currentCountry,lat:nurseRegLat,lng:nurseRegLng,status:'pending_approval'}; document.getElementById('nRegStatus').innerText='Registering...'; if(db) db.ref('workers/'+fullPhone.split('+').join('')).set(w).then(function(){document.getElementById('nRegStatus').innerText='Registered '+fullPhone; alert('Registered! CEO will approve');}); else alert('Registered locally '+fullPhone); }catch(e){alert('Register error '+e.message);} }
-function submitBooking(){ try{ var name=document.getElementById('cName').value.trim(); var phone=document.getElementById('cPhone').value.trim(); var fullPhone=getFullPhone('cPhoneCode','cPhone'); var service=document.getElementById('cService').value; if(!name||!phone||!service){alert('Name Phone Service required');return;} var id=Date.now(); var b={id:id,name:name,phone:fullPhone,service:service,location:document.getElementById('cLocation').value,amount:parseFloat(document.getElementById('cBudget').value||'80'),currency:document.getElementById('cCurrency').value,status:'pending_assignment',time:new Date().toLocaleString(),timestamp:Date.now(),lat:clientLat,lng:clientLng}; if(db) db.ref('bookings/'+id).set(b).then(function(){alert('Booked '+fullPhone);}); else alert('Booked locally'); }catch(e){alert(e.message);} }
+function submitBooking(){ try{ 
+  var name=document.getElementById('cName').value.trim(); 
+  var phone=document.getElementById('cPhone').value.trim(); 
+  var fullPhone=getFullPhone('cPhoneCode','cPhone'); 
+  var service=document.getElementById('cService').value; 
+  if(!name||!phone||!service){alert('Name Phone Service required');return;} 
+  var budgetEl=document.getElementById('cBudget');
+  var amount=parseFloat(budgetEl.value||'0');
+  var cur=document.getElementById('cCurrency').value;
+  var min=getMinForCurrency(cur);
+  var ghsEquiv=convertToGHS(amount, cur);
+  if(ghsEquiv < 89.9){
+    alert('RATE TOO LOW!\n\nYou entered: '+amount+' '+cur+' = '+ghsEquiv.toFixed(2)+' GHS\nMinimum required: '+min+' '+cur+' (90 GHS equivalent)\n\nEqual minimums:\n90 GHS = 6 USD = 5 GBP = 9450 NGN = 108 ZAR = 747 KES = 486 INR = 22 AED\n\nPlease increase your rate to at least '+min+' '+cur);
+    budgetEl.focus();
+    budgetEl.style.border='3px solid #ef4444';
+    return;
+  }
+  var id=Date.now(); 
+  var b={id:id,name:name,phone:fullPhone,service:service,location:document.getElementById('cLocation').value,amount:amount,currency:cur,ghsEquivalent:ghsEquiv,status:'pending_assignment',time:new Date().toLocaleString(),timestamp:Date.now(),lat:clientLat,lng:clientLng}; 
+  if(db) db.ref('bookings/'+id).set(b).then(function(){alert('Booked '+fullPhone+' - '+amount+' '+cur+' = '+ghsEquiv.toFixed(2)+' GHS - Meets minimum!');}); 
+  else alert('Booked locally '+fullPhone+' - '+amount+' '+cur+' = '+ghsEquiv.toFixed(2)+' GHS'); 
+}catch(e){alert(e.message);} }
 function submitBookingNoPay(){ submitBooking(); }
-function submitBooking2(){ try{ var name=document.getElementById('cName2').value.trim(); var phone=document.getElementById('cPhone2').value.trim(); var fullPhone=getFullPhone('cPhoneCode2','cPhone2'); if(!name||!phone){alert('Name Phone required');return;} var id=Date.now(); var b={id:id,name:name,phone:fullPhone,service:document.getElementById('cService2').value,location:document.getElementById('cLocation2').value,amount:parseFloat(document.getElementById('cBudget2').value||'80'),status:'pending_assignment',time:new Date().toLocaleString(),timestamp:Date.now()}; if(db) db.ref('bookings/'+id).set(b).then(function(){alert('Booked '+fullPhone);}); else alert('Booked locally'); }catch(e){} }
+function submitBooking2(){ try{ 
+  var name=document.getElementById('cName2').value.trim(); 
+  var phone=document.getElementById('cPhone2').value.trim(); 
+  var fullPhone=getFullPhone('cPhoneCode2','cPhone2'); 
+  if(!name||!phone){alert('Name Phone required');return;} 
+  var budgetEl=document.getElementById('cBudget2');
+  var amount=parseFloat(budgetEl.value||'0');
+  if(amount < 90){
+    alert('RATE TOO LOW!\n\nYou entered: '+amount+' GHS\nMinimum required: 90 GHS\n\nEqual minimums:\n90 GHS = 6 USD = 5 GBP = 9450 NGN\n\nPlease increase to at least 90 GHS');
+    budgetEl.focus();
+    budgetEl.style.border='3px solid #ef4444';
+    return;
+  }
+  var id=Date.now(); 
+  var b={id:id,name:name,phone:fullPhone,service:document.getElementById('cService2').value,location:document.getElementById('cLocation2').value,amount:amount,currency:'GHS',ghsEquivalent:amount,status:'pending_assignment',time:new Date().toLocaleString(),timestamp:Date.now()}; 
+  if(db) db.ref('bookings/'+id).set(b).then(function(){alert('Booked '+fullPhone+' - '+amount+' GHS - Meets minimum 90 GHS!');}); 
+  else alert('Booked locally '+fullPhone+' - '+amount+' GHS'); 
+}catch(e){} }
 function loginNurse(){ try{ var fullPhone=getFullPhone('nurseLoginCode','nurseLoginPhone'); var pass=document.getElementById('nurseLoginPass').value.trim(); if(!fullPhone||!pass){alert('Enter phone and password');return;} localStorage.setItem('nursePhone',fullPhone); document.getElementById('nurseDashName').innerText=fullPhone; showPage('nurse-dashboard'); }catch(e){} }
 function loginStaff(){ try{ var id=document.getElementById('staffLoginID').value.trim(); if(!id){alert('Enter ID');return;} localStorage.setItem('staffID',id); document.getElementById('staffDashName').innerText=id; showPage('staff-dashboard'); }catch(e){} }
 function loginCEO(){
