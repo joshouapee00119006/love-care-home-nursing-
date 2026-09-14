@@ -14,7 +14,7 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap');
 :root{ --nurse-opacity:0.08; }
-body{margin:0;font-family:Poppins;background:#f0fdf4;padding-bottom:80px;position:relative;}
+body{margin:0;font-family:'Poppins','Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif;background:#f0fdf4;padding-bottom:80px;position:relative;}
 .header{background:linear-gradient(90deg,#16a34a,#eab308);padding:10px 14px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;color:white}
 .header-logo-img{height:46px;width:auto;background:white;border-radius:10px;padding:4px 6px;object-fit:contain;box-shadow:0 2px 8px rgba(0,0,0,0.15)}
 .announcementBar{background:#111827;color:#eab308;padding:10px 0;overflow:hidden;white-space:nowrap;position:sticky;top:66px;z-index:99;border-bottom:3px solid #eab308}
@@ -22,7 +22,7 @@ body{margin:0;font-family:Poppins;background:#f0fdf4;padding-bottom:80px;positio
 @keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-100%)}}
 .card{background:white;border:2px solid #eab308;border-radius:16px;margin:8px;padding:12px;box-shadow:0 2px 6px rgba(0,0,0,.08)}
 .card h2{color:#16a34a;margin:6px 0;font-size:13px}
-input,select,textarea{width:100%;padding:11px;margin:5px 0;border-radius:10px;border:1px solid #ccc;box-sizing:border-box;font-family:Poppins}
+input,select,textarea{width:100%;padding:11px;margin:5px 0;border-radius:10px;border:1px solid #ccc;box-sizing:border-box;font-family:'Poppins','Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif}
 .btnSubmit{width:100%;padding:11px;border:none;border-radius:10px;font-weight:800;margin-top:6px;cursor:pointer;background:#16a34a;color:white}
 .btnSmall{padding:6px 10px;border:none;border-radius:8px;font-weight:800;font-size:10px;cursor:pointer;margin:2px}
 .page{display:none}.page.active{display:block}
@@ -56,6 +56,15 @@ body::after{background-image:url('https://cdn-icons-png.flaticon.com/512/3774/37
 @keyframes float1{0%{transform:translateY(0)}100%{transform:translateY(-40px)}}
 @keyframes float2{0%{transform:translateY(0)}100%{transform:translateY(-30px)}}
 .file-preview{font-size:9px;padding:4px 8px;border-radius:8px;margin-top:4px;display:inline-block}
+
+/* EMOJI FIX - prevent Chinese boxes */
+body, .card, .btnSubmit, .btnSmall, h2, h3, b, span, small, div {
+  font-family: 'Poppins', 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', 'Segoe UI Symbol', sans-serif;
+}
+.header, .announcementBar, .bottomNav { 
+  font-family: 'Poppins', 'Apple Color Emoji', 'Segoe UI Emoji', sans-serif;
+}
+
 </style>
 </head>
 <body>
@@ -274,7 +283,7 @@ function loadNurseMyJobs(){let phone=localStorage.getItem('nursePhone');if(!phon
 function loadNurseEarnings(){let phone=localStorage.getItem('nursePhone');if(!phone||!db)return;db.ref('earnings/nurse/'+phone.replace(/\+/g,'')).once('value',s=>{let data=s.val()||{};let total=0;Object.values(data).forEach(e=>{total+=e.amount||0;});let el=document.getElementById('nurseEarnings');if(el){el.innerHTML=`<b>ðŸ’° Total Earnings (85%): ${currentCurrency}${total.toFixed(2)}</b><br><small>From ${Object.keys(data).length} jobs</small>`;}});}
 function calculate15_85(){if(!db)return;db.ref('payments').once('value',s=>{let data=s.val()||{};let total=0,ceoTotal=0,nurseTotal=0;Object.values(data).forEach(p=>{total+=p.amount||0;ceoTotal+=p.ceoCut||p.amount*0.15;nurseTotal+=p.nurseCut||p.amount*0.85;});let el=document.getElementById('splitCalc');if(el) el.innerHTML=`<b>Total: ${currentCurrency}${total.toFixed(2)}</b><br>CEO 15%: <b style="color:#00b050">${currentCurrency}${ceoTotal.toFixed(2)}</b><br>Nurses 85%: <b style="color:#2563eb">${currentCurrency}${nurseTotal.toFixed(2)}</b>`;let ceoE=document.getElementById('totalEarnings');if(ceoE) ceoE.innerText=currentCurrency+ceoTotal.toFixed(0);let nurseE=document.getElementById('totalNurseEarnings');if(nurseE) nurseE.innerText=currentCurrency+nurseTotal.toFixed(0);});}
 function submitBooking2Closest(){let name=document.getElementById('cName2').value.trim();let fullPhone=getFullPhone('cPhoneCode2','cPhone2');let phone=document.getElementById('cPhone2').value.trim();if(!name||!phone){alert('Name Phone required');return;} let id=Date.now(); let b={id:id,name:name,phone:fullPhone,service:document.getElementById('cService2').value,location:document.getElementById('cLocation2').value,amount:parseFloat(document.getElementById('cBudget2').value||"80"),currency:'GHS',status:'pending_assignment',clientRate:parseFloat(document.getElementById('cBudget2').value||"80"),time:new Date().toLocaleString(),timestamp:Date.now(),country:currentCountry,lat:clientLat,lng:clientLng,assignedNurse:null}; if(db) db.ref('bookings/'+id).set(b).then(()=>alert('Booked '+fullPhone));}
-function downloadReceipt(){let content=document.getElementById('receiptContent').innerHTML;let win=window.open('','','height=700,width=400');win.document.write('<html><head><title>Receipt</title><style>body{font-family:Poppins;padding:15px;font-size:12px}</style></head><body>'+content+'<div style="text-align:center;margin-top:20px"><button onclick="window.print()" style="padding:10px 20px;background:#00b050;color:white;border:none;border-radius:10px;font-weight:800">ðŸ–¨ Print PDF</button></div></body></html>');win.document.close();}
+function downloadReceipt(){let content=document.getElementById('receiptContent').innerHTML;let win=window.open('','','height=700,width=400');win.document.write('<html><head><title>Receipt</title><style>body{font-family:'Poppins','Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif;padding:15px;font-size:12px}</style></head><body>'+content+'<div style="text-align:center;margin-top:20px"><button onclick="window.print()" style="padding:10px 20px;background:#00b050;color:white;border:none;border-radius:10px;font-weight:800">ðŸ–¨ Print PDF</button></div></body></html>');win.document.close();}
 function shareReceiptWhatsApp(){let text=document.getElementById('receiptContent').innerText;let msg="ðŸ’– LOVE CARE GLOBAL - 15/85 Receipt âœ…\\n\\n"+text;window.open("https://wa.me/?text="+encodeURIComponent(msg),"_blank");}
 function triggerSOS(platform){if(!confirm('ðŸš¨ SEND SOS? '+platform)) return;let name=document.getElementById('cName')?.value||'Client';let phone=document.getElementById('cPhone')?.value||'Unknown';if(navigator.geolocation){navigator.geolocation.getCurrentPosition(pos=>{let data={id:Date.now(),platform:platform,name:name,phone:phone,lat:pos.coords.latitude,lng:pos.coords.longitude,country:currentCountry,time:new Date().toLocaleString(),timestamp:Date.now(),status:'active'};if(db) db.ref('sosAlerts/'+data.id).set(data);alert('ðŸš¨ SOS SENT!');window.open("https://wa.me/233544121814?text="+encodeURIComponent("ðŸš¨ SOS! "+platform+" Name:"+name+" Phone:"+phone+" Loc:https://maps.google.com/?q="+pos.coords.latitude+","+pos.coords.longitude),"_blank");});}}
 function loginCEO(){let id=document.getElementById('ceoLoginID').value.trim().toUpperCase();let pass=document.getElementById('ceoLoginPass').value.trim();let r=document.getElementById('ceoLoginResult');if(id==='KUSIPETER'&&pass==='Peterasa80@you!'){localStorage.setItem('isCEOLogged','true');teamUser={name:'CEO KUSIPETER',phone:'KUSIPETER',role:'CEO'};document.getElementById('loginStatus').innerText='ðŸ‘‘ CEO';document.getElementById('loginStatus').style.display='inline-block';showPage('ceo-dashboard');}else{if(r)r.innerText='Access denied';}}
