@@ -1,23 +1,43 @@
 {
-  "name": "LOVE CARE GLOBAL - Home Nursing Ghana",
+  "name": "LOVE CARE - Global Home Nursing",
   "short_name": "LOVE CARE",
-  "description": "Book nurses 15/85 profit share - GPS SOS video call Ghana",
-  "start_url": "./",
+  "description": "Global Home Nursing - Compassionate care at your doorstep",
+  "start_url": "/",
   "display": "standalone",
-  "background_color": "#16a34a",
-  "theme_color": "#16a34a",
+  "background_color": "#ffffff",
+  "theme_color": "#009EA8",
   "icons": [
     {
-      "src": "./icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "src": "/Icon-48.png",
+      "sizes": "48x48",
+      "type": "image/png"
     },
     {
-      "src": "./icon-512.png",
+      "src": "/Icon-96.png",
+      "sizes": "96x96",
+      "type": "image/png"
+    },
+    {
+      "src": "/Icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/Icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/Icon-512-adaptive.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "maskable"
+    },
+    {
+      "src": "/Icon-512-circle.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
     }
   ]
 }
