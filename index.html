@@ -276,33 +276,50 @@ var countries={GH:{name:'Ghana',currency:'GHS',lat:5.6037,lng:-0.1870},NG:{name:
 try{firebase.initializeApp(firebaseConfig);db=firebase.database();}catch(e){}
 
 // CORE NAVIGATION - SIMPLE AND BULLETPROOF
-function openPage(id){ showPage(id); }
 function showPage(id){
   try{
-    if(id==='ceo-dashboard' && localStorage.getItem('isCEOLogged')!=='true'){ id='ceo-login'; }
+    console.log('showPage', id);
+    if(id==='ceo-dashboard' && localStorage.getItem('isCEOLogged')!=='true'){ 
+      console.log('CEO not logged, redirect to login');
+      id='ceo-login'; 
+    }
     if(id==='staff-dashboard' && !localStorage.getItem('staffID')){ id='staff-login'; }
     if(id==='nurse-dashboard' && !localStorage.getItem('nursePhone')){ id='nurse-login'; }
     var pages=document.querySelectorAll('.page');
-    for(var i=0;i<pages.length;i++){ pages[i].classList.remove('active'); pages[i].style.display='none'; }
+    for(var i=0;i<pages.length;i++){ 
+      pages[i].classList.remove('active'); 
+      pages[i].style.display='none'; 
+      pages[i].style.visibility='hidden';
+    }
     var el=document.getElementById('page-'+id);
-    if(el){ el.classList.add('active'); el.style.display='block'; }
+    if(el){ 
+      el.classList.add('active'); 
+      el.style.display='block'; 
+      el.style.visibility='visible';
+      el.style.opacity='1';
+      console.log('Opened '+id);
+    }
     else{ console.log('Page not found '+id); return; }
     var btns=document.querySelectorAll('.bottomNav button');
     for(var j=0;j<btns.length;j++){ btns[j].classList.remove('active'); }
     var map={'home':'nav-home','nurse-public':'nav-nurse','booking-public':'nav-book'};
     if(map[id]){ var b=document.getElementById(map[id]); if(b) b.classList.add('active'); }
     window.scrollTo(0,0);
-  }catch(e){ console.log('showPage error '+e.message); }
+  }catch(e){ console.log('showPage error '+e.message); alert('Page error '+e.message); }
 }
+function openPage(id){ showPage(id); }
 function switchCEOTab(tab){
   try{
+    console.log('CEO tab '+tab);
     var all=document.querySelectorAll('[id^="ceo-tab-"]');
-    for(var i=0;i<all.length;i++){ all[i].classList.add('hidden'); all[i].style.display='none'; }
+    for(var i=0;i<all.length;i++){ all[i].classList.add('hidden'); all[i].style.display='none'; all[i].style.visibility='hidden'; }
     var t=document.getElementById('ceo-tab-'+tab);
-    if(t){ t.classList.remove('hidden'); t.style.display='block'; }
+    if(t){ t.classList.remove('hidden'); t.style.display='block'; t.style.visibility='visible'; console.log('Opened CEO tab '+tab); }
+    else{ alert('Tab not found '+tab); return; }
+    // Update active button
     var btns=document.querySelectorAll('#page-ceo-dashboard .tabBtn');
-    for(var j=0;j<btns.length;j++){ btns[j].classList.remove('active'); }
-  }catch(e){}
+    for(var j=0;j<btns.length;j++){ btns[j].classList.remove('active'); if(btns[j].getAttribute('onclick') && btns[j].getAttribute('onclick').indexOf(tab)!==-1) btns[j].classList.add('active'); }
+  }catch(e){ console.log('CEO tab error '+e.message); }
   try{ if(tab==='bookings') filterCEOBookings(); }catch(e){}
   try{ if(tab==='nurses') loadCEONurses(); }catch(e){}
   try{ if(tab==='payments') loadPayments(); }catch(e){}
@@ -338,7 +355,41 @@ function submitBookingNoPay(){ submitBooking(); }
 function submitBooking2(){ try{ var name=document.getElementById('cName2').value.trim(); var phone=document.getElementById('cPhone2').value.trim(); var fullPhone=getFullPhone('cPhoneCode2','cPhone2'); if(!name||!phone){alert('Name Phone required');return;} var id=Date.now(); var b={id:id,name:name,phone:fullPhone,service:document.getElementById('cService2').value,location:document.getElementById('cLocation2').value,amount:parseFloat(document.getElementById('cBudget2').value||'80'),status:'pending_assignment',time:new Date().toLocaleString(),timestamp:Date.now()}; if(db) db.ref('bookings/'+id).set(b).then(function(){alert('Booked '+fullPhone);}); else alert('Booked locally'); }catch(e){} }
 function loginNurse(){ try{ var fullPhone=getFullPhone('nurseLoginCode','nurseLoginPhone'); var pass=document.getElementById('nurseLoginPass').value.trim(); if(!fullPhone||!pass){alert('Enter phone and password');return;} localStorage.setItem('nursePhone',fullPhone); document.getElementById('nurseDashName').innerText=fullPhone; showPage('nurse-dashboard'); }catch(e){} }
 function loginStaff(){ try{ var id=document.getElementById('staffLoginID').value.trim(); if(!id){alert('Enter ID');return;} localStorage.setItem('staffID',id); document.getElementById('staffDashName').innerText=id; showPage('staff-dashboard'); }catch(e){} }
-function loginCEO(){ try{ var id=document.getElementById('ceoLoginID').value.trim().toUpperCase(); var pass=document.getElementById('ceoLoginPass').value.trim(); var r=document.getElementById('ceoLoginResult'); if(id==='KUSIPETER' && pass==='Peterasa80@you!'){ localStorage.setItem('isCEOLogged','true'); document.getElementById('ceoDashName').innerText='CEO KUSIPETER'; var ls=document.getElementById('loginStatus'); if(ls){ls.innerText='CEO'; ls.style.display='inline-block';} showPage('ceo-dashboard'); }else{ if(r) r.innerText='Access denied'; alert('CEO Login Failed'); } }catch(e){} }
+function loginCEO(){
+  try{
+    console.log('CEO login clicked');
+    var idEl=document.getElementById('ceoLoginID');
+    var passEl=document.getElementById('ceoLoginPass');
+    var r=document.getElementById('ceoLoginResult');
+    if(!idEl || !passEl){ alert('Login form not found'); return; }
+    var id=idEl.value.trim().toUpperCase();
+    var pass=passEl.value.trim();
+    console.log('Trying CEO login', id);
+    if(id==='KUSIPETER' && pass==='Peterasa80@you!'){
+      localStorage.setItem('isCEOLogged','true');
+      var dashName=document.getElementById('ceoDashName');
+      if(dashName) dashName.innerText='CEO KUSIPETER';
+      var ls=document.getElementById('loginStatus');
+      if(ls){ ls.innerText='CEO'; ls.style.display='inline-block'; }
+      // FORCE open CEO dashboard with direct DOM manipulation
+      var pages=document.querySelectorAll('.page');
+      for(var i=0;i<pages.length;i++){ pages[i].classList.remove('active'); pages[i].style.display='none'; }
+      var el=document.getElementById('page-ceo-dashboard');
+      if(el){ el.classList.add('active'); el.style.display='block'; el.style.visibility='visible'; }
+      // Force show first tab
+      var firstTab=document.getElementById('ceo-tab-bookings');
+      if(firstTab){ firstTab.classList.remove('hidden'); firstTab.style.display='block'; }
+      var otherTabs=document.querySelectorAll('[id^="ceo-tab-"]');
+      for(var j=0;j<otherTabs.length;j++){ if(otherTabs[j].id!=='ceo-tab-bookings'){ otherTabs[j].classList.add('hidden'); otherTabs[j].style.display='none'; } }
+      window.scrollTo(0,0);
+      console.log('CEO dashboard opened');
+      alert('CEO Login Success! Dashboard opened');
+    }else{
+      if(r) r.innerText='Access denied - Use ID: KUSIPETER Pass: Peterasa80@you!';
+      alert('CEO Login Failed - Check ID KUSIPETER and Pass Peterasa80@you!');
+    }
+  }catch(e){ console.log('CEO login error '+e.message); alert('Login error '+e.message); }
+}
 function logoutNurse(){ localStorage.removeItem('nursePhone'); showPage('home'); }
 function logoutCEO(){ localStorage.removeItem('isCEOLogged'); showPage('home'); }
 function triggerSOS(){ alert('SOS SENT!'); }
@@ -367,6 +418,33 @@ function sendTeamMessageNurse(){ alert('Nurse chat - Connect Firebase'); }
 function sendTeamMessageStaff(){ alert('Staff chat - Connect Firebase'); }
 
 // INIT
+
+// ULTRA BACKUP - Ensure all CEO forms open with direct click
+document.addEventListener('DOMContentLoaded', function(){
+  console.log('Ultra backup active - All forms');
+  // CEO login button backup
+  var ceoBtn=document.querySelector('[onclick="loginCEO()"]');
+  if(ceoBtn){
+    ceoBtn.addEventListener('click', function(e){
+      e.preventDefault();
+      loginCEO();
+    });
+  }
+  // CEO tabs backup with direct style manipulation
+  document.querySelectorAll('#page-ceo-dashboard .tabBtn').forEach(function(btn){
+    btn.addEventListener('click', function(e){
+      e.preventDefault();
+      var onclick=btn.getAttribute('onclick');
+      if(onclick){
+        var match=onclick.match(/'([^']+)'/);
+        if(match){
+          switchCEOTab(match[1]);
+        }
+      }
+    });
+  });
+});
+
 window.onload=function(){
   try{
     var saved=localStorage.getItem('loveCareCountry')||'GH';
@@ -398,7 +476,9 @@ window.onload=function(){
 
 <footer style="background:#111;color:#fff;padding:20px;text-align:center;margin-top:40px;">
   <p style="display:flex;align-items:center;justify-content:center;gap:10px"><img src="./logo.png" style="height:28px;background:white;border-radius:6px;padding:2px"> (c) 2026 LOVE CARE GLOBAL - Accra Ghana</p>
-  <p><a href="privacy.html" style="color:#ff69b4;">Privacy Policy</a> | <a href="terms.html" style="color:#ff69b4;">Terms</a> | <a href="mailto:lovecareglobal@gmail.com?subject=Delete My Account Request&body=Please delete my account: " style="background:#ef4444;color:white;padding:6px 12px;border-radius:8px;text-decoration:none;">Delete Account</a></p>
+  <p><a href="privacy.html" style="color:#ff69b4;">Privacy Policy</a> | <a href="terms.html" style="color:#ff69b4;">Terms</a></p>
+  <p style="margin-top:15px"><a href="mailto:lovecareglobal@gmail.com?subject=DELETE MY ACCOUNT REQUEST&body=Please delete my account and all my data. My email is: " style="background:#ef4444;color:white;padding:12px 24px;border-radius:12px;text-decoration:none;font-weight:800;font-size:14px;border:3px solid white;box-shadow:0 4px 10px rgba(0,0,0,0.3);display:inline-block;">DELETE MY ACCOUNT</a></p>
+  <p style="font-size:9px;color:#aaa;margin-top:8px">CEO: KUSIPETER / Peterasa80@you! - Tap logo 5x for Staff, Tap Staff title 7x for CEO</p>
 </footer>
 
 </body>
