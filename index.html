@@ -7,13 +7,15 @@
 <link rel="icon" type="image/png" href="./logo.png">
 <link rel="apple-touch-icon" href="./logo.png">
 <link rel="manifest" href="./manifest.json">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <meta name="theme-color" content="#16a34a">
 <meta name="description" content="LOVE CARE GLOBAL - Professional Home Nursing - Uber style nurse map">
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 <script src="https://js.paystack.co/v1/inline.js"></script>
 <!-- GOOGLE MAPS - REPLACE YOUR KEY HERE -->
-<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&libraries=geometry"></script>
+<!-- GOOGLE MAPS DISABLED - USING FREE OSM -->
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap');
 *{box-sizing:border-box}
@@ -267,39 +269,29 @@ if(!localStorage.getItem('nurses') || JSON.parse(localStorage.getItem('nurses'))
   ]));
 }
 // === END DEMO ===
-// INIT UBER MAP
+ // INIT UBER MAP - FREE OSM - NO BILLING
 function initUberMap(){
-  if(!document.getElementById('uberMap')) return;
-  if(typeof google==='undefined'){document.getElementById('uberMap').innerHTML='<div style="padding:40px;text-align:center">Add Google Maps API Key to enable Uber map<br>Replace YOUR_GOOGLE_MAPS_API_KEY in code</div>'; return;}
-  var gh={lat:5.6037,lng:-0.1870};
-  uberMap=new google.maps.Map(document.getElementById('uberMap'),{center:gh,zoom:12,styles:[{featureType:"poi",elementType:"labels",stylers:[{visibility:"off"}]}]});
-  renderNurseMarkers();
+var mapDiv=document.getElementById('uberMap');
+if(!mapDiv) return;
+mapDiv.innerHTML='';
+uberMap=L.map('uberMap').setView([5.6037,-0.1870],13);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19}).addTo(uberMap);
+renderNurseMarkers();
 }
-
 function renderNurseMarkers(){
-if(!uberMap || typeof google==='undefined') return;
-// FIX - Load demo nurses
-if(typeof allWorkers==='undefined' || allWorkers.length==0){
-  allWorkers = JSON.parse(localStorage.getItem('nurses') || '[]');
-}
-nurseMarkers.forEach(m=>m.setMap(null));
+if(!uberMap) return;
+var allWorkers=JSON.parse(localStorage.getItem('nurses')||'[]');
+if(allWorkers.length==0){allWorkers=[{id:1,name:"Nurse Grace Mensah",specialty:"General",lat:5.675,lng:-0.165,location:"Madina",rate:"90 GHS/hr"},{id:2,name:"Nurse Esther Ofori",specialty:"Elderly Care",lat:5.682,lng:-0.185,location:"Haatso",rate:"90 GHS/hr"},{id:3,name:"Nurse Joy Addo",specialty:"Pediatrics",lat:5.6501,lng:-0.1864,location:"Legon",rate:"100 GHS/hr"},{id:4,name:"Nurse Mary Asare",specialty:"Post-Surgery",lat:5.7,lng:-0.165,location:"Adenta",rate:"95 GHS/hr"}];}
 allWorkers.forEach(w=>{
-    if(w.status && w.status.includes('off')) return;
-    var marker=new google.maps.Marker({
-      position:{lat:parseFloat(w.lat),lng:parseFloat(w.lng)},
-      map:uberMap,
-      title:w.name,
-      icon:{path:google.maps.SymbolPath.CIRCLE,scale:10,fillColor:"#16a34a",fillOpacity:1,strokeColor:"white",strokeWeight:3}
-    });
-    var infowindow=new google.maps.InfoWindow({content:`<b>${w.name}</b><br>${w.location||''}<br><small>Tap to select</small>`});
-    marker.addListener('click',()=>{infowindow.open(uberMap,marker); selectNurseCard(w.phone||w.id);});
-    nurseMarkers.push(marker);
-  });
+if(w.status && w.status.includes('off')) return;
+var m=L.marker([parseFloat(w.lat),parseFloat(w.lng)]).addTo(uberMap);
+m.bindPopup('<b>'+w.name+'</b><br>'+w.specialty+'<br>'+w.location+'<br><button onclick="bookNurse('+w.id+')" style="background:#16a34a;color:white;border:none;padding:6px 12px;border-radius:6px;margin-top:6px;">BOOK NOW - '+w.rate+'</button>');
+});
 }
-
 // FIND NEARBY - CORE UBER LOGIC
 function findNursesUber(fromQuick){
   var inputId=fromQuick?'cLocation2':'cLocation';
+  var allWorkers=JSON.parse(localStorage.getItem('nurses')||'[]');
   if(!clientLat ||!clientLng){
     if(!document.getElementById(inputId).value){alert('Tap GPS Auto first to get your location'); return;}
     // Try to parse lat lng from input if user typed
