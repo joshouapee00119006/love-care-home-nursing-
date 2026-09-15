@@ -82,14 +82,12 @@ table{width:100%;border-collapse:collapse;font-size:11px;margin-top:8px} th,td{b
 .totalRow{border-top:2px solid #92400e;margin-top:6px;padding-top:6px;font-size:13px;color:#92400e}
 /* NEW UNIT TABS */
 .unitTabs{display:flex;gap:6px;margin-bottom:10px}
-.unitTabs button{flex:1;padding:11px 6px;border:2px solid #16a34a;border-radius:10px;font-weight:800;font-size:12px;background:white;color:#16a34a;cursor:pointer;transition:.2s}
-.unitTabs button.active{background:#16a34a;color:white;transform:scale(1.03);box-shadow:0 2px 8px rgba(22,163,74,.4)}
-.unitInputBox{background:white;border-radius:12px;padding:12px;margin-top:6px;border:2px solid #bbf7d0;animation:fadeIn .3s}
-@keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.unitTabs button{flex:1;padding:11px 6px;border:2px solid #16a34a;border-radius:10px;font-weight:800;font-size:12px;background:white;color:#16a34a;cursor:pointer}
+.unitTabs button.active{background:#16a34a;color:white;transform:scale(1.03);box-shadow:0 3px 8px rgba(22,163,74,.3)}
+.unitInputBox{background:white;border-radius:10px;padding:10px;margin-top:6px;border:1px solid #bbf7d0}
 .unitInputBox label{font-size:11px;font-weight:800;color:#16a34a;display:block;margin-bottom:4px}
 .unitRow{display:flex;gap:6px;align-items:center}
-.unitRow input{flex:1;margin:0}
-.qtyBtn{width:44px;height:44px;border:2px solid #16a34a;background:#f0fdf4;border-radius:10px;font-weight:800;font-size:18px;cursor:pointer;color:#16a34a}
+.stepBtn{width:40px;height:42px;background:#16a34a;color:white;border:none;border-radius:10px;font-weight:800;font-size:18px;cursor:pointer}
 </style>
 </head>
 <body>
@@ -144,34 +142,34 @@ table{width:100%;border-collapse:collapse;font-size:11px;margin-top:8px} th,td{b
 <input id="cEmail" placeholder="Email"><div class="locationRow"><input id="cLocation" placeholder="Tap GPS Auto"><button type="button" onclick="autoGPS('cLocation','clientGpsStatus')">GPS Auto</button></div><small id="clientGpsStatus" class="gpsBadge hidden"></small>
 <select id="cService"><option value="">-- Select Service (13 Services) --</option><option>Elderly Care</option><option>Baby Care and Nanny</option><option>Hospital Support</option><option>Post-Surgery Care</option><option>Disability Support</option><option>Maternity Care</option><option>Night Nurse (12hrs)</option><option>Palliative Care</option><option>Physiotherapy</option><option>Injection and Wound Care</option><option>Diabetes Monitoring</option><option>Dementia Care</option><option>Child Special Needs Care</option></select>
 
-<!-- NEW DURATION SELECTOR -->
 <div style="border:2px dashed #16a34a;border-radius:12px;padding:10px;margin:8px 0;background:#f0fdf4">
 <h3 style="margin:0 0 8px 0;font-size:12px;color:#16a34a">⏱ How long do you need nurse?</h3>
 
 <div class="unitTabs">
   <button id="btn-hourly" onclick="selectUnit('hourly')">⏰ Hourly</button>
-  <button id="btn-daily" class="active" onclick="selectUnit('daily')">📅 Daily</button>
-  <button id="btn-weekly" onclick="selectUnit('weekly')">🗓️ Weekly</button>
-  <button id="btn-monthly" onclick="selectUnit('monthly')">📆 Monthly</button>
+  <button id="btn-daily" class="active" onclick="selectUnit('daily')">📅 Days</button>
+  <button id="btn-weekly" onclick="selectUnit('weekly')">🗓️ Weeks</button>
+  <button id="btn-monthly" onclick="selectUnit('monthly')">📆 Months</button>
 </div>
 
+<!-- Hourly Panel -->
 <div id="panel-hourly" class="unitInputBox hidden">
-  <label>How many hours do you need a nurse at home?</label>
+  <label>How many hours do you need nurse at home?</label>
   <div class="unitRow">
-    <button class="qtyBtn" onclick="stepQty('inputHours',-1)">-</button>
-    <input id="inputHours" type="number" min="1" value="8" oninput="calculateTotal()">
-    <button class="qtyBtn" onclick="stepQty('inputHours',1)">+</button>
+    <button class="stepBtn" onclick="stepVal('inputHours',-1)">-</button>
+    <input id="inputHours" type="number" min="1" value="8" oninput="calculateTotal()" placeholder="e.g. 5">
+    <button class="stepBtn" onclick="stepVal('inputHours',1)">+</button>
     <span style="font-weight:800;font-size:12px">Hours</span>
   </div>
-  <small style="font-size:10px;color:#6b7280">Example: Need nurse for 5 hours today</small>
 </div>
 
+<!-- Daily Panel -->
 <div id="panel-daily" class="unitInputBox">
-  <label>How many days do you need a nurse?</label>
+  <label>How many days?</label>
   <div class="unitRow" style="margin-bottom:8px">
-    <button class="qtyBtn" onclick="stepQty('inputDays',-1)">-</button>
-    <input id="inputDays" type="number" min="1" value="7" oninput="calculateTotal()">
-    <button class="qtyBtn" onclick="stepQty('inputDays',1)">+</button>
+    <button class="stepBtn" onclick="stepVal('inputDays',-1)">-</button>
+    <input id="inputDays" type="number" min="1" value="7" oninput="calculateTotal()" placeholder="e.g. 3">
+    <button class="stepBtn" onclick="stepVal('inputDays',1)">+</button>
     <span style="font-weight:800;font-size:12px">Days</span>
   </div>
   <label>Hours per day</label>
@@ -180,53 +178,53 @@ table{width:100%;border-collapse:collapse;font-size:11px;margin-top:8px} th,td{b
     <option value="6">6 hrs / day</option>
     <option value="8" selected>8 hrs / day (Standard)</option>
     <option value="10">10 hrs / day</option>
-    <option value="12">12 hrs / day (Night Nurse)</option>
+    <option value="12">12 hrs / day (Night)</option>
     <option value="24">24 hrs / day (Live-in)</option>
   </select>
 </div>
 
+<!-- Weekly Panel -->
 <div id="panel-weekly" class="unitInputBox hidden">
   <label>How many weeks?</label>
   <div class="unitRow" style="margin-bottom:8px">
-    <button class="qtyBtn" onclick="stepQty('inputWeeks',-1)">-</button>
-    <input id="inputWeeks" type="number" min="1" value="2" oninput="calculateTotal()">
-    <button class="qtyBtn" onclick="stepQty('inputWeeks',1)">+</button>
+    <button class="stepBtn" onclick="stepVal('inputWeeks',-1)">-</button>
+    <input id="inputWeeks" type="number" min="1" value="2" oninput="calculateTotal()" placeholder="e.g. 2">
+    <button class="stepBtn" onclick="stepVal('inputWeeks',1)">+</button>
     <span style="font-weight:800;font-size:12px">Weeks</span>
   </div>
-  <label>Hours per day (7 days = 1 week)</label>
+  <label>Hours per day (we count 7 days/week)</label>
   <select id="hoursPerDayWeekly" onchange="calculateTotal()">
     <option value="4">4 hrs / day</option>
-    <option value="6">6 hrs / day</option>
-    <option value="8" selected>8 hrs / day (Standard)</option>
+    <option value="8" selected>8 hrs / day</option>
     <option value="12">12 hrs / day</option>
-    <option value="24">24 hrs / day (Live-in)</option>
+    <option value="24">24 hrs / day</option>
   </select>
 </div>
 
+<!-- Monthly Panel -->
 <div id="panel-monthly" class="unitInputBox hidden">
   <label>How many months?</label>
   <div class="unitRow" style="margin-bottom:8px">
-    <button class="qtyBtn" onclick="stepQty('inputMonths',-1)">-</button>
-    <input id="inputMonths" type="number" min="1" value="1" oninput="calculateTotal()">
-    <button class="qtyBtn" onclick="stepQty('inputMonths',1)">+</button>
+    <button class="stepBtn" onclick="stepVal('inputMonths',-1)">-</button>
+    <input id="inputMonths" type="number" min="1" value="1" oninput="calculateTotal()" placeholder="e.g. 1">
+    <button class="stepBtn" onclick="stepVal('inputMonths',1)">+</button>
     <span style="font-weight:800;font-size:12px">Months</span>
   </div>
-  <label>Hours per day (30 days = 1 month)</label>
+  <label>Hours per day (we count 30 days/month)</label>
   <select id="hoursPerDayMonthly" onchange="calculateTotal()">
     <option value="4">4 hrs / day</option>
-    <option value="6">6 hrs / day</option>
-    <option value="8" selected>8 hrs / day (Standard)</option>
+    <option value="8" selected>8 hrs / day</option>
     <option value="12">12 hrs / day</option>
-    <option value="24">24 hrs / day (Live-in)</option>
+    <option value="24">24 hrs / day</option>
   </select>
 </div>
 
 <div class="wageCard" id="wageBreakdown">
 <div class="wageRow"><span>🌍 Country:</span><span id="breakCountry">GH</span></div>
 <div class="wageRow"><span>👩⚕ Legal Nurse Min / Hour:</span><span id="breakHourly">Loading...</span></div>
-<div class="wageRow"><span>⏰ You Selected:</span><span id="breakHours">7 Days x 8 hrs</span></div>
-<div class="wageRow"><span>📅 Total Days:</span><span id="breakDays">7 days</span></div>
-<div class="wageRow"><span>⏳ Total Hours:</span><span id="breakTotalHours">56 hrs</span></div>
+<div class="wageRow"><span>⏰ Service Duration:</span><span id="breakHours">-</span></div>
+<div class="wageRow"><span>📅 Days Equiv:</span><span id="breakDays">-</span></div>
+<div class="wageRow"><span>⏳ Total Hours:</span><span id="breakTotalHours">0 hrs</span></div>
 <div class="wageRow totalRow"><span>💰 LEGAL MINIMUM TOTAL:</span><span id="breakTotalPay" style="font-size:15px">0 GHS</span></div>
 </div>
 </div>
@@ -344,7 +342,6 @@ function convertCurrency(amount, fromCurr, toCurr){
  return usd / (FX_TO_USD[toCurr]||1);
 }
 
-// NEW BOOKING UNIT LOGIC
 var bookingUnit = 'daily';
 var currentTotalMin = 0;
 var currentTotalHours = 0;
@@ -359,13 +356,13 @@ function getCurrentNurseRate(){
  return data;
 }
 
-function stepQty(id, delta){
- var el = document.getElementById(id);
- var v = parseInt(el.value) || 0;
- v += delta;
- if(v < 1) v = 1;
- el.value = v;
- calculateTotal();
+function stepVal(id, delta){
+  var el = document.getElementById(id);
+  var v = parseInt(el.value)||0;
+  v = v + delta;
+  if(v<1) v=1;
+  el.value=v;
+  calculateTotal();
 }
 
 function selectUnit(unit){
@@ -382,35 +379,33 @@ function calculateTotal(){
  var totalHours = 0;
  var displayDuration = '';
  var displayDays = '';
- var hoursPerDay = 8;
 
  if(bookingUnit === 'hourly'){
    var h = parseInt(document.getElementById('inputHours').value) || 1;
    totalHours = h;
-   hoursPerDay = h;
    displayDuration = h + ' Hours';
-   displayDays = (h/24).toFixed(1) + ' days equiv';
- } else if(bookingUnit === 'daily'){
+   displayDays = (h/24).toFixed(2) + ' days equiv';
+ } 
+ else if(bookingUnit === 'daily'){
    var d = parseInt(document.getElementById('inputDays').value) || 1;
    var hpd = parseInt(document.getElementById('hoursPerDayDaily').value) || 8;
-   hoursPerDay = hpd;
    totalHours = d * hpd;
-   displayDuration = d + ' Days x ' + hpd + ' hrs/day';
+   displayDuration = d + ' Days x ' + hpd + ' hrs';
    displayDays = d + ' days';
- } else if(bookingUnit === 'weekly'){
+ }
+ else if(bookingUnit === 'weekly'){
    var w = parseInt(document.getElementById('inputWeeks').value) || 1;
    var hpdW = parseInt(document.getElementById('hoursPerDayWeekly').value) || 8;
-   hoursPerDay = hpdW;
    totalHours = w * 7 * hpdW;
    displayDuration = w + ' Weeks x ' + hpdW + ' hrs/day';
-   displayDays = (w*7) + ' days ('+w+' wks)';
- } else if(bookingUnit === 'monthly'){
+   displayDays = (w*7) + ' days';
+ }
+ else if(bookingUnit === 'monthly'){
    var m = parseInt(document.getElementById('inputMonths').value) || 1;
    var hpdM = parseInt(document.getElementById('hoursPerDayMonthly').value) || 8;
-   hoursPerDay = hpdM;
    totalHours = m * 30 * hpdM;
    displayDuration = m + ' Months x ' + hpdM + ' hrs/day';
-   displayDays = (m*30) + ' days ('+m+' months)';
+   displayDays = (m*30) + ' days';
  }
 
  currentTotalHours = totalHours;
@@ -428,7 +423,7 @@ function calculateTotal(){
  document.getElementById('cBudget').placeholder = 'Min ' + totalMinInSelectedCurr + ' ' + selectedCurr;
  document.getElementById('cBudget').min = totalMinInSelectedCurr;
  validateBudgetLive();
- return { totalMin: totalMinInSelectedCurr, totalHours: totalHours, rateData: rateData, displayDuration: displayDuration, displayDays: displayDays, hoursPerDay: hoursPerDay, unit: bookingUnit };
+ return { totalMin: totalMinInSelectedCurr, totalHours: totalHours, rateData: rateData, displayDuration: displayDuration, unit: bookingUnit };
 }
 
 function validateBudgetLive(){
@@ -465,7 +460,7 @@ var lastBookingId=null,lastBookingCurrency='GHS',lastBookingAmount=0,currentRefu
 var countryCodes=[{c:'Ghana',code:'+233',flag:'🇬🇭'},{c:'Nigeria',code:'+234',flag:'🇳🇬'},{c:'South Africa',code:'+27',flag:'🇿🇦'},{c:'Kenya',code:'+254',flag:'🇰🇪'},{c:'Uganda',code:'+256',flag:'🇺🇬'},{c:'Tanzania',code:'+255',flag:'🇹🇿'},{c:'Ethiopia',code:'+251',flag:'🇪🇹'},{c:'Rwanda',code:'+250',flag:'🇷🇼'},{c:'Cameroon',code:'+237',flag:'🇨🇲'},{c:'Senegal',code:'+221',flag:'🇸🇳'},{c:'Ivory Coast',code:'+225',flag:'🇨🇮'},{c:'Egypt',code:'+20',flag:'🇪🇬'},{c:'Morocco',code:'+212',flag:'🇲🇦'},{c:'USA',code:'+1',flag:'🇺🇸'},{c:'UK',code:'+44',flag:'🇬🇧'},{c:'Canada',code:'+1',flag:'🇨🇦'},{c:'Australia',code:'+61',flag:'🇦🇺'},{c:'Germany',code:'+49',flag:'🇩🇪'},{c:'France',code:'+33',flag:'🇫🇷'},{c:'Italy',code:'+39',flag:'🇮🇹'},{c:'Spain',code:'+34',flag:'🇪🇸'},{c:'India',code:'+91',flag:'🇮🇳'},{c:'Pakistan',code:'+92',flag:'🇵🇰'},{c:'Bangladesh',code:'+880',flag:'🇧🇩'},{c:'Philippines',code:'+63',flag:'🇵🇭'},{c:'Indonesia',code:'+62',flag:'🇮🇩'},{c:'Brazil',code:'+55',flag:'🇧🇷'},{c:'Mexico',code:'+52',flag:'🇲🇽'},{c:'Saudi Arabia',code:'+966',flag:'🇸🇦'},{c:'UAE',code:'+971',flag:'🇦🇪'},{c:'Japan',code:'+81',flag:'🇯🇵'}];
 function populatePhoneCodes(){var html='';countryCodes.forEach(o=>{html+=`<option value="${o.code}">${o.flag} ${o.code} ${o.c}</option>`;});['cPhoneCode','nRegPhoneCode','nurseLoginCode','cPhoneCode2','myBookPhoneCode'].forEach(id=>{var el=document.getElementById(id); if(el) el.innerHTML=html;});}
 try{firebase.initializeApp(firebaseConfig);db=firebase.database();}catch(e){}
-const legalPages={privacy:{title:"Privacy Policy",body:"<p>Legal nurse wage enforced. We protect client data and enforce Ghana 15 GHS/hr minimum.</p>"},terms:{title:"Terms",body:"<p>Bookings below legal minimum blocked. Hourly/Daily/Weekly/Monthly calculated automatically.</p>"},cancel:{title:"Cancellation",body:"<p>Email lovecareglobal@gmail.com for cancellation & refund.</p>"},contact:{title:"Contact",body:"<p>0544121814 - lovecareglobal@gmail.com</p>"}};
+const legalPages={privacy:{title:"Privacy Policy",body:"<p>Legal nurse wage enforced.</p>"},terms:{title:"Terms",body:"<p>Bookings below legal minimum blocked.</p>"},cancel:{title:"Cancellation",body:"<p>Email lovecareglobal@gmail.com</p>"},contact:{title:"Contact",body:"<p>0544121814</p>"}};
 function openLegal(key){document.getElementById('legalTitle').innerText=legalPages[key].title;document.getElementById('legalBody').innerHTML=legalPages[key].body;document.getElementById('legalModal').classList.remove('hidden');}
 function closeLegal(){document.getElementById('legalModal').classList.add('hidden');}
 function changeLanguage(){var lang=document.getElementById('langSelect').value; localStorage.setItem('selectedLang',lang);}
@@ -539,8 +534,8 @@ function submitBooking(){
   var cur=document.getElementById('cCurrency').value;
   var country = document.getElementById('countrySelect').value;
   var id=Date.now();
-  var b={id:id,name:name,phone:fullPhone,service:service,location:document.getElementById('cLocation').value,amount:amount,currency:cur,status:'pending_assignment',time:new Date().toLocaleString(),timestamp:Date.now(),lat:clientLat,lng:clientLng,selectedNurse:selectedNurseId,email:document.getElementById('cEmail').value.trim(),country:country,hoursPerDay:calc.hoursPerDay,days:calc.displayDuration + ' ('+calc.displayDays+')',totalHours:calc.totalHours,hourlyRate:calc.rateData.amount,hourlyCurrency:calc.rateData.currency,legalMinTotal:calc.totalMin, bookingUnit:calc.unit};
-  if(db)db.ref('bookings/'+id).set(b).then(()=>{ alert('✅ Booked! '+calc.displayDuration+' = '+calc.totalHours+'hrs. Total '+amount+' '+cur+'. Legal min verified.'); scheduleRateCheck(id, amount, cur); localStorage.setItem('lastClientPhone', fullPhone); document.getElementById('myBookPhone').value=document.getElementById('cPhone').value; document.getElementById('myBookPhoneCode').value=document.getElementById('cPhoneCode').value; loadMyBookings(); });
+  var b={id:id,name:name,phone:fullPhone,service:service,location:document.getElementById('cLocation').value,amount:amount,currency:cur,status:'pending_assignment',time:new Date().toLocaleString(),timestamp:Date.now(),lat:clientLat,lng:clientLng,selectedNurse:selectedNurseId,email:document.getElementById('cEmail').value.trim(),country:country,hoursPerDay:0,days:calc.displayDuration,totalHours:calc.totalHours,hourlyRate:calc.rateData.amount,hourlyCurrency:calc.rateData.currency,legalMinTotal:calc.totalMin, bookingUnit:calc.unit};
+  if(db)db.ref('bookings/'+id).set(b).then(()=>{ alert('✅ Booked! Total '+amount+' '+cur+' for '+calc.displayDuration+' = '+calc.totalHours+'hrs. Legal min verified.'); scheduleRateCheck(id, amount, cur); localStorage.setItem('lastClientPhone', fullPhone); document.getElementById('myBookPhone').value=document.getElementById('cPhone').value; document.getElementById('myBookPhoneCode').value=document.getElementById('cPhoneCode').value; loadMyBookings(); });
 }
 function loadMyBookings(){
  var codeEl=document.getElementById('myBookPhoneCode'); var phoneEl=document.getElementById('myBookPhone');
@@ -555,7 +550,7 @@ function loadMyBookings(){
    if(mine.length===0){ listDiv.innerHTML='<div style="text-align:center;color:#999;padding:10px">No bookings for '+fullPhone+'</div>'; return; }
    var h=''; mine.forEach(b=>{
      var statusClass='st-pending'; if(b.status==='confirmed') statusClass='st-confirmed'; if(b.status==='cancelled_by_client') statusClass='st-cancelled'; if(b.status==='refund_requested') statusClass='st-refund_req'; if(b.status==='refund_approved') statusClass='st-refund_ok'; if(b.status==='refunded') statusClass='st-refunded';
-     h+=`<div class="bookingClientCard"><div style="display:flex;justify-content:space-between"><b>#${b.id}</b><span class="statusBadge ${statusClass}">${(b.status||'').toUpperCase()}</span></div><div style="font-size:11px;margin-top:6px"><b>${b.service}</b> - ${b.amount} ${b.currency}<br>📅 ${b.days||''}<br>⏳ ${b.totalHours||'?'} hrs total<br>👩⚕ Rate: ${b.hourlyRate} ${b.hourlyCurrency}/hr | Min: ${b.legalMinTotal} ${b.currency}<br>📍 ${b.location||''}<br>⏰ ${b.time||''}</div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">`;
+     h+=`<div class="bookingClientCard"><div style="display:flex;justify-content:space-between"><b>#${b.id}</b><span class="statusBadge ${statusClass}">${(b.status||'').toUpperCase()}</span></div><div style="font-size:11px;margin-top:6px"><b>${b.service}</b> - ${b.amount} ${b.currency}<br>📅 ${b.days||'?'} = ${b.totalHours||'?'} hrs<br>👩⚕ Rate: ${b.hourlyRate} ${b.hourlyCurrency}/hr | Min: ${b.legalMinTotal} ${b.currency}<br>📍 ${b.location||''}<br>⏰ ${b.time||''}</div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">`;
      if(b.status==='pending_assignment' || b.status==='confirmed'){ h+=`<button class="btnSmall" style="background:#ef4444;color:white;flex:1" onclick="cancelBookingClient(${b.id})">❌ Cancel</button>`; }
      if(b.status==='cancelled_by_client' || b.status==='confirmed'){ h+=`<button class="btnSmall" style="background:#7c3aed;color:white;flex:1" onclick="openRefundModal(${b.id}, '${b.amount} ${b.currency}')">💸 Refund</button>`; }
      h+=`</div></div>`; }); listDiv.innerHTML=h;
@@ -646,7 +641,7 @@ function sendGlobalChat(){var inp=document.getElementById('globalChatInput'); va
 function clearGroupChat(){var isCEO=localStorage.getItem('isCEOLogged')==='true'; if(!isCEO){alert('Only CEO');return;} if(!confirm('Clear ALL?')) return; if(db) db.ref('group_chat').remove().then(()=>alert('Cleared'));}
 function escapeHtml(t){var d=document.createElement('div'); d.textContent=t; return d.innerHTML;}
 function loadStaffData(){if(!db) return; db.ref('bookings').once('value').then(s=>{var v=Object.values(s.val()||{}); var h=v.length?'<table><tr><th>Client</th><th>Service</th></tr>':'No bookings'; v.slice(0,30).forEach(b=>{h+=`<tr><td>${b.name}</td><td>${b.service}</td></tr>`;}); if(v.length) h+='</table>'; document.getElementById('staffBookingsList').innerHTML=h;});}
-function loadNurseDashboard(){var p=localStorage.getItem('nursePhone'); if(!p) return; if(db){db.ref('bookings').orderByChild('selectedNurse').equalTo(p).once('value').then(s=>{var v=Object.values(s.val()||{}); var l=document.getElementById('nurseJobsList'); if(!v.length){l.innerHTML='No offers yet.';return;} var h=''; v.slice(-10).reverse().forEach(b=>{h+=`<div class="uber-card"><div style="flex:1"><b>${b.name}</b> - ${b.service}<br><small>${b.days} - ${b.totalHours}h - ${b.amount} ${b.currency}</small></div><button class="btnSmall" style="background:#16a34a;color:white" onclick="updateBookingStatus(${b.id},'confirmed')">Accept</button></div>`;}); l.innerHTML=h;});}}
+function loadNurseDashboard(){var p=localStorage.getItem('nursePhone'); if(!p) return; if(db){db.ref('bookings').orderByChild('selectedNurse').equalTo(p).once('value').then(s=>{var v=Object.values(s.val()||{}); var l=document.getElementById('nurseJobsList'); if(!v.length){l.innerHTML='No offers yet.';return;} var h=''; v.slice(-10).reverse().forEach(b=>{h+=`<div class="uber-card"><div style="flex:1"><b>${b.name}</b> - ${b.service}<br><small>${b.days||''} = ${b.totalHours}h - ${b.amount} ${b.currency}</small></div><button class="btnSmall" style="background:#16a34a;color:white" onclick="updateBookingStatus(${b.id},'confirmed')">Accept</button></div>`;}); l.innerHTML=h;});}}
 function initCeoMap(){var d=document.getElementById('ceoMap'); if(!d) return; if(ceoMap){ceoMap.invalidateSize();return;} ceoMap=L.map('ceoMap').setView([5.6037,-0.1870],10); L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(ceoMap); var workers=getAllNursesSource(); workers.forEach(w=>{if(w.lat&&w.lng) L.marker([w.lat,w.lng]).addTo(ceoMap).bindPopup(w.name||'Nurse');});}
 window.onload=function(){
 populatePhoneCodes();
