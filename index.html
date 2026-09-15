@@ -14,8 +14,6 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 <script src="https://js.paystack.co/v1/inline.js"></script>
-<!-- GOOGLE MAPS - REPLACE YOUR KEY HERE -->
-<!-- GOOGLE MAPS DISABLED - USING FREE OSM -->
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap');
 *{box-sizing:border-box}
@@ -54,12 +52,6 @@ input,select,textarea{width:100%;padding:12px;margin:6px 0;border-radius:10px;bo
 .nurse-dot{width:12px;height:12px;background:#00ff88;border-radius:50%;border:2px solid white;box-shadow:0 0 0 2px #16a34a;animation:pulse 1.5s infinite}
 @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(22,163,74,.7)}70%{box-shadow:0 0 0 10px rgba(22,163,74,0)}100%{box-shadow:0 0 0 0 rgba(22,163,74,0)}}
 .live-badge{background:#00b050;color:white;padding:4px 10px;border-radius:15px;font-size:10px;font-weight:800}
-.tabBar{display:flex;gap:6px;overflow-x:auto;padding:10px 0;margin:8px 0;white-space:nowrap}
-.tabBtn{padding:10px 16px;border-radius:20px;border:2px solid #eab308;background:white;font-size:11px;cursor:pointer;font-weight:700;flex-shrink:0}
-.tabBtn.active{background:#16a34a;color:white}
-.statGrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin:8px 0}.statBox{background:white;border:2px solid #eab308;border-radius:12px;padding:10px;text-align:center}.statBox b{font-size:16px;color:#16a34a;display:block}
-.chatContainer{background:#e5ddd5;height:50vh;overflow-y:auto;padding:10px;border-radius:12px;border:2px solid #16a34a;display:flex;flex-direction:column;gap:6px}.msgBubble{max-width:82%;padding:8px 10px;border-radius:12px;font-size:11px}.msgMe{align-self:flex-end;background:#dcf8c6}.msgOther{align-self:flex-start;background:white}
-.chatInputBar{display:flex;gap:6px;padding:8px;background:white;border-top:1px solid #ccc}.chatInput{flex:1;padding:10px;border-radius:20px;border:1px solid #ccc}
 </style>
 </head>
 <body>
@@ -83,7 +75,6 @@ input,select,textarea{width:100%;padding:12px;margin:6px 0;border-radius:10px;bo
 <span id="currencyDisplay" style="font-weight:800;color:#16a34a">GHS</span>
 </div>
 
-<!-- HOME -->
 <div id="page-home" class="page active">
 <div class="eversendBox">
 <h3 style="margin:0 0 8px 0">Find Nurses Like Uber</h3>
@@ -99,7 +90,6 @@ input,select,textarea{width:100%;padding:12px;margin:6px 0;border-radius:10px;bo
 <select id="cService"><option value="">-- Select Service --</option><option>Elderly Care</option><option>Baby Care and Nanny</option><option>Hospital Support</option><option>Post-Surgery Care</option><option>Disability Support</option><option>Maternity and Newborn</option><option>Night Nurse</option><option>Palliative Care</option><option>Physiotherapy</option><option>Injection and Wound Care</option><option>Diabetes Monitoring</option><option>Dementia Care</option><option>Child Special Needs</option></select>
 <div style="display:flex;gap:6px;align-items:center"><input id="cBudget" type="number" placeholder="Rate e.g. 200 - Min 90 GHS" oninput="checkRateMinimum()" style="flex:1"><select id="cCurrency" onchange="checkRateMinimum()" style="width:110px"><option>GHS</option><option>USD</option><option>GBP</option><option>NGN</option><option>ZAR</option><option>KES</option><option>INR</option><option>AED</option><option>EUR</option></select></div>
 <div id="rateEquivalent" style="background:#fffbeb;border:2px solid #eab308;border-radius:10px;padding:8px;margin:6px 0;font-size:11px;display:none"></div>
-
 <button class="btnSubmit" style="background:linear-gradient(90deg,#2563eb,#00b050)" onclick="findNursesUber()">🔍 FIND NURSES NEAR ME - UBER MAP</button>
 <div id="uberActionArea" class="hidden">
 <div style="display:flex;gap:6px;margin-top:8px">
@@ -111,17 +101,17 @@ input,select,textarea{width:100%;padding:12px;margin:6px 0;border-radius:10px;bo
 </div>
 
 <div class="card"><h2>LIVE Uber Map - <span id="nearbyCount">0</span> Nurses Nearby</h2>
-<div style="display:flex;gap:6px;margin-bottom:8px">
-<button class="btnMap" onclick="toggleMap()">Toggle Map</button>
+<div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap">
+<button class="btnMap" onclick="toggleMap()">🗺️ Toggle Map / Zoom Wide</button>
 <button class="btnSmall" style="background:#16a34a;color:white" onclick="findNursesUber()">Refresh Nearby</button>
-<select id="radiusSelect" style="width:110px;padding:8px;border-radius:8px"><option value="5">5 km</option><option value="10" selected>10 km</option><option value="20">20 km</option><option value="50">50 km</option></select>
+<button class="btnSmall" style="background:#2563eb;color:white" onclick="fitMapWide()">Zoom Wide</button>
+<select id="radiusSelect" style="width:110px;padding:8px;border-radius:8px"><option value="5">5 km</option><option value="10" selected>10 km</option><option value="20">20 km</option><option value="50">50 km</option><option value="100">100 km - Wide</option></select>
 </div>
 <div id="loveCareMapWrapper" class="map-wrapper"><div id="uberMap"></div></div>
 <div id="loveCareLiveList"></div>
 </div>
 </div>
 
-<!-- NURSE PUBLIC -->
 <div id="page-nurse-public" class="page">
 <div class="card" style="border:3px solid #00b050"><h2>Nurse Registration - GPS Required for Uber Map</h2>
 <input id="nRegName" placeholder="Full Name">
@@ -152,7 +142,6 @@ input,select,textarea{width:100%;padding:12px;margin:6px 0;border-radius:10px;bo
 </div>
 </div>
 
-<!-- BOOKING PUBLIC -->
 <div id="page-booking-public" class="page">
 <div class="card" style="border:3px solid #00b050"><h2>Quick Book + Map</h2>
 <input id="cName2" placeholder="Full Name">
@@ -165,7 +154,6 @@ input,select,textarea{width:100%;padding:12px;margin:6px 0;border-radius:10px;bo
 </div>
 </div>
 
-<!-- NURSE LOGIN -->
 <div id="page-nurse-login" class="page">
 <div class="card" style="margin:20px;border:3px solid #16a34a"><h2>Nurse Login</h2>
 <div class="phoneRow"><select id="nurseLoginCode"><option value="+233">GH +233</option><option value="+1">US +1</option></select><input id="nurseLoginPhone" placeholder="Phone"></div>
@@ -175,7 +163,6 @@ input,select,textarea{width:100%;padding:12px;margin:6px 0;border-radius:10px;bo
 </div>
 </div>
 
-<!-- NURSE DASHBOARD -->
 <div id="page-nurse-dashboard" class="page">
 <div class="card" style="border:3px solid #2563eb"><h2>Nurse Dashboard - <span id="nurseDashName">Nurse</span></h2>
 <div style="display:flex;gap:5px;flex-wrap:wrap"><button class="btnSubmit" style="width:auto;background:#00b050" onclick="startDuty()">START DUTY - Appear on Map</button><button class="btnSubmit" style="width:auto;background:#ef4444" onclick="stopDuty()">STOP DUTY</button></div>
@@ -184,7 +171,6 @@ input,select,textarea{width:100%;padding:12px;margin:6px 0;border-radius:10px;bo
 <div id="nurse-tab-jobs" class="card"><h2>New Offers</h2><div id="nurseJobsList">Start DUTY to appear on Uber Map!</div></div>
 </div>
 
-<!-- STAFF / CEO pages remain same as yours - omitted for brevity but keep original -->
 <div id="page-staff-login" class="page"><div class="card" style="margin:20px"><h2 id="staffLogo" onclick="tapStaffLogo()" style="cursor:pointer">Staff Portal</h2><input id="staffLoginID" placeholder="Staff ID"><input id="staffLoginPass" type="password" placeholder="Password"><button class="btnSubmit" onclick="loginStaff()">Login</button></div></div>
 <div id="page-staff-dashboard" class="page"><div class="card"><h2>Staff - <span id="staffDashName"></span></h2></div><button class="btnSubmit" style="background:#ef4444;margin:20px" onclick="showPage('home')">Logout</button></div>
 <div id="page-ceo-login" class="page"><div class="card" style="margin:20px;border:3px solid #111827"><h2>CEO Login</h2><input id="ceoLoginID" placeholder="CEO ID"><input id="ceoLoginPass" type="password" placeholder="Password"><button class="btnSubmit" style="background:#111827" onclick="loginCEO()">CEO Login</button><div id="ceoLoginResult" style="font-size:11px;color:red;margin-top:8px"></div></div></div>
@@ -202,8 +188,6 @@ var db=null,allBookings=[],allWorkers=[],logoTapCount=0,staffLogoTapCount=0,curr
 var countries={GH:{currency:'GHS',lat:5.6037,lng:-0.1870},NG:{currency:'NGN',lat:9.0820,lng:8.6753},ZA:{currency:'ZAR',lat:-30.5595,lng:22.9375}};
 var MIN_RATE_GHS=90; var currencyRates={'GHS':1,'USD':0.0645,'GBP':0.0513,'NGN':105,'ZAR':1.2,'KES':8.3,'INR':5.4,'AED':0.237,'EUR':0.059};
 var currencyMin={'GHS':90,'USD':6,'GBP':5,'NGN':9450,'ZAR':108,'KES':747,'INR':486,'AED':22,'EUR':6};
-
-// UBER MAP VARIABLES
 var uberMap=null, clientMarker=null, nurseMarkers=[], selectedNurseId=null, nearbyNursesSorted=[];
 
 try{firebase.initializeApp(firebaseConfig);db=firebase.database();}catch(e){}
@@ -218,8 +202,6 @@ function checkRateMinimum(){
   if(equivDiv){equivDiv.style.display='block'; equivDiv.innerHTML='Entered: <b>'+amount+' '+cur+'</b> = <b>'+ghsEquiv.toFixed(2)+' GHS</b> | Min: <b>'+min+' '+cur+'</b> '+(ghsEquiv<90?'<span style="color:#ef4444">TOO LOW</span>':'<span style="color:#00b050">OK</span>');}
   return ghsEquiv>=89.9;
 }
-
-// NAVIGATION
 function showPage(id){
   if(id==='ceo-dashboard' && localStorage.getItem('isCEOLogged')!=='true') id='ceo-login';
   if(id==='staff-dashboard' &&!localStorage.getItem('staffID')) id='staff-login';
@@ -227,14 +209,13 @@ function showPage(id){
   document.querySelectorAll('.page').forEach(p=>{p.classList.remove('active'); p.style.display='none';});
   var el=document.getElementById('page-'+id); if(el){el.classList.add('active'); el.style.display='block';}
   window.scrollTo(0,0);
-  if(id==='home' &&!uberMap) setTimeout(initUberMap,500);
+  if(id==='home') setTimeout(()=>{ if(!uberMap) initUberMap(); else { uberMap.invalidateSize(); fitMapWide(); } }, 400);
 }
 function openPage(id){showPage(id)}
 function tapLogo(){logoTapCount++; if(logoTapCount>=5){logoTapCount=0; showPage('staff-login');} setTimeout(()=>logoTapCount=0,3000)}
 function tapStaffLogo(){staffLogoTapCount++; if(staffLogoTapCount>=7){staffLogoTapCount=0; showPage('ceo-login');} setTimeout(()=>staffLogoTapCount=0,3000)}
 function changeCountry(){var sel=document.getElementById('countrySelect'); currentCountry=sel.value; var c=countries[currentCountry]||countries['GH']; document.getElementById('currencyDisplay').innerText=c.currency;}
 function showFileName(a,b){var inp=document.getElementById(a); var st=document.getElementById(b); if(inp.files[0]) st.innerText=inp.files[0].name;}
-
 function autoGPS(inputId,statusId){
   var statusEl=document.getElementById(statusId); var inputEl=document.getElementById(inputId);
   if(statusEl){statusEl.classList.remove('hidden'); statusEl.innerText='Getting GPS...';}
@@ -245,21 +226,17 @@ function autoGPS(inputId,statusId){
     fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`).then(r=>r.json()).then(data=>{
       inputEl.value=data.display_name||lat.toFixed(5)+','+lng.toFixed(5);
       if(statusEl) statusEl.innerText='GPS: '+lat.toFixed(4)+','+lng.toFixed(4);
-      if(clientLat) findNursesUber();
-    }).catch(()=>{inputEl.value=lat.toFixed(5)+','+lng.toFixed(5);});
-  },err=>{statusEl.innerText='GPS failed'; alert(err.message);},{enableHighAccuracy:true,timeout:10000});
+      if(clientLat){ findNursesUber(); }
+    }).catch(()=>{inputEl.value=lat.toFixed(5)+','+lng.toFixed(5); if(clientLat) findNursesUber();});
+  },err=>{if(statusEl) statusEl.innerText='GPS failed'; alert(err.message);},{enableHighAccuracy:true,timeout:15000});
 }
 function getFullPhone(codeId,phoneId){var code=document.getElementById(codeId).value; var phone=document.getElementById(phoneId).value.trim().replace(/^0+/, ''); if(phone.startsWith('+')) return phone; return code+phone;}
-
-// DISTANCE - Haversine
 function getDistanceKm(lat1,lon1,lat2,lon2){
   if(!lat1||!lon1||!lat2||!lon2) return 9999;
   var R=6371; var dLat=(lat2-lat1)*Math.PI/180; var dLon=(lon2-lon1)*Math.PI/180;
   var a=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)*Math.sin(dLon/2);
   return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
 }
-
-// === DEMO NURSES FOR MAP - DELETE AFTER REAL REGISTRATION ===
 if(!localStorage.getItem('nurses') || JSON.parse(localStorage.getItem('nurses')).length===0){
   localStorage.setItem('nurses', JSON.stringify([
     {id:1,name:"Nurse Grace Mensah",specialty:"General",lat:5.675,lng:-0.165,location:"Madina",rate:"90 GHS/hr",available:true},
@@ -268,61 +245,108 @@ if(!localStorage.getItem('nurses') || JSON.parse(localStorage.getItem('nurses'))
     {id:4,name:"Nurse Mary Asare",specialty:"Post-Surgery",lat:5.7,lng:-0.165,location:"Adenta",rate:"95 GHS/hr",available:true}
   ]));
 }
-// === END DEMO ===
- // INIT UBER MAP - FREE OSM - NO BILLING
+
+// === FIXED MAP LOGIC - PURE LEAFLET ===
 function initUberMap(){
-var mapDiv=document.getElementById('uberMap');
-if(!mapDiv) return;
-mapDiv.innerHTML='';
-uberMap=L.map('uberMap').setView([5.6037,-0.1870],13);
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19}).addTo(uberMap);
-renderNurseMarkers();
+  var mapDiv=document.getElementById('uberMap');
+  if(!mapDiv) return;
+  if(uberMap){ uberMap.invalidateSize(); return; }
+  uberMap=L.map('uberMap', {zoomControl:true}).setView([5.6037,-0.1870], 12);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19, attribution:'© OpenStreetMap'}).addTo(uberMap);
+  renderNurseMarkers();
+  setTimeout(()=>{ uberMap.invalidateSize(); fitMapWide(); }, 300);
 }
-function renderNurseMarkers(){
-if(!uberMap) return;
-var allWorkers=JSON.parse(localStorage.getItem('nurses')||'[]');
-if(allWorkers.length==0){allWorkers=[{id:1,name:"Nurse Grace Mensah",specialty:"General",lat:5.675,lng:-0.165,location:"Madina",rate:"90 GHS/hr"},{id:2,name:"Nurse Esther Ofori",specialty:"Elderly Care",lat:5.682,lng:-0.185,location:"Haatso",rate:"90 GHS/hr"},{id:3,name:"Nurse Joy Addo",specialty:"Pediatrics",lat:5.6501,lng:-0.1864,location:"Legon",rate:"100 GHS/hr"},{id:4,name:"Nurse Mary Asare",specialty:"Post-Surgery",lat:5.7,lng:-0.165,location:"Adenta",rate:"95 GHS/hr"}];}
-allWorkers.forEach(w=>{
-if(w.status && w.status.includes('off')) return;
-var m=L.marker([parseFloat(w.lat),parseFloat(w.lng)]).addTo(uberMap);
-m.bindPopup('<b>'+w.name+'</b><br>'+w.specialty+'<br>'+w.location+'<br><button onclick="bookNurse('+w.id+')" style="background:#16a34a;color:white;border:none;padding:6px 12px;border-radius:6px;margin-top:6px;">BOOK NOW - '+w.rate+'</button>');
-});
+
+function clearMarkers(){
+  nurseMarkers.forEach(m=>{ if(uberMap) uberMap.removeLayer(m); });
+  nurseMarkers=[];
+  if(clientMarker && uberMap){ uberMap.removeLayer(clientMarker); clientMarker=null; }
 }
-// FIND NEARBY - CORE UBER LOGIC
+
+function getAllNursesSource(){
+  // Prefer Firebase workers if loaded, else localStorage
+  if(allWorkers && allWorkers.length>0) return allWorkers;
+  try{ return JSON.parse(localStorage.getItem('nurses')||'[]'); }catch(e){ return []; }
+}
+
+function renderNurseMarkers(list){
+  if(!uberMap) return;
+  clearMarkers();
+  var source = list || getAllNursesSource();
+  if(!source || source.length===0) return;
+
+  var clientIcon = L.divIcon({className:'', html:'<div style="width:18px;height:18px;background:#2563eb;border:3px solid white;border-radius:50%;box-shadow:0 0 0 3px #2563eb"></div>', iconSize:[18,18], iconAnchor:[9,9]});
+  var nurseIcon = L.divIcon({className:'', html:'<div style="width:14px;height:14px;background:#00ff88;border:2px solid white;border-radius:50%;box-shadow:0 0 0 2px #16a34a;"></div>', iconSize:[14,14], iconAnchor:[7,7]});
+
+  if(clientLat && clientLng){
+    clientMarker = L.marker([clientLat, clientLng], {icon: clientIcon, zIndexOffset:1000}).addTo(uberMap).bindPopup("<b>You are here</b>");
+  }
+
+  source.forEach(w=>{
+    if(!w.lat ||!w.lng) return;
+    if(w.status && w.status.includes('off')) return;
+    var lat=parseFloat(w.lat), lng=parseFloat(w.lng);
+    if(isNaN(lat) || isNaN(lng)) return;
+    var m=L.marker([lat,lng], {icon:nurseIcon}).addTo(uberMap);
+    var phone = w.phone || w.id;
+    m.bindPopup(`<b>${w.name||'Nurse'}</b><br>${w.specialty||''}<br>${w.location||''}<br><b>${w.rate||'90 GHS/hr'}</b><br><button onclick="selectNurseCard('${phone}')" style="background:#16a34a;color:white;border:none;padding:6px 12px;border-radius:6px;margin-top:6px;cursor:pointer">SELECT</button>`);
+    nurseMarkers.push(m);
+  });
+}
+
+// THE CORE FIX: ZOOM WIDE TO FIND NURSES
+function fitMapWide(){
+  if(!uberMap) return;
+  var bounds = L.latLngBounds();
+  var hasPoint=false;
+  if(clientLat && clientLng){ bounds.extend([clientLat, clientLng]); hasPoint=true; }
+  // Use nearby list if exists, else all nurses
+  var listToFit = nearbyNursesSorted.length>0? nearbyNursesSorted : getAllNursesSource();
+  listToFit.forEach(n=>{
+    if(n.lat && n.lng){ bounds.extend([parseFloat(n.lat), parseFloat(n.lng)]); hasPoint=true; }
+  });
+  if(!hasPoint) return;
+  // Pad to make it wide, and limit maxZoom so it doesn't zoom too close
+  uberMap.fitBounds(bounds, {padding:[50,50], maxZoom:13});
+}
+
+function toggleMap(){
+  var wrapper=document.getElementById('loveCareMapWrapper');
+  wrapper.classList.toggle('hidden');
+  if(!wrapper.classList.contains('hidden')){
+    if(!uberMap) initUberMap();
+    setTimeout(()=>{
+      uberMap.invalidateSize();
+      fitMapWide();
+    }, 250);
+  }
+}
+
 function findNursesUber(fromQuick){
   var inputId=fromQuick?'cLocation2':'cLocation';
-  var allWorkers=JSON.parse(localStorage.getItem('nurses')||'[]');
+  var allSource=getAllNursesSource();
   if(!clientLat ||!clientLng){
-    if(!document.getElementById(inputId).value){alert('Tap GPS Auto first to get your location'); return;}
-    // Try to parse lat lng from input if user typed
+    var locVal=document.getElementById(inputId).value;
+    if(!locVal){alert('Tap GPS Auto first to get your location'); return;}
+    if(!clientLat){ alert('GPS not ready yet - tap GPS Auto again and allow location'); return; }
   }
   var radius=parseInt(document.getElementById('radiusSelect').value)||10;
-  if(!clientLat) {alert('GPS not ready yet - tap GPS Auto again'); return;}
-
-  // Calculate distance for each nurse
-  nearbyNursesSorted=allWorkers.filter(w=>w.lat && w.lng).map(w=>{
+  nearbyNursesSorted=allSource.filter(w=>w.lat && w.lng).map(w=>{
     var d=getDistanceKm(clientLat,clientLng,parseFloat(w.lat),parseFloat(w.lng));
     return {...w,distance:d};
-  }).filter(w=>w.distance<=radius).sort((a,b)=>a.distance-b.distance).slice(0,20);
+  }).filter(w=>w.distance<=radius).sort((a,b)=>a.distance-b.distance).slice(0,30);
 
   document.getElementById('nearbyCount').innerText=nearbyNursesSorted.length;
   document.getElementById('uberActionArea').classList.remove('hidden');
   document.getElementById('loveCareMapWrapper').classList.remove('hidden');
 
   if(!uberMap) initUberMap();
-  if(uberMap){
-    uberMap.setCenter({lat:clientLat,lng:clientLng});
-    uberMap.setZoom(13);
-    if(clientMarker) clientMarker.setMap(null);
-    clientMarker=new google.maps.Marker({
-      position:{lat:clientLat,lng:clientLng},
-      map:uberMap,
-      title:"You",
-      icon:{path:google.maps.SymbolPath.CIRCLE,scale:12,fillColor:"#2563eb",fillOpacity:1,strokeColor:"white",strokeWeight:3},
-      animation:google.maps.Animation.DROP
-    });
-    renderNurseMarkers();
-  }
+  setTimeout(()=>{
+    uberMap.invalidateSize();
+    renderNurseMarkers(nearbyNursesSorted.length>0? nearbyNursesSorted : allSource);
+    fitMapWide();
+  }, 200);
+
   renderNearbyList();
   showPage('home');
 }
@@ -330,7 +354,7 @@ function findNursesUber(fromQuick){
 function renderNearbyList(){
   var list=document.getElementById('loveCareLiveList');
   if(nearbyNursesSorted.length===0){
-    list.innerHTML='<div style="padding:10px;background:#fef3c7;border-radius:10px;margin-top:8px">No nurses within selected radius. Try 50km or ask more nurses to START DUTY.</div>';
+    list.innerHTML='<div style="padding:10px;background:#fef3c7;border-radius:10px;margin-top:8px">No nurses within selected radius. Try 100km Wide or ask more nurses to START DUTY.</div>';
     return;
   }
   var html='';
@@ -344,45 +368,45 @@ function renderNearbyList(){
   });
   list.innerHTML=html;
 }
-
 function selectNurseCard(phoneOrId){
   selectedNurseId=phoneOrId;
-  var n=nearbyNursesSorted.find(x=>(x.phone===phoneOrId||x.id===phoneOrId));
+  var n=nearbyNursesSorted.find(x=>(String(x.phone)===String(phoneOrId)||String(x.id)===String(phoneOrId)));
   if(n){
-    document.getElementById('selectedNurseInfo').innerHTML=`Selected: <b>${n.name}</b> - ${n.distance.toFixed(2)}km - ${n.phone}`;
+    document.getElementById('selectedNurseInfo').innerHTML=`Selected: <b>${n.name}</b> - ${n.distance.toFixed(2)}km - ${n.phone||n.id}`;
     renderNearbyList();
-    // Highlight marker
     if(uberMap && n.lat){
-      uberMap.panTo({lat:parseFloat(n.lat),lng:parseFloat(n.lng)});
+      uberMap.panTo([parseFloat(n.lat),parseFloat(n.lng)]);
+      // open popup
+      nurseMarkers.forEach(m=>{
+        var ll=m.getLatLng();
+        if(Math.abs(ll.lat-parseFloat(n.lat))<0.0001 && Math.abs(ll.lng-parseFloat(n.lng))<0.0001) m.openPopup();
+      });
     }
   }
 }
-
 function randomSelectNurse(){
   if(nearbyNursesSorted.length===0){alert('No nearby nurses - Find first'); return;}
-  var idx=Math.floor(Math.random()*Math.min(nearbyNursesSorted.length,5)); // random among top 5 closest like Uber
+  var idx=Math.floor(Math.random()*Math.min(nearbyNursesSorted.length,5));
   var picked=nearbyNursesSorted[idx];
   selectNurseCard(picked.phone||picked.id);
-  // confetti effect
   document.getElementById('selectedNurseInfo').innerHTML=`🎲 Random Pick: <b>${picked.name}</b> - ${picked.distance.toFixed(2)}km`;
+  fitMapWide();
 }
-
 function submitBooking(){
   var name=document.getElementById('cName').value.trim();
   var phone=document.getElementById('cPhone').value.trim();
   var fullPhone=getFullPhone('cPhoneCode','cPhone');
   var service=document.getElementById('cService').value;
   if(!name||!phone||!service){alert('Name Phone Service required'); return;}
-  if(!selectedNurseId){if(!confirm('No nurse selected. Book with closest available?')) return; if(nearbyNursesSorted[0]) selectedNurseId=nearbyNursesSorted[0].phone;}
+  if(!selectedNurseId){if(!confirm('No nurse selected. Book with closest available?')) return; if(nearbyNursesSorted[0]) selectedNurseId=nearbyNursesSorted[0].phone||nearbyNursesSorted[0].id;}
   var amount=parseFloat(document.getElementById('cBudget').value||0);
   var cur=document.getElementById('cCurrency').value;
   if(convertToGHS(amount,cur)<89.9){alert('Minimum 90 GHS equivalent. Increase rate.'); return;}
   var id=Date.now();
-  var b={id:id,name:name,phone:fullPhone,service:service,location:document.getElementById('cLocation').value,amount:amount,currency:cur,ghsEquivalent:convertToGHS(amount,cur),status:'pending_assignment',time:new Date().toLocaleString(),timestamp:Date.now(),lat:clientLat,lng:clientLng,selectedNurse:selectedNurseId,distance:nearbyNursesSorted.find(n=>n.phone===selectedNurseId)?.distance||null};
+  var b={id:id,name:name,phone:fullPhone,service:service,location:document.getElementById('cLocation').value,amount:amount,currency:cur,ghsEquivalent:convertToGHS(amount,cur),status:'pending_assignment',time:new Date().toLocaleString(),timestamp:Date.now(),lat:clientLat,lng:clientLng,selectedNurse:selectedNurseId,distance:nearbyNursesSorted.find(n=>String(n.phone)===String(selectedNurseId)||String(n.id)===String(selectedNurseId))?.distance||null};
   if(db) db.ref('bookings/'+id).set(b).then(()=>alert(`Booked! Nurse ${selectedNurseId} will be notified. Distance: ${b.distance?.toFixed(2)}km`));
   else alert('Booked locally with nurse '+selectedNurseId);
 }
-
 function registerNurse(){
   var name=document.getElementById('nRegName').value.trim();
   var phone=document.getElementById('nRegPhone').value.trim();
@@ -403,7 +427,6 @@ function loginCEO(){var id=document.getElementById('ceoLoginID').value.trim().to
 function logoutNurse(){localStorage.removeItem('nursePhone'); showPage('home');}
 function logoutCEO(){localStorage.removeItem('isCEOLogged'); showPage('home');}
 function triggerSOS(){alert('SOS SENT!');}
-function toggleMap(){document.getElementById('loveCareMapWrapper').classList.toggle('hidden');}
 function startDuty(){
   var phone=localStorage.getItem('nursePhone');
   if(!phone){alert('Login first'); return;}
@@ -416,16 +439,15 @@ function startDuty(){
 }
 function stopDuty(){var phone=localStorage.getItem('nursePhone'); if(db && phone) db.ref('workers/'+phone.split('+').join('')).update({status:'off_duty',onDuty:false}); document.getElementById('nurseGpsStatus').innerText='OFF - Not on map';}
 function savePayout(){alert('Saved');}
-
 window.onload=function(){
   var saved=localStorage.getItem('loveCareCountry')||'GH';
   document.getElementById('countrySelect').value=saved; changeCountry();
   if(db){
     db.ref('bookings').on('value',s=>{allBookings=Object.values(s.val()||{});});
-    db.ref('workers').on('value',s=>{allWorkers=Object.values(s.val()||{}); renderNurseMarkers(); if(clientLat) renderNearbyList();});
+    db.ref('workers').on('value',s=>{allWorkers=Object.values(s.val()||{}); if(uberMap){ renderNurseMarkers(nearbyNursesSorted.length>0?nearbyNursesSorted:allWorkers); fitMapWide(); }});
   }
   showPage('home');
-  setTimeout(initUberMap,800);
+  setTimeout(initUberMap,600);
 };
 </script>
 <footer style="background:#111;color:#fff;padding:20px;text-align:center;margin-top:40px;">
