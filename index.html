@@ -8,7 +8,10 @@
 <link rel="apple-touch-icon" href="./logo.png">
 <link rel="manifest" href="./manifest.json">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css"/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
 <meta name="theme-color" content="#16a34a">
 <meta name="description" content="LOVE CARE GLOBAL - Professional Home Nursing - Uber style nurse map">
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -43,7 +46,7 @@ input,select,textarea{width:100%;padding:12px;margin:6px 0;border-radius:10px;bo
 .uploadBox{border:2px dashed #16a34a;border-radius:12px;padding:12px;margin:8px 0;background:#f0fdf4}
 .gpsBadge{font-size:10px;color:#00b050;background:#f0fdf4;padding:4px 10px;border-radius:10px;border:1px solid #00b050;margin-top:4px;display:inline-block}
 .file-preview{font-size:10px;padding:5px 10px;border-radius:8px;margin-top:4px;display:inline-block;background:#dcfce7}
-.map-wrapper{margin-top:10px;border-radius:16px;overflow:hidden;border:3px solid #16a34a;height:420px;position:relative}
+.map-wrapper{margin-top:10px;border-radius:16px;overflow:hidden;border:3px solid #16a34a;height:460px;position:relative}
 #uberMap{width:100%;height:100%}
 .btnMap{background:linear-gradient(135deg,#ff6a00,#ff9500);color:white;border:none;padding:10px 14px;border-radius:10px;font-weight:800;cursor:pointer}
 .uber-card{background:white;border:2px solid #16a34a;border-radius:12px;padding:10px;margin:8px 0;display:flex;align-items:center;gap:10px;font-size:12px;cursor:pointer;transition:.2s}
@@ -66,7 +69,7 @@ input,select,textarea{width:100%;padding:12px;margin:6px 0;border-radius:10px;bo
   </div>
   <span id="loginStatus" style="font-size:9px;background:white;color:#16a34a;padding:4px 8px;border-radius:10px;display:none"></span>
 </div>
-<div class="announcementBar"><span id="announcementText">LOVE CARE GLOBAL - UBER STYLE MAP - GPS AUTO + Closest Nurses - 0544121814</span></div>
+<div class="announcementBar"><span id="announcementText">LOVE CARE GLOBAL - UBER STYLE MAP - GPS AUTO + Closest Nurses - 0544121814 - FIXED WIDE ZOOM</span></div>
 <div class="globalBar">
 <span style="font-size:12px;font-weight:800">Country:</span>
 <select id="countrySelect" onchange="changeCountry()">
@@ -77,8 +80,8 @@ input,select,textarea{width:100%;padding:12px;margin:6px 0;border-radius:10px;bo
 
 <div id="page-home" class="page active">
 <div class="eversendBox">
-<h3 style="margin:0 0 8px 0">Find Nurses Like Uber</h3>
-<div class="payOption">1. Tap GPS Auto - 2. Map shows closest nurses - 3. Random or Choose</div>
+<h3 style="margin:0 0 8px 0">Find Nurses Like Uber - WIDE ZOOM FIXED</h3>
+<div class="payOption">1. Tap GPS Auto - 2. Map shows closest nurses - 3. Toggle Map = Wide Zoom to see all</div>
 </div>
 
 <div class="card" style="border:3px solid #00b050"><h2>BOOK NURSE - Uber Map</h2>
@@ -104,8 +107,8 @@ input,select,textarea{width:100%;padding:12px;margin:6px 0;border-radius:10px;bo
 <div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap">
 <button class="btnMap" onclick="toggleMap()">🗺️ Toggle Map / Zoom Wide</button>
 <button class="btnSmall" style="background:#16a34a;color:white" onclick="findNursesUber()">Refresh Nearby</button>
-<button class="btnSmall" style="background:#2563eb;color:white" onclick="fitMapWide()">Zoom Wide</button>
-<select id="radiusSelect" style="width:110px;padding:8px;border-radius:8px"><option value="5">5 km</option><option value="10" selected>10 km</option><option value="20">20 km</option><option value="50">50 km</option><option value="100">100 km - Wide</option></select>
+<button class="btnSmall" style="background:#2563eb;color:white" onclick="fitMapWide()">🔍 Zoom Wide</button>
+<select id="radiusSelect" style="width:125px;padding:8px;border-radius:8px"><option value="5">5 km</option><option value="10" selected>10 km</option><option value="20">20 km</option><option value="50">50 km</option><option value="100">100 km - WIDE</option></select>
 </div>
 <div id="loveCareMapWrapper" class="map-wrapper"><div id="uberMap"></div></div>
 <div id="loveCareLiveList"></div>
@@ -186,9 +189,9 @@ input,select,textarea{width:100%;padding:12px;margin:6px 0;border-radius:10px;bo
 var firebaseConfig={apiKey:"AIzaSyB52-X1D8Cg-wUDWPds_tR7D8cF82dMdRg",authDomain:"web-care-618e8.firebaseapp.com",databaseURL:"https://web-care-618e8-default-rtdb.firebaseio.com",projectId:"web-care-618e8",storageBucket:"web-care-618e8.firebasestorage.app",messagingSenderId:"1062578660694",appId:"1:1062578660694:web:f94dfe12c929df05bce2f7"};
 var db=null,allBookings=[],allWorkers=[],logoTapCount=0,staffLogoTapCount=0,currentCountry='GH',clientLat=null,clientLng=null,nurseRegLat=null,nurseRegLng=null;
 var countries={GH:{currency:'GHS',lat:5.6037,lng:-0.1870},NG:{currency:'NGN',lat:9.0820,lng:8.6753},ZA:{currency:'ZAR',lat:-30.5595,lng:22.9375}};
-var MIN_RATE_GHS=90; var currencyRates={'GHS':1,'USD':0.0645,'GBP':0.0513,'NGN':105,'ZAR':1.2,'KES':8.3,'INR':5.4,'AED':0.237,'EUR':0.059};
+var currencyRates={'GHS':1,'USD':0.0645,'GBP':0.0513,'NGN':105,'ZAR':1.2,'KES':8.3,'INR':5.4,'AED':0.237,'EUR':0.059};
 var currencyMin={'GHS':90,'USD':6,'GBP':5,'NGN':9450,'ZAR':108,'KES':747,'INR':486,'AED':22,'EUR':6};
-var uberMap=null, clientMarker=null, nurseMarkers=[], selectedNurseId=null, nearbyNursesSorted=[];
+var uberMap=null, clientMarker=null, nurseMarkers=[], nurseCluster=null, selectedNurseId=null, nearbyNursesSorted=[], routeLine=null;
 
 try{firebase.initializeApp(firebaseConfig);db=firebase.database();}catch(e){}
 
@@ -226,7 +229,7 @@ function autoGPS(inputId,statusId){
     fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`).then(r=>r.json()).then(data=>{
       inputEl.value=data.display_name||lat.toFixed(5)+','+lng.toFixed(5);
       if(statusEl) statusEl.innerText='GPS: '+lat.toFixed(4)+','+lng.toFixed(4);
-      if(clientLat){ findNursesUber(); }
+      if(clientLat) findNursesUber();
     }).catch(()=>{inputEl.value=lat.toFixed(5)+','+lng.toFixed(5); if(clientLat) findNursesUber();});
   },err=>{if(statusEl) statusEl.innerText='GPS failed'; alert(err.message);},{enableHighAccuracy:true,timeout:15000});
 }
@@ -239,86 +242,95 @@ function getDistanceKm(lat1,lon1,lat2,lon2){
 }
 if(!localStorage.getItem('nurses') || JSON.parse(localStorage.getItem('nurses')).length===0){
   localStorage.setItem('nurses', JSON.stringify([
-    {id:1,name:"Nurse Grace Mensah",specialty:"General",lat:5.675,lng:-0.165,location:"Madina",rate:"90 GHS/hr",available:true},
-    {id:2,name:"Nurse Esther Ofori",specialty:"Elderly Care",lat:5.682,lng:-0.185,location:"Haatso",rate:"90 GHS/hr",available:true},
-    {id:3,name:"Nurse Joy Addo",specialty:"Pediatrics",lat:5.6501,lng:-0.1864,location:"Legon",rate:"100 GHS/hr",available:true},
-    {id:4,name:"Nurse Mary Asare",specialty:"Post-Surgery",lat:5.7,lng:-0.165,location:"Adenta",rate:"95 GHS/hr",available:true}
+    {id:1,name:"Nurse Grace Mensah",specialty:"General",lat:5.675,lng:-0.165,location:"Madina",rate:"90 GHS/hr",available:true,phone:"+233244001001"},
+    {id:2,name:"Nurse Esther Ofori",specialty:"Elderly Care",lat:5.682,lng:-0.185,location:"Haatso",rate:"90 GHS/hr",available:true,phone:"+233244001002"},
+    {id:3,name:"Nurse Joy Addo",specialty:"Pediatrics",lat:5.6501,lng:-0.1864,location:"Legon",rate:"100 GHS/hr",available:true,phone:"+233244001003"},
+    {id:4,name:"Nurse Mary Asare",specialty:"Post-Surgery",lat:5.7,lng:-0.165,location:"Adenta",rate:"95 GHS/hr",available:true,phone:"+233244001004"},
+    {id:5,name:"Nurse Comfort Yeboah",specialty:"Midwife",lat:5.6037,lng:-0.1870,location:"Accra Central",rate:"90 GHS/hr",available:true,phone:"+233244001005"}
   ]));
 }
 
-// === FIXED MAP LOGIC - PURE LEAFLET ===
+// === FINAL FIXED UBER MAP LOGIC - WIDE ZOOM ===
 function initUberMap(){
   var mapDiv=document.getElementById('uberMap');
   if(!mapDiv) return;
-  if(uberMap){ uberMap.invalidateSize(); return; }
-  uberMap=L.map('uberMap', {zoomControl:true}).setView([5.6037,-0.1870], 12);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19, attribution:'© OpenStreetMap'}).addTo(uberMap);
+  if(uberMap){ uberMap.invalidateSize(); fitMapWide(); return; }
+  uberMap=L.map('uberMap', {zoomControl:true}).setView([5.6037,-0.1870], 11);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19, attribution:'© OSM'}).addTo(uberMap);
+  nurseCluster = L.markerClusterGroup({
+    showCoverageOnHover:false, maxClusterRadius:55,
+    iconCreateFunction: function(c){ return L.divIcon({ html: '<div style="background:#16a34a;color:white;border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-weight:800;border:3px solid white;box-shadow:0 2px 8px rgba(0,0,0,.3)">'+c.getChildCount()+'</div>', className:'', iconSize:[38,38] }); }
+  });
+  uberMap.addLayer(nurseCluster);
   renderNurseMarkers();
-  setTimeout(()=>{ uberMap.invalidateSize(); fitMapWide(); }, 300);
+  setTimeout(()=>{ uberMap.invalidateSize(); fitMapWide(); }, 500);
 }
 
 function clearMarkers(){
-  nurseMarkers.forEach(m=>{ if(uberMap) uberMap.removeLayer(m); });
+  if(nurseCluster) nurseCluster.clearLayers();
   nurseMarkers=[];
-  if(clientMarker && uberMap){ uberMap.removeLayer(clientMarker); clientMarker=null; }
+  if(clientMarker && uberMap) uberMap.removeLayer(clientMarker);
+  if(routeLine && uberMap) uberMap.removeLayer(routeLine);
+  clientMarker=null; routeLine=null;
 }
 
 function getAllNursesSource(){
-  // Prefer Firebase workers if loaded, else localStorage
   if(allWorkers && allWorkers.length>0) return allWorkers;
   try{ return JSON.parse(localStorage.getItem('nurses')||'[]'); }catch(e){ return []; }
 }
 
 function renderNurseMarkers(list){
-  if(!uberMap) return;
+  if(!uberMap || !nurseCluster) return;
   clearMarkers();
   var source = list || getAllNursesSource();
-  if(!source || source.length===0) return;
-
-  var clientIcon = L.divIcon({className:'', html:'<div style="width:18px;height:18px;background:#2563eb;border:3px solid white;border-radius:50%;box-shadow:0 0 0 3px #2563eb"></div>', iconSize:[18,18], iconAnchor:[9,9]});
-  var nurseIcon = L.divIcon({className:'', html:'<div style="width:14px;height:14px;background:#00ff88;border:2px solid white;border-radius:50%;box-shadow:0 0 0 2px #16a34a;"></div>', iconSize:[14,14], iconAnchor:[7,7]});
-
+  var clientIcon = L.divIcon({
+    className:'', 
+    html:'<div style="position:relative;width:20px;height:20px"><div style="position:absolute;width:20px;height:20px;background:#2563eb;border:3px solid white;border-radius:50%;box-shadow:0 0 0 4px rgba(37,99,235,.3);z-index:2"></div><div style="position:absolute;width:44px;height:44px;left:-12px;top:-12px;background:rgba(37,99,235,.18);border-radius:50%;animation:pulse 2s infinite"></div></div>',
+    iconSize:[20,20], iconAnchor:[10,10]
+  });
   if(clientLat && clientLng){
-    clientMarker = L.marker([clientLat, clientLng], {icon: clientIcon, zIndexOffset:1000}).addTo(uberMap).bindPopup("<b>You are here</b>");
+    clientMarker = L.marker([clientLat, clientLng], {icon: clientIcon, zIndexOffset:1000}).addTo(uberMap).bindPopup("<b style='color:#2563eb'>📍 You are here</b><br>Finding nurses...");
   }
-
   source.forEach(w=>{
-    if(!w.lat ||!w.lng) return;
+    if(!w.lat || !w.lng) return;
     if(w.status && w.status.includes('off')) return;
     var lat=parseFloat(w.lat), lng=parseFloat(w.lng);
-    if(isNaN(lat) || isNaN(lng)) return;
-    var m=L.marker([lat,lng], {icon:nurseIcon}).addTo(uberMap);
+    if(isNaN(lat)||isNaN(lng)) return;
+    var nurseIcon = L.divIcon({
+      className:'', 
+      html:`<div style="position:relative;width:16px;height:16px"><div style="width:16px;height:16px;background:#16a34a;border:2px solid white;border-radius:50%;box-shadow:0 0 0 2px #16a34a;z-index:2;position:relative"></div><div style="position:absolute;width:30px;height:30px;left:-7px;top:-7px;background:rgba(22,163,74,.18);border-radius:50%;animation:pulse 1.6s infinite"></div></div>`,
+      iconSize:[16,16], iconAnchor:[8,8]
+    });
+    var m=L.marker([lat,lng], {icon:nurseIcon});
     var phone = w.phone || w.id;
-    m.bindPopup(`<b>${w.name||'Nurse'}</b><br>${w.specialty||''}<br>${w.location||''}<br><b>${w.rate||'90 GHS/hr'}</b><br><button onclick="selectNurseCard('${phone}')" style="background:#16a34a;color:white;border:none;padding:6px 12px;border-radius:6px;margin-top:6px;cursor:pointer">SELECT</button>`);
+    var distText = w.distance? w.distance.toFixed(1)+'km away' : (w.location||'');
+    m.bindPopup(`<div style="min-width:150px"><b>${w.name||'Nurse'}</b><br><small>${w.specialty||''} - ${distText}</small><br><b style="color:#16a34a">${w.rate||'90 GHS/hr'}</b><br><button onclick="selectNurseCard('${phone}')" style="background:#16a34a;color:white;border:none;padding:7px 14px;border-radius:8px;margin-top:6px;width:100%;font-weight:800;cursor:pointer">SELECT THIS NURSE</button></div>`);
+    m.on('click', ()=> selectNurseCard(phone));
+    nurseCluster.addLayer(m);
     nurseMarkers.push(m);
   });
 }
 
-// THE CORE FIX: ZOOM WIDE TO FIND NURSES
 function fitMapWide(){
   if(!uberMap) return;
   var bounds = L.latLngBounds();
-  var hasPoint=false;
-  if(clientLat && clientLng){ bounds.extend([clientLat, clientLng]); hasPoint=true; }
-  // Use nearby list if exists, else all nurses
+  var has=false;
+  if(clientLat && clientLng){ bounds.extend([clientLat, clientLng]); has=true; }
   var listToFit = nearbyNursesSorted.length>0? nearbyNursesSorted : getAllNursesSource();
-  listToFit.forEach(n=>{
-    if(n.lat && n.lng){ bounds.extend([parseFloat(n.lat), parseFloat(n.lng)]); hasPoint=true; }
-  });
-  if(!hasPoint) return;
-  // Pad to make it wide, and limit maxZoom so it doesn't zoom too close
-  uberMap.fitBounds(bounds, {padding:[50,50], maxZoom:13});
+  listToFit.forEach(n=>{ if(n.lat && n.lng){ bounds.extend([parseFloat(n.lat), parseFloat(n.lng)]); has=true; } });
+  if(!has) return;
+  uberMap.fitBounds(bounds, {padding:[80,80], maxZoom:13, animate:true, duration:1.2});
 }
 
 function toggleMap(){
   var wrapper=document.getElementById('loveCareMapWrapper');
-  wrapper.classList.toggle('hidden');
-  if(!wrapper.classList.contains('hidden')){
+  var isHidden = wrapper.classList.contains('hidden');
+  if(isHidden){
+    wrapper.classList.remove('hidden');
     if(!uberMap) initUberMap();
-    setTimeout(()=>{
-      uberMap.invalidateSize();
-      fitMapWide();
-    }, 250);
+    setTimeout(()=>{ uberMap.invalidateSize(); fitMapWide(); }, 300);
+  } else {
+    wrapper.classList.add('hidden');
   }
 }
 
@@ -328,13 +340,14 @@ function findNursesUber(fromQuick){
   if(!clientLat ||!clientLng){
     var locVal=document.getElementById(inputId).value;
     if(!locVal){alert('Tap GPS Auto first to get your location'); return;}
-    if(!clientLat){ alert('GPS not ready yet - tap GPS Auto again and allow location'); return; }
+    alert('GPS not ready yet - tap GPS Auto again and allow location');
+    return;
   }
   var radius=parseInt(document.getElementById('radiusSelect').value)||10;
   nearbyNursesSorted=allSource.filter(w=>w.lat && w.lng).map(w=>{
     var d=getDistanceKm(clientLat,clientLng,parseFloat(w.lat),parseFloat(w.lng));
     return {...w,distance:d};
-  }).filter(w=>w.distance<=radius).sort((a,b)=>a.distance-b.distance).slice(0,30);
+  }).filter(w=>w.distance<=radius).sort((a,b)=>a.distance-b.distance).slice(0,40);
 
   document.getElementById('nearbyCount').innerText=nearbyNursesSorted.length;
   document.getElementById('uberActionArea').classList.remove('hidden');
@@ -345,7 +358,7 @@ function findNursesUber(fromQuick){
     uberMap.invalidateSize();
     renderNurseMarkers(nearbyNursesSorted.length>0? nearbyNursesSorted : allSource);
     fitMapWide();
-  }, 200);
+  }, 300);
 
   renderNearbyList();
   showPage('home');
@@ -354,15 +367,15 @@ function findNursesUber(fromQuick){
 function renderNearbyList(){
   var list=document.getElementById('loveCareLiveList');
   if(nearbyNursesSorted.length===0){
-    list.innerHTML='<div style="padding:10px;background:#fef3c7;border-radius:10px;margin-top:8px">No nurses within selected radius. Try 100km Wide or ask more nurses to START DUTY.</div>';
+    list.innerHTML='<div style="padding:12px;background:#fef3c7;border-radius:10px;margin-top:8px;border:2px solid #eab308;text-align:center"><b>No nurses within '+document.getElementById('radiusSelect').value+'km</b><br><small>Try 100km WIDE or ask nurses to START DUTY</small><br><button onclick="document.getElementById(\'radiusSelect\').value=100;findNursesUber()" style="margin-top:6px;background:#16a34a;color:white;border:none;padding:8px 14px;border-radius:8px;font-weight:800">Try 100km Wide</button></div>';
     return;
   }
   var html='';
   nearbyNursesSorted.forEach(n=>{
-    var sel=(selectedNurseId && (n.phone===selectedNurseId || n.id===selectedNurseId))?'selected':'';
+    var sel=(selectedNurseId && (String(n.phone)===String(selectedNurseId) || String(n.id)===String(selectedNurseId)))?'selected':'';
     html+=`<div class="uber-card ${sel}" onclick="selectNurseCard('${n.phone||n.id}')">
       <img src="./logo.png" onerror="this.src='https://via.placeholder.com/46'">
-      <div style="flex:1"><b>${n.name}</b> - ${n.distance.toFixed(1)}km away<br><small>${n.location||''} | ${n.phone||''}</small><br><span class="live-badge">ON DUTY</span></div>
+      <div style="flex:1"><b>${n.name}</b> - ${n.distance.toFixed(1)}km away<br><small>${n.location||''} | ${n.phone||''}</small><br><span class="live-badge">ON DUTY • ${n.distance.toFixed(1)}km</span></div>
       <div class="nurse-dot"></div>
     </div>`;
   });
@@ -371,25 +384,25 @@ function renderNearbyList(){
 function selectNurseCard(phoneOrId){
   selectedNurseId=phoneOrId;
   var n=nearbyNursesSorted.find(x=>(String(x.phone)===String(phoneOrId)||String(x.id)===String(phoneOrId)));
+  if(!n) n=getAllNursesSource().find(x=>(String(x.phone)===String(phoneOrId)||String(x.id)===String(phoneOrId)));
   if(n){
-    document.getElementById('selectedNurseInfo').innerHTML=`Selected: <b>${n.name}</b> - ${n.distance.toFixed(2)}km - ${n.phone||n.id}`;
+    document.getElementById('selectedNurseInfo').innerHTML=`Selected: <b>${n.name}</b> - ${n.distance?n.distance.toFixed(2)+'km':''} - ${n.phone||n.id}`;
     renderNearbyList();
     if(uberMap && n.lat){
-      uberMap.panTo([parseFloat(n.lat),parseFloat(n.lng)]);
-      // open popup
-      nurseMarkers.forEach(m=>{
-        var ll=m.getLatLng();
-        if(Math.abs(ll.lat-parseFloat(n.lat))<0.0001 && Math.abs(ll.lng-parseFloat(n.lng))<0.0001) m.openPopup();
-      });
+      if(routeLine) uberMap.removeLayer(routeLine);
+      if(clientLat){
+        routeLine = L.polyline([[clientLat, clientLng], [parseFloat(n.lat), parseFloat(n.lng)]], {color:'#2563eb', weight:3, dashArray:'10,10', opacity:0.7}).addTo(uberMap);
+      }
+      uberMap.panTo([parseFloat(n.lat),parseFloat(n.lng)], {animate:true});
     }
   }
 }
 function randomSelectNurse(){
-  if(nearbyNursesSorted.length===0){alert('No nearby nurses - Find first'); return;}
+  if(nearbyNursesSorted.length===0){alert('No nearby nurses - Tap FIND NURSES first'); return;}
   var idx=Math.floor(Math.random()*Math.min(nearbyNursesSorted.length,5));
   var picked=nearbyNursesSorted[idx];
   selectNurseCard(picked.phone||picked.id);
-  document.getElementById('selectedNurseInfo').innerHTML=`🎲 Random Pick: <b>${picked.name}</b> - ${picked.distance.toFixed(2)}km`;
+  document.getElementById('selectedNurseInfo').innerHTML=`🎲 Random Pick: <b>${picked.name}</b> - ${picked.distance.toFixed(2)}km - Closest 5`;
   fitMapWide();
 }
 function submitBooking(){
@@ -418,15 +431,14 @@ function registerNurse(){
   var w={name:name,phone:fullPhone,password:pass,location:loc,time:new Date().toLocaleString(),timestamp:Date.now(),country:currentCountry,lat:nurseRegLat,lng:nurseRegLng,status:'on_duty',onDuty:true};
   document.getElementById('nRegStatus').innerText='Registering...';
   if(db) db.ref('workers/'+fullPhone.split('+').join('')).set(w).then(()=>{document.getElementById('nRegStatus').innerText='Registered with GPS '+fullPhone+' - You will appear on map'; alert('Registered! You now appear on client map');});
-  else alert('Registered locally');
+  else { var nurses=JSON.parse(localStorage.getItem('nurses')||'[]'); nurses.push({...w, id:Date.now()}); localStorage.setItem('nurses', JSON.stringify(nurses)); document.getElementById('nRegStatus').innerText='Registered locally '+fullPhone; alert('Registered locally!'); }
 }
 function submitBooking2(){document.getElementById('cName').value=document.getElementById('cName2').value; document.getElementById('cPhone').value=document.getElementById('cPhone2').value; submitBooking();}
 function loginNurse(){var fullPhone=getFullPhone('nurseLoginCode','nurseLoginPhone'); localStorage.setItem('nursePhone',fullPhone); document.getElementById('nurseDashName').innerText=fullPhone; showPage('nurse-dashboard');}
 function loginStaff(){var id=document.getElementById('staffLoginID').value.trim(); if(!id){alert('Enter ID'); return;} localStorage.setItem('staffID',id); document.getElementById('staffDashName').innerText=id; showPage('staff-dashboard');}
-function loginCEO(){var id=document.getElementById('ceoLoginID').value.trim().toUpperCase(); var pass=document.getElementById('ceoLoginPass').value.trim(); if(id==='KUSIPETER' && pass==='Peterasa80@you!'){localStorage.setItem('isCEOLogged','true'); document.getElementById('ceoDashName').innerText='CEO'; showPage('ceo-dashboard');}else{alert('Access denied');}}
-function logoutNurse(){localStorage.removeItem('nursePhone'); showPage('home');}
+function loginCEO(){var id=document.getElementById('ceoLoginID').value.trim().toUpperCase(); var pass=document.getElementById('ceoLoginPass').value.trim(); if(id==='KUSIPETER' && pass==='Peterasa80@you!'){localStorage.setItem('isCEOLogged','true'); document.getElementById('ceoDashName').innerText='CEO'; showPage('ceo-dashboard');}else{ document.getElementById('ceoLoginResult').innerText='Access denied'; }}
 function logoutCEO(){localStorage.removeItem('isCEOLogged'); showPage('home');}
-function triggerSOS(){alert('SOS SENT!');}
+function triggerSOS(){alert('SOS SENT! Your location: '+(clientLat?clientLat.toFixed(4)+','+clientLng.toFixed(4):'Enable GPS')+' - Help is on the way!');}
 function startDuty(){
   var phone=localStorage.getItem('nursePhone');
   if(!phone){alert('Login first'); return;}
@@ -438,7 +450,6 @@ function startDuty(){
   });
 }
 function stopDuty(){var phone=localStorage.getItem('nursePhone'); if(db && phone) db.ref('workers/'+phone.split('+').join('')).update({status:'off_duty',onDuty:false}); document.getElementById('nurseGpsStatus').innerText='OFF - Not on map';}
-function savePayout(){alert('Saved');}
 window.onload=function(){
   var saved=localStorage.getItem('loveCareCountry')||'GH';
   document.getElementById('countrySelect').value=saved; changeCountry();
@@ -447,11 +458,11 @@ window.onload=function(){
     db.ref('workers').on('value',s=>{allWorkers=Object.values(s.val()||{}); if(uberMap){ renderNurseMarkers(nearbyNursesSorted.length>0?nearbyNursesSorted:allWorkers); fitMapWide(); }});
   }
   showPage('home');
-  setTimeout(initUberMap,600);
+  setTimeout(initUberMap,700);
 };
 </script>
 <footer style="background:#111;color:#fff;padding:20px;text-align:center;margin-top:40px;">
-<p>(c) 2026 LOVE CARE GLOBAL - Accra Ghana - Uber Map Edition</p>
+<p>(c) 2026 LOVE CARE GLOBAL - Accra Ghana - Uber Map Edition - WIDE ZOOM FIXED</p>
 </footer>
 </body>
 </html>
