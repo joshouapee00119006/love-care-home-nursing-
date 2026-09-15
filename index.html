@@ -68,6 +68,18 @@ table{width:100%;border-collapse:collapse;font-size:11px;margin-top:8px} th,td{b
 .st-pending{background:#eab308;color:#111}.st-confirmed{background:#16a34a}.st-cancelled{background:#ef4444}.st-refund_req{background:#7c3aed}.st-refund_ok{background:#2563eb}.st-refunded{background:#00b050}
 .bookingClientCard{border:2px solid #16a34a;border-radius:12px;padding:12px;margin:8px 0;background:#f0fdf4}
 .refundBox{background:#fff7ed;border:2px dashed #ea580c;border-radius:12px;padding:10px;margin-top:8px}
+/* NEW FOOTER & LEGAL STYLES */
+.appFooter{background:#111827;color:#d1d5db;padding:28px 16px 40px 16px;margin-top:40px;text-align:center;border-top:4px solid #eab308}
+.appFooter a{color:#eab308;text-decoration:none;font-weight:700}
+.appFooter a:hover{text-decoration:underline}
+.footerLinks{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin:14px 0}
+.footerLinks button{background:none;border:1px solid #374151;color:#e5e7eb;padding:8px 14px;border-radius:20px;font-weight:800;font-size:12px;cursor:pointer}
+.footerLinks button:hover{background:#1f2937;border-color:#eab308;color:#eab308}
+.legalModal{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.7);z-index:100001;display:flex;justify-content:center;align-items:flex-start;padding:20px;overflow-y:auto}
+.legalContent{background:white;color:#111827;width:100%;max-width:800px;border-radius:16px;padding:22px;margin-top:20px;max-height:90vh;overflow-y:auto;text-align:left;line-height:1.6}
+.legalContent h1{color:#16a34a;font-size:20px}
+.legalContent h2{color:#111827;font-size:14px;margin-top:18px}
+.legalContent p,.legalContent li{font-size:13px;color:#374151}
 </style>
 </head>
 <body>
@@ -139,7 +151,6 @@ table{width:100%;border-collapse:collapse;font-size:11px;margin-top:8px} th,td{b
 <button class="btnSubmit" style="background:linear-gradient(90deg,#2563eb,#00b050)" onclick="findNursesUber()" data-t="findNurses">🔍 FIND NURSES NEAR ME</button>
 <div id="uberActionArea" class="hidden"><div style="display:flex;gap:6px;margin-top:8px"><button class="btnSubmit" style="background:#eab308;color:#111;flex:1" onclick="randomSelectNurse()">🎲 RANDOM</button><button class="btnSubmit" style="background:#111827;flex:1" onclick="submitBooking()" data-t="bookSelected">BOOK SELECTED</button></div><div id="selectedNurseInfo" style="font-size:10px;text-align:center;margin-top:4px;color:#16a34a;font-weight:800">No nurse selected</div></div></div>
 
-<!-- NEW CLIENT BOOKING MANAGEMENT -->
 <div class="card" style="border:3px solid #2563eb"><h2>📋 MY BOOKINGS - Cancel & Refund</h2>
 <p style="font-size:11px;color:#6b7280">Enter your phone to view bookings, cancel, and request refund</p>
 <div class="phoneRow"><select id="myBookPhoneCode"></select><input id="myBookPhone" placeholder="Enter your phone to load bookings"><button class="btnSmall" style="background:#2563eb;color:white;padding:12px 16px" onclick="loadMyBookings()">LOAD</button></div>
@@ -184,7 +195,6 @@ table{width:100%;border-collapse:collapse;font-size:11px;margin-top:8px} th,td{b
 <div id="ceo-tab-clients" class="ceo-tab card hidden"><h2>3. <span data-t="clients">Clients</span></h2><div id="ceoClientsList">Loading...</div></div>
 <div id="ceo-tab-payments" class="ceo-tab card hidden"><h2>4. <span data-t="payments">Payments</span></h2><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px"><div style="background:#f0fdf4;padding:10px;border-radius:10px;border:2px solid #16a34a"><small>Total GHS</small><br><b id="totalRevenue">0</b></div><div style="background:#fffbeb;padding:10px;border-radius:10px;border:2px solid #eab308"><small>Pending</small><br><b id="pendingRevenue">0</b></div></div><div id="ceoPaymentsList">Loading...</div></div>
 
-<!-- NEW REFUND TAB CEO -->
 <div id="ceo-tab-refunds" class="ceo-tab card hidden" style="border:3px solid #ef4444"><h2>💸 REFUND MANAGEMENT - CEO Approval Required</h2>
 <p style="font-size:11px;color:#6b7280">Client requests refund after cancellation. CEO confirms and sends back to client's account.</p>
 <div id="ceoRefundsList">Loading refunds...</div>
@@ -205,7 +215,6 @@ table{width:100%;border-collapse:collapse;font-size:11px;margin-top:8px} th,td{b
 </div>
 </div>
 
-<!-- REFUND MODAL -->
 <div id="refundModal" class="ratePopup hidden" style="border-color:#7c3aed">
 <h3 style="color:#7c3aed;margin:0 0 10px 0">💸 Request Refund</h3>
 <p style="font-size:12px;text-align:left">Booking ID: <b id="refundBookingId"></b><br>Amount: <b id="refundBookingAmount"></b></p>
@@ -217,6 +226,33 @@ table{width:100%;border-collapse:collapse;font-size:11px;margin-top:8px} th,td{b
 <button class="btnSubmit" style="background:#6b7280;flex:1" onclick="closeRefundModal()">Cancel</button>
 </div>
 </div>
+
+<!-- LEGAL MODALS -->
+<div id="legalModal" class="legalModal hidden" onclick="if(event.target===this)closeLegal()">
+  <div class="legalContent">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <h1 id="legalTitle">Policy</h1>
+      <button onclick="closeLegal()" style="background:#ef4444;color:white;border:none;padding:8px 14px;border-radius:8px;font-weight:800">✕ CLOSE</button>
+    </div>
+    <div id="legalBody"></div>
+  </div>
+</div>
+
+<footer class="appFooter">
+  <div style="font-weight:800;letter-spacing:1px;color:white">LOVE CARE GLOBAL</div>
+  <div style="font-size:11px;margin-top:4px">13 Professional Home Nursing Services | GPS & Uber-Style Booking</div>
+
+  <div class="footerLinks">
+    <button onclick="openLegal('privacy')">🔒 Privacy Policy</button>
+    <button onclick="openLegal('terms')">📄 Terms of Service</button>
+    <button onclick="openLegal('cancel')">❌ Cancellation & Refund</button>
+    <button onclick="openLegal('contact')">📧 Contact Us</button>
+  </div>
+
+  <p style="font-size:11px;margin:8px 0">Email: <a href="mailto:lovecareglobal@gmail.com">lovecareglobal@gmail.com</a> | Phone: 0544121814 | Ghana</p>
+  <p style="font-size:10px;color:#9ca3af">© 2026 LOVE CARE GLOBAL - All Rights Reserved. Your health data is protected. 13 Services + Cancel & Refund System.</p>
+  <p style="font-size:9px;color:#6b7280;margin-top:8px">Cancellation requests & refunds: lovecareglobal@gmail.com - Response within 24 hours</p>
+</footer>
 
 <div class="bottomNav">
 <button id="nav-home" class="active" onclick="showPage('home')"><span>🏠</span><span data-t="home">Home</span></button>
@@ -234,6 +270,78 @@ var lastBookingId=null,lastBookingCurrency='GHS',lastBookingAmount=0, currentRef
 var countryCodes=[{c:'Ghana',code:'+233',flag:'🇬🇭'},{c:'Nigeria',code:'+234',flag:'🇳🇬'},{c:'South Africa',code:'+27',flag:'🇿🇦'},{c:'Kenya',code:'+254',flag:'🇰🇪'},{c:'Uganda',code:'+256',flag:'🇺🇬'},{c:'Tanzania',code:'+255',flag:'🇹🇿'},{c:'Ethiopia',code:'+251',flag:'🇪🇹'},{c:'Rwanda',code:'+250',flag:'🇷🇼'},{c:'Cameroon',code:'+237',flag:'🇨🇲'},{c:'Senegal',code:'+221',flag:'🇸🇳'},{c:'Ivory Coast',code:'+225',flag:'🇨🇮'},{c:'Egypt',code:'+20',flag:'🇪🇬'},{c:'Morocco',code:'+212',flag:'🇲🇦'},{c:'USA',code:'+1',flag:'🇺🇸'},{c:'UK',code:'+44',flag:'🇬🇧'},{c:'Canada',code:'+1',flag:'🇨🇦'},{c:'Australia',code:'+61',flag:'🇦🇺'},{c:'Germany',code:'+49',flag:'🇩🇪'},{c:'France',code:'+33',flag:'🇫🇷'},{c:'Italy',code:'+39',flag:'🇮🇹'},{c:'Spain',code:'+34',flag:'🇪🇸'},{c:'India',code:'+91',flag:'🇮🇳'},{c:'Pakistan',code:'+92',flag:'🇵🇰'},{c:'Bangladesh',code:'+880',flag:'🇧🇩'},{c:'Philippines',code:'+63',flag:'🇵🇭'},{c:'Indonesia',code:'+62',flag:'🇮🇩'},{c:'Brazil',code:'+55',flag:'🇧🇷'},{c:'Mexico',code:'+52',flag:'🇲🇽'},{c:'Saudi Arabia',code:'+966',flag:'🇸🇦'},{c:'UAE',code:'+971',flag:'🇦🇪'},{c:'Japan',code:'+81',flag:'🇯🇵'}];
 function populatePhoneCodes(){var html='';countryCodes.forEach(o=>{html+=`<option value="${o.code}">${o.flag} ${o.code} ${o.c}</option>`;});['cPhoneCode','nRegPhoneCode','nurseLoginCode','cPhoneCode2','myBookPhoneCode'].forEach(id=>{var el=document.getElementById(id); if(el) el.innerHTML=html;});}
 try{firebase.initializeApp(firebaseConfig);db=firebase.database();}catch(e){}
+
+// LEGAL CONTENT
+const legalPages = {
+privacy: {
+ title: "Privacy Policy - Love Care Global",
+ body: `
+ <p><b>Last Updated: May 13, 2026</b><br>Contact: <a href="mailto:lovecareglobal@gmail.com">lovecareglobal@gmail.com</a></p>
+ <h2>1. Information We Collect</h2>
+ <p>We collect Full Name, Phone Number, Email, GPS Location, Service Type, Booking Amount, and Nurse credentials to provide home nursing services.</p>
+ <h2>2. How We Use Your Data</h2>
+ <ul><li>To match clients with nearby nurses (Uber-style map)</li><li>To process bookings, cancellations and refunds</li><li>To improve safety via SOS and live GPS tracking</li><li>To communicate booking status</li></ul>
+ <h2>3. Location Data</h2>
+ <p>GPS is collected only after you tap "GPS Auto" and is used to calculate distance and show you on the map. You can deny GPS but service matching will be limited.</p>
+ <h2>4. Data Sharing</h2>
+ <p>We do NOT sell your data. We share only with assigned nurse/staff and Firebase (Google) for secure storage. Nurses see only client name, phone, location and service.</p>
+ <h2>5. Data Retention & Security</h2>
+ <p>Bookings are kept in Firebase Realtime Database with security rules. You can request deletion via <b>lovecareglobal@gmail.com</b>.</p>
+ <h2>6. Your Rights</h2>
+ <p>You can request access, correction or deletion of your data at any time by emailing us.</p>
+ <p><b>We comply with Ghana Data Protection Act and Google Play privacy requirements.</b></p>`
+},
+terms: {
+ title: "Terms of Service - Love Care Global",
+ body: `
+ <p><b>Last Updated: May 13, 2026</b></p>
+ <h2>1. Service Description</h2>
+ <p>Love Care Global connects clients to 13 home nursing services: Elderly Care, Baby Care, Hospital Support, etc. We are a booking platform, not a hospital.</p>
+ <h2>2. User Responsibilities</h2>
+ <ul><li>Provide accurate name, phone, GPS</li><li>Pay agreed rate to nurse/agency</li><li>Treat nurses with respect</li></ul>
+ <h2>3. Nurse Responsibilities</h2>
+ <ul><li>Must be qualified, registered, on-duty via START DUTY</li><li>Must provide safe, professional care</li></ul>
+ <h2>4. Bookings</h2>
+ <p>Booking is confirmed when a nurse accepts or CEO confirms. Rate minimum is 90 GHS but varies by service and location.</p>
+ <h2>5. Liability</h2>
+ <p>We vet nurses but are not liable for medical outcomes. Emergency: Use SOS button and call local emergency services.</p>
+ <h2>6. Account Termination</h2>
+ <p>We may remove fake nurses, abusive clients, or spam accounts.</p>
+ <p>Contact: <b>lovecareglobal@gmail.com</b></p>`
+},
+cancel: {
+ title: "Cancellation & Refund Policy",
+ body: `
+ <p><b>Last Updated: May 13, 2026 - Official Email: lovecareglobal@gmail.com</b></p>
+ <h2>1. How to Cancel</h2>
+ <p>Clients can cancel ANYTIME from HOME > MY BOOKINGS section. Enter your phone > LOAD > Click ❌ Cancel Booking. Or email us at <a href="mailto:lovecareglobal@gmail.com">lovecareglobal@gmail.com</a> with Booking ID and phone number.</p>
+ <h2>2. Cancellation Timeframe</h2>
+ <ul><li><b>Before nurse acceptance:</b> 100% free cancellation, instant.</li><li><b>After confirmation but before service starts (within 24h):</b> Free cancellation, refund eligible.</li><li><b>After service started:</b> Cancel possible but refund pro-rated based on service rendered.</li></ul>
+ <h2>3. How to Request Refund</h2>
+ <p>After cancellation, tap 💸 Request Refund, enter Reason, MoMo/Bank account, and Account Name. This request goes to CEO for approval.</p>
+ <h2>4. Refund Process</h2>
+ <ul><li>Step 1: Client submits refund request via app or email to lovecareglobal@gmail.com</li><li>Step 2: CEO reviews within 24 hours</li><li>Step 3: CEO approves and sends money back to client's provided MoMo/Bank account</li><li>Step 4: Client receives SMS/MoMo alert and status changes to REFUNDED in app</li></ul>
+ <h2>5. Refund Timeline</h2>
+ <p>Approved refunds are sent within 24-48 hours to Mobile Money (MTN, Vodafone, AirtelTigo) or Bank account. No fees charged by us.</p>
+ <h2>6. Non-Refundable Situations</h2>
+ <p>Refund may be rejected if service was fully completed, or false claim. CEO decision is final but you can appeal via email.</p>
+ <h2>7. Contact for Cancellation</h2>
+ <p><b>Email:</b> lovecareglobal@gmail.com<br><b>Phone:</b> 0544121814<br><b>Response Time:</b> Within 24 hours</p>
+ <p style="background:#f0fdf4;padding:10px;border-radius:8px;border:2px solid #16a34a">This policy was sent via Gmail lovecareglobal@gmail.com and is legally binding. All cancellations are honored.</p>`
+},
+contact: {
+ title: "Contact Us",
+ body: `
+ <p><b>Love Care Global - Home Nursing Services</b></p>
+ <p>📧 Email: <a href="mailto:lovecareglobal@gmail.com">lovecareglobal@gmail.com</a> (Official for Privacy, Terms, Cancellation & Refunds)<br>
+ 📞 Phone: 0544121814<br>
+ 📍 Ghana - Serving 32 Countries<br>
+ ⏰ Support: 24/7 via App Group Chat and Email</p>
+ <p>For cancellation & refund, email subject: "CANCELLATION [Booking ID]"</p>`
+}
+};
+function openLegal(key){document.getElementById('legalTitle').innerText=legalPages[key].title;document.getElementById('legalBody').innerHTML=legalPages[key].body;document.getElementById('legalModal').classList.remove('hidden');}
+function closeLegal(){document.getElementById('legalModal').classList.add('hidden');}
 
 var translations={
 en:{bookTitle:"BOOK NURSE - 13 Services - Uber Map",fullName:"Full Name",phone:"Phone",tapGps:"Tap GPS Auto",gpsBtn:"GPS Auto",selectService:"-- Select Service (13 Services) --",findNurses:"🔍 FIND NURSES NEAR ME",bookSelected:"BOOK SELECTED",liveMap:"LIVE Map",nearby:"Nearby",refresh:"Refresh",nurseReg:"Nurse Registration - 13 Services",register:"Register",loginHere:"Already Registered? Login Here",quickBook:"Quick Book - 13 Services",findOnMap:"Find on Map",bookNow:"Book Now",nurseLoginTitle:"Nurse Login",loginAsNurse:"Login as Nurse",nurseDash:"Nurse Dashboard",startDuty:"START DUTY",stopDuty:"STOP",logout:"Logout",newOffers:"New Offers",groupChat:"GROUP CHAT",send:"Send",openFullChat:"Open Full Chat",staffDash:"Staff Dashboard",loginAsStaff:"Login as Staff",home:"Home",bookings:"Bookings",nurses:"Nurses",clients:"Clients",payments:"Payments",staff:"Staff",announce:"Announce",refreshAll:"🔄 Refresh All",join:"Join",book:"Book",login:"Login",onDuty:"On Duty",noNurseTitle:"No Nurse Picked Yet",increaseRate:"Increase Rate",later:"Later",noNurseMsg:"No nurse has picked your request yet. Increase your rate to attract nurses faster!"},
@@ -368,15 +476,12 @@ function submitBooking(){
   });
 }
 
-// ===== NEW CLIENT CANCEL & REFUND LOGIC =====
 function loadMyBookings(){
  var codeEl=document.getElementById('myBookPhoneCode');
  var phoneEl=document.getElementById('myBookPhone');
  var fullPhone = codeEl && phoneEl? (codeEl.value + phoneEl.value.trim().replace(/^0+/,'').replace(/\+/g,'')) : '';
- // try also full phone from getFullPhone helper
  if(phoneEl.value.trim().startsWith('+')) fullPhone = phoneEl.value.trim();
  else if(phoneEl.value.trim()!=''){
-   // attempt using code
    try{ fullPhone = getFullPhone('myBookPhoneCode','myBookPhone'); }catch(e){}
  } else {
    fullPhone = localStorage.getItem('lastClientPhone')||'';
@@ -385,7 +490,6 @@ function loadMyBookings(){
  var listDiv=document.getElementById('myBookingsList');
  listDiv.innerHTML='Loading...';
  if(!db){ listDiv.innerHTML='Firebase not connected'; return; }
- // normalize: search bookings where phone ends with same last 9 digits
  var suffix = fullPhone.replace(/[^0-9]/g,'').slice(-9);
  db.ref('bookings').once('value').then(snap=>{
    var all = Object.values(snap.val()||{});
@@ -509,10 +613,8 @@ function renderBookings(list){var c=document.getElementById('ceoBookingsList'); 
  <button onclick="cancelBookingCEO(${b.id})" class="btnSmall" style="background:#ef4444;color:white">Cancel</button>
  <button onclick="deleteBooking(${b.id})" class="btnSmall" style="background:#111;color:white">X</button></td></tr>`;}); h+='</table>'; c.innerHTML=h;}
 
-// CEO CANCEL TOO
 function cancelBookingCEO(id){ if(!confirm('CEO Cancel this booking?')) return; if(db) db.ref('bookings/'+id).update({status:'cancelled_by_client', cancelTime:Date.now(), cancelledBy:'CEO'}).then(()=>loadCeoData());}
 
-// CEO REFUNDS RENDER
 function renderRefundsCEO(bookingsList){
  var c=document.getElementById('ceoRefundsList');
  var refunds = bookingsList.filter(b=> b.status==='refund_requested' || b.status==='refund_approved' || b.status==='refunded' || b.refundReason);
@@ -636,6 +738,5 @@ if(lastPhone){
 showPage('home'); setTimeout(initUberMap,700); setTimeout(toggleMasterClear,1000);
 };
 </script>
-<footer style="background:#111;color:#fff;padding:20px;text-align:center;margin-top:40px"><p>© 2026 LOVE CARE GLOBAL - 13 Services + Cancel & Refund System Added</p></footer>
 </body>
 </html>
