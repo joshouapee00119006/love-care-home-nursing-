@@ -64,6 +64,10 @@ table{width:100%;border-collapse:collapse;font-size:11px;margin-top:8px} th,td{b
 .ceo-tab{display:block}.ceo-tab.hidden{display:none!important}
 .sosFloat{position:fixed;bottom:110px;right:15px;width:56px;height:56px;background:radial-gradient(circle,#ef4444,#b91c1c);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:11px;z-index:99998;border:3px solid white;cursor:pointer}
 .ratePopup{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:white;border:4px solid #ef4444;border-radius:20px;padding:20px;width:92%;max-width:380px;z-index:100000;box-shadow:0 10px 30px rgba(0,0,0,.3);text-align:center}
+.statusBadge{padding:3px 8px;border-radius:20px;font-size:9px;font-weight:800;color:white;display:inline-block}
+.st-pending{background:#eab308;color:#111}.st-confirmed{background:#16a34a}.st-cancelled{background:#ef4444}.st-refund_req{background:#7c3aed}.st-refund_ok{background:#2563eb}.st-refunded{background:#00b050}
+.bookingClientCard{border:2px solid #16a34a;border-radius:12px;padding:12px;margin:8px 0;background:#f0fdf4}
+.refundBox{background:#fff7ed;border:2px dashed #ea580c;border-radius:12px;padding:10px;margin-top:8px}
 </style>
 </head>
 <body>
@@ -134,6 +138,14 @@ table{width:100%;border-collapse:collapse;font-size:11px;margin-top:8px} th,td{b
 <div style="display:flex;gap:6px"><input id="cBudget" type="number" placeholder="Rate Min 90 GHS" style="flex:1"><select id="cCurrency" style="width:110px"><option>GHS</option><option>USD</option><option>NGN</option><option>ZAR</option></select></div>
 <button class="btnSubmit" style="background:linear-gradient(90deg,#2563eb,#00b050)" onclick="findNursesUber()" data-t="findNurses">🔍 FIND NURSES NEAR ME</button>
 <div id="uberActionArea" class="hidden"><div style="display:flex;gap:6px;margin-top:8px"><button class="btnSubmit" style="background:#eab308;color:#111;flex:1" onclick="randomSelectNurse()">🎲 RANDOM</button><button class="btnSubmit" style="background:#111827;flex:1" onclick="submitBooking()" data-t="bookSelected">BOOK SELECTED</button></div><div id="selectedNurseInfo" style="font-size:10px;text-align:center;margin-top:4px;color:#16a34a;font-weight:800">No nurse selected</div></div></div>
+
+<!-- NEW CLIENT BOOKING MANAGEMENT -->
+<div class="card" style="border:3px solid #2563eb"><h2>📋 MY BOOKINGS - Cancel & Refund</h2>
+<p style="font-size:11px;color:#6b7280">Enter your phone to view bookings, cancel, and request refund</p>
+<div class="phoneRow"><select id="myBookPhoneCode"></select><input id="myBookPhone" placeholder="Enter your phone to load bookings"><button class="btnSmall" style="background:#2563eb;color:white;padding:12px 16px" onclick="loadMyBookings()">LOAD</button></div>
+<div id="myBookingsList" style="margin-top:10px"><div style="text-align:center;color:#999;font-size:11px;padding:10px">No bookings loaded. Enter phone & tap LOAD</div></div>
+</div>
+
 <div class="card"><h2><span data-t="liveMap">LIVE Map</span> - <span id="nearbyCount">0</span> <span data-t="nearby">Nearby</span></h2><div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap"><button class="btnMap" onclick="toggleMap()">🗺 Map</button><button class="btnSmall" style="background:#16a34a;color:white" onclick="findNursesUber()" data-t="refresh">Refresh</button><select id="radiusSelect" style="width:100px;padding:8px;border-radius:8px"><option value="5">5 km</option><option value="10" selected>10 km</option><option value="20">20 km</option><option value="50">50 km</option></select></div><div id="loveCareMapWrapper" class="map-wrapper"><div id="uberMap"></div></div><div id="loveCareLiveList"></div></div>
 </div>
 
@@ -144,34 +156,43 @@ table{width:100%;border-collapse:collapse;font-size:11px;margin-top:8px} th,td{b
 <div id="page-staff-login" class="page"><div class="card" style="margin:20px;border:3px solid #7c3aed"><h2>Staff Portal</h2><input id="staffLoginID" placeholder="Staff ID"><input id="staffLoginPass" type="password" placeholder="Password"><button class="btnSubmit" style="background:#7c3aed" onclick="loginStaff()" data-t="loginAsStaff">Login as Staff</button></div></div>
 <div id="page-staff-dashboard" class="page"><div class="card"><h2 data-t="staffDash">Staff Dashboard</h2><div id="staffBookingsList">Loading...</div></div><div class="card" style="border:3px solid #7c3aed"><h2 data-t="groupChat">GROUP CHAT</h2><div id="staffChatBox" class="chatBox"></div><div class="chatInputRow"><input id="staffChatInput" placeholder="Message..." onkeypress="if(event.key==='Enter')sendGroupMessage('STAFF')"><button class="btnSmall" style="background:#7c3aed;color:white;padding:12px 18px" onclick="sendGroupMessage('STAFF')" data-t="send">Send</button></div><button class="btnSmall" style="background:#111827;color:white;width:100%;margin-top:6px" onclick="showPage('group-chat')" data-t="openFullChat">Open Full Chat</button></div><div style="margin:20px;display:flex;gap:8px"><button class="btnSubmit" style="background:#16a34a;flex:1" onclick="showPage('home')" data-t="home">Home</button><button class="btnSubmit" style="background:#ef4444;flex:1" onclick="logoutStaff()" data-t="logout">Logout</button></div></div>
 
-<div id="page-group-chat" class="page"><div class="card" style="border:3px solid #16a34a"><h2 data-t="groupChat">GLOBAL GROUP CHAT</h2><div id="globalChatBox" class="chatBox" style="height:55vh"></div><div class="chatInputRow"><select id="groupRole" style="width:100px"><option value="NURSE">NURSE</option><option value="STAFF">STAFF</option><option value="CEO">CEO</option></select><input id="globalChatInput" placeholder="Type..." onkeypress="if(event.key==='Enter')sendGlobalChat()"><button class="btnSmall" style="background:#16a34a;color:white;padding:12px 20px" onclick="sendGlobalChat()" data-t="send">Send</button></div><div style="display:flex;gap:6px;margin-top:8px"><button class="btnSmall" style="background:#111827;color:white;flex:1" onclick="showPage('home')" data-t="home">Home</button><button id="masterClearBtn" class="btnSmall hidden" style="background:#ef4444;color:white;flex:1" onclick="clearGroupChat()">🗑️ MASTER CLEAR ALL (CEO ONLY)</button></div></div></div>
+<div id="page-group-chat" class="page"><div class="card" style="border:3px solid #16a34a"><h2 data-t="groupChat">GLOBAL GROUP CHAT</h2><div id="globalChatBox" class="chatBox" style="height:55vh"></div><div class="chatInputRow"><select id="groupRole" style="width:100px"><option value="NURSE">NURSE</option><option value="STAFF">STAFF</option><option value="CEO">CEO</option></select><input id="globalChatInput" placeholder="Type..." onkeypress="if(event.key==='Enter')sendGlobalChat()"><button class="btnSmall" style="background:#16a34a;color:white;padding:12px 20px" onclick="sendGlobalChat()" data-t="send">Send</button></div><div style="display:flex;gap:6px;margin-top:8px"><button class="btnSmall" style="background:#111827;color:white;flex:1" onclick="showPage('home')" data-t="home">Home</button><button id="masterClearBtn" class="btnSmall hidden" style="background:#ef4444;color:white;flex:1" onclick="clearGroupChat()">🗑 MASTER CLEAR ALL (CEO ONLY)</button></div></div></div>
 <div id="page-ceo-login" class="page"><div class="card" style="margin:20px;border:3px solid #111827"><h2>Secure Access</h2><input id="ceoLoginID" placeholder="Access ID"><input id="ceoLoginPass" type="password" placeholder="Access Key"><button class="btnSubmit" style="background:#111827" onclick="loginCEO()">Login</button><div id="ceoLoginResult" style="color:red;font-size:11px;margin-top:8px"></div></div></div>
 
 <div id="page-ceo-dashboard" class="page">
 <div class="card" style="border:3px solid #111827"><h2>CEO Management <span style="background:#16a34a;color:white;padding:2px 8px;border-radius:10px;font-size:10px">LIVE</span></h2>
-<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin:10px 0">
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;margin:10px 0">
 <div style="background:#f0fdf4;padding:10px;border-radius:10px;text-align:center;border:2px solid #16a34a"><b id="statBookings">0</b><br><small data-t="bookings">Bookings</small></div>
 <div style="background:#fffbeb;padding:10px;border-radius:10px;text-align:center;border:2px solid #eab308"><b id="statNurses">0</b><br><small data-t="nurses">Nurses</small></div>
 <div style="background:#eff6ff;padding:10px;border-radius:10px;text-align:center;border:2px solid #2563eb"><b id="statOnline">0</b><br><small data-t="onDuty">On Duty</small></div>
+<div style="background:#fef2f2;padding:10px;border-radius:10px;text-align:center;border:2px solid #ef4444"><b id="statRefunds">0</b><br><small>Refunds</small></div>
 </div>
 <div class="ceoTabs">
 <button id="btn-bookings" class="btnSmall activeTab" style="background:#111827;color:white" onclick="switchCeoTab('bookings')" data-t="bookings">Bookings</button>
 <button id="btn-nurses" class="btnSmall" style="background:#16a34a;color:white" onclick="switchCeoTab('nurses')" data-t="nurses">Nurses</button>
 <button id="btn-clients" class="btnSmall" style="background:#2563eb;color:white" onclick="switchCeoTab('clients')" data-t="clients">Clients</button>
 <button id="btn-payments" class="btnSmall" style="background:#eab308;color:#111" onclick="switchCeoTab('payments')" data-t="payments">Payments</button>
+<button id="btn-refunds" class="btnSmall" style="background:#ef4444;color:white" onclick="switchCeoTab('refunds')">💸 Refunds</button>
 <button id="btn-staff" class="btnSmall" style="background:#7c3aed;color:white" onclick="switchCeoTab('staff')" data-t="staff">Staff</button>
 <button id="btn-announce" class="btnSmall" style="background:#0e7490;color:white" onclick="switchCeoTab('announce')" data-t="announce">Announce</button>
 <button id="btn-chat" class="btnSmall" style="background:#ef4444;color:white" onclick="switchCeoTab('chat')" data-t="groupChat">💬GROUP</button>
 </div>
 <div style="display:flex;gap:6px;margin-top:6px"><button class="btnSmall" style="background:#111827;color:white" onclick="loadCeoData()" data-t="refreshAll">🔄 Refresh All</button><button class="btnSmall" style="background:#ef4444;color:white" onclick="logoutCEO()" data-t="logout">Logout</button></div>
 </div>
-<div id="ceo-tab-bookings" class="ceo-tab card"><h2>1. <span data-t="bookings">Bookings</span></h2><div style="display:flex;gap:6px;margin-bottom:8px"><input id="ceoSearchBooking" placeholder="Search" oninput="filterBookings()" style="flex:1;margin:0"><select id="ceoBookingFilter" onchange="filterBookings()" style="width:130px;margin:0"><option value="">All</option><option>pending_assignment</option><option>confirmed</option></select></div><div id="ceoBookingsList">Loading...</div></div>
+<div id="ceo-tab-bookings" class="ceo-tab card"><h2>1. <span data-t="bookings">Bookings</span></h2><div style="display:flex;gap:6px;margin-bottom:8px"><input id="ceoSearchBooking" placeholder="Search" oninput="filterBookings()" style="flex:1;margin:0"><select id="ceoBookingFilter" onchange="filterBookings()" style="width:130px;margin:0"><option value="">All</option><option value="pending_assignment">pending</option><option value="confirmed">confirmed</option><option value="cancelled_by_client">cancelled</option><option value="refund_requested">refund req</option><option value="refund_approved">approved</option><option value="refunded">refunded</option></select></div><div id="ceoBookingsList">Loading...</div></div>
 <div id="ceo-tab-nurses" class="ceo-tab card hidden"><h2>2. <span data-t="nurses">Nurses</span> + Map</h2><input id="ceoSearchNurse" placeholder="Search nurse" oninput="filterNurses()" style="margin:0 0 8px 0"><div id="ceoNursesList">Loading...</div><div id="ceoMap" style="height:380px;border-radius:12px;border:2px solid #16a34a;margin-top:10px"></div></div>
 <div id="ceo-tab-clients" class="ceo-tab card hidden"><h2>3. <span data-t="clients">Clients</span></h2><div id="ceoClientsList">Loading...</div></div>
 <div id="ceo-tab-payments" class="ceo-tab card hidden"><h2>4. <span data-t="payments">Payments</span></h2><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px"><div style="background:#f0fdf4;padding:10px;border-radius:10px;border:2px solid #16a34a"><small>Total GHS</small><br><b id="totalRevenue">0</b></div><div style="background:#fffbeb;padding:10px;border-radius:10px;border:2px solid #eab308"><small>Pending</small><br><b id="pendingRevenue">0</b></div></div><div id="ceoPaymentsList">Loading...</div></div>
+
+<!-- NEW REFUND TAB CEO -->
+<div id="ceo-tab-refunds" class="ceo-tab card hidden" style="border:3px solid #ef4444"><h2>💸 REFUND MANAGEMENT - CEO Approval Required</h2>
+<p style="font-size:11px;color:#6b7280">Client requests refund after cancellation. CEO confirms and sends back to client's account.</p>
+<div id="ceoRefundsList">Loading refunds...</div>
+</div>
+
 <div id="ceo-tab-staff" class="ceo-tab card hidden"><h2>5. <span data-t="staff">Staff</span></h2><div style="display:flex;gap:6px;margin-bottom:10px"><input id="newStaffId" placeholder="New Staff ID" style="flex:1;margin:0"><input id="newStaffPass" placeholder="Password" style="flex:1;margin:0"><button class="btnSmall" style="background:#16a34a;color:white" onclick="addStaff()">Add</button></div><div id="ceoStaffList">Loading...</div></div>
 <div id="ceo-tab-announce" class="ceo-tab card hidden"><h2>6. <span data-t="announce">Announcement & Colors</span></h2><textarea id="announcementInput" rows="2" placeholder="Type announcement..."></textarea><div class="colorRow"><label>Background:</label><input id="announceBgColor" type="color" value="#111827"><span id="bgVal">#111827</span></div><div class="colorRow"><label>Text Color:</label><input id="announceTextColor" type="color" value="#eab308"><span id="textVal">#eab308</span></div><div class="colorRow"><label>Border:</label><input id="announceBorderColor" type="color" value="#eab308"><span id="borderVal">#eab308</span></div><div class="colorRow"><label>Speed:</label><select id="announceSpeed" style="width:120px"><option value="10s">Fast</option><option value="22s" selected>Normal</option><option value="40s">Slow</option></select></div><button class="btnSmall" style="background:#0e7490;color:white;width:100%;padding:12px;margin-top:8px" onclick="saveAnnouncement()">💾 SAVE LIVE</button><div style="margin-top:12px;border-top:2px solid #eee;padding-top:8px"><label style="font-size:11px;font-weight:800">Min Rate GHS</label><input id="minRateInput" type="number" value="90"><button class="btnSmall" style="background:#16a34a;color:white" onclick="saveSettings()">Save</button></div></div>
-<div id="ceo-tab-chat" class="ceo-tab card hidden" style="border:3px solid #ef4444"><h2><span data-t="groupChat">GROUP CHAT</span> <span id="ceoOnlineCount" style="background:#22c55e;color:white;padding:2px 8px;border-radius:10px;font-size:9px">0 ONLINE</span></h2><div id="ceoChatBox" class="chatBox"></div><div class="chatInputRow"><input id="ceoChatInput" placeholder="Broadcast..." onkeypress="if(event.key==='Enter')sendGroupMessage('CEO')"><button class="btnSmall" style="background:#111827;color:white;padding:12px 18px" onclick="sendGroupMessage('CEO')" data-t="send">Send</button></div><button class="btnSmall" style="background:#111827;color:white;width:100%;margin-top:6px" onclick="showPage('group-chat')" data-t="openFullChat">Open Full Chat</button><button id="ceoMasterClear" class="btnSmall hidden" style="background:#ef4444;color:white;width:100%;margin-top:6px" onclick="clearGroupChat()">🗑️ MASTER CLEAR ALL (CEO ONLY)</button></div>
+<div id="ceo-tab-chat" class="ceo-tab card hidden" style="border:3px solid #ef4444"><h2><span data-t="groupChat">GROUP CHAT</span> <span id="ceoOnlineCount" style="background:#22c55e;color:white;padding:2px 8px;border-radius:10px;font-size:9px">0 ONLINE</span></h2><div id="ceoChatBox" class="chatBox"></div><div class="chatInputRow"><input id="ceoChatInput" placeholder="Broadcast..." onkeypress="if(event.key==='Enter')sendGroupMessage('CEO')"><button class="btnSmall" style="background:#111827;color:white;padding:12px 18px" onclick="sendGroupMessage('CEO')" data-t="send">Send</button></div><button class="btnSmall" style="background:#111827;color:white;width:100%;margin-top:6px" onclick="showPage('group-chat')" data-t="openFullChat">Open Full Chat</button><button id="ceoMasterClear" class="btnSmall hidden" style="background:#ef4444;color:white;width:100%;margin-top:6px" onclick="clearGroupChat()">🗑 MASTER CLEAR ALL (CEO ONLY)</button></div>
 </div>
 
 <div id="ratePopup" class="ratePopup hidden">
@@ -184,9 +205,22 @@ table{width:100%;border-collapse:collapse;font-size:11px;margin-top:8px} th,td{b
 </div>
 </div>
 
+<!-- REFUND MODAL -->
+<div id="refundModal" class="ratePopup hidden" style="border-color:#7c3aed">
+<h3 style="color:#7c3aed;margin:0 0 10px 0">💸 Request Refund</h3>
+<p style="font-size:12px;text-align:left">Booking ID: <b id="refundBookingId"></b><br>Amount: <b id="refundBookingAmount"></b></p>
+<input id="refundReason" placeholder="Reason for refund (e.g. nurse didn't show)">
+<input id="refundAccount" placeholder="MoMo / Bank Account for refund">
+<input id="refundAccountName" placeholder="Account Name">
+<div style="display:flex;gap:8px;margin-top:12px">
+<button class="btnSubmit" style="background:#7c3aed;flex:1" onclick="submitRefundRequest()">Submit Request</button>
+<button class="btnSubmit" style="background:#6b7280;flex:1" onclick="closeRefundModal()">Cancel</button>
+</div>
+</div>
+
 <div class="bottomNav">
 <button id="nav-home" class="active" onclick="showPage('home')"><span>🏠</span><span data-t="home">Home</span></button>
-<button id="nav-nurse" onclick="showPage('nurse-public')"><span>👩‍⚕️</span><span data-t="join">Join</span></button>
+<button id="nav-nurse" onclick="showPage('nurse-public')"><span>👩⚕</span><span data-t="join">Join</span></button>
 <button id="nav-book" onclick="showPage('booking-public')"><span>📅</span><span data-t="book">Book</span></button>
 <button id="nav-login" onclick="showPage('nurse-login')"><span>🔑</span><span data-t="login">Login</span></button>
 <button id="nav-chat" onclick="showPage('group-chat')" style="background:#fef2f2;border:2px solid #ef4444"><span>💬</span><span>Group</span></button>
@@ -194,11 +228,11 @@ table{width:100%;border-collapse:collapse;font-size:11px;margin-top:8px} th,td{b
 
 <script>
 var firebaseConfig={apiKey:"AIzaSyB52-X1D8Cg-wUDWPds_tR7D8cF82dMdRg",authDomain:"web-care-618e8.firebaseapp.com",databaseURL:"https://web-care-618e8-default-rtdb.firebaseio.com",projectId:"web-care-618e8",storageBucket:"web-care-618e8.firebasestorage.app",messagingSenderId:"1062578660694",appId:"1:1062578660694:web:f94dfe12c929df05bce2f7"};
-var db=null,allBookings=[],allWorkers=[],logoTapCount=0,clientLat=null,clientLng=null,nurseRegLat=null,nurseRegLng=null;
+var db=null,allBookings=[],allWorkers=[],allRefunds=[],logoTapCount=0,clientLat=null,clientLng=null,nurseRegLat=null,nurseRegLng=null;
 var uberMap=null,ceoMap=null,nurseCluster=null,selectedNurseId=null,nearbyNursesSorted=[];
-var lastBookingId=null,lastBookingCurrency='GHS',lastBookingAmount=0;
+var lastBookingId=null,lastBookingCurrency='GHS',lastBookingAmount=0, currentRefundBookingId=null;
 var countryCodes=[{c:'Ghana',code:'+233',flag:'🇬🇭'},{c:'Nigeria',code:'+234',flag:'🇳🇬'},{c:'South Africa',code:'+27',flag:'🇿🇦'},{c:'Kenya',code:'+254',flag:'🇰🇪'},{c:'Uganda',code:'+256',flag:'🇺🇬'},{c:'Tanzania',code:'+255',flag:'🇹🇿'},{c:'Ethiopia',code:'+251',flag:'🇪🇹'},{c:'Rwanda',code:'+250',flag:'🇷🇼'},{c:'Cameroon',code:'+237',flag:'🇨🇲'},{c:'Senegal',code:'+221',flag:'🇸🇳'},{c:'Ivory Coast',code:'+225',flag:'🇨🇮'},{c:'Egypt',code:'+20',flag:'🇪🇬'},{c:'Morocco',code:'+212',flag:'🇲🇦'},{c:'USA',code:'+1',flag:'🇺🇸'},{c:'UK',code:'+44',flag:'🇬🇧'},{c:'Canada',code:'+1',flag:'🇨🇦'},{c:'Australia',code:'+61',flag:'🇦🇺'},{c:'Germany',code:'+49',flag:'🇩🇪'},{c:'France',code:'+33',flag:'🇫🇷'},{c:'Italy',code:'+39',flag:'🇮🇹'},{c:'Spain',code:'+34',flag:'🇪🇸'},{c:'India',code:'+91',flag:'🇮🇳'},{c:'Pakistan',code:'+92',flag:'🇵🇰'},{c:'Bangladesh',code:'+880',flag:'🇧🇩'},{c:'Philippines',code:'+63',flag:'🇵🇭'},{c:'Indonesia',code:'+62',flag:'🇮🇩'},{c:'Brazil',code:'+55',flag:'🇧🇷'},{c:'Mexico',code:'+52',flag:'🇲🇽'},{c:'Saudi Arabia',code:'+966',flag:'🇸🇦'},{c:'UAE',code:'+971',flag:'🇦🇪'},{c:'Japan',code:'+81',flag:'🇯🇵'}];
-function populatePhoneCodes(){var html='';countryCodes.forEach(o=>{html+=`<option value="${o.code}">${o.flag} ${o.code} ${o.c}</option>`;});['cPhoneCode','nRegPhoneCode','nurseLoginCode','cPhoneCode2'].forEach(id=>{var el=document.getElementById(id); if(el) el.innerHTML=html;});}
+function populatePhoneCodes(){var html='';countryCodes.forEach(o=>{html+=`<option value="${o.code}">${o.flag} ${o.code} ${o.c}</option>`;});['cPhoneCode','nRegPhoneCode','nurseLoginCode','cPhoneCode2','myBookPhoneCode'].forEach(id=>{var el=document.getElementById(id); if(el) el.innerHTML=html;});}
 try{firebase.initializeApp(firebaseConfig);db=firebase.database();}catch(e){}
 
 var translations={
@@ -237,13 +271,9 @@ function changeCountry(){
  localStorage.setItem('selectedCountry',sel.value);
 }
 
-// ===== 10 MINUTES NO PICKUP CHECK =====
 function scheduleRateCheck(bookingId, amount, currency){
  lastBookingId=bookingId; lastBookingAmount=amount; lastBookingCurrency=currency;
- var CHECK_TIME = 10*60*1000; // 10 minutes
- // For demo testing, uncomment next line for 1 minute:
- // var CHECK_TIME = 60*1000;
-
+ var CHECK_TIME = 10*60*1000;
  setTimeout(()=>{
    if(!db) return;
    db.ref('bookings/'+bookingId).once('value').then(snap=>{
@@ -327,12 +357,126 @@ function submitBooking(){
   var amount=parseFloat(document.getElementById('cBudget').value||0)||90;
   var cur=document.getElementById('cCurrency').value;
   var id=Date.now();
-  var b={id:id,name:name,phone:fullPhone,service:service,location:document.getElementById('cLocation').value,amount:amount,currency:cur,status:'pending_assignment',time:new Date().toLocaleString(),timestamp:Date.now(),lat:clientLat,lng:clientLng,selectedNurse:selectedNurseId};
+  var b={id:id,name:name,phone:fullPhone,service:service,location:document.getElementById('cLocation').value,amount:amount,currency:cur,status:'pending_assignment',time:new Date().toLocaleString(),timestamp:Date.now(),lat:clientLat,lng:clientLng,selectedNurse:selectedNurseId, email:document.getElementById('cEmail').value.trim()};
   if(db)db.ref('bookings/'+id).set(b).then(()=>{
     alert('✅ Booked! Waiting for nurse. If no nurse picks in 10 mins, we will prompt you to increase rate.');
     scheduleRateCheck(id, amount, cur);
+    localStorage.setItem('lastClientPhone', fullPhone);
+    document.getElementById('myBookPhone').value=document.getElementById('cPhone').value;
+    document.getElementById('myBookPhoneCode').value=document.getElementById('cPhoneCode').value;
+    loadMyBookings();
   });
 }
+
+// ===== NEW CLIENT CANCEL & REFUND LOGIC =====
+function loadMyBookings(){
+ var codeEl=document.getElementById('myBookPhoneCode');
+ var phoneEl=document.getElementById('myBookPhone');
+ var fullPhone = codeEl && phoneEl? (codeEl.value + phoneEl.value.trim().replace(/^0+/,'').replace(/\+/g,'')) : '';
+ // try also full phone from getFullPhone helper
+ if(phoneEl.value.trim().startsWith('+')) fullPhone = phoneEl.value.trim();
+ else if(phoneEl.value.trim()!=''){
+   // attempt using code
+   try{ fullPhone = getFullPhone('myBookPhoneCode','myBookPhone'); }catch(e){}
+ } else {
+   fullPhone = localStorage.getItem('lastClientPhone')||'';
+ }
+ if(!fullPhone){ alert('Enter your phone number'); return; }
+ var listDiv=document.getElementById('myBookingsList');
+ listDiv.innerHTML='Loading...';
+ if(!db){ listDiv.innerHTML='Firebase not connected'; return; }
+ // normalize: search bookings where phone ends with same last 9 digits
+ var suffix = fullPhone.replace(/[^0-9]/g,'').slice(-9);
+ db.ref('bookings').once('value').then(snap=>{
+   var all = Object.values(snap.val()||{});
+   var mine = all.filter(b=> (b.phone||'').replace(/[^0-9]/g,'').endsWith(suffix) );
+   mine.sort((a,b)=>b.timestamp-a.timestamp);
+   if(mine.length===0){ listDiv.innerHTML='<div style="text-align:center;color:#999;padding:10px">No bookings found for '+fullPhone+'</div>'; return; }
+   var h='';
+   mine.forEach(b=>{
+     var statusClass = 'st-pending';
+     if(b.status==='confirmed') statusClass='st-confirmed';
+     if(b.status==='cancelled_by_client') statusClass='st-cancelled';
+     if(b.status==='refund_requested') statusClass='st-refund_req';
+     if(b.status==='refund_approved') statusClass='st-refund_ok';
+     if(b.status==='refunded') statusClass='st-refunded';
+     h+=`<div class="bookingClientCard">
+       <div style="display:flex;justify-content:space-between;align-items:center"><b>#${b.id}</b><span class="statusBadge ${statusClass}">${(b.status||'').toUpperCase()}</span></div>
+       <div style="font-size:11px;margin-top:6px"><b>${b.service}</b> - ${b.amount} ${b.currency}<br>📍 ${b.location||''}<br>⏰ ${b.time||''}<br>👩 ${b.selectedNurse||'Auto assign'}</div>
+       <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">`;
+     if(b.status==='pending_assignment' || b.status==='confirmed'){
+       h+=`<button class="btnSmall" style="background:#ef4444;color:white;flex:1" onclick="cancelBookingClient(${b.id})">❌ Cancel Booking</button>`;
+     }
+     if(b.status==='cancelled_by_client' || b.status==='confirmed'){
+       h+=`<button class="btnSmall" style="background:#7c3aed;color:white;flex:1" onclick="openRefundModal(${b.id}, '${b.amount} ${b.currency}')">💸 Request Refund</button>`;
+     }
+     if(b.status==='refund_requested'){
+       h+=`<span style="font-size:10px;color:#7c3aed;font-weight:800">⏳ Refund Requested - Waiting CEO approval</span>`;
+     }
+     if(b.status==='refund_approved'){
+       h+=`<span style="font-size:10px;color:#2563eb;font-weight:800">✅ Approved - CEO will send money to your account</span>`;
+     }
+     if(b.status==='refunded'){
+       h+=`<span style="font-size:10px;color:#00b050;font-weight:800">✅ REFUNDED - Money sent to your account</span>`;
+     }
+     if(b.refundReason){
+       h+=`<div class="refundBox"><small>Refund: ${b.refundReason}<br>Acct: ${b.refundAccount||''} - ${b.refundAccountName||''}<br>${b.refundStatusNote||''}</small></div>`;
+     }
+     h+=`</div></div>`;
+   });
+   listDiv.innerHTML=h;
+ });
+}
+
+function cancelBookingClient(id){
+ if(!confirm('Are you sure you want to CANCEL this booking? Nurse will be notified.')) return;
+ if(!db) return;
+ db.ref('bookings/'+id).update({status:'cancelled_by_client', cancelTime:Date.now(), cancelledBy:'client'}).then(()=>{
+   alert('✅ Booking Cancelled Successfully');
+   loadMyBookings();
+ });
+}
+
+function openRefundModal(id, amountStr){
+ currentRefundBookingId=id;
+ document.getElementById('refundBookingId').innerText=id;
+ document.getElementById('refundBookingAmount').innerText=amountStr;
+ document.getElementById('refundReason').value='';
+ document.getElementById('refundAccount').value='';
+ document.getElementById('refundAccountName').value='';
+ document.getElementById('refundModal').classList.remove('hidden');
+}
+function closeRefundModal(){document.getElementById('refundModal').classList.add('hidden');}
+
+function submitRefundRequest(){
+ var reason=document.getElementById('refundReason').value.trim();
+ var acct=document.getElementById('refundAccount').value.trim();
+ var acctName=document.getElementById('refundAccountName').value.trim();
+ if(!reason||!acct){ alert('Reason and account required'); return; }
+ if(!db ||!currentRefundBookingId) return;
+ var refundData={
+   bookingId: currentRefundBookingId,
+   reason: reason,
+   refundAccount: acct,
+   refundAccountName: acctName,
+   status: 'requested',
+   requestTime: Date.now(),
+   requestTimeStr: new Date().toLocaleString()
+ };
+ db.ref('bookings/'+currentRefundBookingId).once('value').then(snap=>{
+   var b=snap.val();
+   if(!b){ alert('Booking not found'); return; }
+   var update={status:'refund_requested', refundReason:reason, refundAccount:acct, refundAccountName:acctName, refundRequestTime:Date.now()};
+   db.ref('bookings/'+currentRefundBookingId).update(update).then(()=>{
+     db.ref('refunds/'+currentRefundBookingId).set({...refundData,...b,...update}).then(()=>{
+       alert('✅ Refund Request Sent! CEO will review and send money back to your account: '+acct);
+       closeRefundModal();
+       loadMyBookings();
+     });
+   });
+ });
+}
+
 function registerNurse(){var name=document.getElementById('nRegName').value.trim(); var fullPhone=getFullPhone('nRegPhoneCode','nRegPhone'); var pass=document.getElementById('nRegPass').value.trim(); var loc=document.getElementById('nRegLocation').value.trim(); if(!name||!fullPhone||!pass||!loc){alert('All required');return;} if(!nurseRegLat){alert('GPS required');return;} var w={name:name,phone:fullPhone,password:pass,location:loc,timestamp:Date.now(),lat:nurseRegLat,lng:nurseRegLng,status:'on_duty',onDuty:true,specialty:document.getElementById('nRegSpecialty').value||'General'}; if(db) db.ref('workers/'+fullPhone.replace(/[^0-9]/g,'')).set(w).then(()=>{alert('Registered! Now login');showPage('nurse-login');});}
 function submitBooking2(){document.getElementById('cName').value=document.getElementById('cName2').value; document.getElementById('cPhone').value=document.getElementById('cPhone2').value; document.getElementById('cLocation').value=document.getElementById('cLocation2').value; submitBooking();}
 function loginNurse(){var fullPhone=getFullPhone('nurseLoginCode','nurseLoginPhone'); var pass=document.getElementById('nurseLoginPass').value.trim(); if(db){db.ref('workers/'+fullPhone.replace(/[^0-9]/g,'')).once('value').then(s=>{var d=s.val(); if(d&&d.password===pass){localStorage.setItem('nursePhone',fullPhone);localStorage.setItem('nurseName',d.name);showPage('nurse-dashboard');}else if(d){document.getElementById('nurseLoginResult').innerText='Wrong password';}else{localStorage.setItem('nursePhone',fullPhone);localStorage.setItem('nurseName',fullPhone);showPage('nurse-dashboard');}});}else{localStorage.setItem('nursePhone',fullPhone);showPage('nurse-dashboard');}}
@@ -348,19 +492,92 @@ document.querySelectorAll('.ceoTabs button').forEach(b=>b.classList.remove('acti
 var show=document.getElementById('ceo-tab-'+tab); if(show) show.classList.remove('hidden');
 var btn=document.getElementById('btn-'+tab); if(btn) btn.classList.add('activeTab');
 if(tab==='nurses') setTimeout(()=>{initCeoMap();loadCeoData();},200);
-if(tab==='bookings'||tab==='clients'||tab==='payments'||tab==='staff') loadCeoData();
+if(tab==='bookings'||tab==='clients'||tab==='payments'||tab==='staff'||tab==='refunds') loadCeoData();
 if(tab==='chat'){initGroupChat();toggleMasterClear();}
 }
-function loadCeoData(){if(!db) return; db.ref('bookings').once('value').then(s=>{allBookings=Object.values(s.val()||{});document.getElementById('statBookings').innerText=allBookings.length;renderBookings(allBookings);renderClients(allBookings);renderPayments(allBookings);}); db.ref('workers').once('value').then(s=>{allWorkers=Object.values(s.val()||{});document.getElementById('statNurses').innerText=allWorkers.length;document.getElementById('statOnline').innerText=allWorkers.filter(w=>w.onDuty).length;renderNurses(allWorkers);}); db.ref('staff').once('value').then(s=>{renderStaff(Object.values(s.val()||{}));});}
-function renderBookings(list){var c=document.getElementById('ceoBookingsList'); if(!list.length){c.innerHTML='<div style="padding:20px;text-align:center;background:#fef3c7;border-radius:10px">No bookings yet</div>';return;} var h='<table><tr><th>Time</th><th>Client</th><th>Phone</th><th>Service</th><th>Nurse</th><th>Status</th><th>Action</th></tr>'; list.sort((a,b)=>b.timestamp-a.timestamp).forEach(b=>{h+=`<tr><td>${b.time||''}</td><td>${b.name||''}</td><td>${b.phone||''}</td><td>${b.service||''}</td><td>${b.selectedNurse||''}</td><td><b>${b.status||''}</b></td><td><button onclick="updateBookingStatus(${b.id},'confirmed')" class="btnSmall" style="background:green;color:white">Confirm</button> <button onclick="deleteBooking(${b.id})" class="btnSmall" style="background:red;color:white">X</button></td></tr>`;}); h+='</table>'; c.innerHTML=h;}
+function loadCeoData(){if(!db) return; db.ref('bookings').once('value').then(s=>{allBookings=Object.values(s.val()||{});document.getElementById('statBookings').innerText=allBookings.length;renderBookings(allBookings);renderClients(allBookings);renderPayments(allBookings);renderRefundsCEO(allBookings);}); db.ref('workers').once('value').then(s=>{allWorkers=Object.values(s.val()||{});document.getElementById('statNurses').innerText=allWorkers.length;document.getElementById('statOnline').innerText=allWorkers.filter(w=>w.onDuty).length;renderNurses(allWorkers);}); db.ref('staff').once('value').then(s=>{renderStaff(Object.values(s.val()||{}));}); db.ref('refunds').once('value').then(s=>{allRefunds=Object.values(s.val()||{}); document.getElementById('statRefunds').innerText=allRefunds.length;});}
+
+function renderBookings(list){var c=document.getElementById('ceoBookingsList'); if(!list.length){c.innerHTML='<div style="padding:20px;text-align:center;background:#fef3c7;border-radius:10px">No bookings yet</div>';return;} var h='<table><tr><th>Time</th><th>Client</th><th>Phone</th><th>Service</th><th>Amount</th><th>Status</th><th>Action</th></tr>'; list.sort((a,b)=>b.timestamp-a.timestamp).forEach(b=>{
+ var badge=`<span class="statusBadge st-pending">${b.status||''}</span>`;
+ if(b.status==='confirmed') badge=`<span class="statusBadge st-confirmed">${b.status}</span>`;
+ if(b.status==='cancelled_by_client') badge=`<span class="statusBadge st-cancelled">CANCELLED</span>`;
+ if(b.status==='refund_requested') badge=`<span class="statusBadge st-refund_req">REFUND REQ</span>`;
+ if(b.status==='refund_approved') badge=`<span class="statusBadge st-refund_ok">APPROVED</span>`;
+ if(b.status==='refunded') badge=`<span class="statusBadge st-refunded">REFUNDED</span>`;
+ h+=`<tr><td>${b.time||''}</td><td>${b.name||''}</td><td>${b.phone||''}</td><td>${b.service||''}</td><td>${b.amount||''} ${b.currency||''}</td><td>${badge}</td><td>
+ <button onclick="updateBookingStatus(${b.id},'confirmed')" class="btnSmall" style="background:green;color:white">Confirm</button>
+ <button onclick="cancelBookingCEO(${b.id})" class="btnSmall" style="background:#ef4444;color:white">Cancel</button>
+ <button onclick="deleteBooking(${b.id})" class="btnSmall" style="background:#111;color:white">X</button></td></tr>`;}); h+='</table>'; c.innerHTML=h;}
+
+// CEO CANCEL TOO
+function cancelBookingCEO(id){ if(!confirm('CEO Cancel this booking?')) return; if(db) db.ref('bookings/'+id).update({status:'cancelled_by_client', cancelTime:Date.now(), cancelledBy:'CEO'}).then(()=>loadCeoData());}
+
+// CEO REFUNDS RENDER
+function renderRefundsCEO(bookingsList){
+ var c=document.getElementById('ceoRefundsList');
+ var refunds = bookingsList.filter(b=> b.status==='refund_requested' || b.status==='refund_approved' || b.status==='refunded' || b.refundReason);
+ if(refunds.length===0){ c.innerHTML='<div style="padding:20px;text-align:center;background:#fef3c7;border-radius:10px">No refund requests yet</div>'; return; }
+ var h='<table><tr><th>Time</th><th>Client</th><th>Phone</th><th>Service</th><th>Amount</th><th>Refund Account</th><th>Reason</th><th>Status</th><th>CEO Action</th></tr>';
+ refunds.sort((a,b)=> (b.refundRequestTime||b.timestamp) - (a.refundRequestTime||a.timestamp)).forEach(b=>{
+   var statusBadge=`<span class="statusBadge st-refund_req">${b.status}</span>`;
+   if(b.status==='refund_approved') statusBadge=`<span class="statusBadge st-refund_ok">APPROVED</span>`;
+   if(b.status==='refunded') statusBadge=`<span class="statusBadge st-refunded">REFUNDED</span>`;
+   h+=`<tr><td>${b.time||''}<br><small>${b.refundRequestTime?new Date(b.refundRequestTime).toLocaleString():''}</small></td><td>${b.name||''}</td><td>${b.phone||''}</td><td>${b.service||''}</td><td>${b.amount} ${b.currency}</td><td><b>${b.refundAccountName||''}</b><br>${b.refundAccount||''}</td><td>${b.refundReason||''}<br><small style="color:#ef4444">${b.refundStatusNote||''}</small></td><td>${statusBadge}</td><td>`;
+   if(b.status==='refund_requested'){
+     h+=`<button onclick="approveRefund(${b.id})" class="btnSmall" style="background:#16a34a;color:white;width:100%;margin-bottom:4px">✅ Approve Refund</button><button onclick="rejectRefund(${b.id})" class="btnSmall" style="background:#ef4444;color:white;width:100%">❌ Reject</button>`;
+   } else if(b.status==='refund_approved'){
+     h+=`<button onclick="confirmRefundSent(${b.id})" class="btnSmall" style="background:#2563eb;color:white;width:100%">💸 Confirm Money Sent to ${b.refundAccount||'Client'}</button><br><small>Tap after you send MoMo/Bank</small>`;
+   } else if(b.status==='refunded'){
+     h+=`<span style="font-size:10px;color:green;font-weight:800">✅ Completed - ${b.refundCompletedTime?new Date(b.refundCompletedTime).toLocaleString():''}</span>`;
+   }
+   h+=`</td></tr>`;
+ });
+ h+='</table>';
+ c.innerHTML=h;
+}
+
+function approveRefund(id){
+ if(!confirm('Approve refund for booking '+id+'? You will need to send money to client account.')) return;
+ var note=prompt('Enter transaction note / MoMo reference (optional):','Approved - will send');
+ if(!db) return;
+ db.ref('bookings/'+id).update({status:'refund_approved', refundStatusNote: note||'Approved by CEO', refundApprovedTime: Date.now()}).then(()=>{
+   db.ref('refunds/'+id).update({status:'approved', refundStatusNote: note||'Approved by CEO', refundApprovedTime: Date.now()}).then(()=>{
+     alert('✅ Refund Approved! Now send money to client account and click CONFIRM MONEY SENT.');
+     loadCeoData();
+   });
+ });
+}
+function rejectRefund(id){
+ var reason=prompt('Reason for rejecting refund:','Refund not eligible');
+ if(reason===null) return;
+ if(!db) return;
+ db.ref('bookings/'+id).update({status:'cancelled_by_client', refundStatusNote:'REJECTED: '+reason, refundRejectedTime: Date.now()}).then(()=>{
+   db.ref('refunds/'+id).update({status:'rejected', refundStatusNote:'REJECTED: '+reason}).then(()=>{
+     alert('Refund Rejected');
+     loadCeoData();
+   });
+ });
+}
+function confirmRefundSent(id){
+ if(!confirm('Confirm you have SENT the refund money back to client account for booking '+id+'?')) return;
+ var ref=prompt('Enter MoMo Transaction ID / Bank Ref for proof:','');
+ if(!db) return;
+ db.ref('bookings/'+id).update({status:'refunded', refundCompletedTime: Date.now(), refundTransactionRef: ref||'', refundStatusNote:'✅ REFUNDED - Money sent. Ref: '+(ref||'')}).then(()=>{
+   db.ref('refunds/'+id).update({status:'refunded', refundCompletedTime: Date.now(), refundTransactionRef: ref||'', refundStatusNote:'✅ REFUNDED - Money sent. Ref: '+(ref||'')}).then(()=>{
+     alert('✅ Marked as REFUNDED - Client will see money sent confirmation');
+     loadCeoData();
+   });
+ });
+}
+
 function renderNurses(list){var c=document.getElementById('ceoNursesList'); if(!list.length){c.innerHTML='<div style="padding:20px;text-align:center;background:#fef3c7;border-radius:10px">No nurses yet</div>';return;} var h='<table><tr><th>Name</th><th>Phone</th><th>Location</th><th>Status</th><th>Action</th></tr>'; list.forEach(w=>{h+=`<tr><td>${w.name||''}</td><td>${w.phone||''}</td><td>${w.location||''}</td><td>${w.status||''}</td><td><button onclick="deleteWorker('${(w.phone||'').replace(/[^0-9]/g,'')}')" class="btnSmall" style="background:red;color:white">Remove</button></td></tr>`;}); h+='</table>'; c.innerHTML=h;}
 function renderClients(b){var c=document.getElementById('ceoClientsList'); var map={}; b.forEach(x=>{if(x.phone) map[x.phone]={name:x.name,phone:x.phone,location:x.location,count:(map[x.phone]?.count||0)+1};}); var clients=Object.values(map); if(!clients.length){c.innerHTML='<div style="padding:20px;text-align:center;background:#fef3c7;border-radius:10px">No clients yet</div>';return;} var h='<table><tr><th>Name</th><th>Phone</th><th>Bookings</th><th>Location</th></tr>'; clients.forEach(x=>{h+=`<tr><td>${x.name||''}</td><td>${x.phone}</td><td>${x.count}</td><td>${x.location||''}</td></tr>`;}); h+='</table>'; c.innerHTML=h;}
 function renderPayments(b){var total=b.reduce((s,x)=>s+(x.ghsEquivalent||0),0); document.getElementById('totalRevenue').innerText=total.toFixed(2)+' GHS'; document.getElementById('pendingRevenue').innerText=b.filter(x=>x.status==='pending_assignment').reduce((s,x)=>s+(x.ghsEquivalent||0),0).toFixed(2)+' GHS'; var c=document.getElementById('ceoPaymentsList'); if(!b.length){c.innerHTML='<div style="padding:20px;text-align:center;background:#fef3c7;border-radius:10px">No payments yet</div>';return;} var h='<table><tr><th>Client</th><th>Service</th><th>Status</th></tr>'; b.forEach(x=>{h+=`<tr><td>${x.name||''}</td><td>${x.service||''}</td><td>${x.status||''}</td></tr>`;}); h+='</table>'; c.innerHTML=h;}
 function renderStaff(list){var c=document.getElementById('ceoStaffList'); if(!list.length){c.innerHTML='<div style="padding:20px;text-align:center;background:#fef3c7;border-radius:10px">No staff yet</div>';return;} var h='<table><tr><th>Staff ID</th><th>Action</th></tr>'; list.forEach(s=>{h+=`<tr><td>${s.id||''}</td><td><button onclick="deleteStaff('${s.id}')" class="btnSmall" style="background:red;color:white">Delete</button></td></tr>`;}); h+='</table>'; c.innerHTML=h;}
-function filterBookings(){var q=document.getElementById('ceoSearchBooking').value.toLowerCase(); var st=document.getElementById('ceoBookingFilter').value; var f=allBookings.filter(b=>(!q||(b.name||'').toLowerCase().includes(q)||(b.phone||'').includes(q))&&(!st||b.status===st)); renderBookings(f);}
+function filterBookings(){var q=document.getElementById('ceoSearchBooking').value.toLowerCase(); var st=document.getElementById('ceoBookingFilter').value; var f=allBookings.filter(b=>(!q||(b.name||'').toLowerCase().includes(q)||(b.phone||'').includes(q))&&(!st||b.status===st)); renderBookings(f); renderRefundsCEO(f);}
 function filterNurses(){var q=document.getElementById('ceoSearchNurse').value.toLowerCase(); var f=allWorkers.filter(w=>(w.name||'').toLowerCase().includes(q)||(w.phone||'').includes(q)); renderNurses(f);}
 function updateBookingStatus(id,s){if(!db) return; db.ref('bookings/'+id).update({status:s}).then(()=>loadCeoData());}
-function deleteBooking(id){if(confirm('Delete booking?')){if(db) db.ref('bookings/'+id).remove().then(()=>loadCeoData());}}
+function deleteBooking(id){if(confirm('Delete booking?')){if(db) db.ref('bookings/'+id).remove().then(()=>{ db.ref('refunds/'+id).remove(); loadCeoData(); });}}
 function deleteWorker(k){if(confirm('Remove nurse?')){if(db) db.ref('workers/'+k).remove().then(()=>loadCeoData());}}
 function addStaff(){var id=document.getElementById('newStaffId').value.trim(); var pass=document.getElementById('newStaffPass').value.trim(); if(!id||!pass){alert('ID and password required');return;} if(db) db.ref('staff/'+id).set({id:id,password:pass,time:new Date().toLocaleString()}).then(()=>{alert('Staff added');document.getElementById('newStaffId').value='';document.getElementById('newStaffPass').value='';loadCeoData();});}
 function deleteStaff(id){if(confirm('Delete staff?')){if(db) db.ref('staff/'+id).remove().then(()=>loadCeoData());}}
@@ -375,7 +592,7 @@ var box=document.getElementById(id); if(!box) return;
 var meId=getCurrentId(); var html='';
 msgs.forEach(m=>{
 var isMe=m.senderId===meId;
-html+=`<div class="chatMsg ${isMe?'me':'other'}"><div style="display:flex;align-items:center;gap:5px"><b>${escapeHtml(m.senderName)}</b><span class="roleBadge role-${m.role}">${m.role}</span></div><div style="margin-top:4px">${escapeHtml(m.text)} ${m.edited?'<small>(edited)</small>':''}</div><div class="chatMeta"><span>${m.time||''}</span></div>${isMe?`<div class="chatActions"><button class="btnEdit" onclick="editMessage('${m._key}')">✏️ Edit</button><button class="btnDel" onclick="deleteMessage('${m._key}')">🗑️ Delete</button></div>`:''}</div>`;
+html+=`<div class="chatMsg ${isMe?'me':'other'}"><div style="display:flex;align-items:center;gap:5px"><b>${escapeHtml(m.senderName)}</b><span class="roleBadge role-${m.role}">${m.role}</span></div><div style="margin-top:4px">${escapeHtml(m.text)} ${m.edited?'<small>(edited)</small>':''}</div><div class="chatMeta"><span>${m.time||''}</span></div>${isMe?`<div class="chatActions"><button class="btnEdit" onclick="editMessage('${m._key}')">✏ Edit</button><button class="btnDel" onclick="deleteMessage('${m._key}')">🗑 Delete</button></div>`:''}</div>`;
 });
 box.innerHTML=html||'<div style="text-align:center;color:#999;padding:20px">No messages yet</div>'; box.scrollTop=box.scrollHeight;
 });
@@ -393,12 +610,12 @@ function sendGlobalChat(){var inp=document.getElementById('globalChatInput'); va
 function clearGroupChat(){
 var isCEO=localStorage.getItem('isCEOLogged')==='true';
 if(!isCEO){alert('⛔ Only CEO can Master Clear entire board');return;}
-if(!confirm('⚠️ CEO MASTER CLEAR: Delete ALL chats for EVERYONE permanently?')) return;
+if(!confirm('⚠ CEO MASTER CLEAR: Delete ALL chats for EVERYONE permanently?')) return;
 if(db) db.ref('group_chat').remove().then(()=>alert('✅ Entire chat board cleared by CEO'));
 }
 function escapeHtml(t){var d=document.createElement('div'); d.textContent=t; return d.innerHTML;}
-function loadStaffData(){if(!db) return; db.ref('bookings').once('value').then(s=>{var v=Object.values(s.val()||{}); var h=v.length?'<table><tr><th>Client</th><th>Service</th><th>Phone</th></tr>':'No bookings'; v.slice(0,30).forEach(b=>{h+=`<tr><td>${b.name}</td><td>${b.service}</td><td>${b.phone}</td></tr>`;}); if(v.length) h+='</table>'; document.getElementById('staffBookingsList').innerHTML=h;}); document.getElementById('staffDashName').innerText=localStorage.getItem('staffID')||'';}
-function loadNurseDashboard(){var p=localStorage.getItem('nursePhone'); if(!p) return; document.getElementById('nurseDashName').innerText=localStorage.getItem('nurseName')||p; if(db){db.ref('bookings').orderByChild('selectedNurse').equalTo(p).once('value').then(s=>{var v=Object.values(s.val()||{}); var l=document.getElementById('nurseJobsList'); if(!v.length){l.innerHTML='No offers yet. Keep DUTY ON.';return;} var h=''; v.slice(-10).reverse().forEach(b=>{h+=`<div class="uber-card"><div style="flex:1"><b>${b.name}</b> - ${b.service}<br><small>${b.location||''} - ${b.time||''}</small></div><button class="btnSmall" style="background:#16a34a;color:white" onclick="updateBookingStatus(${b.id},'confirmed')">Accept</button></div>`;}); l.innerHTML=h;});}}
+function loadStaffData(){if(!db) return; db.ref('bookings').once('value').then(s=>{var v=Object.values(s.val()||{}); var h=v.length?'<table><tr><th>Client</th><th>Service</th><th>Phone</th></tr>':'No bookings'; v.slice(0,30).forEach(b=>{h+=`<tr><td>${b.name}</td><td>${b.service}</td><td>${b.phone}</td></tr>`;}); if(v.length) h+='</table>'; document.getElementById('staffBookingsList').innerHTML=h;});}
+function loadNurseDashboard(){var p=localStorage.getItem('nursePhone'); if(!p) return; if(db){db.ref('bookings').orderByChild('selectedNurse').equalTo(p).once('value').then(s=>{var v=Object.values(s.val()||{}); var l=document.getElementById('nurseJobsList'); if(!v.length){l.innerHTML='No offers yet. Keep DUTY ON.';return;} var h=''; v.slice(-10).reverse().forEach(b=>{h+=`<div class="uber-card"><div style="flex:1"><b>${b.name}</b> - ${b.service}<br><small>${b.location||''} - ${b.time||''}</small></div><button class="btnSmall" style="background:#16a34a;color:white" onclick="updateBookingStatus(${b.id},'confirmed')">Accept</button></div>`;}); l.innerHTML=h;});}}
 function initCeoMap(){var d=document.getElementById('ceoMap'); if(!d) return; if(ceoMap){ceoMap.invalidateSize();return;} ceoMap=L.map('ceoMap').setView([5.6037,-0.1870],10); L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(ceoMap); var workers=getAllNursesSource(); workers.forEach(w=>{if(w.lat&&w.lng) L.marker([w.lat,w.lng]).addTo(ceoMap).bindPopup(w.name||'Nurse');});}
 window.onload=function(){
 populatePhoneCodes();
@@ -411,10 +628,14 @@ initGroupChat();
 try{var localCfg=JSON.parse(localStorage.getItem('announcementConfig')||'null'); if(localCfg) applyAnnouncementConfig(localCfg);}catch(e){}
 var savedLang=localStorage.getItem('selectedLang'); if(savedLang){document.getElementById('langSelect').value=savedLang; changeLanguage();}
 var savedCountry=localStorage.getItem('selectedCountry'); if(savedCountry){document.getElementById('countrySelect').value=savedCountry;}
+var lastPhone=localStorage.getItem('lastClientPhone');
+if(lastPhone){
+ try{ document.getElementById('myBookPhone').value=lastPhone.replace(/^\+\d{1,3}/,''); }catch(e){}
+}
 ['announceBgColor','announceTextColor','announceBorderColor','announceSpeed'].forEach(id=>{var el=document.getElementById(id); if(el) el.addEventListener('input',()=>{var preview={text:document.getElementById('announcementInput').value||document.getElementById('announcementText').innerText,bg:document.getElementById('announceBgColor').value,textColor:document.getElementById('announceTextColor').value,border:document.getElementById('announceBorderColor').value,speed:document.getElementById('announceSpeed').value};applyAnnouncementConfig(preview);});});
 showPage('home'); setTimeout(initUberMap,700); setTimeout(toggleMasterClear,1000);
 };
 </script>
-<footer style="background:#111;color:#fff;padding:20px;text-align:center;margin-top:40px"><p>© 2026 LOVE CARE GLOBAL - 13 Services + 30 Codes + 10min Auto Rate Prompt</p></footer>
+<footer style="background:#111;color:#fff;padding:20px;text-align:center;margin-top:40px"><p>© 2026 LOVE CARE GLOBAL - 13 Services + Cancel & Refund System Added</p></footer>
 </body>
 </html>
