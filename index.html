@@ -33,6 +33,7 @@ input,select,textarea{width:100%;padding:12px;margin:6px 0;border-radius:10px;bo
 .bottomNav{position:fixed;bottom:0;left:0;right:0;background:white;display:flex;justify-content:space-around;padding:8px 0 10px 0;border-top:3px solid #eab308;z-index:99999;box-shadow:0 -2px 10px rgba(0,0,0,0.15)}
 .bottomNav button{background:none;border:none;font-size:9px;text-align:center;cursor:pointer;color:#6b7280;width:20%;display:flex;flex-direction:column;align-items:center;gap:3px;font-weight:700;padding:5px}
 .bottomNav button.active{color:#16a34a;background:#f0fdf4;border-radius:12px}
+.bottomNav button.locked{opacity:0.6}
 .sosFloat{position:fixed;bottom:110px;right:15px;width:56px;height:56px;background:radial-gradient(circle,#ef4444,#b91c1c);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-direction:column;font-weight:800;font-size:11px;z-index:99998;box-shadow:0 4px 15px rgba(239,68,68,0.7);cursor:pointer;border:3px solid white}
 .hidden{display:none!important}
 .globalBar{display:flex;gap:6px;align-items:center;background:white;border:2px solid #16a34a;border-radius:12px;padding:8px;margin:8px;flex-wrap:wrap}
@@ -66,6 +67,7 @@ th{background:#f0fdf4;color:#16a34a}
 .colorRow input[type="color"]{width:50px;height:38px;padding:2px;border-radius:8px}
 .ceo-tab-content{display:block}
 .ceo-tab-content.hidden{display:none!important}
+.loginRequired{background:#fef2f2;border:3px solid #ef4444;border-radius:16px;padding:30px 20px;text-align:center;margin:20px 8px}
 </style>
 </head>
 <body>
@@ -75,11 +77,8 @@ th{background:#f0fdf4;color:#16a34a}
     <img src="./logo.png" class="header-logo-img" alt="logo" onerror="this.style.display='none'">
     <div style="display:flex;flex-direction:column;line-height:1"><b style="font-size:15px">LOVE CARE</b><span style="background:white;color:#16a34a;padding:2px 10px;border-radius:20px;font-size:9px;font-weight:800;margin-top:2px">GLOBAL HOME NURSING</span></div>
   </div>
-  <span id="loginStatus" style="font-size:9px;background:white;color:#16a34a;padding:4px 8px;border-radius:10px;display:none"></span>
 </div>
 <div class="announcementBar"><span id="announcementText">LOVE CARE GLOBAL - UBER STYLE MAP - GPS AUTO + Closest Nurses - 0544121814</span></div>
-
-<!-- 30 COUNTRIES + LANGUAGE -->
 <div class="globalBar">
   <span style="font-size:11px;font-weight:800">🌍 Country:</span>
   <select id="countrySelect" onchange="changeCountry()" style="flex:1;min-width:140px">
@@ -116,64 +115,56 @@ th{background:#f0fdf4;color:#16a34a}
     <option value="JP" data-lang="ja" data-curr="JPY">🇯🇵 Japan - JPY</option>
   </select>
   <select id="langSelect" onchange="changeLanguage()" style="width:110px;font-weight:800">
-    <option value="en">English</option>
-    <option value="fr">Français</option>
-    <option value="es">Español</option>
-    <option value="de">Deutsch</option>
-    <option value="ar">العربية</option>
-    <option value="hi">हिन्दी</option>
-    <option value="pt">Português</option>
-    <option value="sw">Kiswahili</option>
-    <option value="am">አማርኛ</option>
-    <option value="it">Italiano</option>
-    <option value="ur">اردو</option>
-    <option value="bn">বাংলা</option>
-    <option value="id">Indonesia</option>
-    <option value="ja">日本語</option>
+    <option value="en">English</option><option value="fr">Français</option><option value="es">Español</option><option value="de">Deutsch</option><option value="ar">العربية</option><option value="hi">हिन्दी</option><option value="pt">Português</option><option value="sw">Kiswahili</option><option value="am">አማርኛ</option><option value="it">Italiano</option><option value="ur">اردو</option><option value="bn">বাংলা</option><option value="id">Indonesia</option><option value="ja">日本語</option>
   </select>
   <span id="currencyDisplay" style="font-weight:800;color:#16a34a;font-size:11px">GHS</span>
 </div>
 
 <div id="page-home" class="page active">
 <div class="card" style="border:3px solid #00b050"><h2 data-t="bookTitle">BOOK NURSE - Uber Map</h2>
-<input id="cName" placeholder="Full Name" data-tp="fullName"><div class="phoneRow"><select id="cPhoneCode"><option value="+233">GH +233</option><option value="+234">NG +234</option><option value="+27">ZA +27</option><option value="+1">US +1</option><option value="+44">UK +44</option></select><input id="cPhone" placeholder="Phone" data-tp="phone"></div>
-<input id="cEmail" placeholder="Email"><div class="locationRow"><input id="cLocation" placeholder="Tap GPS Auto" data-tp="tapGps"><button type="button" onclick="autoGPS('cLocation','clientGpsStatus')" data-t="gpsBtn">GPS Auto</button></div><small id="clientGpsStatus" class="gpsBadge hidden"></small>
-<select id="cService"><option value="" data-t="selectService">-- Select Service --</option><option>Elderly Care</option><option>Baby Care and Nanny</option><option>Hospital Support</option><option>Post-Surgery Care</option><option>Night Nurse</option><option>Physiotherapy</option></select>
+<input id="cName" placeholder="Full Name"><div class="phoneRow"><select id="cPhoneCode"><option value="+233">GH +233</option><option value="+234">NG +234</option><option value="+27">ZA +27</option><option value="+1">US +1</option><option value="+44">UK +44</option></select><input id="cPhone" placeholder="Phone"></div>
+<input id="cEmail" placeholder="Email"><div class="locationRow"><input id="cLocation" placeholder="Tap GPS Auto"><button type="button" onclick="autoGPS('cLocation','clientGpsStatus')">GPS Auto</button></div><small id="clientGpsStatus" class="gpsBadge hidden"></small>
+<select id="cService"><option value="">-- Select Service --</option><option>Elderly Care</option><option>Baby Care and Nanny</option><option>Hospital Support</option><option>Post-Surgery Care</option><option>Night Nurse</option><option>Physiotherapy</option></select>
 <div style="display:flex;gap:6px"><input id="cBudget" type="number" placeholder="Rate Min 90 GHS" oninput="checkRateMinimum()" style="flex:1"><select id="cCurrency" onchange="checkRateMinimum()" style="width:110px"><option>GHS</option><option>USD</option><option>NGN</option><option>ZAR</option><option>KES</option><option>EUR</option><option>GBP</option></select></div>
 <div id="rateEquivalent" style="background:#fffbeb;border:2px solid #eab308;border-radius:10px;padding:8px;margin:6px 0;font-size:11px;display:none"></div>
-<button class="btnSubmit" style="background:linear-gradient(90deg,#2563eb,#00b050)" onclick="findNursesUber()" data-t="findNurses">🔍 FIND NURSES NEAR ME</button>
-<div id="uberActionArea" class="hidden"><div style="display:flex;gap:6px;margin-top:8px"><button class="btnSubmit" style="background:#eab308;color:#111;flex:1" onclick="randomSelectNurse()">🎲 RANDOM</button><button class="btnSubmit" style="background:#111827;flex:1" onclick="submitBooking()" data-t="bookSelected">BOOK SELECTED</button></div><div style="font-size:10px;text-align:center;margin-top:4px;color:#16a34a;font-weight:800" id="selectedNurseInfo">No nurse selected</div></div></div>
-<div class="card"><h2><span data-t="liveMap">LIVE Map</span> - <span id="nearbyCount">0</span> <span data-t="nearby">Nearby</span></h2>
-<div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap"><button class="btnMap" onclick="toggleMap()">🗺 Toggle Map</button><button class="btnSmall" style="background:#16a34a;color:white" onclick="findNursesUber()" data-t="refresh">Refresh</button><button class="btnSmall" style="background:#2563eb;color:white" onclick="fitMapWide()" data-t="wideZoom">Wide Zoom</button><select id="radiusSelect" style="width:110px;padding:8px;border-radius:8px"><option value="5">5 km</option><option value="10" selected>10 km</option><option value="20">20 km</option><option value="50">50 km</option><option value="100">100 km</option></select></div>
+<button class="btnSubmit" style="background:linear-gradient(90deg,#2563eb,#00b050)" onclick="findNursesUber()">🔍 FIND NURSES NEAR ME</button>
+<div id="uberActionArea" class="hidden"><div style="display:flex;gap:6px;margin-top:8px"><button class="btnSubmit" style="background:#eab308;color:#111;flex:1" onclick="randomSelectNurse()">🎲 RANDOM</button><button class="btnSubmit" style="background:#111827;flex:1" onclick="submitBooking()">BOOK SELECTED</button></div><div style="font-size:10px;text-align:center;margin-top:4px;color:#16a34a;font-weight:800" id="selectedNurseInfo">No nurse selected</div></div></div>
+<div class="card"><h2>LIVE Map - <span id="nearbyCount">0</span> Nearby</h2>
+<div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap"><button class="btnMap" onclick="toggleMap()">🗺 Toggle Map</button><button class="btnSmall" style="background:#16a34a;color:white" onclick="findNursesUber()">Refresh</button><button class="btnSmall" style="background:#2563eb;color:white" onclick="fitMapWide()">Wide Zoom</button><select id="radiusSelect" style="width:110px;padding:8px;border-radius:8px"><option value="5">5 km</option><option value="10" selected>10 km</option><option value="20">20 km</option><option value="50">50 km</option><option value="100">100 km</option></select></div>
 <div id="loveCareMapWrapper" class="map-wrapper"><div id="uberMap"></div></div><div id="loveCareLiveList"></div></div>
 </div>
 
-<div id="page-nurse-public" class="page">
-<div class="card" style="border:3px solid #00b050"><h2 data-t="nurseReg">Nurse Registration</h2><input id="nRegName" placeholder="Full Name"><div class="phoneRow"><select id="nRegPhoneCode"><option value="+233">GH +233</option><option value="+234">NG +234</option><option value="+1">US +1</option></select><input id="nRegPhone" placeholder="Phone"></div><input id="nRegPass" type="password" placeholder="Password"><div class="locationRow"><input id="nRegLocation" placeholder="Tap GPS Auto"><button type="button" onclick="autoGPS('nRegLocation','nurseGpsStatus2')">GPS</button></div><small id="nurseGpsStatus2" class="gpsBadge hidden"></small><input id="nRegExperience" type="number" placeholder="Years Experience"><select id="nRegSpecialty"><option value="">-- Specialty --</option><option>General Nurse</option><option>Midwife</option><option>Elderly Care</option><option>Baby Care</option></select><button class="btnSubmit" onclick="registerNurse()" data-t="register">Register</button><div style="text-align:center;margin-top:12px"><span style="font-size:12px" data-t="alreadyReg">Already registered? </span><button class="btnSmall" style="background:#2563eb;color:white;padding:10px 20px" onclick="showPage('nurse-login')" data-t="loginHere">Login Here</button></div></div>
-</div>
-
-<div id="page-booking-public" class="page"><div class="card"><h2 data-t="quickBook">Quick Book</h2><input id="cName2" placeholder="Full Name"><div class="phoneRow"><select id="cPhoneCode2"><option value="+233">GH +233</option><option value="+1">US +1</option></select><input id="cPhone2" placeholder="Phone"></div><div class="locationRow"><input id="cLocation2" placeholder="Tap GPS"><button type="button" onclick="autoGPS('cLocation2','clientGpsStatus2')">GPS</button></div><small id="clientGpsStatus2" class="gpsBadge hidden"></small><select id="cService2"><option>Elderly Care</option><option>Baby Care</option></select><button class="btnSubmit" style="background:#2563eb" onclick="findNursesUber(true)" data-t="findOnMap">Find on Map</button><button class="btnSubmit" style="background:#00b050" onclick="submitBooking2()" data-t="bookNow">Book Now</button></div></div>
-
-<div id="page-nurse-login" class="page">
-<div class="card" style="margin:20px;border:3px solid #16a34a"><h2 data-t="nurseLoginTitle">👩‍⚕️ Nurse Login</h2><div class="phoneRow"><select id="nurseLoginCode"><option value="+233">GH +233</option><option value="+234">NG +234</option><option value="+1">US +1</option></select><input id="nurseLoginPhone" placeholder="Phone number"></div><input id="nurseLoginPass" type="password" placeholder="Password"><button class="btnSubmit" onclick="loginNurse()" data-t="loginAsNurse">Login as Nurse</button><div id="nurseLoginResult" style="font-size:11px;color:red;margin-top:8px"></div><div style="text-align:center;margin-top:10px"><button class="btnSmall" style="background:#f0fdf4;color:#16a34a;border:1px solid #16a34a" onclick="showPage('nurse-public')" data-t="newNurse">New Nurse? Register</button></div></div>
-</div>
+<div id="page-nurse-public" class="page"><div class="card" style="border:3px solid #00b050"><h2>Nurse Registration</h2><input id="nRegName" placeholder="Full Name"><div class="phoneRow"><select id="nRegPhoneCode"><option value="+233">GH +233</option><option value="+234">NG +234</option><option value="+1">US +1</option></select><input id="nRegPhone" placeholder="Phone"></div><input id="nRegPass" type="password" placeholder="Password"><div class="locationRow"><input id="nRegLocation" placeholder="Tap GPS Auto"><button type="button" onclick="autoGPS('nRegLocation','nurseGpsStatus2')">GPS</button></div><small id="nurseGpsStatus2" class="gpsBadge hidden"></small><input id="nRegExperience" type="number" placeholder="Years Experience"><select id="nRegSpecialty"><option value="">-- Specialty --</option><option>General Nurse</option><option>Midwife</option></select><button class="btnSubmit" onclick="registerNurse()">Register</button><div style="text-align:center;margin-top:12px"><span style="font-size:12px">Already registered? </span><button class="btnSmall" style="background:#2563eb;color:white;padding:10px 20px" onclick="showPage('nurse-login')">Login Here</button></div></div></div>
+<div id="page-booking-public" class="page"><div class="card"><h2>Quick Book</h2><input id="cName2" placeholder="Full Name"><div class="phoneRow"><select id="cPhoneCode2"><option value="+233">GH +233</option><option value="+1">US +1</option></select><input id="cPhone2" placeholder="Phone"></div><div class="locationRow"><input id="cLocation2" placeholder="Tap GPS"><button type="button" onclick="autoGPS('cLocation2','clientGpsStatus2')">GPS</button></div><small id="clientGpsStatus2" class="gpsBadge hidden"></small><select id="cService2"><option>Elderly Care</option><option>Baby Care</option></select><button class="btnSubmit" style="background:#2563eb" onclick="findNursesUber(true)">Find on Map</button><button class="btnSubmit" style="background:#00b050" onclick="submitBooking2()">Book Now</button></div></div>
+<div id="page-nurse-login" class="page"><div class="card" style="margin:20px;border:3px solid #16a34a"><h2>👩‍⚕️ Nurse Login</h2><div class="phoneRow"><select id="nurseLoginCode"><option value="+233">GH +233</option><option value="+234">NG +234</option><option value="+1">US +1</option></select><input id="nurseLoginPhone" placeholder="Phone"></div><input id="nurseLoginPass" type="password" placeholder="Password"><button class="btnSubmit" onclick="loginNurse()">Login as Nurse</button><div id="nurseLoginResult" style="font-size:11px;color:red;margin-top:8px"></div><div style="text-align:center;margin-top:10px"><button class="btnSmall" style="background:#f0fdf4;color:#16a34a;border:1px solid #16a34a" onclick="showPage('nurse-public')">New Nurse? Register</button></div></div></div>
 
 <div id="page-nurse-dashboard" class="page">
-<div class="card" style="border:3px solid #2563eb"><h2><span data-t="nurseDash">Nurse Dashboard</span> - <span id="nurseDashName">Nurse</span></h2><div style="display:flex;gap:5px;flex-wrap:wrap"><button class="btnSubmit" style="width:auto;background:#00b050" onclick="startDuty()" data-t="startDuty">START DUTY</button><button class="btnSubmit" style="width:auto;background:#ef4444" onclick="stopDuty()" data-t="stopDuty">STOP</button><button class="btnSubmit" style="width:auto;background:#111827" onclick="logoutNurse()" data-t="logout">Logout</button></div><div id="nurseGpsStatus" style="padding:8px;border-radius:8px;background:#e8f5e9;border:1px solid #16a34a;font-size:11px;display:none;margin-top:8px">GPS OFF</div></div>
-<div class="card"><h2 data-t="newOffers">New Offers</h2><div id="nurseJobsList">Start DUTY!</div></div>
-<div class="card" style="border:3px solid #2563eb"><h2>💬 <span data-t="groupChat">GROUP CHAT</span> <span style="font-size:10px"><span class="onlineDot"></span> <span id="nurseOnlineCount">0 online</span></span></h2><div id="nurseChatBox" class="chatBox"></div><div class="chatInputRow"><input id="nurseChatInput" placeholder="Message group..." onkeypress="if(event.key==='Enter')sendGroupMessage('NURSE')"><button class="btnSmall" style="background:#2563eb;color:white;padding:12px 18px" onclick="sendGroupMessage('NURSE')" data-t="send">Send</button></div><button class="btnSmall" style="background:#7c3aed;color:white;width:100%;margin-top:6px" onclick="showPage('group-chat')" data-t="openFullChat">Open Full Group Chat Page</button></div>
+<div class="card" style="border:3px solid #2563eb"><h2>Nurse Dashboard - <span id="nurseDashName">Nurse</span></h2><div style="display:flex;gap:5px;flex-wrap:wrap"><button class="btnSubmit" style="width:auto;background:#00b050" onclick="startDuty()">START DUTY</button><button class="btnSubmit" style="width:auto;background:#ef4444" onclick="stopDuty()">STOP</button><button class="btnSubmit" style="width:auto;background:#111827" onclick="logoutNurse()">Logout</button></div><div id="nurseGpsStatus" style="padding:8px;border-radius:8px;background:#e8f5e9;border:1px solid #16a34a;font-size:11px;display:none;margin-top:8px">GPS OFF</div></div>
+<div class="card"><h2>New Offers</h2><div id="nurseJobsList">Start DUTY!</div></div>
+<div class="card" style="border:3px solid #2563eb"><h2>💬 GROUP CHAT (Nurses+CEO+Staff Only) <span style="font-size:10px"><span class="onlineDot"></span> <span id="nurseOnlineCount">0 online</span></span></h2><div id="nurseChatBox" class="chatBox"></div><div class="chatInputRow"><input id="nurseChatInput" placeholder="Message group..." onkeypress="if(event.key==='Enter')sendGroupMessage('NURSE')"><button class="btnSmall" style="background:#2563eb;color:white;padding:12px 18px" onclick="sendGroupMessage('NURSE')">Send</button></div><button class="btnSmall" style="background:#111827;color:white;width:100%;margin-top:6px" onclick="showPage('group-chat')">Open Full Group Chat</button></div>
 </div>
 
-<div id="page-staff-login" class="page"><div class="card" style="margin:20px;border:3px solid #7c3aed"><h2 id="staffLogo" style="cursor:pointer">Staff Portal - Tap Logo 7x for CEO</h2><input id="staffLoginID" placeholder="Staff ID"><input id="staffLoginPass" type="password" placeholder="Password"><button class="btnSubmit" style="background:#7c3aed" onclick="loginStaff()" data-t="loginAsStaff">Login as Staff</button></div></div>
-
+<div id="page-staff-login" class="page"><div class="card" style="margin:20px;border:3px solid #7c3aed"><h2 id="staffLogo" style="cursor:pointer">Staff Portal - Tap Logo 7x for CEO</h2><input id="staffLoginID" placeholder="Staff ID"><input id="staffLoginPass" type="password" placeholder="Password"><button class="btnSubmit" style="background:#7c3aed" onclick="loginStaff()">Login as Staff</button></div></div>
 <div id="page-staff-dashboard" class="page">
-<div class="card"><h2><span data-t="staffDash">Staff Dashboard</span> - <span id="staffDashName"></span></h2><div id="staffBookingsList">Loading...</div></div>
-<div class="card" style="border:3px solid #7c3aed"><h2>💬 <span data-t="groupChat">GROUP CHAT</span> <span style="font-size:10px"><span class="onlineDot"></span> <span id="staffOnlineCount">0 online</span></span></h2><div id="staffChatBox" class="chatBox"></div><div class="chatInputRow"><input id="staffChatInput" placeholder="Message group..." onkeypress="if(event.key==='Enter')sendGroupMessage('STAFF')"><button class="btnSmall" style="background:#7c3aed;color:white;padding:12px 18px" onclick="sendGroupMessage('STAFF')" data-t="send">Send</button></div><button class="btnSmall" style="background:#111827;color:white;width:100%;margin-top:6px" onclick="showPage('group-chat')" data-t="openFullChat">Open Full Group Chat Page</button></div>
-<div style="margin:20px;display:flex;gap:8px"><button class="btnSubmit" style="background:#16a34a;flex:1" onclick="showPage('home')" data-t="home">Home</button><button class="btnSubmit" style="background:#ef4444;flex:1" onclick="logoutStaff()" data-t="logout">Logout</button></div>
+<div class="card"><h2>Staff Dashboard - <span id="staffDashName"></span></h2><div id="staffBookingsList">Loading...</div></div>
+<div class="card" style="border:3px solid #7c3aed"><h2>💬 GROUP CHAT (Staff+CEO+Nurses) <span style="font-size:10px"><span class="onlineDot"></span> <span id="staffOnlineCount">0 online</span></span></h2><div id="staffChatBox" class="chatBox"></div><div class="chatInputRow"><input id="staffChatInput" placeholder="Message group..." onkeypress="if(event.key==='Enter')sendGroupMessage('STAFF')"><button class="btnSmall" style="background:#7c3aed;color:white;padding:12px 18px" onclick="sendGroupMessage('STAFF')">Send</button></div><button class="btnSmall" style="background:#111827;color:white;width:100%;margin-top:6px" onclick="showPage('group-chat')">Open Full Group Chat</button></div>
+<div style="margin:20px;display:flex;gap:8px"><button class="btnSubmit" style="background:#16a34a;flex:1" onclick="showPage('home')">Home</button><button class="btnSubmit" style="background:#ef4444;flex:1" onclick="logoutStaff()">Logout</button></div>
 </div>
 
+<!-- RESTRICTED GROUP CHAT PAGE -->
 <div id="page-group-chat" class="page">
-<div class="card" style="border:3px solid #16a34a"><h2>💬 GLOBAL GROUP CHAT - Nurses, CEO, Staff Together <span id="globalOnline" style="background:#22c55e;color:white;padding:3px 10px;border-radius:12px;font-size:10px">0 ONLINE</span></h2><p style="font-size:11px;color:#666" data-t="chatDesc">This is one group for all nurses, staff and CEO. Everyone can talk.</p><div id="globalChatBox" class="chatBox" style="height:55vh"></div><div class="chatInputRow"><select id="groupRole" style="width:100px"><option value="NURSE">NURSE</option><option value="STAFF">STAFF</option><option value="CEO">CEO</option></select><input id="globalChatInput" placeholder="Type message to all..." onkeypress="if(event.key==='Enter')sendGlobalChat()"><button class="btnSmall" style="background:#16a34a;color:white;padding:12px 20px" onclick="sendGlobalChat()" data-t="send">Send</button></div><div style="display:flex;gap:6px;margin-top:8px"><button class="btnSmall" style="background:#111827;color:white;flex:1" onclick="showPage('home')" data-t="home">Home</button><button class="btnSmall" style="background:#ef4444;color:white" onclick="clearGroupChat()">Clear (CEO)</button></div></div>
+  <div id="groupChatRestricted" class="loginRequired hidden">
+    <h2>🔒 Group Chat Restricted</h2>
+    <p style="font-size:13px;color:#666">Only Nurses, Staff and CEO can access group chat. Clients cannot chat.</p>
+    <p style="font-size:12px;color:#ef4444;font-weight:800">Please login first to continue to chat</p>
+    <button class="btnSubmit" style="background:#2563eb" onclick="showPage('nurse-login')">Login as Nurse</button>
+    <button class="btnSubmit" style="background:#7c3aed" onclick="showPage('staff-login')">Login as Staff</button>
+    <button class="btnSubmit" style="background:#111827" onclick="showPage('ceo-login')">Login as CEO</button>
+    <button class="btnSubmit" style="background:#f0fdf4;color:#111;border:1px solid #ccc" onclick="showPage('home')">Back to Home</button>
+  </div>
+  <div id="groupChatAllowed">
+    <div class="card" style="border:3px solid #16a34a"><h2>💬 GLOBAL GROUP CHAT - Nurses, CEO, Staff Together <span id="globalOnline" style="background:#22c55e;color:white;padding:3px 10px;border-radius:12px;font-size:10px">0 ONLINE</span></h2><p style="font-size:11px;color:#666">One group for all nurses, staff and CEO. Clients blocked.</p><div id="globalChatBox" class="chatBox" style="height:55vh"></div><div class="chatInputRow"><select id="groupRole" style="width:100px"><option value="NURSE">NURSE</option><option value="STAFF">STAFF</option><option value="CEO">CEO</option></select><input id="globalChatInput" placeholder="Type message to all..." onkeypress="if(event.key==='Enter')sendGlobalChat()"><button class="btnSmall" style="background:#16a34a;color:white;padding:12px 20px" onclick="sendGlobalChat()">Send</button></div><div style="display:flex;gap:6px;margin-top:8px"><button class="btnSmall" style="background:#111827;color:white;flex:1" onclick="showPage('home')">Home</button><button class="btnSmall" style="background:#ef4444;color:white" onclick="clearGroupChat()">Clear (CEO only)</button></div></div>
+  </div>
 </div>
 
 <div id="page-ceo-login" class="page"><div class="card" style="margin:20px;border:3px solid #111827"><h2>CEO Login</h2><input id="ceoLoginID" placeholder="ID = KUSIPETER"><input id="ceoLoginPass" type="password" placeholder="Password"><button class="btnSubmit" style="background:#111827" onclick="loginCEO()">Login as CEO</button><div id="ceoLoginResult" style="font-size:11px;color:red;margin-top:8px"></div></div></div>
@@ -182,37 +173,36 @@ th{background:#f0fdf4;color:#16a34a}
 <div class="card" style="border:3px solid #111827">
 <h2>CEO Management <span style="background:#16a34a;color:white;padding:2px 8px;border-radius:10px;font-size:10px">LIVE</span></h2>
 <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin:10px 0">
-<div style="background:#f0fdf4;padding:10px;border-radius:10px;text-align:center;border:2px solid #16a34a"><b id="statBookings">0</b><br><small data-t="bookings">Bookings</small></div>
-<div style="background:#fffbeb;padding:10px;border-radius:10px;text-align:center;border:2px solid #eab308"><b id="statNurses">0</b><br><small data-t="nurses">Nurses</small></div>
-<div style="background:#eff6ff;padding:10px;border-radius:10px;text-align:center;border:2px solid #2563eb"><b id="statOnline">0</b><br><small data-t="onDuty">On Duty</small></div>
+<div style="background:#f0fdf4;padding:10px;border-radius:10px;text-align:center;border:2px solid #16a34a"><b id="statBookings">0</b><br><small>Bookings</small></div>
+<div style="background:#fffbeb;padding:10px;border-radius:10px;text-align:center;border:2px solid #eab308"><b id="statNurses">0</b><br><small>Nurses</small></div>
+<div style="background:#eff6ff;padding:10px;border-radius:10px;text-align:center;border:2px solid #2563eb"><b id="statOnline">0</b><br><small>On Duty</small></div>
 </div>
 <div class="ceoTabs">
-<button id="btn-bookings" class="btnSmall activeTab" style="background:#111827;color:white" onclick="switchCeoTab('bookings')" data-t="bookings">Bookings</button>
-<button id="btn-nurses" class="btnSmall" style="background:#16a34a;color:white" onclick="switchCeoTab('nurses')" data-t="nurses">Nurses</button>
-<button id="btn-clients" class="btnSmall" style="background:#2563eb;color:white" onclick="switchCeoTab('clients')" data-t="clients">Clients</button>
-<button id="btn-payments" class="btnSmall" style="background:#eab308;color:#111" onclick="switchCeoTab('payments')" data-t="payments">Payments</button>
-<button id="btn-staff" class="btnSmall" style="background:#7c3aed;color:white" onclick="switchCeoTab('staff')" data-t="staff">Staff</button>
-<button id="btn-announce" class="btnSmall" style="background:#0e7490;color:white" onclick="switchCeoTab('announce')" data-t="announce">Announce</button>
-<button id="btn-chat" class="btnSmall" style="background:#ef4444;color:white" onclick="switchCeoTab('chat')" data-t="groupChat">💬GROUP</button>
+<button id="btn-bookings" class="btnSmall activeTab" style="background:#111827;color:white" onclick="switchCeoTab('bookings')">Bookings</button>
+<button id="btn-nurses" class="btnSmall" style="background:#16a34a;color:white" onclick="switchCeoTab('nurses')">Nurses</button>
+<button id="btn-clients" class="btnSmall" style="background:#2563eb;color:white" onclick="switchCeoTab('clients')">Clients</button>
+<button id="btn-payments" class="btnSmall" style="background:#eab308;color:#111" onclick="switchCeoTab('payments')">Payments</button>
+<button id="btn-staff" class="btnSmall" style="background:#7c3aed;color:white" onclick="switchCeoTab('staff')">Staff</button>
+<button id="btn-announce" class="btnSmall" style="background:#0e7490;color:white" onclick="switchCeoTab('announce')">Announce</button>
+<button id="btn-chat" class="btnSmall" style="background:#ef4444;color:white" onclick="switchCeoTab('chat')">💬GROUP</button>
 </div>
-<div style="display:flex;gap:6px;margin-top:6px"><button class="btnSmall" style="background:#111827;color:white" onclick="loadCeoData()" data-t="refreshAll">🔄 Refresh All</button><button class="btnSmall" style="background:#ef4444;color:white" onclick="logoutCEO()" data-t="logout">Logout</button></div>
+<div style="display:flex;gap:6px;margin-top:6px"><button class="btnSmall" style="background:#111827;color:white" onclick="loadCeoData()">🔄 Refresh All</button><button class="btnSmall" style="background:#ef4444;color:white" onclick="logoutCEO()">Logout</button></div>
 </div>
-
-<div id="ceo-tab-bookings" class="ceo-tab-content card"><h2>1. <span data-t="bookings">Bookings</span></h2><div style="display:flex;gap:6px;margin-bottom:8px"><input id="ceoSearchBooking" placeholder="Search" oninput="filterBookings()" style="flex:1;margin:0"><select id="ceoBookingFilter" onchange="filterBookings()" style="width:130px;margin:0"><option value="">All</option><option>pending_assignment</option><option>confirmed</option><option>completed</option></select></div><div id="ceoBookingsList">Loading...</div></div>
-<div id="ceo-tab-nurses" class="ceo-tab-content card hidden"><h2>2. <span data-t="nurses">Nurses</span></h2><input id="ceoSearchNurse" placeholder="Search nurse" oninput="filterNurses()" style="margin:0 0 8px 0"><div id="ceoNursesList">Loading...</div><div id="ceoMap" style="height:380px;border-radius:12px;border:2px solid #16a34a;margin-top:10px"></div></div>
-<div id="ceo-tab-clients" class="ceo-tab-content card hidden"><h2>3. <span data-t="clients">Clients</span></h2><div id="ceoClientsList">Loading...</div></div>
-<div id="ceo-tab-payments" class="ceo-tab-content card hidden"><h2>4. <span data-t="payments">Payments</span></h2><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px"><div style="background:#f0fdf4;padding:10px;border-radius:10px;border:2px solid #16a34a"><small>Total GHS</small><br><b id="totalRevenue">0</b></div><div style="background:#fffbeb;padding:10px;border-radius:10px;border:2px solid #eab308"><small>Pending</small><br><b id="pendingRevenue">0</b></div></div><div id="ceoPaymentsList">Loading...</div></div>
-<div id="ceo-tab-staff" class="ceo-tab-content card hidden"><h2>5. <span data-t="staff">Staff</span></h2><div style="display:flex;gap:6px;margin-bottom:10px"><input id="newStaffId" placeholder="New Staff ID" style="flex:1;margin:0"><input id="newStaffPass" placeholder="Password" style="flex:1;margin:0"><button class="btnSmall" style="background:#16a34a;color:white" onclick="addStaff()">Add</button></div><div id="ceoStaffList">Loading...</div></div>
-<div id="ceo-tab-announce" class="ceo-tab-content card hidden"><h2>6. <span data-t="announce">Announcement & Colors</span></h2><label style="font-size:11px;font-weight:800">Announcement Text</label><textarea id="announcementInput" rows="2" placeholder="Type announcement..."></textarea><div class="colorRow"><label>Background:</label><input id="announceBgColor" type="color" value="#111827"><span id="bgVal">#111827</span></div><div class="colorRow"><label>Text Color:</label><input id="announceTextColor" type="color" value="#eab308"><span id="textVal">#eab308</span></div><div class="colorRow"><label>Border:</label><input id="announceBorderColor" type="color" value="#eab308"><span id="borderVal">#eab308</span></div><div class="colorRow"><label>Speed:</label><select id="announceSpeed" style="width:120px"><option value="10s">Fast</option><option value="22s" selected>Normal</option><option value="40s">Slow</option></select></div><button class="btnSmall" style="background:#0e7490;color:white;width:100%;padding:12px;margin-top:8px" onclick="saveAnnouncement()">💾 SAVE & APPLY LIVE</button><div style="margin-top:14px;border-top:2px solid #e5e7eb;padding-top:10px"><label style="font-size:11px;font-weight:800">Min Rate GHS</label><input id="minRateInput" type="number" value="90"><button class="btnSmall" style="background:#16a34a;color:white" onclick="saveSettings()">Save Rate</button></div></div>
-<div id="ceo-tab-chat" class="ceo-tab-content card hidden" style="border:3px solid #ef4444"><h2>💬 <span data-t="groupChat">GROUP CHAT</span> <span style="background:#22c55e;color:white;padding:2px 8px;border-radius:10px;font-size:9px" id="ceoOnlineCount">0 ONLINE</span></h2><div id="ceoChatBox" class="chatBox"></div><div class="chatInputRow"><input id="ceoChatInput" placeholder="Broadcast to all..." onkeypress="if(event.key==='Enter')sendGroupMessage('CEO')"><button class="btnSmall" style="background:#111827;color:white;padding:12px 18px" onclick="sendGroupMessage('CEO')" data-t="send">Send</button></div><button class="btnSmall" style="background:#111827;color:white;width:100%;margin-top:6px" onclick="showPage('group-chat')" data-t="openFullChat">Open Full Chat Page</button><button class="btnSmall" style="background:#ef4444;color:white;margin-top:6px" onclick="clearGroupChat()">Clear Chat</button></div>
+<div id="ceo-tab-bookings" class="ceo-tab-content card"><h2>1. Bookings</h2><div style="display:flex;gap:6px;margin-bottom:8px"><input id="ceoSearchBooking" placeholder="Search" oninput="filterBookings()" style="flex:1;margin:0"><select id="ceoBookingFilter" onchange="filterBookings()" style="width:130px;margin:0"><option value="">All</option><option>pending_assignment</option><option>confirmed</option><option>completed</option></select></div><div id="ceoBookingsList">Loading...</div></div>
+<div id="ceo-tab-nurses" class="ceo-tab-content card hidden"><h2>2. Nurses</h2><input id="ceoSearchNurse" placeholder="Search nurse" oninput="filterNurses()" style="margin:0 0 8px 0"><div id="ceoNursesList">Loading...</div><div id="ceoMap" style="height:380px;border-radius:12px;border:2px solid #16a34a;margin-top:10px"></div></div>
+<div id="ceo-tab-clients" class="ceo-tab-content card hidden"><h2>3. Clients</h2><div id="ceoClientsList">Loading...</div></div>
+<div id="ceo-tab-payments" class="ceo-tab-content card hidden"><h2>4. Payments</h2><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px"><div style="background:#f0fdf4;padding:10px;border-radius:10px;border:2px solid #16a34a"><small>Total GHS</small><br><b id="totalRevenue">0</b></div><div style="background:#fffbeb;padding:10px;border-radius:10px;border:2px solid #eab308"><small>Pending</small><br><b id="pendingRevenue">0</b></div></div><div id="ceoPaymentsList">Loading...</div></div>
+<div id="ceo-tab-staff" class="ceo-tab-content card hidden"><h2>5. Staff</h2><div style="display:flex;gap:6px;margin-bottom:10px"><input id="newStaffId" placeholder="New Staff ID" style="flex:1;margin:0"><input id="newStaffPass" placeholder="Password" style="flex:1;margin:0"><button class="btnSmall" style="background:#16a34a;color:white" onclick="addStaff()">Add</button></div><div id="ceoStaffList">Loading...</div></div>
+<div id="ceo-tab-announce" class="ceo-tab-content card hidden"><h2>6. Announcement & Colors</h2><label style="font-size:11px;font-weight:800">Announcement Text</label><textarea id="announcementInput" rows="2"></textarea><div class="colorRow"><label>Background:</label><input id="announceBgColor" type="color" value="#111827"><span id="bgVal">#111827</span></div><div class="colorRow"><label>Text Color:</label><input id="announceTextColor" type="color" value="#eab308"><span id="textVal">#eab308</span></div><div class="colorRow"><label>Border:</label><input id="announceBorderColor" type="color" value="#eab308"><span id="borderVal">#eab308</span></div><div class="colorRow"><label>Speed:</label><select id="announceSpeed" style="width:120px"><option value="10s">Fast</option><option value="22s" selected>Normal</option><option value="40s">Slow</option></select></div><button class="btnSmall" style="background:#0e7490;color:white;width:100%;padding:12px;margin-top:8px" onclick="saveAnnouncement()">💾 SAVE & APPLY LIVE</button><div style="margin-top:14px;border-top:2px solid #e5e7eb;padding-top:10px"><label style="font-size:11px;font-weight:800">Min Rate GHS</label><input id="minRateInput" type="number" value="90"><button class="btnSmall" style="background:#16a34a;color:white" onclick="saveSettings()">Save Rate</button></div></div>
+<div id="ceo-tab-chat" class="ceo-tab-content card hidden" style="border:3px solid #ef4444"><h2>💬 GROUP CHAT - All Nurses + Staff <span style="background:#22c55e;color:white;padding:2px 8px;border-radius:10px;font-size:9px" id="ceoOnlineCount">0 ONLINE</span></h2><p style="font-size:10px;color:#666">Clients are blocked from this chat</p><div id="ceoChatBox" class="chatBox"></div><div class="chatInputRow"><input id="ceoChatInput" placeholder="Broadcast to all..." onkeypress="if(event.key==='Enter')sendGroupMessage('CEO')"><button class="btnSmall" style="background:#111827;color:white;padding:12px 18px" onclick="sendGroupMessage('CEO')">Send</button></div><button class="btnSmall" style="background:#111827;color:white;width:100%;margin-top:6px" onclick="showPage('group-chat')">Open Full Chat Page</button></div>
 </div>
 
 <div class="bottomNav">
-<button id="nav-home" class="active" onclick="showPage('home')">🏠<span data-t="home">Home</span></button>
-<button id="nav-nurse" onclick="showPage('nurse-public')">👩‍⚕️<span data-t="join">Join</span></button>
-<button id="nav-book" onclick="showPage('booking-public')">📅<span data-t="book">Book</span></button>
-<button id="nav-login" onclick="showPage('nurse-login')">🔑<span data-t="login">Login</span></button>
-<button id="nav-chat" onclick="showPage('group-chat')" style="background:#fef2f2;border:2px solid #ef4444">💬<span>Group</span></button>
+<button id="nav-home" class="active" onclick="showPage('home')">🏠<span>Home</span></button>
+<button id="nav-nurse" onclick="showPage('nurse-public')">👩‍⚕️<span>Join</span></button>
+<button id="nav-book" onclick="showPage('booking-public')">📅<span>Book</span></button>
+<button id="nav-login" onclick="showPage('nurse-login')">🔑<span>Login</span></button>
+<button id="nav-chat" onclick="checkGroupAccess()" style="background:#fef2f2;border:2px solid #ef4444">💬<span>Group</span></button>
 </div>
 
 <script>
@@ -222,48 +212,51 @@ var currencyRates={'GHS':1,'USD':0.0645,'GBP':0.0513,'NGN':105,'ZAR':1.2,'KES':8
 var uberMap=null,ceoMap=null,nurseCluster=null,selectedNurseId=null,nearbyNursesSorted=[];
 try{firebase.initializeApp(firebaseConfig);db=firebase.database();}catch(e){}
 
-// ===== TRANSLATION SYSTEM =====
+// TRANSLATION
 var translations={
- en:{bookTitle:"BOOK NURSE - Uber Map",fullName:"Full Name",phone:"Phone",tapGps:"Tap GPS Auto",gpsBtn:"GPS Auto",selectService:"-- Select Service --",findNurses:"🔍 FIND NURSES NEAR ME",bookSelected:"BOOK SELECTED",liveMap:"LIVE Map",nearby:"Nearby",refresh:"Refresh",wideZoom:"Wide Zoom",nurseReg:"Nurse Registration",register:"Register",alreadyReg:"Already registered?",loginHere:"Login Here",quickBook:"Quick Book",findOnMap:"Find on Map",bookNow:"Book Now",nurseLoginTitle:"👩‍⚕️ Nurse Login",loginAsNurse:"Login as Nurse",newNurse:"New Nurse? Register",nurseDash:"Nurse Dashboard",startDuty:"START DUTY",stopDuty:"STOP",logout:"Logout",newOffers:"New Offers",groupChat:"GROUP CHAT",send:"Send",openFullChat:"Open Full Group Chat Page",staffDash:"Staff Dashboard",loginAsStaff:"Login as Staff",home:"Home",bookings:"Bookings",nurses:"Nurses",clients:"Clients",payments:"Payments",staff:"Staff",announce:"Announce",refreshAll:"🔄 Refresh All",chatDesc:"This is one group for all nurses, staff and CEO. Everyone can talk.",join:"Join",book:"Book",login:"Login"},
- fr:{bookTitle:"RÉSERVER INFIRMIÈRE - Carte Uber",fullName:"Nom Complet",phone:"Téléphone",tapGps:"Appuyer GPS Auto",gpsBtn:"GPS Auto",selectService:"-- Sélectionner Service --",findNurses:"🔍 TROUVER INFIRMIÈRES",bookSelected:"RÉSERVER SÉLECTIONNÉE",liveMap:"Carte LIVE",nearby:"Proche",refresh:"Actualiser",wideZoom:"Zoom Large",nurseReg:"Inscription Infirmière",register:"S'inscrire",alreadyReg:"Déjà inscrit?",loginHere:"Connectez-vous",quickBook:"Réservation Rapide",findOnMap:"Trouver sur Carte",bookNow:"Réserver",nurseLoginTitle:"👩‍⚕️ Connexion Infirmière",loginAsNurse:"Connexion Infirmière",newNurse:"Nouvelle? S'inscrire",nurseDash:"Tableau Infirmière",startDuty:"COMMENCER SERVICE",stopDuty:"ARRÊTER",logout:"Déconnexion",newOffers:"Nouvelles Offres",groupChat:"CHAT DE GROUPE",send:"Envoyer",openFullChat:"Ouvrir Chat Complet",staffDash:"Tableau Personnel",loginAsStaff:"Connexion Personnel",home:"Accueil",bookings:"Réservations",nurses:"Infirmières",clients:"Clients",payments:"Paiements",staff:"Personnel",announce:"Annonce",refreshAll:"🔄 Actualiser Tout",chatDesc:"C'est un groupe pour infirmières, personnel et PDG.",join:"Rejoindre",book:"Réserver",login:"Connexion"},
- es:{bookTitle:"RESERVAR ENFERMERA - Mapa Uber",fullName:"Nombre Completo",phone:"Teléfono",tapGps:"Tocar GPS Auto",gpsBtn:"GPS Auto",selectService:"-- Seleccionar Servicio --",findNurses:"🔍 BUSCAR ENFERMERAS",bookSelected:"RESERVAR SELECCIONADA",liveMap:"Mapa VIVO",nearby:"Cercanas",refresh:"Actualizar",wideZoom:"Zoom Amplio",nurseReg:"Registro Enfermera",register:"Registrar",alreadyReg:"¿Ya registrado?",loginHere:"Iniciar Sesión",quickBook:"Reserva Rápida",findOnMap:"Buscar en Mapa",bookNow:"Reservar",nurseLoginTitle:"👩‍⚕️ Login Enfermera",loginAsNurse:"Login Enfermera",newNurse:"¿Nueva? Registro",nurseDash:"Panel Enfermera",startDuty:"INICIAR TURNO",stopDuty:"PARAR",logout:"Cerrar Sesión",newOffers:"Nuevas Ofertas",groupChat:"CHAT GRUPAL",send:"Enviar",openFullChat:"Abrir Chat Completo",staffDash:"Panel Personal",loginAsStaff:"Login Personal",home:"Inicio",bookings:"Reservas",nurses:"Enfermeras",clients:"Clientes",payments:"Pagos",staff:"Personal",announce:"Anuncio",refreshAll:"🔄 Actualizar Todo",chatDesc:"Este es un grupo para enfermeras, personal y CEO.",join:"Unirse",book:"Reservar",login:"Login"},
- ar:{bookTitle:"حجز ممرضة - خريطة أوبر",fullName:"الاسم الكامل",phone:"الهاتف",tapGps:"اضغط GPS تلقائي",gpsBtn:"GPS تلقائي",selectService:"-- اختر الخدمة --",findNurses:"🔍 البحث عن ممرضات",bookSelected:"حجز المحدد",liveMap:"خريطة مباشرة",nearby:"قريب",refresh:"تحديث",wideZoom:"تكبير واسع",nurseReg:"تسجيل ممرضة",register:"تسجيل",alreadyReg:"مسجل بالفعل؟",loginHere:"تسجيل الدخول",quickBook:"حجز سريع",findOnMap:"البحث على الخريطة",bookNow:"احجز الآن",nurseLoginTitle:"👩‍⚕️ دخول ممرضة",loginAsNurse:"دخول ممرضة",newNurse:"ممرضة جديدة؟",nurseDash:"لوحة ممرضة",startDuty:"بدء العمل",stopDuty:"توقف",logout:"خروج",newOffers:"عروض جديدة",groupChat:"دردشة جماعية",send:"إرسال",openFullChat:"فتح الدردشة الكاملة",staffDash:"لوحة موظفين",loginAsStaff:"دخول موظف",home:"الرئيسية",bookings:"الحجوزات",nurses:"ممرضات",clients:"عملاء",payments:"مدفوعات",staff:"موظفون",announce:"إعلان",refreshAll:"🔄 تحديث الكل",chatDesc:"هذه مجموعة لجميع الممرضات والموظفين والرئيس.",join:"انضم",book:"حجز",login:"دخول"},
- sw:{bookTitle:"BOOKA MUUGUZI - Ramani Uber",fullName:"Jina Kamili",phone:"Simu",tapGps:"Gonga GPS Auto",gpsBtn:"GPS Auto",selectService:"-- Chagua Huduma --",findNurses:"🔍 TAFTA WAUGUZI",bookSelected:"BOOKA ULIYECHAGUA",liveMap:"Ramani LIVE",nearby:"Karibu",refresh:"Onyesha upya",wideZoom:"Zoom Pana",nurseReg:"Usajili Muuguzi",register:"Jisajili",alreadyReg:"Umesajiliwa?",loginHere:"Ingia Hapa",quickBook:"Book Haraka",findOnMap:"Tafuta Ramani",bookNow:"Book Sasa",nurseLoginTitle:"👩‍⚕️ Ingia Muuguzi",loginAsNurse:"Ingia Muuguzi",newNurse:"Mpya? Jisajili",nurseDash:"Dashibodi Muuguzi",startDuty:"ANZA KAZI",stopDuty:"SIMAMA",logout:"Toka",newOffers:"Ofa Mpya",groupChat:"CHAT YA KIKUNDI",send:"Tuma",openFullChat:"Fungua Chat Kamili",staffDash:"Dashibodi Staff",loginAsStaff:"Ingia Staff",home:"Nyumbani",bookings:"Bookings",nurses:"Wauguzi",clients:"Wateja",payments:"Malipo",staff:"Staff",announce:"Tangazo",refreshAll:"🔄 Onyesha",chatDesc:"Hiki ni kikundi cha wauguzi, staff na CEO wote.",join:"Jiunge",book:"Book",login:"Ingia"}
+ en:{bookTitle:"BOOK NURSE - Uber Map",groupChat:"GROUP CHAT"},
+ fr:{bookTitle:"RÉSERVER INFIRMIÈRE",groupChat:"CHAT DE GROUPE"},
+ es:{bookTitle:"RESERVAR ENFERMERA",groupChat:"CHAT GRUPAL"},
+ ar:{bookTitle:"حجز ممرضة",groupChat:"دردشة جماعية"},
+ sw:{bookTitle:"BOOKA MUUGUZI",groupChat:"CHAT YA KIKUNDI"}
 };
-function changeLanguage(){
- var lang=document.getElementById('langSelect').value;
- localStorage.setItem('selectedLang', lang);
- var dict=translations[lang]||translations['en'];
- document.querySelectorAll('[data-t]').forEach(el=>{
-   var key=el.getAttribute('data-t');
-   if(dict[key]) el.innerText=dict[key];
- });
- document.querySelectorAll('[data-tp]').forEach(el=>{
-   var key=el.getAttribute('data-tp');
-   if(dict[key]) el.placeholder=dict[key];
- });
-}
-function changeCountry(){
- var sel=document.getElementById('countrySelect');
- var opt=sel.options[sel.selectedIndex];
- var lang=opt.getAttribute('data-lang');
- var curr=opt.getAttribute('data-curr');
- document.getElementById('currencyDisplay').innerText=curr;
- document.getElementById('cCurrency').value=curr.includes('GHS')||curr.includes('USD')||curr.includes('NGN')||curr.includes('ZAR')||curr.includes('KES')?curr:'GHS';
- if(translations[lang]){
-   document.getElementById('langSelect').value=lang;
-   changeLanguage();
+function changeLanguage(){var lang=document.getElementById('langSelect').value;localStorage.setItem('selectedLang',lang);var dict=translations[lang]||translations['en'];document.querySelectorAll('[data-t]').forEach(el=>{var key=el.getAttribute('data-t');if(dict[key]) el.innerText=dict[key];});}
+function changeCountry(){var sel=document.getElementById('countrySelect');var opt=sel.options[sel.selectedIndex];var lang=opt.getAttribute('data-lang');var curr=opt.getAttribute('data-curr');document.getElementById('currencyDisplay').innerText=curr;if(translations[lang]){document.getElementById('langSelect').value=lang;changeLanguage();}localStorage.setItem('selectedCountry',sel.value);}
+
+// === RESTRICT CLIENTS FROM CHAT ===
+function isLoggedIn(){return localStorage.getItem('isCEOLogged')==='true' || localStorage.getItem('nursePhone') || localStorage.getItem('staffID');}
+function checkGroupAccess(){
+ if(!isLoggedIn()){
+   alert('🔒 Group Chat Restricted: Only Nurses, Staff and CEO can access group chat. Clients cannot chat. Please login first.');
+   showPage('group-chat');
+   return;
  }
- localStorage.setItem('selectedCountry', sel.value);
+ showPage('group-chat');
 }
 
 function convertToGHS(a,c){var r=currencyRates[c]||1;return a/r;}
 function checkRateMinimum(){var b=document.getElementById('cBudget');var c=document.getElementById('cCurrency');if(!b||!c)return true;var cur=c.value;var amt=parseFloat(b.value);if(isNaN(amt))return true;var g=convertToGHS(amt,cur);var e=document.getElementById('rateEquivalent');if(e){e.style.display='block';e.innerHTML='Entered: <b>'+amt+' '+cur+'</b> = <b>'+g.toFixed(2)+' GHS</b> '+(g<90?'<span style=color:red>LOW</span>':'<span style=color:green>OK</span>');}return g>=89.9;}
+
 function showPage(id){
+ // BLOCK CLIENTS FROM GROUP CHAT
+ if(id==='group-chat'){
+   var restricted=document.getElementById('groupChatRestricted');
+   var allowed=document.getElementById('groupChatAllowed');
+   if(!isLoggedIn()){
+     // Show restricted message
+     document.querySelectorAll('.page').forEach(p=>{p.classList.remove('active');p.style.display='none';});
+     var el=document.getElementById('page-group-chat');if(el){el.classList.add('active');el.style.display='block';}
+     if(restricted) restricted.classList.remove('hidden');
+     if(allowed) allowed.classList.add('hidden');
+     return;
+   } else {
+     if(restricted) restricted.classList.add('hidden');
+     if(allowed) allowed.classList.remove('hidden');
+   }
+ }
  if(id==='ceo-dashboard' && localStorage.getItem('isCEOLogged')!=='true') id='ceo-login';
  if(id==='staff-dashboard' &&!localStorage.getItem('staffID')) id='staff-login';
  if(id==='nurse-dashboard' &&!localStorage.getItem('nursePhone')) id='nurse-login';
- if(id==='group-chat' &&!localStorage.getItem('isCEOLogged') &&!localStorage.getItem('nursePhone') &&!localStorage.getItem('staffID')){alert('Please login as Nurse, Staff or CEO to join group chat'); id='nurse-login';}
  document.querySelectorAll('.page').forEach(p=>{p.classList.remove('active');p.style.display='none';});
  var el=document.getElementById('page-'+id);if(el){el.classList.add('active');el.style.display='block';}
  document.querySelectorAll('.bottomNav button').forEach(b=>b.classList.remove('active'));
@@ -276,7 +269,6 @@ function showPage(id){
  if(id==='staff-dashboard')setTimeout(()=>{loadStaffData();initGroupChat();},400);
  if(id==='group-chat')setTimeout(()=>{initGroupChat();autoSetRole();},400);
 }
-function openPage(id){showPage(id)}
 (function(){
  var logo=document.getElementById('logoTapArea');var press=null;
  if(logo){
@@ -320,24 +312,16 @@ function loginCEO(){var id=document.getElementById('ceoLoginID').value.trim().to
 function logoutCEO(){localStorage.removeItem('isCEOLogged');showPage('home');}
 function logoutStaff(){localStorage.removeItem('staffID');showPage('home');}
 function logoutNurse(){localStorage.removeItem('nursePhone');localStorage.removeItem('nurseName');showPage('home');}
-function triggerSOS(){alert('SOS SENT - Team notified');}
+function triggerSOS(){alert('SOS SENT');}
 function startDuty(){var phone=localStorage.getItem('nursePhone');if(!phone)return;navigator.geolocation.getCurrentPosition(pos=>{var lat=pos.coords.latitude,lng=pos.coords.longitude;var key=phone.replace(/[^0-9]/g,'');if(db)db.ref('workers/'+key).update({lat:lat,lng:lng,status:'on_duty',onDuty:true});var el=document.getElementById('nurseGpsStatus');el.style.display='block';el.innerText='ON DUTY - GPS: '+lat.toFixed(4)+','+lng.toFixed(4);});}
 function stopDuty(){var phone=localStorage.getItem('nursePhone');var key=phone?phone.replace(/[^0-9]/g,''):null;if(db&&key)db.ref('workers/'+key).update({status:'off_duty',onDuty:false});var el=document.getElementById('nurseGpsStatus');if(el){el.style.display='block';el.innerText='OFF DUTY';}}
-function switchCeoTab(tab){
- document.querySelectorAll('.ceo-tab-content').forEach(t=>t.classList.add('hidden'));
- document.querySelectorAll('.ceoTabs button').forEach(b=>b.classList.remove('activeTab'));
- var show=document.getElementById('ceo-tab-'+tab); if(show) show.classList.remove('hidden');
- var btn=document.getElementById('btn-'+tab); if(btn) btn.classList.add('activeTab');
- if(tab==='nurses') setTimeout(()=>{initCeoMap();loadCeoData();},200);
- if(tab==='bookings' || tab==='clients' || tab==='payments' || tab==='staff') loadCeoData();
- if(tab==='chat') initGroupChat();
-}
+function switchCeoTab(tab){document.querySelectorAll('.ceo-tab-content').forEach(t=>t.classList.add('hidden'));document.querySelectorAll('.ceoTabs button').forEach(b=>b.classList.remove('activeTab'));var show=document.getElementById('ceo-tab-'+tab); if(show) show.classList.remove('hidden');var btn=document.getElementById('btn-'+tab); if(btn) btn.classList.add('activeTab');if(tab==='nurses') setTimeout(()=>{initCeoMap();loadCeoData();},200);if(tab==='bookings' || tab==='clients' || tab==='payments' || tab==='staff') loadCeoData();if(tab==='chat') initGroupChat();}
 function loadCeoData(){if(!db)return;db.ref('bookings').once('value').then(snap=>{allBookings=Object.values(snap.val()||{});document.getElementById('statBookings').innerText=allBookings.length;renderBookings(allBookings);renderClients(allBookings);renderPayments(allBookings);});db.ref('workers').once('value').then(snap=>{allWorkers=Object.values(snap.val()||{});document.getElementById('statNurses').innerText=allWorkers.length;document.getElementById('statOnline').innerText=allWorkers.filter(w=>w.onDuty).length;renderNurses(allWorkers);});db.ref('staff').once('value').then(snap=>{renderStaff(Object.values(snap.val()||{}));});}
 function renderBookings(list){var c=document.getElementById('ceoBookingsList');if(!list.length){c.innerHTML='<div style="padding:20px;text-align:center;background:#fef3c7;border-radius:10px">No bookings yet</div>';return;}var h='<table><tr><th>Time</th><th>Client</th><th>Phone</th><th>Service</th><th>Nurse</th><th>Status</th><th>Action</th></tr>';list.sort((a,b)=>b.timestamp-a.timestamp).forEach(b=>{h+=`<tr><td>${b.time||''}</td><td>${b.name||''}</td><td>${b.phone||''}</td><td>${b.service||''}</td><td>${b.selectedNurse||''}</td><td><b>${b.status||''}</b></td><td><button onclick="updateBookingStatus(${b.id},'confirmed')" class="btnSmall" style="background:green;color:white">Confirm</button> <button onclick="deleteBooking(${b.id})" class="btnSmall" style="background:red;color:white">X</button></td></tr>`;});h+='</table>';c.innerHTML=h;}
 function renderNurses(list){var c=document.getElementById('ceoNursesList');if(!list.length){c.innerHTML='<div style="padding:20px;text-align:center;background:#fef3c7;border-radius:10px">No nurses yet</div>';return;}var h='<table><tr><th>Name</th><th>Phone</th><th>Location</th><th>Status</th><th>Action</th></tr>';list.forEach(w=>{h+=`<tr><td>${w.name||''}</td><td>${w.phone||''}</td><td>${w.location||''}</td><td>${w.status||''}</td><td><button onclick="deleteWorker('${(w.phone||'').replace(/[^0-9]/g,'')}')" class="btnSmall" style="background:red;color:white">Remove</button></td></tr>`;});h+='</table>';c.innerHTML=h;}
 function renderClients(b){var c=document.getElementById('ceoClientsList');var map={};b.forEach(x=>{if(x.phone)map[x.phone]={name:x.name,phone:x.phone,location:x.location,count:(map[x.phone]?.count||0)+1};});var clients=Object.values(map);if(!clients.length){c.innerHTML='<div style="padding:20px;text-align:center;background:#fef3c7;border-radius:10px">No clients yet</div>';return;}var h='<table><tr><th>Name</th><th>Phone</th><th>Bookings</th><th>Location</th></tr>';clients.forEach(x=>{h+=`<tr><td>${x.name||''}</td><td>${x.phone}</td><td>${x.count}</td><td>${x.location||''}</td></tr>`;});h+='</table>';c.innerHTML=h;}
 function renderPayments(b){var total=b.reduce((s,x)=>s+(parseFloat(x.ghsEquivalent)||0),0);document.getElementById('totalRevenue').innerText=total.toFixed(2)+' GHS';document.getElementById('pendingRevenue').innerText=b.filter(x=>x.status==='pending_assignment').reduce((s,x)=>s+(parseFloat(x.ghsEquivalent)||0),0).toFixed(2)+' GHS';var c=document.getElementById('ceoPaymentsList');if(!b.length){c.innerHTML='<div style="padding:20px;text-align:center;background:#fef3c7;border-radius:10px">No payments yet</div>';return;}var h='<table><tr><th>Client</th><th>Amount</th><th>GHS Equiv</th><th>Status</th></tr>';b.forEach(x=>{h+=`<tr><td>${x.name||''}</td><td>${x.amount||''} ${x.currency||''}</td><td>${(x.ghsEquivalent||0).toFixed(2)}</td><td>${x.status||''}</td></tr>`;});h+='</table>';c.innerHTML=h;}
-function renderStaff(list){var c=document.getElementById('ceoStaffList');if(!list.length){c.innerHTML='<div style="padding:20px;text-align:center;background:#fef3c7;border-radius:10px">No staff yet - Add above</div>';return;}var h='<table><tr><th>Staff ID</th><th>Action</th></tr>';list.forEach(s=>{h+=`<tr><td>${s.id||''}</td><td><button onclick="deleteStaff('${s.id}')" class="btnSmall" style="background:red;color:white">Delete</button></td></tr>`;});h+='</table>';c.innerHTML=h;}
+function renderStaff(list){var c=document.getElementById('ceoStaffList');if(!list.length){c.innerHTML='<div style="padding:20px;text-align:center;background:#fef3c7;border-radius:10px">No staff yet</div>';return;}var h='<table><tr><th>Staff ID</th><th>Action</th></tr>';list.forEach(s=>{h+=`<tr><td>${s.id||''}</td><td><button onclick="deleteStaff('${s.id}')" class="btnSmall" style="background:red;color:white">Delete</button></td></tr>`;});h+='</table>';c.innerHTML=h;}
 function filterBookings(){var q=document.getElementById('ceoSearchBooking').value.toLowerCase();var st=document.getElementById('ceoBookingFilter').value;var f=allBookings.filter(b=>(!q||(b.name||'').toLowerCase().includes(q)||(b.phone||'').includes(q))&&(!st||b.status===st));renderBookings(f);}
 function filterNurses(){var q=document.getElementById('ceoSearchNurse').value.toLowerCase();var f=allWorkers.filter(w=>(w.name||'').toLowerCase().includes(q)||(w.phone||'').includes(q));renderNurses(f);}
 function updateBookingStatus(id,status){if(!db)return;db.ref('bookings/'+id).update({status:status}).then(()=>{loadCeoData();});}
@@ -359,7 +343,7 @@ function renderGroupChat(msgs){
      var isMe=m.senderId===meId;
      html+=`<div class="chatMsg ${isMe?'me':'other'}"><div style="display:flex;align-items:center;gap:5px"><b>${escapeHtml(m.senderName)}</b><span class="roleBadge role-${m.role}">${m.role}</span></div><div style="margin-top:4px">${escapeHtml(m.text)}</div><div class="chatMeta"><span>${m.time||''}</span>${isMe?'<span>✓✓</span>':''}</div></div>`;
    });
-   box.innerHTML=html||'<div style="text-align:center;color:#999;padding:20px"><b>👋 Welcome to Global Group Chat</b><br>CEO, Nurses & Staff together</div>';
+   box.innerHTML=html||'<div style="text-align:center;color:#999;padding:20px"><b>👋 Welcome to Global Group Chat</b><br>Only Nurses, Staff, CEO can chat - Clients blocked</div>';
    box.scrollTop=box.scrollHeight;
  });
 }
@@ -367,9 +351,13 @@ function updateOnlineCounts(msgs){var recent=msgs.filter(m=>Date.now()-m.timesta
 function getCurrentId(){if(localStorage.getItem('isCEOLogged')==='true') return 'CEO_KUSIPETER';if(localStorage.getItem('nursePhone')) return localStorage.getItem('nursePhone');if(localStorage.getItem('staffID')) return localStorage.getItem('staffID');return 'guest_'+Math.random().toString(36).substr(2,5);}
 function getCurrentName(){if(localStorage.getItem('isCEOLogged')==='true') return 'CEO Peter';if(localStorage.getItem('nurseName')) return localStorage.getItem('nurseName');if(localStorage.getItem('nursePhone')) return localStorage.getItem('nursePhone');if(localStorage.getItem('staffID')) return 'Staff '+localStorage.getItem('staffID');return 'Guest';}
 function autoSetRole(){if(localStorage.getItem('isCEOLogged')==='true') document.getElementById('groupRole').value='CEO';else if(localStorage.getItem('staffID')) document.getElementById('groupRole').value='STAFF';else document.getElementById('groupRole').value='NURSE';}
-function sendGroupMessage(role){var inputId=role==='CEO'?'ceoChatInput':role==='NURSE'?'nurseChatInput':'staffChatInput';var input=document.getElementById(inputId); var text=input.value.trim(); if(!text) return;if(!db){alert('Firebase not connected - check Rules');return;}var msg={text:text,role:role,senderId:getCurrentId(),senderName:getCurrentName(),timestamp:Date.now(),time:new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})};db.ref('group_chat/'+Date.now()+'_'+Math.random().toString(36).substr(2,5)).set(msg).then(()=>{input.value='';});}
-function sendGlobalChat(){var input=document.getElementById('globalChatInput'); var role=document.getElementById('groupRole').value; var text=input.value.trim(); if(!text) return; if(!db){alert('Firebase not connected');return;}var msg={text:text,role:role,senderId:getCurrentId(),senderName:getCurrentName(),timestamp:Date.now(),time:new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})};db.ref('group_chat/'+Date.now()+'_'+Math.random().toString(36).substr(2,5)).set(msg).then(()=>{input.value='';});}
-function clearGroupChat(){if(!confirm('Delete entire group chat for EVERYONE?')) return; if(db) db.ref('group_chat').remove().then(()=>alert('Group chat cleared')); }
+function sendGroupMessage(role){
+ if(!isLoggedIn()){alert('🔒 Clients cannot chat. Please login as Nurse, Staff or CEO');return;}
+ var inputId=role==='CEO'?'ceoChatInput':role==='NURSE'?'nurseChatInput':'staffChatInput';var input=document.getElementById(inputId); var text=input.value.trim(); if(!text) return;if(!db){alert('Firebase not connected');return;}var msg={text:text,role:role,senderId:getCurrentId(),senderName:getCurrentName(),timestamp:Date.now(),time:new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})};db.ref('group_chat/'+Date.now()+'_'+Math.random().toString(36).substr(2,5)).set(msg).then(()=>{input.value='';});}
+function sendGlobalChat(){
+ if(!isLoggedIn()){alert('🔒 Clients cannot chat. Please login as Nurse, Staff or CEO');return;}
+ var input=document.getElementById('globalChatInput'); var role=document.getElementById('groupRole').value; var text=input.value.trim(); if(!text) return; if(!db){alert('Firebase not connected');return;}var msg={text:text,role:role,senderId:getCurrentId(),senderName:getCurrentName(),timestamp:Date.now(),time:new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})};db.ref('group_chat/'+Date.now()+'_'+Math.random().toString(36).substr(2,5)).set(msg).then(()=>{input.value='';});}
+function clearGroupChat(){if(!isLoggedIn()){alert('Login required');return;}if(localStorage.getItem('isCEOLogged')!=='true'){alert('Only CEO can clear chat');return;}if(!confirm('Delete entire group chat for EVERYONE?')) return; if(db) db.ref('group_chat').remove().then(()=>alert('Group chat cleared')); }
 function escapeHtml(t){var d=document.createElement('div');d.textContent=t;return d.innerHTML;}
 function loadStaffData(){if(!db)return;db.ref('bookings').once('value').then(snap=>{var vals=Object.values(snap.val()||{});var html=vals.length?'<table><tr><th>Client</th><th>Service</th><th>Phone</th></tr>':'No bookings';vals.slice(0,30).forEach(b=>{html+=`<tr><td>${b.name}</td><td>${b.service}</td><td>${b.phone}</td></tr>`});if(vals.length)html+='</table>';document.getElementById('staffBookingsList').innerHTML=html;});document.getElementById('staffDashName').innerText=localStorage.getItem('staffID')||'';}
 function loadNurseDashboard(){var phone=localStorage.getItem('nursePhone');if(!phone)return;document.getElementById('nurseDashName').innerText=localStorage.getItem('nurseName')||phone;if(db){db.ref('bookings').orderByChild('selectedNurse').equalTo(phone).once('value').then(snap=>{var vals=Object.values(snap.val()||{});var list=document.getElementById('nurseJobsList');if(!vals.length){list.innerHTML='No offers yet. Keep DUTY ON.';return;}var h='';vals.slice(-10).reverse().forEach(b=>{h+=`<div class="uber-card"><div style="flex:1"><b>${b.name}</b> - ${b.service}<br><small>${b.location||''} - ${b.time||''}</small></div><button class="btnSmall" style="background:#16a34a;color:white" onclick="updateBookingStatus(${b.id},'confirmed')">Accept</button></div>`;});list.innerHTML=h;});}}
@@ -388,6 +376,6 @@ window.onload=function(){
  showPage('home');setTimeout(initUberMap,700);
 };
 </script>
-<footer style="background:#111;color:#fff;padding:20px;text-align:center;margin-top:40px"><p>© 2026 LOVE CARE GLOBAL - 30 Countries + Group Chat</p></footer>
+<footer style="background:#111;color:#fff;padding:20px;text-align:center;margin-top:40px"><p>© 2026 LOVE CARE GLOBAL - Clients Blocked From Chat</p></footer>
 </body>
 </html>
