@@ -5,18 +5,14 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>LOVE CARE GLOBAL - Home Nursing</title>
 <link rel="icon" type="image/png" href="./logo.png">
-<link rel="apple-touch-icon" href="./logo.png">
-<link rel="manifest" href="./manifest.json">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css"/>
 <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
 <meta name="theme-color" content="#16a34a">
-<meta name="description" content="LOVE CARE GLOBAL - Professional Home Nursing - Uber style nurse map">
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-<script src="https://js.paystack.co/v1/inline.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap');
 *{box-sizing:border-box}
@@ -33,452 +29,203 @@ input,select,textarea{width:100%;padding:12px;margin:6px 0;border-radius:10px;bo
 .btnSmall{padding:8px 12px;border:none;border-radius:8px;font-weight:800;font-size:11px;cursor:pointer;margin:3px}
 .page{display:none}.page.active{display:block}
 .bottomNav{position:fixed;bottom:0;left:0;right:0;background:white;display:flex;justify-content:space-around;padding:8px 0 12px 0;border-top:3px solid #eab308;z-index:99999;box-shadow:0 -2px 10px rgba(0,0,0,0.15)}
-.bottomNav button{background:none;border:none;font-size:11px;text-align:center;cursor:pointer;color:#6b7280;width:33%;display:flex;flex-direction:column;align-items:center;gap:4px;font-weight:700;padding:6px;font-family:'Poppins',sans-serif}
+.bottomNav button{background:none;border:none;font-size:11px;text-align:center;cursor:pointer;color:#6b7280;width:33%;display:flex;flex-direction:column;align-items:center;gap:4px;font-weight:700;padding:6px}
 .bottomNav button.active{color:#16a34a;background:#f0fdf4;border-radius:12px}
 .sosFloat{position:fixed;bottom:95px;right:15px;width:60px;height:60px;background:radial-gradient(circle,#ef4444,#b91c1c);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-direction:column;font-weight:800;font-size:12px;z-index:99998;box-shadow:0 4px 15px rgba(239,68,68,0.7);cursor:pointer;border:3px solid white}
 .hidden{display:none!important}
 .globalBar{display:flex;gap:6px;align-items:center;background:white;border:2px solid #16a34a;border-radius:12px;padding:8px;margin:8px}
-.globalBar select{flex:1;padding:8px;font-size:12px;border-radius:8px;margin:0}
 .phoneRow{display:flex;gap:6px;align-items:center}.phoneRow select{width:130px;flex:none;background:#f0fdf4;border:2px solid #16a34a;font-weight:800;font-size:12px}.phoneRow input{flex:1}
 .locationRow{display:flex;gap:6px;align-items:center}.locationRow input{flex:1}.locationRow button{flex:none;padding:12px 14px;background:#2563eb;color:white;border:none;border-radius:10px;font-weight:800;font-size:12px;cursor:pointer}
 .eversendBox{background:linear-gradient(135deg,#00b050,#065f46);color:white;border-radius:16px;padding:14px;margin:8px;border:3px solid #eab308}
 .payOption{border:2px solid rgba(255,255,255,0.3);border-radius:10px;padding:9px;margin:6px 0;background:rgba(255,255,255,0.1);font-size:12px}
 .uploadBox{border:2px dashed #16a34a;border-radius:12px;padding:12px;margin:8px 0;background:#f0fdf4}
 .gpsBadge{font-size:10px;color:#00b050;background:#f0fdf4;padding:4px 10px;border-radius:10px;border:1px solid #00b050;margin-top:4px;display:inline-block}
-.file-preview{font-size:10px;padding:5px 10px;border-radius:8px;margin-top:4px;display:inline-block;background:#dcfce7}
 .map-wrapper{margin-top:10px;border-radius:16px;overflow:hidden;border:3px solid #16a34a;height:460px;position:relative}
 #uberMap{width:100%;height:100%}
 .btnMap{background:linear-gradient(135deg,#ff6a00,#ff9500);color:white;border:none;padding:10px 14px;border-radius:10px;font-weight:800;cursor:pointer}
-.uber-card{background:white;border:2px solid #16a34a;border-radius:12px;padding:10px;margin:8px 0;display:flex;align-items:center;gap:10px;font-size:12px;cursor:pointer;transition:.2s}
-.uber-card.selected{border-color:#eab308;background:#fffbeb;transform:scale(1.02)}
+.uber-card{background:white;border:2px solid #16a34a;border-radius:12px;padding:10px;margin:8px 0;display:flex;align-items:center;gap:10px;font-size:12px;cursor:pointer}
+.uber-card.selected{border-color:#eab308;background:#fffbeb}
 .uber-card img{width:46px;height:46px;border-radius:50%;object-fit:cover;border:2px solid #16a34a}
 .nurse-dot{width:12px;height:12px;background:#00ff88;border-radius:50%;border:2px solid white;box-shadow:0 0 0 2px #16a34a;animation:pulse 1.5s infinite}
 @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(22,163,74,.7)}70%{box-shadow:0 0 0 10px rgba(22,163,74,0)}100%{box-shadow:0 0 0 0 rgba(22,163,74,0)}}
 .live-badge{background:#00b050;color:white;padding:4px 10px;border-radius:15px;font-size:10px;font-weight:800}
+table{width:100%;border-collapse:collapse;font-size:11px;margin-top:8px}
+th,td{border:1px solid #e5e7eb;padding:6px;text-align:left;word-break:break-word}
+th{background:#f0fdf4;color:#16a34a}
+.ceoTabs{display:flex;gap:4px;flex-wrap:wrap;margin:10px 0}
+.ceoTabs button{flex:1;min-width:85px}
 </style>
 </head>
 <body>
 <div id="sosHome" class="sosFloat" onclick="triggerSOS()"><span>SOS</span></div>
 <div class="header">
-  <div onclick="tapLogo()" style="display:flex;align-items:center;gap:10px;cursor:pointer">
-    <img src="./logo.png" class="header-logo-img" alt="logo">
-    <div style="display:flex;flex-direction:column;line-height:1">
-      <b style="font-size:15px">LOVE CARE</b>
-      <span style="background:white;color:#16a34a;padding:2px 10px;border-radius:20px;font-size:9px;font-weight:800;margin-top:2px">GLOBAL HOME NURSING</span>
-    </div>
+  <div id="logoTapArea" style="display:flex;align-items:center;gap:10px;cursor:pointer">
+    <img src="./logo.png" class="header-logo-img" alt="logo" onerror="this.style.display='none'">
+    <div style="display:flex;flex-direction:column;line-height:1"><b style="font-size:15px">LOVE CARE</b><span style="background:white;color:#16a34a;padding:2px 10px;border-radius:20px;font-size:9px;font-weight:800;margin-top:2px">GLOBAL HOME NURSING</span></div>
   </div>
   <span id="loginStatus" style="font-size:9px;background:white;color:#16a34a;padding:4px 8px;border-radius:10px;display:none"></span>
 </div>
-<div class="announcementBar"><span id="announcementText">LOVE CARE GLOBAL - UBER STYLE MAP - GPS AUTO + Closest Nurses - 0544121814 - FIXED WIDE ZOOM</span></div>
-<div class="globalBar">
-<span style="font-size:12px;font-weight:800">Country:</span>
-<select id="countrySelect" onchange="changeCountry()">
-<option value="GH">Ghana GHS</option><option value="NG">Nigeria NGN</option><option value="ZA">South Africa ZAR</option><option value="KE">Kenya KES</option><option value="IN">India INR</option><option value="AE">UAE AED</option><option value="US">USA USD</option><option value="UK">UK GBP</option>
-</select>
-<span id="currencyDisplay" style="font-weight:800;color:#16a34a">GHS</span>
-</div>
+<div class="announcementBar"><span id="announcementText">LOVE CARE GLOBAL - UBER STYLE MAP - GPS AUTO + Closest Nurses - 0544121814</span></div>
+<div class="globalBar"><span style="font-size:12px;font-weight:800">Country:</span><select id="countrySelect" onchange="changeCountry()"><option value="GH">Ghana GHS</option><option value="NG">Nigeria NGN</option><option value="ZA">South Africa ZAR</option><option value="US">USA USD</option><option value="UK">UK GBP</option></select><span id="currencyDisplay" style="font-weight:800;color:#16a34a">GHS</span></div>
 
 <div id="page-home" class="page active">
-<div class="eversendBox">
-<h3 style="margin:0 0 8px 0">Find Nurses Like Uber - WIDE ZOOM FIXED</h3>
-<div class="payOption">1. Tap GPS Auto - 2. Map shows closest nurses - 3. Toggle Map = Wide Zoom to see all</div>
-</div>
-
+<div class="eversendBox"><h3 style="margin:0 0 8px 0">Find Nurses Like Uber</h3><div class="payOption">1. Tap GPS Auto - 2. Map shows closest nurses - 3. Toggle Map = Wide Zoom</div></div>
 <div class="card" style="border:3px solid #00b050"><h2>BOOK NURSE - Uber Map</h2>
 <input id="cName" placeholder="Full Name">
-<div class="phoneRow"><select id="cPhoneCode"><option value="+233">GH +233</option><option value="+234">NG +234</option><option value="+27">ZA +27</option><option value="+91">IN +91</option><option value="+1">US +1</option><option value="+44">GB +44</option></select><input id="cPhone" placeholder="Phone e.g. 544121814"></div>
+<div class="phoneRow"><select id="cPhoneCode"><option value="+233">GH +233</option><option value="+1">US +1</option></select><input id="cPhone" placeholder="Phone"></div>
 <input id="cEmail" placeholder="Email">
-<div class="locationRow"><input id="cLocation" placeholder="Tap GPS Auto - Location"><button type="button" onclick="autoGPS('cLocation','clientGpsStatus')">GPS Auto</button></div>
+<div class="locationRow"><input id="cLocation" placeholder="Tap GPS Auto"><button type="button" onclick="autoGPS('cLocation','clientGpsStatus')">GPS Auto</button></div>
 <small id="clientGpsStatus" class="gpsBadge hidden"></small>
-<select id="cService"><option value="">-- Select Service --</option><option>Elderly Care</option><option>Baby Care and Nanny</option><option>Hospital Support</option><option>Post-Surgery Care</option><option>Disability Support</option><option>Maternity and Newborn</option><option>Night Nurse</option><option>Palliative Care</option><option>Physiotherapy</option><option>Injection and Wound Care</option><option>Diabetes Monitoring</option><option>Dementia Care</option><option>Child Special Needs</option></select>
-<div style="display:flex;gap:6px;align-items:center"><input id="cBudget" type="number" placeholder="Rate e.g. 200 - Min 90 GHS" oninput="checkRateMinimum()" style="flex:1"><select id="cCurrency" onchange="checkRateMinimum()" style="width:110px"><option>GHS</option><option>USD</option><option>GBP</option><option>NGN</option><option>ZAR</option><option>KES</option><option>INR</option><option>AED</option><option>EUR</option></select></div>
+<select id="cService"><option value="">-- Select Service --</option><option>Elderly Care</option><option>Baby Care and Nanny</option><option>Hospital Support</option><option>Post-Surgery Care</option><option>Night Nurse</option><option>Physiotherapy</option></select>
+<div style="display:flex;gap:6px"><input id="cBudget" type="number" placeholder="Rate Min 90 GHS" oninput="checkRateMinimum()" style="flex:1"><select id="cCurrency" onchange="checkRateMinimum()" style="width:110px"><option>GHS</option><option>USD</option><option>NGN</option></select></div>
 <div id="rateEquivalent" style="background:#fffbeb;border:2px solid #eab308;border-radius:10px;padding:8px;margin:6px 0;font-size:11px;display:none"></div>
-<button class="btnSubmit" style="background:linear-gradient(90deg,#2563eb,#00b050)" onclick="findNursesUber()">🔍 FIND NURSES NEAR ME - UBER MAP</button>
-<div id="uberActionArea" class="hidden">
-<div style="display:flex;gap:6px;margin-top:8px">
-<button class="btnSubmit" style="background:#eab308;color:#111;flex:1" onclick="randomSelectNurse()">🎲 RANDOM SELECT</button>
-<button class="btnSubmit" style="background:#111827;flex:1" onclick="submitBooking()">BOOK SELECTED NURSE</button>
+<button class="btnSubmit" style="background:linear-gradient(90deg,#2563eb,#00b050)" onclick="findNursesUber()">🔍 FIND NURSES NEAR ME</button>
+<div id="uberActionArea" class="hidden"><div style="display:flex;gap:6px;margin-top:8px"><button class="btnSubmit" style="background:#eab308;color:#111;flex:1" onclick="randomSelectNurse()">🎲 RANDOM</button><button class="btnSubmit" style="background:#111827;flex:1" onclick="submitBooking()">BOOK SELECTED</button></div><div style="font-size:10px;text-align:center;margin-top:4px;color:#16a34a;font-weight:800" id="selectedNurseInfo">No nurse selected</div></div>
 </div>
-<div style="font-size:10px;text-align:center;margin-top:4px;color:#16a34a;font-weight:800" id="selectedNurseInfo">No nurse selected - Tap a nurse card or Random</div>
-</div>
+<div class="card"><h2>LIVE Map - <span id="nearbyCount">0</span> Nearby</h2>
+<div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap"><button class="btnMap" onclick="toggleMap()">🗺 Toggle Map</button><button class="btnSmall" style="background:#16a34a;color:white" onclick="findNursesUber()">Refresh</button><button class="btnSmall" style="background:#2563eb;color:white" onclick="fitMapWide()">Wide Zoom</button><select id="radiusSelect" style="width:110px;padding:8px;border-radius:8px"><option value="5">5 km</option><option value="10" selected>10 km</option><option value="20">20 km</option><option value="50">50 km</option><option value="100">100 km</option></select></div>
+<div id="loveCareMapWrapper" class="map-wrapper"><div id="uberMap"></div></div><div id="loveCareLiveList"></div></div>
 </div>
 
-<div class="card"><h2>LIVE Uber Map - <span id="nearbyCount">0</span> Nurses Nearby</h2>
-<div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap">
-<button class="btnMap" onclick="toggleMap()">🗺️ Toggle Map / Zoom Wide</button>
-<button class="btnSmall" style="background:#16a34a;color:white" onclick="findNursesUber()">Refresh Nearby</button>
-<button class="btnSmall" style="background:#2563eb;color:white" onclick="fitMapWide()">🔍 Zoom Wide</button>
-<select id="radiusSelect" style="width:125px;padding:8px;border-radius:8px"><option value="5">5 km</option><option value="10" selected>10 km</option><option value="20">20 km</option><option value="50">50 km</option><option value="100">100 km - WIDE</option></select>
+<div id="page-nurse-public" class="page"><div class="card" style="border:3px solid #00b050"><h2>Nurse Registration</h2><input id="nRegName" placeholder="Full Name"><div class="phoneRow"><select id="nRegPhoneCode"><option value="+233">GH +233</option><option value="+1">US +1</option></select><input id="nRegPhone" placeholder="Phone"></div><input id="nRegPass" type="password" placeholder="Password"><div class="locationRow"><input id="nRegLocation" placeholder="Tap GPS Auto"><button type="button" onclick="autoGPS('nRegLocation','nurseGpsStatus2')">GPS</button></div><small id="nurseGpsStatus2" class="gpsBadge hidden"></small><input id="nRegExperience" type="number" placeholder="Years Experience"><select id="nRegSpecialty"><option value="">-- Specialty --</option><option>General Nurse</option><option>Midwife</option></select><button class="btnSubmit" onclick="registerNurse()">Register</button><div id="nRegStatus" style="font-size:10px;color:green;margin-top:5px"></div></div></div>
+<div id="page-booking-public" class="page"><div class="card"><h2>Quick Book</h2><input id="cName2" placeholder="Full Name"><div class="phoneRow"><select id="cPhoneCode2"><option value="+233">GH +233</option><option value="+1">US +1</option></select><input id="cPhone2" placeholder="Phone"></div><div class="locationRow"><input id="cLocation2" placeholder="Tap GPS"><button type="button" onclick="autoGPS('cLocation2','clientGpsStatus2')">GPS</button></div><small id="clientGpsStatus2" class="gpsBadge hidden"></small><select id="cService2"><option>Elderly Care</option><option>Baby Care</option></select><button class="btnSubmit" style="background:#2563eb" onclick="findNursesUber(true)">Find on Map</button><button class="btnSubmit" style="background:#00b050" onclick="submitBooking2()">Book Now</button></div></div>
+<div id="page-nurse-login" class="page"><div class="card" style="margin:20px;border:3px solid #16a34a"><h2>Nurse Login</h2><div class="phoneRow"><select id="nurseLoginCode"><option value="+233">GH +233</option></select><input id="nurseLoginPhone" placeholder="Phone"></div><input id="nurseLoginPass" type="password" placeholder="Password"><button class="btnSubmit" onclick="loginNurse()">Login</button><div id="nurseLoginResult" style="font-size:11px;color:red;margin-top:8px"></div></div></div>
+<div id="page-nurse-dashboard" class="page"><div class="card" style="border:3px solid #2563eb"><h2>Nurse Dashboard - <span id="nurseDashName">Nurse</span></h2><div style="display:flex;gap:5px"><button class="btnSubmit" style="width:auto;background:#00b050" onclick="startDuty()">START DUTY</button><button class="btnSubmit" style="width:auto;background:#ef4444" onclick="stopDuty()">STOP</button><button class="btnSubmit" style="width:auto;background:#111827" onclick="logoutNurse()">Logout</button></div><div id="nurseGpsStatus" style="padding:8px;border-radius:8px;background:#e8f5e9;border:1px solid #16a34a;font-size:11px;display:none;margin-top:8px">GPS OFF</div></div><div class="card"><h2>New Offers</h2><div id="nurseJobsList">Start DUTY!</div></div></div>
+<div id="page-staff-login" class="page"><div class="card" style="margin:20px"><h2 id="staffLogo" style="cursor:pointer">Portal</h2><input id="staffLoginID" placeholder="ID"><input id="staffLoginPass" type="password" placeholder="Password"><button class="btnSubmit" onclick="loginStaff()">Login</button></div></div>
+<div id="page-staff-dashboard" class="page"><div class="card"><h2>Dashboard - <span id="staffDashName"></span></h2><div id="staffBookingsList">Loading...</div></div><div style="margin:20px;display:flex;gap:8px"><button class="btnSubmit" style="background:#16a34a;flex:1" onclick="showPage('home')">Home</button><button class="btnSubmit" style="background:#ef4444;flex:1" onclick="logoutStaff()">Logout</button></div></div>
+
+<!-- STEALTH CEO LOGIN -->
+<div id="page-ceo-login" class="page"><div class="card" style="margin:20px;border:3px solid #111827"><h2>Login</h2><input id="ceoLoginID" placeholder="ID"><input id="ceoLoginPass" type="password" placeholder="Password"><button class="btnSubmit" style="background:#111827" onclick="loginCEO()">Login</button><div id="ceoLoginResult" style="font-size:11px;color:red;margin-top:8px"></div></div></div>
+
+<div id="page-ceo-dashboard" class="page">
+<div class="card" style="border:3px solid #111827">
+<h2>Management <span style="background:#16a34a;color:white;padding:2px 8px;border-radius:10px;font-size:10px">LIVE</span></h2>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin:10px 0">
+<div style="background:#f0fdf4;padding:10px;border-radius:10px;text-align:center;border:2px solid #16a34a"><b id="statBookings">0</b><br><small>Bookings</small></div>
+<div style="background:#fffbeb;padding:10px;border-radius:10px;text-align:center;border:2px solid #eab308"><b id="statNurses">0</b><br><small>Nurses</small></div>
+<div style="background:#eff6ff;padding:10px;border-radius:10px;text-align:center;border:2px solid #2563eb"><b id="statOnline">0</b><br><small>On Duty</small></div>
 </div>
-<div id="loveCareMapWrapper" class="map-wrapper"><div id="uberMap"></div></div>
-<div id="loveCareLiveList"></div>
+<div class="ceoTabs">
+<button class="btnSmall" style="background:#111827;color:white" onclick="switchCeoTab('bookings')">Bookings</button>
+<button class="btnSmall" style="background:#16a34a;color:white" onclick="switchCeoTab('nurses')">Nurses</button>
+<button class="btnSmall" style="background:#2563eb;color:white" onclick="switchCeoTab('clients')">Clients</button>
+<button class="btnSmall" style="background:#eab308;color:#111" onclick="switchCeoTab('payments')">Payments</button>
+<button class="btnSmall" style="background:#7c3aed;color:white" onclick="switchCeoTab('staff')">Staff</button>
+<button class="btnSmall" style="background:#0e7490;color:white" onclick="switchCeoTab('announce')">Announce</button>
 </div>
+<div style="display:flex;gap:6px"><button class="btnSmall" style="background:#111827;color:white" onclick="loadCeoData()">Refresh</button><button class="btnSmall" style="background:#ef4444;color:white" onclick="logoutCEO()">Logout</button></div>
+</div>
+<div id="ceo-tab-bookings" class="card"><h2>1. Bookings</h2><div style="display:flex;gap:6px;margin-bottom:8px"><input id="ceoSearchBooking" placeholder="Search" oninput="filterBookings()" style="flex:1;margin:0"><select id="ceoBookingFilter" onchange="filterBookings()" style="width:110px;margin:0"><option value="">All</option><option>pending_assignment</option><option>confirmed</option><option>completed</option></select></div><div id="ceoBookingsList">Loading...</div></div>
+<div id="ceo-tab-nurses" class="card hidden"><h2>2. Nurses</h2><input id="ceoSearchNurse" placeholder="Search nurse" oninput="filterNurses()" style="margin:0 0 8px 0"><div id="ceoNursesList">Loading...</div><div id="ceoMap" style="height:380px;border-radius:12px;border:2px solid #16a34a;margin-top:10px"></div></div>
+<div id="ceo-tab-clients" class="card hidden"><h2>3. Clients</h2><div id="ceoClientsList">Loading...</div></div>
+<div id="ceo-tab-payments" class="card hidden"><h2>4. Payments</h2><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px"><div style="background:#f0fdf4;padding:10px;border-radius:10px;border:2px solid #16a34a"><small>Total GHS</small><br><b id="totalRevenue">0</b></div><div style="background:#fffbeb;padding:10px;border-radius:10px;border:2px solid #eab308"><small>Pending</small><br><b id="pendingRevenue">0</b></div></div><div id="ceoPaymentsList">Loading...</div></div>
+<div id="ceo-tab-staff" class="card hidden"><h2>5. Staff</h2><div style="display:flex;gap:6px;margin-bottom:10px"><input id="newStaffId" placeholder="ID" style="flex:1;margin:0"><input id="newStaffPass" placeholder="Pass" style="flex:1;margin:0"><button class="btnSmall" style="background:#16a34a;color:white" onclick="addStaff()">Add</button></div><div id="ceoStaffList">Loading...</div></div>
+<div id="ceo-tab-announce" class="card hidden"><h2>6. Announce & Settings</h2><label style="font-size:11px;font-weight:800">Announcement</label><textarea id="announcementInput" rows="2"></textarea><button class="btnSmall" style="background:#0e7490;color:white" onclick="saveAnnouncement()">Save</button><div style="margin-top:10px"><label style="font-size:11px;font-weight:800">Min Rate GHS</label><input id="minRateInput" type="number" value="90"><button class="btnSmall" style="background:#16a34a;color:white" onclick="saveSettings()">Save</button></div></div>
 </div>
 
-<div id="page-nurse-public" class="page">
-<div class="card" style="border:3px solid #00b050"><h2>Nurse Registration - GPS Required for Uber Map</h2>
-<input id="nRegName" placeholder="Full Name">
-<div class="phoneRow"><select id="nRegPhoneCode"><option value="+233">GH +233</option><option value="+234">NG +234</option><option value="+27">ZA +27</option><option value="+91">IN +91</option><option value="+1">US +1</option><option value="+44">GB +44</option></select><input id="nRegPhone" placeholder="Phone"></div>
-<input id="nRegPass" type="password" placeholder="Password min 6">
-<select id="nRegGender"><option value="">-- Gender --</option><option>Female</option><option>Male</option></select>
-<input id="nRegAge" type="number" placeholder="Age">
-<div class="locationRow"><input id="nRegLocation" placeholder="Tap GPS Auto - Must for map"><button type="button" onclick="autoGPS('nRegLocation','nurseGpsStatus2')">GPS Auto</button></div>
-<small id="nurseGpsStatus2" class="gpsBadge hidden"></small>
-<input id="nRegExperience" type="number" placeholder="Years Experience">
-<select id="nRegSpecialty"><option value="">-- Specialty --</option><option>General Nurse</option><option>Midwife</option><option>Elderly Care Specialist</option></select>
-<input id="nRegLanguages" placeholder="Languages e.g. English, Twi">
-<div class="uploadBox">
-<label style="font-size:11px;font-weight:800">Profile Photo (Required)</label>
-<input id="nRegPhoto" type="file" accept="image/*" onchange="showFileName('nRegPhoto','photoStatus')">
-<small id="photoStatus" class="file-preview"></small>
-<label style="font-size:11px;font-weight:800;margin-top:8px;display:block">ID Card</label>
-<input id="nRegID" type="file" accept="image/*,application/pdf" onchange="showFileName('nRegID','idStatus')">
-<small id="idStatus" class="file-preview"></small>
-<label style="font-size:11px;font-weight:800;margin-top:8px;display:block">Certificate</label>
-<input id="nRegCert" type="file" accept="image/*,application/pdf" onchange="showFileName('nRegCert','certStatus')">
-<small id="certStatus" class="file-preview"></small>
-<div style="border:2px solid #0e7490;border-radius:10px;padding:10px;margin-top:12px;background:#ecfeff"><label style="font-size:11px;font-weight:800;color:#0e7490">CV / Resume Required</label><input id="nRegCV" type="file" accept=".pdf,.doc,.docx" onchange="showFileName('nRegCV','cvStatus')"><small id="cvStatus" class="file-preview"></small></div>
-<div style="border:2px solid #7c3aed;border-radius:10px;padding:10px;margin-top:12px;background:#f5f3ff"><label style="font-size:11px;font-weight:800;color:#7c3aed">NMC PIN Certificate Required</label><input id="nRegNMC" type="file" accept="image/*,application/pdf" onchange="showFileName('nRegNMC','nmcStatus')"><small id="nmcStatus" class="file-preview"></small></div>
-</div>
-<button class="btnSubmit" onclick="registerNurse()">Register with GPS for Map</button>
-<div id="nRegStatus" style="font-size:10px;color:green;margin-top:5px"></div>
-</div>
-</div>
-
-<div id="page-booking-public" class="page">
-<div class="card" style="border:3px solid #00b050"><h2>Quick Book + Map</h2>
-<input id="cName2" placeholder="Full Name">
-<div class="phoneRow"><select id="cPhoneCode2"><option value="+233">GH +233</option><option value="+1">US +1</option><option value="+44">GB +44</option></select><input id="cPhone2" placeholder="Phone"></div>
-<div class="locationRow"><input id="cLocation2" placeholder="Tap GPS Auto"><button type="button" onclick="autoGPS('cLocation2','clientGpsStatus2')">GPS</button></div>
-<small id="clientGpsStatus2" class="gpsBadge hidden"></small>
-<select id="cService2"><option>Elderly Care</option><option>Baby Care</option><option>Hospital Support</option></select>
-<button class="btnSubmit" style="background:#2563eb" onclick="findNursesUber(true)">Find Nurses on Map</button>
-<button class="btnSubmit" style="background:#00b050" onclick="submitBooking2()">Book Now</button>
-</div>
-</div>
-
-<div id="page-nurse-login" class="page">
-<div class="card" style="margin:20px;border:3px solid #16a34a"><h2>Nurse Login</h2>
-<div class="phoneRow"><select id="nurseLoginCode"><option value="+233">GH +233</option><option value="+1">US +1</option></select><input id="nurseLoginPhone" placeholder="Phone"></div>
-<input id="nurseLoginPass" type="password" placeholder="Password">
-<button class="btnSubmit" onclick="loginNurse()">Login</button>
-<div id="nurseLoginResult" style="font-size:11px;color:red;margin-top:8px"></div>
-</div>
-</div>
-
-<div id="page-nurse-dashboard" class="page">
-<div class="card" style="border:3px solid #2563eb"><h2>Nurse Dashboard - <span id="nurseDashName">Nurse</span></h2>
-<div style="display:flex;gap:5px;flex-wrap:wrap"><button class="btnSubmit" style="width:auto;background:#00b050" onclick="startDuty()">START DUTY - Appear on Map</button><button class="btnSubmit" style="width:auto;background:#ef4444" onclick="stopDuty()">STOP DUTY</button></div>
-<div id="nurseGpsStatus" style="padding:8px;border-radius:8px;background:#e8f5e9;border:1px solid #16a34a;font-size:11px;display:none;margin-top:8px">GPS OFF</div>
-</div>
-<div id="nurse-tab-jobs" class="card"><h2>New Offers</h2><div id="nurseJobsList">Start DUTY to appear on Uber Map!</div></div>
-</div>
-
-<div id="page-staff-login" class="page"><div class="card" style="margin:20px"><h2 id="staffLogo" onclick="tapStaffLogo()" style="cursor:pointer">Staff Portal</h2><input id="staffLoginID" placeholder="Staff ID"><input id="staffLoginPass" type="password" placeholder="Password"><button class="btnSubmit" onclick="loginStaff()">Login</button></div></div>
-<div id="page-staff-dashboard" class="page"><div class="card"><h2>Staff - <span id="staffDashName"></span></h2></div><button class="btnSubmit" style="background:#ef4444;margin:20px" onclick="showPage('home')">Logout</button></div>
-<div id="page-ceo-login" class="page"><div class="card" style="margin:20px;border:3px solid #111827"><h2>CEO Login</h2><input id="ceoLoginID" placeholder="CEO ID"><input id="ceoLoginPass" type="password" placeholder="Password"><button class="btnSubmit" style="background:#111827" onclick="loginCEO()">CEO Login</button><div id="ceoLoginResult" style="font-size:11px;color:red;margin-top:8px"></div></div></div>
-<div id="page-ceo-dashboard" class="page"><div class="card"><h2>CEO - <span id="ceoDashName">CEO</span></h2><div id="ceoBookingsList">CEO panel - bookings load from Firebase</div></div><button class="btnSubmit" style="background:#ef4444;margin:20px" onclick="logoutCEO()">Logout CEO</button></div>
-
-<div class="bottomNav" id="bottomNav">
-<button id="nav-home" class="active" onclick="openPage('home')"><svg viewBox="0 0 24 24" fill="currentColor" width="28" height="28"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span>Home</span></button>
-<button id="nav-nurse" onclick="openPage('nurse-public')"><svg viewBox="0 0 24 24" fill="currentColor" width="28" height="28"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/><circle cx="18" cy="11" r="3" fill="#16a34a"/></svg><span>Nurses</span></button>
-<button id="nav-book" onclick="openPage('booking-public')"><svg viewBox="0 0 24 24" fill="currentColor" width="28" height="28"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg><span>Book</span></button>
-</div>
+<div class="bottomNav"><button id="nav-home" class="active" onclick="openPage('home')">🏠<span>Home</span></button><button id="nav-nurse" onclick="openPage('nurse-public')">👩‍⚕️<span>Nurses</span></button><button id="nav-book" onclick="openPage('booking-public')">📅<span>Book</span></button></div>
 
 <script>
 var firebaseConfig={apiKey:"AIzaSyB52-X1D8Cg-wUDWPds_tR7D8cF82dMdRg",authDomain:"web-care-618e8.firebaseapp.com",databaseURL:"https://web-care-618e8-default-rtdb.firebaseio.com",projectId:"web-care-618e8",storageBucket:"web-care-618e8.firebasestorage.app",messagingSenderId:"1062578660694",appId:"1:1062578660694:web:f94dfe12c929df05bce2f7"};
 var db=null,allBookings=[],allWorkers=[],logoTapCount=0,staffLogoTapCount=0,currentCountry='GH',clientLat=null,clientLng=null,nurseRegLat=null,nurseRegLng=null;
-var countries={GH:{currency:'GHS',lat:5.6037,lng:-0.1870},NG:{currency:'NGN',lat:9.0820,lng:8.6753},ZA:{currency:'ZAR',lat:-30.5595,lng:22.9375}};
-var currencyRates={'GHS':1,'USD':0.0645,'GBP':0.0513,'NGN':105,'ZAR':1.2,'KES':8.3,'INR':5.4,'AED':0.237,'EUR':0.059};
-var currencyMin={'GHS':90,'USD':6,'GBP':5,'NGN':9450,'ZAR':108,'KES':747,'INR':486,'AED':22,'EUR':6};
-var uberMap=null, clientMarker=null, nurseMarkers=[], nurseCluster=null, selectedNurseId=null, nearbyNursesSorted=[], routeLine=null;
-
+var currencyRates={'GHS':1,'USD':0.0645,'GBP':0.0513,'NGN':105};var currencyMin={'GHS':90,'USD':6,'GBP':5,'NGN':9450};
+var uberMap=null,ceoMap=null,clientMarker=null,nurseCluster=null,selectedNurseId=null,nearbyNursesSorted=[],routeLine=null;
 try{firebase.initializeApp(firebaseConfig);db=firebase.database();}catch(e){}
-
-function getMinForCurrency(cur){return currencyMin[cur]||90}
-function convertToGHS(amount, fromCur){var rate=currencyRates[fromCur]||1;return amount/rate}
-function checkRateMinimum(){
-  var budgetEl=document.getElementById('cBudget'); var cur=document.getElementById('cCurrency').value;
-  var amount=parseFloat(budgetEl.value); if(isNaN(amount)) return true;
-  var ghsEquiv=convertToGHS(amount,cur); var min=getMinForCurrency(cur);
-  var equivDiv=document.getElementById('rateEquivalent');
-  if(equivDiv){equivDiv.style.display='block'; equivDiv.innerHTML='Entered: <b>'+amount+' '+cur+'</b> = <b>'+ghsEquiv.toFixed(2)+' GHS</b> | Min: <b>'+min+' '+cur+'</b> '+(ghsEquiv<90?'<span style="color:#ef4444">TOO LOW</span>':'<span style="color:#00b050">OK</span>');}
-  return ghsEquiv>=89.9;
-}
+function convertToGHS(a,c){var r=currencyRates[c]||1;return a/r;}
+function checkRateMinimum(){var b=document.getElementById('cBudget');var c=document.getElementById('cCurrency');if(!b||!c)return true;var cur=c.value;var amt=parseFloat(b.value);if(isNaN(amt))return true;var g=convertToGHS(amt,cur);var e=document.getElementById('rateEquivalent');if(e){e.style.display='block';e.innerHTML='Entered: <b>'+amt+' '+cur+'</b> = <b>'+g.toFixed(2)+' GHS</b> '+(g<90?'<span style=color:red>LOW</span>':'<span style=color:green>OK</span>');}return g>=89.9;}
 function showPage(id){
-  if(id==='ceo-dashboard' && localStorage.getItem('isCEOLogged')!=='true') id='ceo-login';
-  if(id==='staff-dashboard' &&!localStorage.getItem('staffID')) id='staff-login';
-  if(id==='nurse-dashboard' &&!localStorage.getItem('nursePhone')) id='nurse-login';
-  document.querySelectorAll('.page').forEach(p=>{p.classList.remove('active'); p.style.display='none';});
-  var el=document.getElementById('page-'+id); if(el){el.classList.add('active'); el.style.display='block';}
-  window.scrollTo(0,0);
-  if(id==='home') setTimeout(()=>{ if(!uberMap) initUberMap(); else { uberMap.invalidateSize(); fitMapWide(); } }, 400);
+ if(id==='ceo-dashboard' && localStorage.getItem('isCEOLogged')!=='true') id='ceo-login';
+ if(id==='staff-dashboard' && !localStorage.getItem('staffID')) id='staff-login';
+ if(id==='nurse-dashboard' && !localStorage.getItem('nursePhone')) id='nurse-login';
+ document.querySelectorAll('.page').forEach(p=>{p.classList.remove('active');p.style.display='none';});
+ var el=document.getElementById('page-'+id);if(el){el.classList.add('active');el.style.display='block';}else{document.getElementById('page-home').style.display='block';id='home';}
+ window.scrollTo(0,0);
+ if(id==='home')setTimeout(()=>{if(!uberMap)initUberMap();else{uberMap.invalidateSize();fitMapWide();}},400);
+ if(id==='ceo-dashboard')setTimeout(()=>{loadCeoData();initCeoMap();},500);
 }
 function openPage(id){showPage(id)}
-function tapLogo(){logoTapCount++; if(logoTapCount>=5){logoTapCount=0; showPage('staff-login');} setTimeout(()=>logoTapCount=0,3000)}
-function tapStaffLogo(){staffLogoTapCount++; if(staffLogoTapCount>=7){staffLogoTapCount=0; showPage('ceo-login');} setTimeout(()=>staffLogoTapCount=0,3000)}
-function changeCountry(){var sel=document.getElementById('countrySelect'); currentCountry=sel.value; var c=countries[currentCountry]||countries['GH']; document.getElementById('currencyDisplay').innerText=c.currency;}
-function showFileName(a,b){var inp=document.getElementById(a); var st=document.getElementById(b); if(inp.files[0]) st.innerText=inp.files[0].name;}
+(function(){
+ var logo=document.getElementById('logoTapArea');var press=null;
+ if(logo){
+  logo.addEventListener('click',function(){logoTapCount++;if(logoTapCount>=5){logoTapCount=0;showPage('staff-login');}setTimeout(()=>{logoTapCount=0},3000);});
+  logo.addEventListener('touchstart',function(){press=setTimeout(()=>{showPage('ceo-login');},1800);});
+  logo.addEventListener('touchend',function(){clearTimeout(press);});
+  logo.addEventListener('mousedown',function(){press=setTimeout(()=>{showPage('ceo-login');},1800);});
+  logo.addEventListener('mouseup',function(){clearTimeout(press);});
+ }
+ var staff=document.getElementById('staffLogo');
+ if(staff){staff.addEventListener('click',function(){staffLogoTapCount++;if(staffLogoTapCount>=7){staffLogoTapCount=0;showPage('ceo-login');}setTimeout(()=>{staffLogoTapCount=0},3000);});}
+})();
+function changeCountry(){var sel=document.getElementById('countrySelect');currentCountry=sel.value;document.getElementById('currencyDisplay').innerText=countries[currentCountry]?.currency||'GHS';}
+var countries={GH:{currency:'GHS'}};
+function showFileName(){} 
 function autoGPS(inputId,statusId){
-  var statusEl=document.getElementById(statusId); var inputEl=document.getElementById(inputId);
-  if(statusEl){statusEl.classList.remove('hidden'); statusEl.innerText='Getting GPS...';}
-  navigator.geolocation.getCurrentPosition(pos=>{
-    var lat=pos.coords.latitude,lng=pos.coords.longitude;
-    if(inputId.includes('cLocation')){clientLat=lat; clientLng=lng;}
-    if(inputId.includes('nRegLocation')){nurseRegLat=lat; nurseRegLng=lng;}
-    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`).then(r=>r.json()).then(data=>{
-      inputEl.value=data.display_name||lat.toFixed(5)+','+lng.toFixed(5);
-      if(statusEl) statusEl.innerText='GPS: '+lat.toFixed(4)+','+lng.toFixed(4);
-      if(clientLat) findNursesUber();
-    }).catch(()=>{inputEl.value=lat.toFixed(5)+','+lng.toFixed(5); if(clientLat) findNursesUber();});
-  },err=>{if(statusEl) statusEl.innerText='GPS failed'; alert(err.message);},{enableHighAccuracy:true,timeout:15000});
+ var statusEl=document.getElementById(statusId);var inputEl=document.getElementById(inputId);
+ if(statusEl){statusEl.classList.remove('hidden');statusEl.innerText='Getting GPS...';}
+ navigator.geolocation.getCurrentPosition(pos=>{
+  var lat=pos.coords.latitude,lng=pos.coords.longitude;
+  if(inputId.includes('cLocation')){clientLat=lat;clientLng=lng;}
+  if(inputId.includes('nRegLocation')){nurseRegLat=lat;nurseRegLng=lng;}
+  fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`).then(r=>r.json()).then(data=>{
+   inputEl.value=data.display_name||lat.toFixed(5)+','+lng.toFixed(5);
+   if(statusEl)statusEl.innerText='GPS: '+lat.toFixed(4)+','+lng.toFixed(4);
+  }).catch(()=>{inputEl.value=lat.toFixed(5)+','+lng.toFixed(5);});
+ },err=>{if(statusEl)statusEl.innerText='GPS failed';},{enableHighAccuracy:true,timeout:15000});
 }
-function getFullPhone(codeId,phoneId){var code=document.getElementById(codeId).value; var phone=document.getElementById(phoneId).value.trim().replace(/^0+/, ''); if(phone.startsWith('+')) return phone; return code+phone;}
-function getDistanceKm(lat1,lon1,lat2,lon2){
-  if(!lat1||!lon1||!lat2||!lon2) return 9999;
-  var R=6371; var dLat=(lat2-lat1)*Math.PI/180; var dLon=(lon2-lon1)*Math.PI/180;
-  var a=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)*Math.sin(dLon/2);
-  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
-}
-if(!localStorage.getItem('nurses') || JSON.parse(localStorage.getItem('nurses')).length===0){
-  localStorage.setItem('nurses', JSON.stringify([
-    {id:1,name:"Nurse Grace Mensah",specialty:"General",lat:5.675,lng:-0.165,location:"Madina",rate:"90 GHS/hr",available:true,phone:"+233244001001"},
-    {id:2,name:"Nurse Esther Ofori",specialty:"Elderly Care",lat:5.682,lng:-0.185,location:"Haatso",rate:"90 GHS/hr",available:true,phone:"+233244001002"},
-    {id:3,name:"Nurse Joy Addo",specialty:"Pediatrics",lat:5.6501,lng:-0.1864,location:"Legon",rate:"100 GHS/hr",available:true,phone:"+233244001003"},
-    {id:4,name:"Nurse Mary Asare",specialty:"Post-Surgery",lat:5.7,lng:-0.165,location:"Adenta",rate:"95 GHS/hr",available:true,phone:"+233244001004"},
-    {id:5,name:"Nurse Comfort Yeboah",specialty:"Midwife",lat:5.6037,lng:-0.1870,location:"Accra Central",rate:"90 GHS/hr",available:true,phone:"+233244001005"}
-  ]));
-}
-
-// === FINAL FIXED UBER MAP LOGIC - WIDE ZOOM ===
-function initUberMap(){
-  var mapDiv=document.getElementById('uberMap');
-  if(!mapDiv) return;
-  if(uberMap){ uberMap.invalidateSize(); fitMapWide(); return; }
-  uberMap=L.map('uberMap', {zoomControl:true}).setView([5.6037,-0.1870], 11);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19, attribution:'© OSM'}).addTo(uberMap);
-  nurseCluster = L.markerClusterGroup({
-    showCoverageOnHover:false, maxClusterRadius:55,
-    iconCreateFunction: function(c){ return L.divIcon({ html: '<div style="background:#16a34a;color:white;border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-weight:800;border:3px solid white;box-shadow:0 2px 8px rgba(0,0,0,.3)">'+c.getChildCount()+'</div>', className:'', iconSize:[38,38] }); }
-  });
-  uberMap.addLayer(nurseCluster);
-  renderNurseMarkers();
-  setTimeout(()=>{ uberMap.invalidateSize(); fitMapWide(); }, 500);
-}
-
-function clearMarkers(){
-  if(nurseCluster) nurseCluster.clearLayers();
-  nurseMarkers=[];
-  if(clientMarker && uberMap) uberMap.removeLayer(clientMarker);
-  if(routeLine && uberMap) uberMap.removeLayer(routeLine);
-  clientMarker=null; routeLine=null;
-}
-
-function getAllNursesSource(){
-  if(allWorkers && allWorkers.length>0) return allWorkers;
-  try{ return JSON.parse(localStorage.getItem('nurses')||'[]'); }catch(e){ return []; }
-}
-
-function renderNurseMarkers(list){
-  if(!uberMap || !nurseCluster) return;
-  clearMarkers();
-  var source = list || getAllNursesSource();
-  var clientIcon = L.divIcon({
-    className:'', 
-    html:'<div style="position:relative;width:20px;height:20px"><div style="position:absolute;width:20px;height:20px;background:#2563eb;border:3px solid white;border-radius:50%;box-shadow:0 0 0 4px rgba(37,99,235,.3);z-index:2"></div><div style="position:absolute;width:44px;height:44px;left:-12px;top:-12px;background:rgba(37,99,235,.18);border-radius:50%;animation:pulse 2s infinite"></div></div>',
-    iconSize:[20,20], iconAnchor:[10,10]
-  });
-  if(clientLat && clientLng){
-    clientMarker = L.marker([clientLat, clientLng], {icon: clientIcon, zIndexOffset:1000}).addTo(uberMap).bindPopup("<b style='color:#2563eb'>📍 You are here</b><br>Finding nurses...");
-  }
-  source.forEach(w=>{
-    if(!w.lat || !w.lng) return;
-    if(w.status && w.status.includes('off')) return;
-    var lat=parseFloat(w.lat), lng=parseFloat(w.lng);
-    if(isNaN(lat)||isNaN(lng)) return;
-    var nurseIcon = L.divIcon({
-      className:'', 
-      html:`<div style="position:relative;width:16px;height:16px"><div style="width:16px;height:16px;background:#16a34a;border:2px solid white;border-radius:50%;box-shadow:0 0 0 2px #16a34a;z-index:2;position:relative"></div><div style="position:absolute;width:30px;height:30px;left:-7px;top:-7px;background:rgba(22,163,74,.18);border-radius:50%;animation:pulse 1.6s infinite"></div></div>`,
-      iconSize:[16,16], iconAnchor:[8,8]
-    });
-    var m=L.marker([lat,lng], {icon:nurseIcon});
-    var phone = w.phone || w.id;
-    var distText = w.distance? w.distance.toFixed(1)+'km away' : (w.location||'');
-    m.bindPopup(`<div style="min-width:150px"><b>${w.name||'Nurse'}</b><br><small>${w.specialty||''} - ${distText}</small><br><b style="color:#16a34a">${w.rate||'90 GHS/hr'}</b><br><button onclick="selectNurseCard('${phone}')" style="background:#16a34a;color:white;border:none;padding:7px 14px;border-radius:8px;margin-top:6px;width:100%;font-weight:800;cursor:pointer">SELECT THIS NURSE</button></div>`);
-    m.on('click', ()=> selectNurseCard(phone));
-    nurseCluster.addLayer(m);
-    nurseMarkers.push(m);
-  });
-}
-
-function fitMapWide(){
-  if(!uberMap) return;
-  var bounds = L.latLngBounds();
-  var has=false;
-  if(clientLat && clientLng){ bounds.extend([clientLat, clientLng]); has=true; }
-  var listToFit = nearbyNursesSorted.length>0? nearbyNursesSorted : getAllNursesSource();
-  listToFit.forEach(n=>{ if(n.lat && n.lng){ bounds.extend([parseFloat(n.lat), parseFloat(n.lng)]); has=true; } });
-  if(!has) return;
-  uberMap.fitBounds(bounds, {padding:[80,80], maxZoom:13, animate:true, duration:1.2});
-}
-
-function toggleMap(){
-  var wrapper=document.getElementById('loveCareMapWrapper');
-  var isHidden = wrapper.classList.contains('hidden');
-  if(isHidden){
-    wrapper.classList.remove('hidden');
-    if(!uberMap) initUberMap();
-    setTimeout(()=>{ uberMap.invalidateSize(); fitMapWide(); }, 300);
-  } else {
-    wrapper.classList.add('hidden');
-  }
-}
-
-function findNursesUber(fromQuick){
-  var inputId=fromQuick?'cLocation2':'cLocation';
-  var allSource=getAllNursesSource();
-  if(!clientLat ||!clientLng){
-    var locVal=document.getElementById(inputId).value;
-    if(!locVal){alert('Tap GPS Auto first to get your location'); return;}
-    alert('GPS not ready yet - tap GPS Auto again and allow location');
-    return;
-  }
-  var radius=parseInt(document.getElementById('radiusSelect').value)||10;
-  nearbyNursesSorted=allSource.filter(w=>w.lat && w.lng).map(w=>{
-    var d=getDistanceKm(clientLat,clientLng,parseFloat(w.lat),parseFloat(w.lng));
-    return {...w,distance:d};
-  }).filter(w=>w.distance<=radius).sort((a,b)=>a.distance-b.distance).slice(0,40);
-
-  document.getElementById('nearbyCount').innerText=nearbyNursesSorted.length;
-  document.getElementById('uberActionArea').classList.remove('hidden');
-  document.getElementById('loveCareMapWrapper').classList.remove('hidden');
-
-  if(!uberMap) initUberMap();
-  setTimeout(()=>{
-    uberMap.invalidateSize();
-    renderNurseMarkers(nearbyNursesSorted.length>0? nearbyNursesSorted : allSource);
-    fitMapWide();
-  }, 300);
-
-  renderNearbyList();
-  showPage('home');
-}
-
-function renderNearbyList(){
-  var list=document.getElementById('loveCareLiveList');
-  if(nearbyNursesSorted.length===0){
-    list.innerHTML='<div style="padding:12px;background:#fef3c7;border-radius:10px;margin-top:8px;border:2px solid #eab308;text-align:center"><b>No nurses within '+document.getElementById('radiusSelect').value+'km</b><br><small>Try 100km WIDE or ask nurses to START DUTY</small><br><button onclick="document.getElementById(\'radiusSelect\').value=100;findNursesUber()" style="margin-top:6px;background:#16a34a;color:white;border:none;padding:8px 14px;border-radius:8px;font-weight:800">Try 100km Wide</button></div>';
-    return;
-  }
-  var html='';
-  nearbyNursesSorted.forEach(n=>{
-    var sel=(selectedNurseId && (String(n.phone)===String(selectedNurseId) || String(n.id)===String(selectedNurseId)))?'selected':'';
-    html+=`<div class="uber-card ${sel}" onclick="selectNurseCard('${n.phone||n.id}')">
-      <img src="./logo.png" onerror="this.src='https://via.placeholder.com/46'">
-      <div style="flex:1"><b>${n.name}</b> - ${n.distance.toFixed(1)}km away<br><small>${n.location||''} | ${n.phone||''}</small><br><span class="live-badge">ON DUTY • ${n.distance.toFixed(1)}km</span></div>
-      <div class="nurse-dot"></div>
-    </div>`;
-  });
-  list.innerHTML=html;
-}
-function selectNurseCard(phoneOrId){
-  selectedNurseId=phoneOrId;
-  var n=nearbyNursesSorted.find(x=>(String(x.phone)===String(phoneOrId)||String(x.id)===String(phoneOrId)));
-  if(!n) n=getAllNursesSource().find(x=>(String(x.phone)===String(phoneOrId)||String(x.id)===String(phoneOrId)));
-  if(n){
-    document.getElementById('selectedNurseInfo').innerHTML=`Selected: <b>${n.name}</b> - ${n.distance?n.distance.toFixed(2)+'km':''} - ${n.phone||n.id}`;
-    renderNearbyList();
-    if(uberMap && n.lat){
-      if(routeLine) uberMap.removeLayer(routeLine);
-      if(clientLat){
-        routeLine = L.polyline([[clientLat, clientLng], [parseFloat(n.lat), parseFloat(n.lng)]], {color:'#2563eb', weight:3, dashArray:'10,10', opacity:0.7}).addTo(uberMap);
-      }
-      uberMap.panTo([parseFloat(n.lat),parseFloat(n.lng)], {animate:true});
-    }
-  }
-}
-function randomSelectNurse(){
-  if(nearbyNursesSorted.length===0){alert('No nearby nurses - Tap FIND NURSES first'); return;}
-  var idx=Math.floor(Math.random()*Math.min(nearbyNursesSorted.length,5));
-  var picked=nearbyNursesSorted[idx];
-  selectNurseCard(picked.phone||picked.id);
-  document.getElementById('selectedNurseInfo').innerHTML=`🎲 Random Pick: <b>${picked.name}</b> - ${picked.distance.toFixed(2)}km - Closest 5`;
-  fitMapWide();
-}
-function submitBooking(){
-  var name=document.getElementById('cName').value.trim();
-  var phone=document.getElementById('cPhone').value.trim();
-  var fullPhone=getFullPhone('cPhoneCode','cPhone');
-  var service=document.getElementById('cService').value;
-  if(!name||!phone||!service){alert('Name Phone Service required'); return;}
-  if(!selectedNurseId){if(!confirm('No nurse selected. Book with closest available?')) return; if(nearbyNursesSorted[0]) selectedNurseId=nearbyNursesSorted[0].phone||nearbyNursesSorted[0].id;}
-  var amount=parseFloat(document.getElementById('cBudget').value||0);
-  var cur=document.getElementById('cCurrency').value;
-  if(convertToGHS(amount,cur)<89.9){alert('Minimum 90 GHS equivalent. Increase rate.'); return;}
-  var id=Date.now();
-  var b={id:id,name:name,phone:fullPhone,service:service,location:document.getElementById('cLocation').value,amount:amount,currency:cur,ghsEquivalent:convertToGHS(amount,cur),status:'pending_assignment',time:new Date().toLocaleString(),timestamp:Date.now(),lat:clientLat,lng:clientLng,selectedNurse:selectedNurseId,distance:nearbyNursesSorted.find(n=>String(n.phone)===String(selectedNurseId)||String(n.id)===String(selectedNurseId))?.distance||null};
-  if(db) db.ref('bookings/'+id).set(b).then(()=>alert(`Booked! Nurse ${selectedNurseId} will be notified. Distance: ${b.distance?.toFixed(2)}km`));
-  else alert('Booked locally with nurse '+selectedNurseId);
-}
-function registerNurse(){
-  var name=document.getElementById('nRegName').value.trim();
-  var phone=document.getElementById('nRegPhone').value.trim();
-  var fullPhone=getFullPhone('nRegPhoneCode','nRegPhone');
-  var pass=document.getElementById('nRegPass').value.trim();
-  var loc=document.getElementById('nRegLocation').value.trim();
-  if(!name||!phone||!pass||!loc){alert('Name Phone Pass Location required + GPS'); return;}
-  if(!nurseRegLat){alert('Tap GPS Auto - required for Uber map'); return;}
-  var w={name:name,phone:fullPhone,password:pass,location:loc,time:new Date().toLocaleString(),timestamp:Date.now(),country:currentCountry,lat:nurseRegLat,lng:nurseRegLng,status:'on_duty',onDuty:true};
-  document.getElementById('nRegStatus').innerText='Registering...';
-  if(db) db.ref('workers/'+fullPhone.split('+').join('')).set(w).then(()=>{document.getElementById('nRegStatus').innerText='Registered with GPS '+fullPhone+' - You will appear on map'; alert('Registered! You now appear on client map');});
-  else { var nurses=JSON.parse(localStorage.getItem('nurses')||'[]'); nurses.push({...w, id:Date.now()}); localStorage.setItem('nurses', JSON.stringify(nurses)); document.getElementById('nRegStatus').innerText='Registered locally '+fullPhone; alert('Registered locally!'); }
-}
-function submitBooking2(){document.getElementById('cName').value=document.getElementById('cName2').value; document.getElementById('cPhone').value=document.getElementById('cPhone2').value; submitBooking();}
-function loginNurse(){var fullPhone=getFullPhone('nurseLoginCode','nurseLoginPhone'); localStorage.setItem('nursePhone',fullPhone); document.getElementById('nurseDashName').innerText=fullPhone; showPage('nurse-dashboard');}
-function loginStaff(){var id=document.getElementById('staffLoginID').value.trim(); if(!id){alert('Enter ID'); return;} localStorage.setItem('staffID',id); document.getElementById('staffDashName').innerText=id; showPage('staff-dashboard');}
-function loginCEO(){var id=document.getElementById('ceoLoginID').value.trim().toUpperCase(); var pass=document.getElementById('ceoLoginPass').value.trim(); if(id==='KUSIPETER' && pass==='Peterasa80@you!'){localStorage.setItem('isCEOLogged','true'); document.getElementById('ceoDashName').innerText='CEO'; showPage('ceo-dashboard');}else{ document.getElementById('ceoLoginResult').innerText='Access denied'; }}
-function logoutCEO(){localStorage.removeItem('isCEOLogged'); showPage('home');}
-function triggerSOS(){alert('SOS SENT! Your location: '+(clientLat?clientLat.toFixed(4)+','+clientLng.toFixed(4):'Enable GPS')+' - Help is on the way!');}
-function startDuty(){
-  var phone=localStorage.getItem('nursePhone');
-  if(!phone){alert('Login first'); return;}
-  navigator.geolocation.getCurrentPosition(pos=>{
-    var lat=pos.coords.latitude,lng=pos.coords.longitude;
-    if(db) db.ref('workers/'+phone.split('+').join('')).update({lat:lat,lng:lng,status:'on_duty',onDuty:true,lastActive:Date.now()});
-    document.getElementById('nurseGpsStatus').style.display='block'; document.getElementById('nurseGpsStatus').innerText='LIVE - You appear on client map '+lat.toFixed(4)+','+lng.toFixed(4);
-    alert('You are now LIVE on Uber map');
-  });
-}
-function stopDuty(){var phone=localStorage.getItem('nursePhone'); if(db && phone) db.ref('workers/'+phone.split('+').join('')).update({status:'off_duty',onDuty:false}); document.getElementById('nurseGpsStatus').innerText='OFF - Not on map';}
+function getFullPhone(codeId,phoneId){var code=document.getElementById(codeId).value;var phone=document.getElementById(phoneId).value.trim().replace(/^0+/,'');if(phone.startsWith('+'))return phone;return code+phone;}
+function getDistanceKm(lat1,lon1,lat2,lon2){if(!lat1||!lon1||!lat2||!lon2)return 9999;var R=6371;var dLat=(lat2-lat1)*Math.PI/180;var dLon=(lon2-lon1)*Math.PI/180;var a=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)*Math.sin(dLon/2);return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));}
+if(!localStorage.getItem('nurses')){localStorage.setItem('nurses',JSON.stringify([{id:1,name:"Nurse Grace",lat:5.675,lng:-0.165,location:"Madina",phone:"+233244001001",status:'on_duty',specialty:"General"},{id:2,name:"Nurse Esther",lat:5.682,lng:-0.185,location:"Haatso",phone:"+233244001002",status:'on_duty',specialty:"Elderly"}]));}
+function initUberMap(){var mapDiv=document.getElementById('uberMap');if(!mapDiv)return;if(uberMap){uberMap.invalidateSize();fitMapWide();return;}uberMap=L.map('uberMap').setView([5.6037,-0.1870],11);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(uberMap);nurseCluster=L.markerClusterGroup({showCoverageOnHover:false});uberMap.addLayer(nurseCluster);renderNurseMarkers();setTimeout(()=>{uberMap.invalidateSize();fitMapWide();},500);}
+function getAllNursesSource(){if(allWorkers&&allWorkers.length>0)return allWorkers;try{return JSON.parse(localStorage.getItem('nurses')||'[]');}catch(e){return [];}}
+function renderNurseMarkers(list){if(!uberMap||!nurseCluster)return;nurseCluster.clearLayers();var source=list||getAllNursesSource();if(clientLat&&clientLng){L.marker([clientLat,clientLng]).addTo(uberMap);}source.forEach(w=>{if(!w.lat||!w.lng)return;var m=L.marker([parseFloat(w.lat),parseFloat(w.lng)]);m.bindPopup(`<b>${w.name}</b><br><button onclick="selectNurseCard('${w.phone||w.id}')" style="background:#16a34a;color:white;border:none;padding:6px 12px;border-radius:8px">SELECT</button>`);m.on('click',()=>selectNurseCard(w.phone||w.id));nurseCluster.addLayer(m);});}
+function fitMapWide(){if(!uberMap)return;var bounds=L.latLngBounds();var has=false;if(clientLat&&clientLng){bounds.extend([clientLat,clientLng]);has=true;}var list=nearbyNursesSorted.length>0?nearbyNursesSorted:getAllNursesSource();list.forEach(n=>{if(n.lat&&n.lng){bounds.extend([parseFloat(n.lat),parseFloat(n.lng)]);has=true;}});if(!has){uberMap.setView([5.6037,-0.1870],11);return;}uberMap.fitBounds(bounds,{padding:[60,60],maxZoom:13});}
+function toggleMap(){var w=document.getElementById('loveCareMapWrapper');w.classList.toggle('hidden');if(!w.classList.contains('hidden')){if(!uberMap)initUberMap();setTimeout(()=>{uberMap.invalidateSize();fitMapWide();},300);}}
+function findNursesUber(fromQuick){var allSource=getAllNursesSource();if(!clientLat||!clientLng){alert('Tap GPS Auto first');return;}var radius=parseInt(document.getElementById('radiusSelect').value)||10;nearbyNursesSorted=allSource.filter(w=>w.lat&&w.lng).map(w=>{var d=getDistanceKm(clientLat,clientLng,parseFloat(w.lat),parseFloat(w.lng));return{...w,distance:d};}).filter(w=>w.distance<=radius).sort((a,b)=>a.distance-b.distance).slice(0,40);document.getElementById('nearbyCount').innerText=nearbyNursesSorted.length;document.getElementById('uberActionArea').classList.remove('hidden');document.getElementById('loveCareMapWrapper').classList.remove('hidden');if(!uberMap)initUberMap();setTimeout(()=>{uberMap.invalidateSize();renderNurseMarkers(nearbyNursesSorted);fitMapWide();},300);renderNearbyList();showPage('home');}
+function renderNearbyList(){var list=document.getElementById('loveCareLiveList');if(nearbyNursesSorted.length===0){list.innerHTML='<div style="padding:12px;background:#fef3c7;border-radius:10px;text-align:center"><b>No nurses within range</b></div>';return;}var html='';nearbyNursesSorted.forEach(n=>{html+=`<div class="uber-card" onclick="selectNurseCard('${n.phone||n.id}')"><img src="./logo.png"><div style="flex:1"><b>${n.name}</b> - ${n.distance.toFixed(1)}km<br><small>${n.location||''}</small></div><div class="nurse-dot"></div></div>`;});list.innerHTML=html;}
+function selectNurseCard(id){selectedNurseId=id;document.getElementById('selectedNurseInfo').innerText='Selected: '+id;renderNearbyList();}
+function randomSelectNurse(){if(nearbyNursesSorted.length===0){alert('No nurses');return;}var p=nearbyNursesSorted[Math.floor(Math.random()*nearbyNursesSorted.length)];selectNurseCard(p.phone||p.id);}
+function submitBooking(){var name=document.getElementById('cName').value.trim();var phone=document.getElementById('cPhone').value.trim();var fullPhone=getFullPhone('cPhoneCode','cPhone');var service=document.getElementById('cService').value;if(!name||!phone||!service){alert('Name Phone Service required');return;}if(!selectedNurseId){if(nearbyNursesSorted[0])selectedNurseId=nearbyNursesSorted[0].phone||nearbyNursesSorted[0].id;}var amount=parseFloat(document.getElementById('cBudget').value||0);var cur=document.getElementById('cCurrency').value;var id=Date.now();var b={id:id,name:name,phone:fullPhone,service:service,location:document.getElementById('cLocation').value,amount:amount,currency:cur,ghsEquivalent:convertToGHS(amount,cur),status:'pending_assignment',time:new Date().toLocaleString(),timestamp:Date.now(),lat:clientLat,lng:clientLng,selectedNurse:selectedNurseId};if(db)db.ref('bookings/'+id).set(b).then(()=>alert('Booked!')).catch(e=>alert(e.message));}
+function registerNurse(){var name=document.getElementById('nRegName').value.trim();var fullPhone=getFullPhone('nRegPhoneCode','nRegPhone');var pass=document.getElementById('nRegPass').value.trim();var loc=document.getElementById('nRegLocation').value.trim();if(!name||!fullPhone||!pass||!loc){alert('All required');return;}if(!nurseRegLat){alert('GPS required');return;}var w={name:name,phone:fullPhone,password:pass,location:loc,timestamp:Date.now(),lat:nurseRegLat,lng:nurseRegLng,status:'on_duty',onDuty:true,specialty:document.getElementById('nRegSpecialty').value||'General'};if(db)db.ref('workers/'+fullPhone.replace(/[^0-9]/g,'')).set(w).then(()=>{alert('Registered');showPage('nurse-login');});else{var nurses=JSON.parse(localStorage.getItem('nurses')||'[]');nurses.push(w);localStorage.setItem('nurses',JSON.stringify(nurses));alert('Registered locally');}}
+function submitBooking2(){document.getElementById('cName').value=document.getElementById('cName2').value;document.getElementById('cPhone').value=document.getElementById('cPhone2').value;document.getElementById('cLocation').value=document.getElementById('cLocation2').value;submitBooking();}
+function loginNurse(){var fullPhone=getFullPhone('nurseLoginCode','nurseLoginPhone');var pass=document.getElementById('nurseLoginPass').value.trim();if(db){db.ref('workers/'+fullPhone.replace(/[^0-9]/g,'')).once('value').then(snap=>{var d=snap.val();if(d&&d.password===pass){localStorage.setItem('nursePhone',fullPhone);showPage('nurse-dashboard');}else if(d){document.getElementById('nurseLoginResult').innerText='Wrong pass';}else{localStorage.setItem('nursePhone',fullPhone);showPage('nurse-dashboard');}});}else{localStorage.setItem('nursePhone',fullPhone);showPage('nurse-dashboard');}}
+function loginStaff(){var id=document.getElementById('staffLoginID').value.trim();if(!id){alert('Enter ID');return;}localStorage.setItem('staffID',id);showPage('staff-dashboard');}
+function loginCEO(){var id=document.getElementById('ceoLoginID').value.trim().toUpperCase();var pass=document.getElementById('ceoLoginPass').value.trim();var r=document.getElementById('ceoLoginResult');if(id==='KUSIPETER'&&pass==='Peterasa80@you!'){localStorage.setItem('isCEOLogged','true');r.innerText='Success';setTimeout(()=>showPage('ceo-dashboard'),300);}else{r.innerText='Access denied';}}
+function logoutCEO(){localStorage.removeItem('isCEOLogged');showPage('home');}
+function logoutStaff(){localStorage.removeItem('staffID');showPage('home');}
+function logoutNurse(){localStorage.removeItem('nursePhone');showPage('home');}
+function triggerSOS(){alert('SOS SENT');}
+function startDuty(){var phone=localStorage.getItem('nursePhone');if(!phone)return;navigator.geolocation.getCurrentPosition(pos=>{var lat=pos.coords.latitude,lng=pos.coords.longitude;var key=phone.replace(/[^0-9]/g,'');if(db)db.ref('workers/'+key).update({lat:lat,lng:lng,status:'on_duty',onDuty:true});});}
+function stopDuty(){var phone=localStorage.getItem('nursePhone');var key=phone?phone.replace(/[^0-9]/g,''):null;if(db&&key)db.ref('workers/'+key).update({status:'off_duty',onDuty:false});}
+function switchCeoTab(tab){['bookings','nurses','clients','payments','staff','announce'].forEach(t=>{var el=document.getElementById('ceo-tab-'+t);if(el)el.classList.add('hidden');});var show=document.getElementById('ceo-tab-'+tab);if(show)show.classList.remove('hidden');if(tab==='nurses')setTimeout(initCeoMap,300);}
+function loadCeoData(){if(!db)return;db.ref('bookings').once('value').then(snap=>{allBookings=Object.values(snap.val()||{});document.getElementById('statBookings').innerText=allBookings.length;renderBookings(allBookings);renderClients(allBookings);renderPayments(allBookings);});db.ref('workers').once('value').then(snap=>{allWorkers=Object.values(snap.val()||{});document.getElementById('statNurses').innerText=allWorkers.length;document.getElementById('statOnline').innerText=allWorkers.filter(w=>w.onDuty).length;renderNurses(allWorkers);});db.ref('staff').once('value').then(snap=>{renderStaff(Object.values(snap.val()||{}));});}
+function renderBookings(list){var c=document.getElementById('ceoBookingsList');if(!list.length){c.innerHTML='<p>No bookings</p>';return;}var h='<table><tr><th>Time</th><th>Client</th><th>Phone</th><th>Service</th><th>Nurse</th><th>Status</th><th>Action</th></tr>';list.sort((a,b)=>b.timestamp-a.timestamp).forEach(b=>{h+=`<tr><td>${b.time||''}</td><td>${b.name||''}</td><td>${b.phone||''}</td><td>${b.service||''}</td><td>${b.selectedNurse||''}</td><td>${b.status||''}</td><td><button onclick="updateBookingStatus(${b.id},'confirmed')" class="btnSmall" style="background:green;color:white">Confirm</button> <button onclick="deleteBooking(${b.id})" class="btnSmall" style="background:red;color:white">X</button></td></tr>`;});h+='</table>';c.innerHTML=h;}
+function renderNurses(list){var c=document.getElementById('ceoNursesList');if(!list.length){c.innerHTML='<p>No nurses</p>';return;}var h='<table><tr><th>Name</th><th>Phone</th><th>Location</th><th>Status</th><th>Action</th></tr>';list.forEach(w=>{h+=`<tr><td>${w.name||''}</td><td>${w.phone||''}</td><td>${w.location||''}</td><td>${w.status||''}</td><td><button onclick="deleteWorker('${(w.phone||'').replace(/[^0-9]/g,'')}')" class="btnSmall" style="background:red;color:white">Remove</button></td></tr>`;});h+='</table>';c.innerHTML=h;}
+function renderClients(b){var c=document.getElementById('ceoClientsList');var map={};b.forEach(x=>{if(x.phone)map[x.phone]={name:x.name,phone:x.phone,location:x.location,count:(map[x.phone]?.count||0)+1};});var clients=Object.values(map);if(!clients.length){c.innerHTML='<p>No clients</p>';return;}var h='<table><tr><th>Name</th><th>Phone</th><th>Bookings</th></tr>';clients.forEach(x=>{h+=`<tr><td>${x.name||''}</td><td>${x.phone}</td><td>${x.count}</td></tr>`;});h+='</table>';c.innerHTML=h;}
+function renderPayments(b){var total=b.reduce((s,x)=>s+(parseFloat(x.ghsEquivalent)||0),0);document.getElementById('totalRevenue').innerText=total.toFixed(2)+' GHS';document.getElementById('pendingRevenue').innerText=b.filter(x=>x.status==='pending_assignment').reduce((s,x)=>s+(parseFloat(x.ghsEquivalent)||0),0).toFixed(2)+' GHS';var c=document.getElementById('ceoPaymentsList');if(!b.length){c.innerHTML='<p>No payments</p>';return;}var h='<table><tr><th>Client</th><th>Amount</th><th>Status</th></tr>';b.forEach(x=>{h+=`<tr><td>${x.name||''}</td><td>${x.amount||''} ${x.currency||''}</td><td>${x.status||''}</td></tr>`;});h+='</table>';c.innerHTML=h;}
+function renderStaff(list){var c=document.getElementById('ceoStaffList');if(!list.length){c.innerHTML='<p>No staff</p>';return;}var h='<table><tr><th>ID</th><th>Action</th></tr>';list.forEach(s=>{h+=`<tr><td>${s.id||''}</td><td><button onclick="deleteStaff('${s.id}')" class="btnSmall" style="background:red;color:white">Delete</button></td></tr>`;});h+='</table>';c.innerHTML=h;}
+function filterBookings(){var q=document.getElementById('ceoSearchBooking').value.toLowerCase();var st=document.getElementById('ceoBookingFilter').value;var f=allBookings.filter(b=>(!q||(b.name||'').toLowerCase().includes(q)||(b.phone||'').includes(q))&&(!st||b.status===st));renderBookings(f);}
+function filterNurses(){var q=document.getElementById('ceoSearchNurse').value.toLowerCase();var f=allWorkers.filter(w=>(w.name||'').toLowerCase().includes(q)||(w.phone||'').includes(q));renderNurses(f);}
+function updateBookingStatus(id,status){if(!db)return;db.ref('bookings/'+id).update({status:status}).then(()=>{loadCeoData();});}
+function deleteBooking(id){if(confirm('Delete?')){if(db)db.ref('bookings/'+id).remove().then(()=>loadCeoData());}}
+function deleteWorker(k){if(confirm('Remove?')){if(db)db.ref('workers/'+k).remove().then(()=>loadCeoData());}}
+function addStaff(){var id=document.getElementById('newStaffId').value.trim();var pass=document.getElementById('newStaffPass').value.trim();if(!id||!pass){alert('ID pass required');return;}if(db)db.ref('staff/'+id).set({id:id,password:pass,time:new Date().toLocaleString()}).then(()=>{loadCeoData();});}
+function deleteStaff(id){if(db)db.ref('staff/'+id).remove().then(()=>loadCeoData());}
+function saveAnnouncement(){var txt=document.getElementById('announcementInput').value.trim();if(!txt){alert('Enter text');return;}localStorage.setItem('announcementText',txt);document.getElementById('announcementText').innerText=txt;if(db)db.ref('settings/announcement').set(txt);alert('Saved');}
+function saveSettings(){var min=document.getElementById('minRateInput').value;localStorage.setItem('minRateGHS',min);if(db)db.ref('settings/minRate').set(parseFloat(min));alert('Saved');}
+function loadStaffData(){if(!db)return;db.ref('bookings').once('value').then(snap=>{var vals=Object.values(snap.val()||{});var html=vals.length?'<table><tr><th>Client</th><th>Service</th></tr>':'No bookings';vals.slice(0,20).forEach(b=>{html+=`<tr><td>${b.name}</td><td>${b.service}</td></tr>`});if(vals.length)html+='</table>';document.getElementById('staffBookingsList').innerHTML=html;});}
+function loadNurseDashboard(){var phone=localStorage.getItem('nursePhone');if(!phone)return;document.getElementById('nurseDashName').innerText=phone;}
+function initCeoMap(){var div=document.getElementById('ceoMap');if(!div)return;if(ceoMap){ceoMap.invalidateSize();return;}ceoMap=L.map('ceoMap').setView([5.6037,-0.1870],10);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(ceoMap);var workers=getAllNursesSource();workers.forEach(w=>{if(w.lat&&w.lng)L.marker([w.lat,w.lng]).addTo(ceoMap).bindPopup(w.name||'Nurse');});}
 window.onload=function(){
-  // FORCE CLEAR OLD CACHE - FIXES OLD FILE SHOWING
-  if(!localStorage.getItem('v3-fixed')){
-    localStorage.removeItem('nurses');
-    localStorage.setItem('v3-fixed','true');
-    console.log('Cleared old nurses cache');
-  }
-  var saved=localStorage.getItem('loveCareCountry')||'GH';
-  document.getElementById('countrySelect').value=saved; changeCountry();
-  if(db){
-    db.ref('bookings').on('value',s=>{allBookings=Object.values(s.val()||{});});
-    db.ref('workers').on('value',s=>{allWorkers=Object.values(s.val()||{}); if(uberMap){ renderNurseMarkers(nearbyNursesSorted.length>0?nearbyNursesSorted:allWorkers); fitMapWide(); }});
-  }
-  showPage('home');
-  setTimeout(initUberMap,700);
+ if(db){
+  db.ref('bookings').on('value',s=>{allBookings=Object.values(s.val()||{});});
+  db.ref('workers').on('value',s=>{allWorkers=Object.values(s.val()||{});});
+  db.ref('settings/announcement').once('value').then(s=>{if(s.val())document.getElementById('announcementText').innerText=s.val();});
+ }
+ showPage('home');setTimeout(initUberMap,700);
 };
-// FINAL CACHE KILLER - Unregister Service Worker that shows old file
-if('serviceWorker' in navigator){
-  navigator.serviceWorker.getRegistrations().then(function(regs){
-    for(let r of regs){ r.unregister(); console.log('SW unregistered'); }
-  });
-}
-if(window.caches){
-  caches.keys().then(function(names){ for(let n of names) caches.delete(n); });
-}
+if('serviceWorker' in navigator){navigator.serviceWorker.getRegistrations().then(regs=>{for(let r of regs)r.unregister();});}
+if(window.caches){caches.keys().then(names=>{for(let n of names)caches.delete(n);});}
 </script>
-<footer style="background:#111;color:#fff;padding:20px;text-align:center;margin-top:40px;">
-<p>(c) 2026 LOVE CARE GLOBAL - Accra Ghana - Uber Map Edition - WIDE ZOOM FIXED v3.1 - <!-- CACHE_BUST_2026_05_15 --></p>
-<p style="font-size:9px;color:#eab308">If you still see old file: Open in Incognito + Hard Refresh CTRL+F5</p>
-</footer>
+<footer style="background:#111;color:#fff;padding:20px;text-align:center;margin-top:40px"><p>© 2026 LOVE CARE GLOBAL</p></footer>
 </body>
 </html>
