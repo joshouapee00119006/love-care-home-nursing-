@@ -3,23 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>LOVE CARE GLOBAL - Home Nursing</title>
+<title>LOVE CARE GLOBAL</title>
 <link rel="icon" type="image/png" href="./logo.png">
 <link rel="manifest" href="./manifest.json">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css"/>
 <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css"/>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
-<meta name="theme-color" content="#16a34a">
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap');
-*{box-sizing:border-box}
+*{box-sizing:border-box} body{margin:0;font-family:'Poppins',sans-serif;background:#f0fdf4;padding-bottom:115px}
 :root{--announce-bg:#111827;--announce-text:#eab308;--announce-border:#eab308;--announce-speed:22s;}
-body{margin:0;font-family:'Poppins',sans-serif;background:#f0fdf4;padding-bottom:115px}
-.header{background:linear-gradient(90deg,#16a34a,#eab308);padding:10px 14px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;color:white}
+.header{background:linear-gradient(90deg,#16a34a,#eab308);padding:10px 14px;display:flex;align-items:center;position:sticky;top:0;z-index:100;color:white;justify-content:space-between}
 .header-logo-img{height:46px;background:white;border-radius:10px;padding:4px 6px}
 .announcementBar{background:var(--announce-bg);color:var(--announce-text);padding:10px 0;overflow:hidden;white-space:nowrap;position:sticky;top:66px;z-index:99;border-bottom:3px solid var(--announce-border)}
 .announcementBar span{display:inline-block;padding-left:100%;animation:marquee var(--announce-speed) linear infinite;font-weight:800;font-size:13px}
@@ -27,386 +25,311 @@ body{margin:0;font-family:'Poppins',sans-serif;background:#f0fdf4;padding-bottom
 .card{background:white;border:2px solid #eab308;border-radius:16px;margin:8px;padding:14px;box-shadow:0 2px 6px rgba(0,0,0,.08)}
 .card h2{color:#16a34a;margin:8px 0;font-size:14px;font-weight:800}
 input,select,textarea{width:100%;padding:12px;margin:6px 0;border-radius:10px;border:1px solid #ccc;font-family:'Poppins',sans-serif;font-size:14px}
-.btnSubmit{width:100%;padding:13px;border:none;border-radius:10px;font-weight:800;margin-top:8px;cursor:pointer;background:#16a34a;color:white;font-size:14px}
-.btnSmall{padding:8px 12px;border:none;border-radius:8px;font-weight:800;font-size:11px;cursor:pointer;margin:3px}
+.btnSubmit{width:100%;padding:13px;border:none;border-radius:10px;font-weight:800;margin-top:8px;cursor:pointer;background:#16a34a;color:white}
+.btnSmall{padding:9px 12px;border:none;border-radius:8px;font-weight:800;font-size:11px;cursor:pointer;margin:3px}
 .page{display:none}.page.active{display:block}
-.bottomNav{position:fixed;bottom:0;left:0;right:0;background:white;display:flex;justify-content:space-around;padding:8px 0 10px 0;border-top:3px solid #eab308;z-index:99999;box-shadow:0 -2px 10px rgba(0,0,0,0.15)}
-.bottomNav button{background:none;border:none;font-size:9px;text-align:center;cursor:pointer;color:#6b7280;width:20%;display:flex;flex-direction:column;align-items:center;gap:3px;font-weight:700;padding:5px}
+.bottomNav{position:fixed;bottom:0;left:0;right:0;background:white;display:flex;justify-content:space-around;padding:8px 0 10px 0;border-top:3px solid #eab308;z-index:99999}
+.bottomNav button{background:none;border:none;font-size:9px;color:#6b7280;width:20%;display:flex;flex-direction:column;align-items:center;gap:3px;font-weight:700;padding:5px}
 .bottomNav button.active{color:#16a34a;background:#f0fdf4;border-radius:12px}
-.sosFloat{position:fixed;bottom:110px;right:15px;width:56px;height:56px;background:radial-gradient(circle,#ef4444,#b91c1c);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-direction:column;font-weight:800;font-size:11px;z-index:99998;box-shadow:0 4px 15px rgba(239,68,68,0.7);cursor:pointer;border:3px solid white}
 .hidden{display:none!important}
 .globalBar{display:flex;gap:6px;align-items:center;background:white;border:2px solid #16a34a;border-radius:12px;padding:8px;margin:8px;flex-wrap:wrap}
-.phoneRow{display:flex;gap:6px;align-items:center}.phoneRow select{width:145px;flex:none;background:#f0fdf4;border:2px solid #16a34a;font-weight:800;font-size:11px}.phoneRow input{flex:1}
-.locationRow{display:flex;gap:6px;align-items:center}.locationRow input{flex:1}.locationRow button{flex:none;padding:12px 14px;background:#2563eb;color:white;border:none;border-radius:10px;font-weight:800;font-size:12px;cursor:pointer}
+.phoneRow{display:flex;gap:6px}.phoneRow select{width:145px;flex:none;background:#f0fdf4;border:2px solid #16a34a;font-weight:800;font-size:11px}.phoneRow input{flex:1}
+.locationRow{display:flex;gap:6px}.locationRow input{flex:1}.locationRow button{flex:none;padding:12px 14px;background:#2563eb;color:white;border:none;border-radius:10px;font-weight:800;font-size:12px;cursor:pointer}
 .gpsBadge{font-size:10px;color:#00b050;background:#f0fdf4;padding:4px 10px;border-radius:10px;border:1px solid #00b050;margin-top:4px;display:inline-block}
-.map-wrapper{margin-top:10px;border-radius:16px;overflow:hidden;border:3px solid #16a34a;height:460px;position:relative}
+.map-wrapper{height:420px;border-radius:16px;overflow:hidden;border:3px solid #16a34a;margin-top:8px}
 #uberMap{width:100%;height:100%}
-.btnMap{background:linear-gradient(135deg,#ff6a00,#ff9500);color:white;border:none;padding:10px 14px;border-radius:10px;font-weight:800;cursor:pointer}
-.uber-card{background:white;border:2px solid #16a34a;border-radius:12px;padding:10px;margin:8px 0;display:flex;align-items:center;gap:10px;font-size:12px;cursor:pointer}
+.btnMap{background:#ff6a00;color:white;border:none;padding:10px 14px;border-radius:10px;font-weight:800;cursor:pointer}
+.uber-card{background:white;border:2px solid #16a34a;border-radius:12px;padding:10px;margin:8px 0;display:flex;gap:10px;font-size:12px;align-items:center}
 .nurse-dot{width:12px;height:12px;background:#00ff88;border-radius:50%;border:2px solid white;box-shadow:0 0 0 2px #16a34a;animation:pulse 1.5s infinite}
 @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(22,163,74,.7)}70%{box-shadow:0 0 0 10px rgba(22,163,74,0)}100%{box-shadow:0 0 0 0 rgba(22,163,74,0)}}
-table{width:100%;border-collapse:collapse;font-size:11px;margin-top:8px}
-th,td{border:1px solid #e5e7eb;padding:6px;text-align:left;word-break:break-word}
-th{background:#f0fdf4;color:#16a34a}
+table{width:100%;border-collapse:collapse;font-size:11px;margin-top:8px} th,td{border:1px solid #e5e7eb;padding:6px;text-align:left} th{background:#f0fdf4;color:#16a34a}
 .ceoTabs{display:flex;gap:4px;flex-wrap:wrap;margin:10px 0}
-.ceoTabs button{flex:1;min-width:75px;padding:10px 4px;border:2px solid transparent}
-.ceoTabs button.activeTab{border:2px solid #111827;transform:scale(1.05)}
-.chatBox{height:420px;overflow-y:auto;border:3px solid #16a34a;border-radius:12px;padding:10px;background:#f9fafb;display:flex;flex-direction:column;gap:8px}
-.chatMsg{max-width:85%;padding:10px 12px;border-radius:16px;font-size:12px;line-height:1.4;word-break:break-word}
+.ceoTabs button{flex:1;min-width:70px;padding:11px 4px;border:3px solid transparent}
+.ceoTabs button.activeTab{border:3px solid #111827;transform:scale(1.05)}
+.chatBox{height:400px;overflow-y:auto;border:3px solid #16a34a;border-radius:12px;padding:10px;background:#f9fafb;display:flex;flex-direction:column;gap:8px}
+.chatMsg{max-width:85%;padding:10px 12px;border-radius:16px;font-size:12px;word-break:break-word}
 .chatMsg.me{align-self:flex-end;background:#16a34a;color:white;border-bottom-right-radius:4px}
 .chatMsg.other{align-self:flex-start;background:white;border:2px solid #e5e7eb;border-bottom-left-radius:4px}
-.chatMeta{font-size:9px;opacity:0.8;margin-top:6px;font-weight:700;display:flex;gap:8px;flex-wrap:wrap}
-.chatActions{display:flex;gap:6px;margin-top:4px}
-.chatActions button{font-size:9px;padding:4px 8px;border-radius:6px;border:none;font-weight:800;cursor:pointer}
+.chatMeta{font-size:9px;opacity:0.8;margin-top:4px;font-weight:700;display:flex;gap:6px}
+.chatActions{display:flex;gap:5px;margin-top:5px}
+.chatActions button{font-size:9px;padding:5px 8px;border-radius:6px;border:none;font-weight:800;cursor:pointer}
 .btnEdit{background:#eab308;color:#111}.btnDel{background:#ef4444;color:white}
 .chatInputRow{display:flex;gap:6px;margin-top:8px;align-items:center}
 .chatInputRow input{flex:1;margin:0;border:2px solid #16a34a}
 .roleBadge{font-size:8px;padding:2px 7px;border-radius:10px;font-weight:800;color:white}
 .role-CEO{background:#111827}.role-NURSE{background:#2563eb}.role-STAFF{background:#7c3aed}
-.onlineDot{width:8px;height:8px;background:#22c55e;border-radius:50%;display:inline-block;animation:pulse 1.5s infinite}
 .colorRow{display:flex;gap:8px;align-items:center;margin:6px 0}
 .colorRow label{font-size:11px;font-weight:800;min-width:90px}
-.colorRow input[type="color"]{width:50px;height:38px;padding:2px;border-radius:8px}
-.ceo-tab-content{display:block}
-.ceo-tab-content.hidden{display:none!important}
-.loginRequired{background:#fef2f2;border:3px solid #ef4444;border-radius:16px;padding:30px 20px;text-align:center;margin:20px 8px}
+.colorRow input[type="color"]{width:50px;height:38px}
+.ceo-tab{display:block}.ceo-tab.hidden{display:none!important}
+.sosFloat{position:fixed;bottom:110px;right:15px;width:56px;height:56px;background:radial-gradient(circle,#ef4444,#b91c1c);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:11px;z-index:99998;border:3px solid white;cursor:pointer}
 </style>
 </head>
 <body>
-<div id="sosHome" class="sosFloat" onclick="triggerSOS()"><span>SOS</span></div>
+<div class="sosFloat" onclick="alert('SOS Sent')">SOS</div>
 <div class="header">
-  <div id="logoTapArea" style="display:flex;align-items:center;gap:10px;cursor:pointer">
-    <img src="./logo.png" class="header-logo-img" alt="logo" onerror="this.style.display='none'">
-    <div style="display:flex;flex-direction:column;line-height:1"><b style="font-size:15px">LOVE CARE</b><span style="background:white;color:#16a34a;padding:2px 10px;border-radius:20px;font-size:9px;font-weight:800;margin-top:2px">GLOBAL HOME NURSING</span></div>
-  </div>
+<div id="logoTapArea" style="display:flex;align-items:center;gap:10px;cursor:pointer">
+<img src="./logo.png" class="header-logo-img" onerror="this.style.display='none'">
+<div style="line-height:1"><b>LOVE CARE</b><br><span style="background:white;color:#16a34a;padding:2px 8px;border-radius:20px;font-size:8px;font-weight:800">GLOBAL HOME NURSING</span></div>
 </div>
-<div class="announcementBar"><span id="announcementText">LOVE CARE GLOBAL - 13 SERVICES - GPS AUTO + Closest Nurses - 0544121814</span></div>
+</div>
+<div class="announcementBar"><span id="announcementText">LOVE CARE GLOBAL - 0544121814 - 13 Services Available - GPS Auto - Uber Style Map</span></div>
 
 <div class="globalBar">
-  <span style="font-size:11px;font-weight:800">🌍 Country:</span>
-  <select id="countrySelect" onchange="changeCountry()" style="flex:1;min-width:140px">
-    <option value="GH" data-lang="en" data-curr="GHS">🇬🇭 Ghana - GHS</option>
-    <option value="NG" data-lang="en" data-curr="NGN">🇳🇬 Nigeria - NGN</option>
-    <option value="ZA" data-lang="en" data-curr="ZAR">🇿🇦 South Africa - ZAR</option>
-    <option value="KE" data-lang="sw" data-curr="KES">🇰🇪 Kenya - KES</option>
-    <option value="UG" data-lang="en" data-curr="UGX">🇺🇬 Uganda - UGX</option>
-    <option value="TZ" data-lang="sw" data-curr="TZS">🇹🇿 Tanzania - TZS</option>
-    <option value="ET" data-lang="am" data-curr="ETB">🇪🇹 Ethiopia - ETB</option>
-    <option value="RW" data-lang="en" data-curr="RWF">🇷🇼 Rwanda - RWF</option>
-    <option value="CM" data-lang="fr" data-curr="XAF">🇨🇲 Cameroon - XAF</option>
-    <option value="SN" data-lang="fr" data-curr="XOF">🇸🇳 Senegal - XOF</option>
-    <option value="CI" data-lang="fr" data-curr="XOF">🇨🇮 Ivory Coast - XOF</option>
-    <option value="EG" data-lang="ar" data-curr="EGP">🇪🇬 Egypt - EGP</option>
-    <option value="MA" data-lang="ar" data-curr="MAD">🇲🇦 Morocco - MAD</option>
-    <option value="US" data-lang="en" data-curr="USD">🇺🇸 USA - USD</option>
-    <option value="UK" data-lang="en" data-curr="GBP">🇬🇧 UK - GBP</option>
-    <option value="CA" data-lang="en" data-curr="CAD">🇨🇦 Canada - CAD</option>
-    <option value="AU" data-lang="en" data-curr="AUD">🇦🇺 Australia - AUD</option>
-    <option value="DE" data-lang="de" data-curr="EUR">🇩🇪 Germany - EUR</option>
-    <option value="FR" data-lang="fr" data-curr="EUR">🇫🇷 France - EUR</option>
-    <option value="IT" data-lang="it" data-curr="EUR">🇮🇹 Italy - EUR</option>
-    <option value="ES" data-lang="es" data-curr="EUR">🇪🇸 Spain - EUR</option>
-    <option value="IN" data-lang="hi" data-curr="INR">🇮🇳 India - INR</option>
-    <option value="PK" data-lang="ur" data-curr="PKR">🇵🇰 Pakistan - PKR</option>
-    <option value="BD" data-lang="bn" data-curr="BDT">🇧🇩 Bangladesh - BDT</option>
-    <option value="PH" data-lang="en" data-curr="PHP">🇵🇭 Philippines - PHP</option>
-    <option value="ID" data-lang="id" data-curr="IDR">🇮🇩 Indonesia - IDR</option>
-    <option value="BR" data-lang="pt" data-curr="BRL">🇧🇷 Brazil - BRL</option>
-    <option value="MX" data-lang="es" data-curr="MXN">🇲🇽 Mexico - MXN</option>
-    <option value="SA" data-lang="ar" data-curr="SAR">🇸🇦 Saudi Arabia - SAR</option>
-    <option value="AE" data-lang="ar" data-curr="AED">🇦🇪 UAE - AED</option>
-    <option value="JP" data-lang="ja" data-curr="JPY">🇯🇵 Japan - JPY</option>
-  </select>
-  <select id="langSelect" onchange="changeLanguage()" style="width:110px;font-weight:800">
-    <option value="en">English</option><option value="fr">Français</option><option value="es">Español</option><option value="de">Deutsch</option><option value="ar">العربية</option><option value="hi">हिन्दी</option><option value="pt">Português</option><option value="sw">Kiswahili</option><option value="am">አማርኛ</option><option value="it">Italiano</option><option value="ur">اردو</option><option value="bn">বাংলা</option><option value="id">Indonesia</option><option value="ja">日本語</option>
-  </select>
-  <span id="currencyDisplay" style="font-weight:800;color:#16a34a;font-size:11px">GHS</span>
+<span style="font-size:11px;font-weight:800">🌍</span>
+<select id="countrySelect" onchange="changeCountry()" style="flex:1;min-width:130px">
+<option value="GH" data-lang="en" data-curr="GHS">🇬🇭 Ghana GHS</option>
+<option value="NG" data-lang="en" data-curr="NGN">🇳🇬 Nigeria NGN</option>
+<option value="ZA" data-lang="en" data-curr="ZAR">🇿🇦 South Africa ZAR</option>
+<option value="KE" data-lang="sw" data-curr="KES">🇰🇪 Kenya KES</option>
+<option value="UG" data-lang="en" data-curr="UGX">🇺🇬 Uganda UGX</option>
+<option value="TZ" data-lang="sw" data-curr="TZS">🇹🇿 Tanzania TZS</option>
+<option value="ET" data-lang="am" data-curr="ETB">🇪🇹 Ethiopia ETB</option>
+<option value="RW" data-lang="en" data-curr="RWF">🇷🇼 Rwanda RWF</option>
+<option value="CM" data-lang="fr" data-curr="XAF">🇨🇲 Cameroon XAF</option>
+<option value="SN" data-lang="fr" data-curr="XOF">🇸🇳 Senegal XOF</option>
+<option value="CI" data-lang="fr" data-curr="XOF">🇨🇮 Ivory Coast XOF</option>
+<option value="EG" data-lang="ar" data-curr="EGP">🇪🇬 Egypt EGP</option>
+<option value="MA" data-lang="ar" data-curr="MAD">🇲🇦 Morocco MAD</option>
+<option value="US" data-lang="en" data-curr="USD">🇺🇸 USA USD</option>
+<option value="UK" data-lang="en" data-curr="GBP">🇬🇧 UK GBP</option>
+<option value="CA" data-lang="en" data-curr="CAD">🇨🇦 Canada CAD</option>
+<option value="AU" data-lang="en" data-curr="AUD">🇦🇺 Australia AUD</option>
+<option value="DE" data-lang="de" data-curr="EUR">🇩🇪 Germany EUR</option>
+<option value="FR" data-lang="fr" data-curr="EUR">🇫🇷 France EUR</option>
+<option value="IT" data-lang="it" data-curr="EUR">🇮🇹 Italy EUR</option>
+<option value="ES" data-lang="es" data-curr="EUR">🇪🇸 Spain EUR</option>
+<option value="IN" data-lang="hi" data-curr="INR">🇮🇳 India INR</option>
+<option value="PK" data-lang="ur" data-curr="PKR">🇵🇰 Pakistan PKR</option>
+<option value="BD" data-lang="bn" data-curr="BDT">🇧🇩 Bangladesh BDT</option>
+<option value="PH" data-lang="en" data-curr="PHP">🇵🇭 Philippines PHP</option>
+<option value="ID" data-lang="id" data-curr="IDR">🇮🇩 Indonesia IDR</option>
+<option value="BR" data-lang="pt" data-curr="BRL">🇧🇷 Brazil BRL</option>
+<option value="MX" data-lang="es" data-curr="MXN">🇲🇽 Mexico MXN</option>
+<option value="SA" data-lang="ar" data-curr="SAR">🇸🇦 Saudi Arabia SAR</option>
+<option value="AE" data-lang="ar" data-curr="AED">🇦🇪 UAE AED</option>
+<option value="JP" data-lang="ja" data-curr="JPY">🇯🇵 Japan JPY</option>
+</select>
+<select id="langSelect" onchange="changeLanguage()" style="width:110px;font-weight:800">
+<option value="en">English</option><option value="fr">Français</option><option value="es">Español</option><option value="de">Deutsch</option><option value="ar">العربية</option><option value="hi">हिन्दी</option><option value="pt">Português</option><option value="sw">Kiswahili</option>
+</select>
+<span id="currencyDisplay" style="font-weight:800;color:#16a34a;font-size:11px">GHS</span>
 </div>
 
 <div id="page-home" class="page active">
-<div class="card" style="border:3px solid #00b050"><h2>BOOK NURSE - 13 Services - Uber Map</h2>
-<input id="cName" placeholder="Full Name"><div class="phoneRow"><select id="cPhoneCode"></select><input id="cPhone" placeholder="Phone"></div>
-<input id="cEmail" placeholder="Email"><div class="locationRow"><input id="cLocation" placeholder="Tap GPS Auto"><button type="button" onclick="autoGPS('cLocation','clientGpsStatus')">GPS Auto</button></div><small id="clientGpsStatus" class="gpsBadge hidden"></small>
-<select id="cService">
-  <option value="">-- Select Service (13 Services) --</option>
-  <option>Elderly Care</option>
-  <option>Baby Care and Nanny</option>
-  <option>Hospital Support</option>
-  <option>Post-Surgery Care</option>
-  <option>Disability Support</option>
-  <option>Maternity Care</option>
-  <option>Night Nurse</option>
-  <option>Palliative Care</option>
-  <option>Physiotherapy</option>
-  <option>Injection and Wound Care</option>
-  <option>Diabetes Monitoring</option>
-  <option>Dementia Care</option>
-  <option>Child Special Needs Care</option>
-</select>
-<div style="display:flex;gap:6px"><input id="cBudget" type="number" placeholder="Rate Min 90 GHS" oninput="checkRateMinimum()" style="flex:1"><select id="cCurrency" onchange="checkRateMinimum()" style="width:110px"><option>GHS</option><option>USD</option><option>NGN</option><option>ZAR</option><option>KES</option><option>EUR</option><option>GBP</option></select></div>
-<div id="rateEquivalent" style="background:#fffbeb;border:2px solid #eab308;border-radius:10px;padding:8px;margin:6px 0;font-size:11px;display:none"></div>
-<button class="btnSubmit" style="background:linear-gradient(90deg,#2563eb,#00b050)" onclick="findNursesUber()">🔍 FIND NURSES NEAR ME</button>
-<div id="uberActionArea" class="hidden"><div style="display:flex;gap:6px;margin-top:8px"><button class="btnSubmit" style="background:#eab308;color:#111;flex:1" onclick="randomSelectNurse()">🎲 RANDOM</button><button class="btnSubmit" style="background:#111827;flex:1" onclick="submitBooking()">BOOK SELECTED</button></div><div style="font-size:10px;text-align:center;margin-top:4px;color:#16a34a;font-weight:800" id="selectedNurseInfo">No nurse selected</div></div></div>
-<div class="card"><h2>LIVE Map - <span id="nearbyCount">0</span> Nearby</h2>
-<div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap"><button class="btnMap" onclick="toggleMap()">🗺 Toggle Map</button><button class="btnSmall" style="background:#16a34a;color:white" onclick="findNursesUber()">Refresh</button><button class="btnSmall" style="background:#2563eb;color:white" onclick="fitMapWide()">Wide Zoom</button><select id="radiusSelect" style="width:110px;padding:8px;border-radius:8px"><option value="5">5 km</option><option value="10" selected>10 km</option><option value="20">20 km</option><option value="50">50 km</option><option value="100">100 km</option></select></div>
-<div id="loveCareMapWrapper" class="map-wrapper"><div id="uberMap"></div></div><div id="loveCareLiveList"></div></div>
+<div class="card"><h2 data-t="bookTitle">BOOK NURSE - 13 Services - Uber Map</h2>
+<input id="cName" data-tp="fullName" placeholder="Full Name"><div class="phoneRow"><select id="cPhoneCode"></select><input id="cPhone" data-tp="phone" placeholder="Phone"></div>
+<input id="cEmail" placeholder="Email"><div class="locationRow"><input id="cLocation" data-tp="tapGps" placeholder="Tap GPS Auto"><button type="button" onclick="autoGPS('cLocation','clientGpsStatus')" data-t="gpsBtn">GPS Auto</button></div><small id="clientGpsStatus" class="gpsBadge hidden"></small>
+<select id="cService"><option value="" data-t="selectService">-- Select Service (13 Services) --</option><option>Elderly Care</option><option>Baby Care and Nanny</option><option>Hospital Support</option><option>Post-Surgery Care</option><option>Disability Support</option><option>Maternity Care</option><option>Night Nurse</option><option>Palliative Care</option><option>Physiotherapy</option><option>Injection and Wound Care</option><option>Diabetes Monitoring</option><option>Dementia Care</option><option>Child Special Needs Care</option></select>
+<div style="display:flex;gap:6px"><input id="cBudget" type="number" placeholder="Rate Min 90 GHS" style="flex:1"><select id="cCurrency" style="width:110px"><option>GHS</option><option>USD</option><option>NGN</option><option>ZAR</option></select></div>
+<button class="btnSubmit" style="background:linear-gradient(90deg,#2563eb,#00b050)" onclick="findNursesUber()" data-t="findNurses">🔍 FIND NURSES NEAR ME</button>
+<div id="uberActionArea" class="hidden"><div style="display:flex;gap:6px;margin-top:8px"><button class="btnSubmit" style="background:#eab308;color:#111;flex:1" onclick="randomSelectNurse()">🎲 RANDOM</button><button class="btnSubmit" style="background:#111827;flex:1" onclick="submitBooking()" data-t="bookSelected">BOOK SELECTED</button></div><div id="selectedNurseInfo" style="font-size:10px;text-align:center;margin-top:4px;color:#16a34a;font-weight:800">No nurse selected</div></div></div>
+<div class="card"><h2><span data-t="liveMap">LIVE Map</span> - <span id="nearbyCount">0</span> <span data-t="nearby">Nearby</span></h2><div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap"><button class="btnMap" onclick="toggleMap()">🗺 Map</button><button class="btnSmall" style="background:#16a34a;color:white" onclick="findNursesUber()" data-t="refresh">Refresh</button><select id="radiusSelect" style="width:100px;padding:8px;border-radius:8px"><option value="5">5 km</option><option value="10" selected>10 km</option><option value="20">20 km</option><option value="50">50 km</option></select></div><div id="loveCareMapWrapper" class="map-wrapper"><div id="uberMap"></div></div><div id="loveCareLiveList"></div></div>
 </div>
 
-<div id="page-nurse-public" class="page">
-<div class="card" style="border:3px solid #00b050"><h2>Nurse Registration - 13 Services</h2><input id="nRegName" placeholder="Full Name"><div class="phoneRow"><select id="nRegPhoneCode"></select><input id="nRegPhone" placeholder="Phone"></div><input id="nRegPass" type="password" placeholder="Password"><div class="locationRow"><input id="nRegLocation" placeholder="Tap GPS Auto"><button type="button" onclick="autoGPS('nRegLocation','nurseGpsStatus2')">GPS</button></div><small id="nurseGpsStatus2" class="gpsBadge hidden"></small><input id="nRegExperience" type="number" placeholder="Years Experience">
-<select id="nRegSpecialty">
-  <option value="">-- Specialty (13 Services) --</option>
-  <option>General Nurse</option>
-  <option>Midwife</option>
-  <option>Elderly Care</option>
-  <option>Baby Care and Nanny</option>
-  <option>Hospital Support</option>
-  <option>Post-Surgery Care</option>
-  <option>Disability Support</option>
-  <option>Maternity Care</option>
-  <option>Night Nurse</option>
-  <option>Palliative Care</option>
-  <option>Physiotherapy</option>
-  <option>Injection and Wound Care</option>
-  <option>Diabetes Monitoring</option>
-  <option>Dementia Care</option>
-  <option>Child Special Needs Care</option>
-</select>
-<button class="btnSubmit" onclick="registerNurse()">Register</button><div style="text-align:center;margin-top:12px"><span style="font-size:12px">Already registered? </span><button class="btnSmall" style="background:#2563eb;color:white;padding:10px 20px" onclick="showPage('nurse-login')">Login Here</button></div></div>
-</div>
-
-<div id="page-booking-public" class="page"><div class="card"><h2>Quick Book - 13 Services</h2><input id="cName2" placeholder="Full Name"><div class="phoneRow"><select id="cPhoneCode2"></select><input id="cPhone2" placeholder="Phone"></div><div class="locationRow"><input id="cLocation2" placeholder="Tap GPS"><button type="button" onclick="autoGPS('cLocation2','clientGpsStatus2')">GPS</button></div><small id="clientGpsStatus2" class="gpsBadge hidden"></small>
-<select id="cService2">
-  <option>Elderly Care</option>
-  <option>Baby Care and Nanny</option>
-  <option>Hospital Support</option>
-  <option>Post-Surgery Care</option>
-  <option>Disability Support</option>
-  <option>Maternity Care</option>
-  <option>Night Nurse</option>
-  <option>Palliative Care</option>
-  <option>Physiotherapy</option>
-  <option>Injection and Wound Care</option>
-  <option>Diabetes Monitoring</option>
-  <option>Dementia Care</option>
-  <option>Child Special Needs Care</option>
-</select>
-<button class="btnSubmit" style="background:#2563eb" onclick="findNursesUber(true)">Find on Map</button><button class="btnSubmit" style="background:#00b050" onclick="submitBooking2()">Book Now</button></div></div>
-
-<div id="page-nurse-login" class="page">
-<div class="card" style="margin:20px;border:3px solid #16a34a"><h2>👩‍⚕️ Nurse Login</h2><div class="phoneRow"><select id="nurseLoginCode"></select><input id="nurseLoginPhone" placeholder="Phone number"></div><input id="nurseLoginPass" type="password" placeholder="Password"><button class="btnSubmit" onclick="loginNurse()">Login as Nurse</button><div id="nurseLoginResult" style="font-size:11px;color:red;margin-top:8px"></div><div style="text-align:center;margin-top:10px"><button class="btnSmall" style="background:#f0fdf4;color:#16a34a;border:1px solid #16a34a" onclick="showPage('nurse-public')">New Nurse? Register</button></div></div>
-</div>
-
-<div id="page-nurse-dashboard" class="page">
-<div class="card" style="border:3px solid #2563eb"><h2>Nurse Dashboard - <span id="nurseDashName">Nurse</span></h2><div style="display:flex;gap:5px;flex-wrap:wrap"><button class="btnSubmit" style="width:auto;background:#00b050" onclick="startDuty()">START DUTY</button><button class="btnSubmit" style="width:auto;background:#ef4444" onclick="stopDuty()">STOP</button><button class="btnSubmit" style="width:auto;background:#111827" onclick="logoutNurse()">Logout</button></div><div id="nurseGpsStatus" style="padding:8px;border-radius:8px;background:#e8f5e9;border:1px solid #16a34a;font-size:11px;display:none;margin-top:8px">GPS OFF</div></div>
-<div class="card"><h2>New Offers</h2><div id="nurseJobsList">Start DUTY!</div></div>
-<div class="card" style="border:3px solid #2563eb"><h2>💬 GROUP CHAT <span style="font-size:10px"><span class="onlineDot"></span> <span id="nurseOnlineCount">0 online</span></span></h2><div id="nurseChatBox" class="chatBox"></div><div class="chatInputRow"><input id="nurseChatInput" placeholder="Message group..." onkeypress="if(event.key==='Enter')sendGroupMessage('NURSE')"><button class="btnSmall" style="background:#2563eb;color:white;padding:12px 18px" onclick="sendGroupMessage('NURSE')">Send</button></div><button class="btnSmall" style="background:#7c3aed;color:white;width:100%;margin-top:6px" onclick="showPage('group-chat')">Open Full Group Chat</button></div>
-</div>
-
-<div id="page-staff-login" class="page"><div class="card" style="margin:20px;border:3px solid #7c3aed"><h2>Staff Portal</h2><input id="staffLoginID" placeholder="Staff ID"><input id="staffLoginPass" type="password" placeholder="Password"><button class="btnSubmit" style="background:#7c3aed" onclick="loginStaff()">Login as Staff</button></div></div>
-
-<div id="page-staff-dashboard" class="page">
-<div class="card"><h2>Staff Dashboard - <span id="staffDashName"></span></h2><div id="staffBookingsList">Loading...</div></div>
-<div class="card" style="border:3px solid #7c3aed"><h2>💬 GROUP CHAT <span style="font-size:10px"><span class="onlineDot"></span> <span id="staffOnlineCount">0 online</span></span></h2><div id="staffChatBox" class="chatBox"></div><div class="chatInputRow"><input id="staffChatInput" placeholder="Message group..." onkeypress="if(event.key==='Enter')sendGroupMessage('STAFF')"><button class="btnSmall" style="background:#7c3aed;color:white;padding:12px 18px" onclick="sendGroupMessage('STAFF')">Send</button></div><button class="btnSmall" style="background:#111827;color:white;width:100%;margin-top:6px" onclick="showPage('group-chat')">Open Full Group Chat</button></div>
-<div style="margin:20px;display:flex;gap:8px"><button class="btnSubmit" style="background:#16a34a;flex:1" onclick="showPage('home')">Home</button><button class="btnSubmit" style="background:#ef4444;flex:1" onclick="logoutStaff()">Logout</button></div>
-</div>
-
-<div id="page-group-chat" class="page">
-<div class="card" style="border:3px solid #16a34a"><h2>💬 GLOBAL GROUP CHAT <span id="globalOnline" style="background:#22c55e;color:white;padding:3px 10px;border-radius:12px;font-size:10px">0 ONLINE</span></h2><p style="font-size:11px;color:#666">One group for all nurses, staff and CEO. Clients cannot access.</p><div id="globalChatBox" class="chatBox" style="height:55vh"></div><div class="chatInputRow"><select id="groupRole" style="width:100px"><option value="NURSE">NURSE</option><option value="STAFF">STAFF</option><option value="CEO">CEO</option></select><input id="globalChatInput" placeholder="Type message..." onkeypress="if(event.key==='Enter')sendGlobalChat()"><button class="btnSmall" style="background:#16a34a;color:white;padding:12px 20px" onclick="sendGlobalChat()">Send</button></div><div style="display:flex;gap:6px;margin-top:8px"><button class="btnSmall" style="background:#111827;color:white;flex:1" onclick="showPage('home')">Home</button><button id="masterClearBtn" class="btnSmall hidden" style="background:#ef4444;color:white;flex:1" onclick="clearGroupChat()">🗑️ MASTER CLEAR ALL (CEO Only)</button></div><p id="clearHint" style="font-size:9px;color:#999;text-align:center;margin-top:6px">Tap ✏️ to edit your own message, 🗑️ to delete your own message</p></div>
-</div>
-
-<div id="page-ceo-login" class="page"><div class="card" style="margin:20px;border:3px solid #111827"><h2>Secure Access</h2><input id="ceoLoginID" placeholder="Access ID"><input id="ceoLoginPass" type="password" placeholder="Access Key"><button class="btnSubmit" style="background:#111827" onclick="loginCEO()">Login</button><div id="ceoLoginResult" style="font-size:11px;color:red;margin-top:8px"></div></div></div>
+<div id="page-nurse-public" class="page"><div class="card"><h2 data-t="nurseReg">Nurse Registration - 13 Services</h2><input id="nRegName" data-tp="fullName" placeholder="Full Name"><div class="phoneRow"><select id="nRegPhoneCode"></select><input id="nRegPhone" data-tp="phone" placeholder="Phone"></div><input id="nRegPass" type="password" placeholder="Password"><div class="locationRow"><input id="nRegLocation" data-tp="tapGps" placeholder="Tap GPS Auto"><button type="button" onclick="autoGPS('nRegLocation','nurseGpsStatus2')" data-t="gpsBtn">GPS</button></div><small id="nurseGpsStatus2" class="gpsBadge hidden"></small><input id="nRegExperience" type="number" placeholder="Years"><select id="nRegSpecialty"><option value="">-- Specialty (13 Services) --</option><option>General Nurse</option><option>Elderly Care</option><option>Baby Care and Nanny</option><option>Hospital Support</option><option>Post-Surgery Care</option><option>Disability Support</option><option>Maternity Care</option><option>Night Nurse</option><option>Palliative Care</option><option>Physiotherapy</option><option>Injection and Wound Care</option><option>Diabetes Monitoring</option><option>Dementia Care</option><option>Child Special Needs Care</option></select><button class="btnSubmit" onclick="registerNurse()" data-t="register">Register</button><div style="text-align:center;margin-top:10px"><button class="btnSmall" style="background:#2563eb;color:white" onclick="showPage('nurse-login')" data-t="loginHere">Already Registered? Login Here</button></div></div></div>
+<div id="page-booking-public" class="page"><div class="card"><h2 data-t="quickBook">Quick Book - 13 Services</h2><input id="cName2" placeholder="Full Name"><div class="phoneRow"><select id="cPhoneCode2"></select><input id="cPhone2" placeholder="Phone"></div><div class="locationRow"><input id="cLocation2" placeholder="Tap GPS"><button type="button" onclick="autoGPS('cLocation2','clientGpsStatus2')">GPS</button></div><small id="clientGpsStatus2" class="gpsBadge hidden"></small><select id="cService2"><option>Elderly Care</option><option>Baby Care and Nanny</option><option>Hospital Support</option><option>Post-Surgery Care</option><option>Disability Support</option><option>Maternity Care</option><option>Night Nurse</option><option>Palliative Care</option><option>Physiotherapy</option><option>Injection and Wound Care</option><option>Diabetes Monitoring</option><option>Dementia Care</option><option>Child Special Needs Care</option></select><button class="btnSubmit" style="background:#2563eb" onclick="findNursesUber(true)" data-t="findOnMap">Find on Map</button><button class="btnSubmit" style="background:#00b050" onclick="submitBooking2()" data-t="bookNow">Book Now</button></div></div>
+<div id="page-nurse-login" class="page"><div class="card" style="margin:20px;border:3px solid #16a34a"><h2 data-t="nurseLoginTitle">Nurse Login</h2><div class="phoneRow"><select id="nurseLoginCode"></select><input id="nurseLoginPhone" placeholder="Phone"></div><input id="nurseLoginPass" type="password" placeholder="Password"><button class="btnSubmit" onclick="loginNurse()" data-t="loginAsNurse">Login as Nurse</button><div id="nurseLoginResult" style="color:red;font-size:11px;margin-top:8px"></div></div></div>
+<div id="page-nurse-dashboard" class="page"><div class="card" style="border:3px solid #2563eb"><h2 data-t="nurseDash">Nurse Dashboard</h2><div style="display:flex;gap:5px"><button class="btnSubmit" style="width:auto;background:#00b050" onclick="startDuty()" data-t="startDuty">START DUTY</button><button class="btnSubmit" style="width:auto;background:#ef4444" onclick="stopDuty()" data-t="stopDuty">STOP</button><button class="btnSubmit" style="width:auto;background:#111827" onclick="logoutNurse()" data-t="logout">Logout</button></div><div id="nurseGpsStatus" style="padding:8px;background:#e8f5e9;border:1px solid #16a34a;font-size:11px;display:none;margin-top:8px">OFF</div></div><div class="card"><h2 data-t="newOffers">New Offers</h2><div id="nurseJobsList">Start DUTY</div></div><div class="card" style="border:3px solid #2563eb"><h2 data-t="groupChat">GROUP CHAT</h2><div id="nurseChatBox" class="chatBox"></div><div class="chatInputRow"><input id="nurseChatInput" placeholder="Message..." onkeypress="if(event.key==='Enter')sendGroupMessage('NURSE')"><button class="btnSmall" style="background:#2563eb;color:white;padding:12px 18px" onclick="sendGroupMessage('NURSE')" data-t="send">Send</button></div><button class="btnSmall" style="background:#111827;color:white;width:100%;margin-top:6px" onclick="showPage('group-chat')" data-t="openFullChat">Open Full Chat</button></div></div>
+<div id="page-staff-login" class="page"><div class="card" style="margin:20px;border:3px solid #7c3aed"><h2>Staff Portal</h2><input id="staffLoginID" placeholder="Staff ID"><input id="staffLoginPass" type="password" placeholder="Password"><button class="btnSubmit" style="background:#7c3aed" onclick="loginStaff()" data-t="loginAsStaff">Login as Staff</button></div></div>
+<div id="page-staff-dashboard" class="page"><div class="card"><h2 data-t="staffDash">Staff Dashboard</h2><div id="staffBookingsList">Loading...</div></div><div class="card" style="border:3px solid #7c3aed"><h2 data-t="groupChat">GROUP CHAT</h2><div id="staffChatBox" class="chatBox"></div><div class="chatInputRow"><input id="staffChatInput" placeholder="Message..." onkeypress="if(event.key==='Enter')sendGroupMessage('STAFF')"><button class="btnSmall" style="background:#7c3aed;color:white;padding:12px 18px" onclick="sendGroupMessage('STAFF')" data-t="send">Send</button></div><button class="btnSmall" style="background:#111827;color:white;width:100%;margin-top:6px" onclick="showPage('group-chat')" data-t="openFullChat">Open Full Chat</button></div><div style="margin:20px;display:flex;gap:8px"><button class="btnSubmit" style="background:#16a34a;flex:1" onclick="showPage('home')" data-t="home">Home</button><button class="btnSubmit" style="background:#ef4444;flex:1" onclick="logoutStaff()" data-t="logout">Logout</button></div></div>
+<div id="page-group-chat" class="page"><div class="card" style="border:3px solid #16a34a"><h2 data-t="groupChat">GLOBAL GROUP CHAT</h2><div id="globalChatBox" class="chatBox" style="height:55vh"></div><div class="chatInputRow"><select id="groupRole" style="width:100px"><option value="NURSE">NURSE</option><option value="STAFF">STAFF</option><option value="CEO">CEO</option></select><input id="globalChatInput" placeholder="Type..." onkeypress="if(event.key==='Enter')sendGlobalChat()"><button class="btnSmall" style="background:#16a34a;color:white;padding:12px 20px" onclick="sendGlobalChat()" data-t="send">Send</button></div><div style="display:flex;gap:6px;margin-top:8px"><button class="btnSmall" style="background:#111827;color:white;flex:1" onclick="showPage('home')" data-t="home">Home</button><button id="masterClearBtn" class="btnSmall hidden" style="background:#ef4444;color:white;flex:1" onclick="clearGroupChat()">🗑️ MASTER CLEAR ALL (CEO ONLY)</button></div></div></div>
+<div id="page-ceo-login" class="page"><div class="card" style="margin:20px;border:3px solid #111827"><h2>Secure Access</h2><input id="ceoLoginID" placeholder="Access ID"><input id="ceoLoginPass" type="password" placeholder="Access Key"><button class="btnSubmit" style="background:#111827" onclick="loginCEO()">Login</button><div id="ceoLoginResult" style="color:red;font-size:11px;margin-top:8px"></div></div></div>
 
 <div id="page-ceo-dashboard" class="page">
-<div class="card" style="border:3px solid #111827">
-<h2>Management <span style="background:#16a34a;color:white;padding:2px 8px;border-radius:10px;font-size:10px">LIVE</span></h2>
+<div class="card" style="border:3px solid #111827"><h2>CEO Management <span style="background:#16a34a;color:white;padding:2px 8px;border-radius:10px;font-size:10px">LIVE</span></h2>
 <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin:10px 0">
-<div style="background:#f0fdf4;padding:10px;border-radius:10px;text-align:center;border:2px solid #16a34a"><b id="statBookings">0</b><br><small>Bookings</small></div>
-<div style="background:#fffbeb;padding:10px;border-radius:10px;text-align:center;border:2px solid #eab308"><b id="statNurses">0</b><br><small>Nurses</small></div>
-<div style="background:#eff6ff;padding:10px;border-radius:10px;text-align:center;border:2px solid #2563eb"><b id="statOnline">0</b><br><small>On Duty</small></div>
+<div style="background:#f0fdf4;padding:10px;border-radius:10px;text-align:center;border:2px solid #16a34a"><b id="statBookings">0</b><br><small data-t="bookings">Bookings</small></div>
+<div style="background:#fffbeb;padding:10px;border-radius:10px;text-align:center;border:2px solid #eab308"><b id="statNurses">0</b><br><small data-t="nurses">Nurses</small></div>
+<div style="background:#eff6ff;padding:10px;border-radius:10px;text-align:center;border:2px solid #2563eb"><b id="statOnline">0</b><br><small data-t="onDuty">On Duty</small></div>
 </div>
 <div class="ceoTabs">
-<button id="btn-bookings" class="btnSmall activeTab" style="background:#111827;color:white" onclick="switchCeoTab('bookings')">Bookings</button>
-<button id="btn-nurses" class="btnSmall" style="background:#16a34a;color:white" onclick="switchCeoTab('nurses')">Nurses</button>
-<button id="btn-clients" class="btnSmall" style="background:#2563eb;color:white" onclick="switchCeoTab('clients')">Clients</button>
-<button id="btn-payments" class="btnSmall" style="background:#eab308;color:#111" onclick="switchCeoTab('payments')">Payments</button>
-<button id="btn-staff" class="btnSmall" style="background:#7c3aed;color:white" onclick="switchCeoTab('staff')">Staff</button>
-<button id="btn-announce" class="btnSmall" style="background:#0e7490;color:white" onclick="switchCeoTab('announce')">Announce</button>
-<button id="btn-chat" class="btnSmall" style="background:#ef4444;color:white" onclick="switchCeoTab('chat')">💬GROUP</button>
+<button id="btn-bookings" class="btnSmall activeTab" style="background:#111827;color:white" onclick="switchCeoTab('bookings')" data-t="bookings">Bookings</button>
+<button id="btn-nurses" class="btnSmall" style="background:#16a34a;color:white" onclick="switchCeoTab('nurses')" data-t="nurses">Nurses</button>
+<button id="btn-clients" class="btnSmall" style="background:#2563eb;color:white" onclick="switchCeoTab('clients')" data-t="clients">Clients</button>
+<button id="btn-payments" class="btnSmall" style="background:#eab308;color:#111" onclick="switchCeoTab('payments')" data-t="payments">Payments</button>
+<button id="btn-staff" class="btnSmall" style="background:#7c3aed;color:white" onclick="switchCeoTab('staff')" data-t="staff">Staff</button>
+<button id="btn-announce" class="btnSmall" style="background:#0e7490;color:white" onclick="switchCeoTab('announce')" data-t="announce">Announce</button>
+<button id="btn-chat" class="btnSmall" style="background:#ef4444;color:white" onclick="switchCeoTab('chat')" data-t="groupChat">💬GROUP</button>
 </div>
-<div style="display:flex;gap:6px;margin-top:6px"><button class="btnSmall" style="background:#111827;color:white" onclick="loadCeoData()">🔄 Refresh All</button><button class="btnSmall" style="background:#ef4444;color:white" onclick="logoutCEO()">Logout</button></div>
+<div style="display:flex;gap:6px;margin-top:6px"><button class="btnSmall" style="background:#111827;color:white" onclick="loadCeoData()" data-t="refreshAll">🔄 Refresh All</button><button class="btnSmall" style="background:#ef4444;color:white" onclick="logoutCEO()" data-t="logout">Logout</button></div>
 </div>
-<div id="ceo-tab-bookings" class="ceo-tab-content card"><h2>1. Bookings</h2><div style="display:flex;gap:6px;margin-bottom:8px"><input id="ceoSearchBooking" placeholder="Search" oninput="filterBookings()" style="flex:1;margin:0"><select id="ceoBookingFilter" onchange="filterBookings()" style="width:130px;margin:0"><option value="">All</option><option>pending_assignment</option><option>confirmed</option><option>completed</option></select></div><div id="ceoBookingsList">Loading...</div></div>
-<div id="ceo-tab-nurses" class="ceo-tab-content card hidden"><h2>2. Nurses</h2><input id="ceoSearchNurse" placeholder="Search nurse" oninput="filterNurses()" style="margin:0 0 8px 0"><div id="ceoNursesList">Loading...</div><div id="ceoMap" style="height:380px;border-radius:12px;border:2px solid #16a34a;margin-top:10px"></div></div>
-<div id="ceo-tab-clients" class="ceo-tab-content card hidden"><h2>3. Clients</h2><div id="ceoClientsList">Loading...</div></div>
-<div id="ceo-tab-payments" class="ceo-tab-content card hidden"><h2>4. Payments</h2><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px"><div style="background:#f0fdf4;padding:10px;border-radius:10px;border:2px solid #16a34a"><small>Total GHS</small><br><b id="totalRevenue">0</b></div><div style="background:#fffbeb;padding:10px;border-radius:10px;border:2px solid #eab308"><small>Pending</small><br><b id="pendingRevenue">0</b></div></div><div id="ceoPaymentsList">Loading...</div></div>
-<div id="ceo-tab-staff" class="ceo-tab-content card hidden"><h2>5. Staff</h2><div style="display:flex;gap:6px;margin-bottom:10px"><input id="newStaffId" placeholder="New Staff ID" style="flex:1;margin:0"><input id="newStaffPass" placeholder="Password" style="flex:1;margin:0"><button class="btnSmall" style="background:#16a34a;color:white" onclick="addStaff()">Add</button></div><div id="ceoStaffList">Loading...</div></div>
-<div id="ceo-tab-announce" class="ceo-tab-content card hidden"><h2>6. Announcement & Colors</h2><label style="font-size:11px;font-weight:800">Announcement Text</label><textarea id="announcementInput" rows="2"></textarea><div class="colorRow"><label>Background:</label><input id="announceBgColor" type="color" value="#111827"><span id="bgVal">#111827</span></div><div class="colorRow"><label>Text Color:</label><input id="announceTextColor" type="color" value="#eab308"><span id="textVal">#eab308</span></div><div class="colorRow"><label>Border:</label><input id="announceBorderColor" type="color" value="#eab308"><span id="borderVal">#eab308</span></div><div class="colorRow"><label>Speed:</label><select id="announceSpeed" style="width:120px"><option value="10s">Fast</option><option value="22s" selected>Normal</option><option value="40s">Slow</option></select></div><button class="btnSmall" style="background:#0e7490;color:white;width:100%;padding:12px;margin-top:8px" onclick="saveAnnouncement()">💾 SAVE & APPLY LIVE</button><div style="margin-top:14px;border-top:2px solid #e5e7eb;padding-top:10px"><label style="font-size:11px;font-weight:800">Min Rate GHS</label><input id="minRateInput" type="number" value="90"><button class="btnSmall" style="background:#16a34a;color:white" onclick="saveSettings()">Save Rate</button></div></div>
-<div id="ceo-tab-chat" class="ceo-tab-content card hidden" style="border:3px solid #ef4444"><h2>💬 GROUP CHAT <span style="background:#22c55e;color:white;padding:2px 8px;border-radius:10px;font-size:9px" id="ceoOnlineCount">0 ONLINE</span></h2><div id="ceoChatBox" class="chatBox"></div><div class="chatInputRow"><input id="ceoChatInput" placeholder="Broadcast to all..." onkeypress="if(event.key==='Enter')sendGroupMessage('CEO')"><button class="btnSmall" style="background:#111827;color:white;padding:12px 18px" onclick="sendGroupMessage('CEO')">Send</button></div><button class="btnSmall" style="background:#111827;color:white;width:100%;margin-top:6px" onclick="showPage('group-chat')">Open Full Chat Page</button><button id="ceoMasterClear" class="btnSmall hidden" style="background:#ef4444;color:white;width:100%;margin-top:6px" onclick="clearGroupChat()">🗑️ MASTER CLEAR ENTIRE BOARD (CEO Only)</button></div>
+
+<div id="ceo-tab-bookings" class="ceo-tab card"><h2>1. <span data-t="bookings">Bookings</span></h2><div style="display:flex;gap:6px;margin-bottom:8px"><input id="ceoSearchBooking" placeholder="Search" oninput="filterBookings()" style="flex:1;margin:0"><select id="ceoBookingFilter" onchange="filterBookings()" style="width:130px;margin:0"><option value="">All</option><option>pending_assignment</option><option>confirmed</option></select></div><div id="ceoBookingsList">Loading...</div></div>
+<div id="ceo-tab-nurses" class="ceo-tab card hidden"><h2>2. <span data-t="nurses">Nurses</span> + Map</h2><input id="ceoSearchNurse" placeholder="Search nurse" oninput="filterNurses()" style="margin:0 0 8px 0"><div id="ceoNursesList">Loading...</div><div id="ceoMap" style="height:380px;border-radius:12px;border:2px solid #16a34a;margin-top:10px"></div></div>
+<div id="ceo-tab-clients" class="ceo-tab card hidden"><h2>3. <span data-t="clients">Clients</span></h2><div id="ceoClientsList">Loading...</div></div>
+<div id="ceo-tab-payments" class="ceo-tab card hidden"><h2>4. <span data-t="payments">Payments</span></h2><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px"><div style="background:#f0fdf4;padding:10px;border-radius:10px;border:2px solid #16a34a"><small>Total GHS</small><br><b id="totalRevenue">0</b></div><div style="background:#fffbeb;padding:10px;border-radius:10px;border:2px solid #eab308"><small>Pending</small><br><b id="pendingRevenue">0</b></div></div><div id="ceoPaymentsList">Loading...</div></div>
+<div id="ceo-tab-staff" class="ceo-tab card hidden"><h2>5. <span data-t="staff">Staff</span></h2><div style="display:flex;gap:6px;margin-bottom:10px"><input id="newStaffId" placeholder="New Staff ID" style="flex:1;margin:0"><input id="newStaffPass" placeholder="Password" style="flex:1;margin:0"><button class="btnSmall" style="background:#16a34a;color:white" onclick="addStaff()">Add</button></div><div id="ceoStaffList">Loading...</div></div>
+<div id="ceo-tab-announce" class="ceo-tab card hidden"><h2>6. <span data-t="announce">Announcement & Colors</span></h2><textarea id="announcementInput" rows="2" placeholder="Type announcement..."></textarea><div class="colorRow"><label>Background:</label><input id="announceBgColor" type="color" value="#111827"><span id="bgVal">#111827</span></div><div class="colorRow"><label>Text Color:</label><input id="announceTextColor" type="color" value="#eab308"><span id="textVal">#eab308</span></div><div class="colorRow"><label>Border:</label><input id="announceBorderColor" type="color" value="#eab308"><span id="borderVal">#eab308</span></div><div class="colorRow"><label>Speed:</label><select id="announceSpeed" style="width:120px"><option value="10s">Fast</option><option value="22s" selected>Normal</option><option value="40s">Slow</option></select></div><button class="btnSmall" style="background:#0e7490;color:white;width:100%;padding:12px;margin-top:8px" onclick="saveAnnouncement()">💾 SAVE LIVE</button><div style="margin-top:12px;border-top:2px solid #eee;padding-top:8px"><label style="font-size:11px;font-weight:800">Min Rate GHS</label><input id="minRateInput" type="number" value="90"><button class="btnSmall" style="background:#16a34a;color:white" onclick="saveSettings()">Save</button></div></div>
+<div id="ceo-tab-chat" class="ceo-tab card hidden" style="border:3px solid #ef4444"><h2><span data-t="groupChat">GROUP CHAT</span> <span id="ceoOnlineCount" style="background:#22c55e;color:white;padding:2px 8px;border-radius:10px;font-size:9px">0 ONLINE</span></h2><div id="ceoChatBox" class="chatBox"></div><div class="chatInputRow"><input id="ceoChatInput" placeholder="Broadcast..." onkeypress="if(event.key==='Enter')sendGroupMessage('CEO')"><button class="btnSmall" style="background:#111827;color:white;padding:12px 18px" onclick="sendGroupMessage('CEO')" data-t="send">Send</button></div><button class="btnSmall" style="background:#111827;color:white;width:100%;margin-top:6px" onclick="showPage('group-chat')" data-t="openFullChat">Open Full Chat</button><button id="ceoMasterClear" class="btnSmall hidden" style="background:#ef4444;color:white;width:100%;margin-top:6px" onclick="clearGroupChat()">🗑️ MASTER CLEAR ALL (CEO ONLY)</button></div>
 </div>
 
 <div class="bottomNav">
-<button id="nav-home" class="active" onclick="showPage('home')">🏠<span>Home</span></button>
-<button id="nav-nurse" onclick="showPage('nurse-public')">👩‍⚕️<span>Join</span></button>
-<button id="nav-book" onclick="showPage('booking-public')">📅<span>Book</span></button>
-<button id="nav-login" onclick="showPage('nurse-login')">🔑<span>Login</span></button>
-<button id="nav-chat" onclick="showPage('group-chat')" style="background:#fef2f2;border:2px solid #ef4444">💬<span>Group</span></button>
+<button id="nav-home" class="active" onclick="showPage('home')"><span>🏠</span><span data-t="home">Home</span></button>
+<button id="nav-nurse" onclick="showPage('nurse-public')"><span>👩‍⚕️</span><span data-t="join">Join</span></button>
+<button id="nav-book" onclick="showPage('booking-public')"><span>📅</span><span data-t="book">Book</span></button>
+<button id="nav-login" onclick="showPage('nurse-login')"><span>🔑</span><span data-t="login">Login</span></button>
+<button id="nav-chat" onclick="showPage('group-chat')" style="background:#fef2f2;border:2px solid #ef4444"><span>💬</span><span>Group</span></button>
 </div>
 
 <script>
 var firebaseConfig={apiKey:"AIzaSyB52-X1D8Cg-wUDWPds_tR7D8cF82dMdRg",authDomain:"web-care-618e8.firebaseapp.com",databaseURL:"https://web-care-618e8-default-rtdb.firebaseio.com",projectId:"web-care-618e8",storageBucket:"web-care-618e8.firebasestorage.app",messagingSenderId:"1062578660694",appId:"1:1062578660694:web:f94dfe12c929df05bce2f7"};
 var db=null,allBookings=[],allWorkers=[],logoTapCount=0,staffLogoTapCount=0,clientLat=null,clientLng=null,nurseRegLat=null,nurseRegLng=null;
-var currencyRates={'GHS':1,'USD':0.0645,'GBP':0.0513,'NGN':105,'ZAR':1.2,'KES':8.5,'EUR':0.059,'CAD':0.087,'AUD':0.096,'INR':5.4,'PHP':3.6,'BRL':0.32,'AED':0.24,'SAR':0.24,'JPY':9.8,'XAF':39,'XOF':39,'UGX':240,'TZS':170,'RWF':85,'ETB':3.7,'EGP':3.2,'MAD':0.65,'PKR':18,'BDT':7.1,'IDR':1000,'MXN':1.1};
+var currencyRates={'GHS':1,'USD':0.0645,'GBP':0.0513,'NGN':105,'ZAR':1.2,'KES':8.5};
 var uberMap=null,ceoMap=null,nurseCluster=null,selectedNurseId=null,nearbyNursesSorted=[];
-var countryCodes=[
- {c:'Ghana',code:'+233',flag:'🇬🇭'},{c:'Nigeria',code:'+234',flag:'🇳🇬'},{c:'South Africa',code:'+27',flag:'🇿🇦'},{c:'Kenya',code:'+254',flag:'🇰🇪'},{c:'Uganda',code:'+256',flag:'🇺🇬'},{c:'Tanzania',code:'+255',flag:'🇹🇿'},{c:'Ethiopia',code:'+251',flag:'🇪🇹'},{c:'Rwanda',code:'+250',flag:'🇷🇼'},{c:'Cameroon',code:'+237',flag:'🇨🇲'},{c:'Senegal',code:'+221',flag:'🇸🇳'},{c:'Ivory Coast',code:'+225',flag:'🇨🇮'},{c:'Egypt',code:'+20',flag:'🇪🇬'},{c:'Morocco',code:'+212',flag:'🇲🇦'},{c:'USA',code:'+1',flag:'🇺🇸'},{c:'UK',code:'+44',flag:'🇬🇧'},{c:'Canada',code:'+1',flag:'🇨🇦'},{c:'Australia',code:'+61',flag:'🇦🇺'},{c:'Germany',code:'+49',flag:'🇩🇪'},{c:'France',code:'+33',flag:'🇫🇷'},{c:'Italy',code:'+39',flag:'🇮🇹'},{c:'Spain',code:'+34',flag:'🇪🇸'},{c:'India',code:'+91',flag:'🇮🇳'},{c:'Pakistan',code:'+92',flag:'🇵🇰'},{c:'Bangladesh',code:'+880',flag:'🇧🇩'},{c:'Philippines',code:'+63',flag:'🇵🇭'},{c:'Indonesia',code:'+62',flag:'🇮🇩'},{c:'Brazil',code:'+55',flag:'🇧🇷'},{c:'Mexico',code:'+52',flag:'🇲🇽'},{c:'Saudi Arabia',code:'+966',flag:'🇸🇦'},{c:'UAE',code:'+971',flag:'🇦🇪'},{c:'Japan',code:'+81',flag:'🇯🇵'}
-];
-function populatePhoneCodes(){
- var html=''; countryCodes.forEach(o=>{html+=`<option value="${o.code}">${o.flag} ${o.code} ${o.c}</option>`;});
- ['cPhoneCode','nRegPhoneCode','nurseLoginCode','cPhoneCode2'].forEach(id=>{var el=document.getElementById(id); if(el) el.innerHTML=html;});
-}
+var countryCodes=[{c:'Ghana',code:'+233',flag:'🇬🇭'},{c:'Nigeria',code:'+234',flag:'🇳🇬'},{c:'South Africa',code:'+27',flag:'🇿🇦'},{c:'Kenya',code:'+254',flag:'🇰🇪'},{c:'Uganda',code:'+256',flag:'🇺🇬'},{c:'Tanzania',code:'+255',flag:'🇹🇿'},{c:'Ethiopia',code:'+251',flag:'🇪🇹'},{c:'Rwanda',code:'+250',flag:'🇷🇼'},{c:'Cameroon',code:'+237',flag:'🇨🇲'},{c:'Senegal',code:'+221',flag:'🇸🇳'},{c:'Ivory Coast',code:'+225',flag:'🇨🇮'},{c:'Egypt',code:'+20',flag:'🇪🇬'},{c:'Morocco',code:'+212',flag:'🇲🇦'},{c:'USA',code:'+1',flag:'🇺🇸'},{c:'UK',code:'+44',flag:'🇬🇧'},{c:'Canada',code:'+1',flag:'🇨🇦'},{c:'Australia',code:'+61',flag:'🇦🇺'},{c:'Germany',code:'+49',flag:'🇩🇪'},{c:'France',code:'+33',flag:'🇫🇷'},{c:'Italy',code:'+39',flag:'🇮🇹'},{c:'Spain',code:'+34',flag:'🇪🇸'},{c:'India',code:'+91',flag:'🇮🇳'},{c:'Pakistan',code:'+92',flag:'🇵🇰'},{c:'Bangladesh',code:'+880',flag:'🇧🇩'},{c:'Philippines',code:'+63',flag:'🇵🇭'},{c:'Indonesia',code:'+62',flag:'🇮🇩'},{c:'Brazil',code:'+55',flag:'🇧🇷'},{c:'Mexico',code:'+52',flag:'🇲🇽'},{c:'Saudi Arabia',code:'+966',flag:'🇸🇦'},{c:'UAE',code:'+971',flag:'🇦🇪'},{c:'Japan',code:'+81',flag:'🇯🇵'}];
+function populatePhoneCodes(){var html='';countryCodes.forEach(o=>{html+=`<option value="${o.code}">${o.flag} ${o.code} ${o.c}</option>`;});['cPhoneCode','nRegPhoneCode','nurseLoginCode','cPhoneCode2'].forEach(id=>{var el=document.getElementById(id); if(el) el.innerHTML=html;});}
 try{firebase.initializeApp(firebaseConfig);db=firebase.database();}catch(e){}
-function changeCountry(){var sel=document.getElementById('countrySelect');var opt=sel.options[sel.selectedIndex];var curr=opt.getAttribute('data-curr');document.getElementById('currencyDisplay').innerText=curr;localStorage.setItem('selectedCountry', sel.value);}
-function changeLanguage(){var lang=document.getElementById('langSelect').value;localStorage.setItem('selectedLang', lang);}
-function convertToGHS(a,c){var r=currencyRates[c]||1;return a/r;}
-function checkRateMinimum(){var b=document.getElementById('cBudget');var c=document.getElementById('cCurrency');if(!b||!c)return true;var cur=c.value;var amt=parseFloat(b.value);if(isNaN(amt))return true;var g=convertToGHS(amt,cur);var e=document.getElementById('rateEquivalent');if(e){e.style.display='block';e.innerHTML='Entered: <b>'+amt+' '+cur+'</b> = <b>'+g.toFixed(2)+' GHS</b> '+(g<90?'<span style=color:red>LOW</span>':'<span style=color:green>OK</span>');}return g>=89.9;}
+
+var translations={
+en:{bookTitle:"BOOK NURSE - 13 Services - Uber Map",fullName:"Full Name",phone:"Phone",tapGps:"Tap GPS Auto",gpsBtn:"GPS Auto",selectService:"-- Select Service (13 Services) --",findNurses:"🔍 FIND NURSES NEAR ME",bookSelected:"BOOK SELECTED",liveMap:"LIVE Map",nearby:"Nearby",refresh:"Refresh",nurseReg:"Nurse Registration - 13 Services",register:"Register",loginHere:"Already Registered? Login Here",quickBook:"Quick Book - 13 Services",findOnMap:"Find on Map",bookNow:"Book Now",nurseLoginTitle:"Nurse Login",loginAsNurse:"Login as Nurse",nurseDash:"Nurse Dashboard",startDuty:"START DUTY",stopDuty:"STOP",logout:"Logout",newOffers:"New Offers",groupChat:"GROUP CHAT",send:"Send",openFullChat:"Open Full Chat",staffDash:"Staff Dashboard",loginAsStaff:"Login as Staff",home:"Home",bookings:"Bookings",nurses:"Nurses",clients:"Clients",payments:"Payments",staff:"Staff",announce:"Announce",refreshAll:"🔄 Refresh All",join:"Join",book:"Book",login:"Login",onDuty:"On Duty"},
+fr:{bookTitle:"RÉSERVER INFIRMIÈRE - 13 Services - Carte Uber",fullName:"Nom Complet",phone:"Téléphone",tapGps:"Appuyer GPS Auto",gpsBtn:"GPS Auto",selectService:"-- Sélectionner Service (13 Services) --",findNurses:"🔍 TROUVER INFIRMIÈRES",bookSelected:"RÉSERVER SÉLECTIONNÉE",liveMap:"Carte LIVE",nearby:"Proche",refresh:"Actualiser",nurseReg:"Inscription Infirmière - 13 Services",register:"S'inscrire",loginHere:"Déjà inscrit? Connexion",quickBook:"Réservation Rapide - 13 Services",findOnMap:"Trouver sur Carte",bookNow:"Réserver",nurseLoginTitle:"Connexion Infirmière",loginAsNurse:"Connexion Infirmière",nurseDash:"Tableau Infirmière",startDuty:"COMMENCER SERVICE",stopDuty:"ARRÊTER",logout:"Déconnexion",newOffers:"Nouvelles Offres",groupChat:"CHAT DE GROUPE",send:"Envoyer",openFullChat:"Ouvrir Chat Complet",staffDash:"Tableau Personnel",loginAsStaff:"Connexion Personnel",home:"Accueil",bookings:"Réservations",nurses:"Infirmières",clients:"Clients",payments:"Paiements",staff:"Personnel",announce:"Annonce",refreshAll:"🔄 Actualiser Tout",join:"Rejoindre",book:"Réserver",login:"Connexion",onDuty:"En Service"},
+es:{bookTitle:"RESERVAR ENFERMERA - 13 Servicios - Mapa Uber",fullName:"Nombre Completo",phone:"Teléfono",tapGps:"Tocar GPS Auto",gpsBtn:"GPS Auto",selectService:"-- Seleccionar Servicio (13) --",findNurses:"🔍 BUSCAR ENFERMERAS",bookSelected:"RESERVAR SELECCIONADA",liveMap:"Mapa VIVO",nearby:"Cercanas",refresh:"Actualizar",nurseReg:"Registro Enfermera - 13 Servicios",register:"Registrar",loginHere:"¿Ya registrado? Login",quickBook:"Reserva Rápida - 13",findOnMap:"Buscar en Mapa",bookNow:"Reservar",nurseLoginTitle:"Login Enfermera",loginAsNurse:"Login Enfermera",nurseDash:"Panel Enfermera",startDuty:"INICIAR TURNO",stopDuty:"PARAR",logout:"Cerrar Sesión",newOffers:"Nuevas Ofertas",groupChat:"CHAT GRUPAL",send:"Enviar",openFullChat:"Abrir Chat Completo",staffDash:"Panel Personal",loginAsStaff:"Login Personal",home:"Inicio",bookings:"Reservas",nurses:"Enfermeras",clients:"Clientes",payments:"Pagos",staff:"Personal",announce:"Anuncio",refreshAll:"🔄 Actualizar Todo",join:"Unirse",book:"Reservar",login:"Login",onDuty:"En Turno"},
+ar:{bookTitle:"حجز ممرضة - 13 خدمة - خريطة",fullName:"الاسم الكامل",phone:"الهاتف",tapGps:"GPS تلقائي",gpsBtn:"GPS",selectService:"-- اختر الخدمة (13) --",findNurses:"🔍 البحث عن ممرضات",bookSelected:"حجز المحدد",liveMap:"خريطة مباشرة",nearby:"قريب",refresh:"تحديث",nurseReg:"تسجيل ممرضة - 13 خدمة",register:"تسجيل",loginHere:"مسجل؟ دخول",quickBook:"حجز سريع - 13",findOnMap:"بحث على الخريطة",bookNow:"احجز الآن",nurseLoginTitle:"دخول ممرضة",loginAsNurse:"دخول ممرضة",nurseDash:"لوحة ممرضة",startDuty:"بدء العمل",stopDuty:"توقف",logout:"خروج",newOffers:"عروض جديدة",groupChat:"دردشة جماعية",send:"إرسال",openFullChat:"فتح الدردشة",staffDash:"لوحة موظف",loginAsStaff:"دخول موظف",home:"الرئيسية",bookings:"الحجوزات",nurses:"ممرضات",clients:"عملاء",payments:"مدفوعات",staff:"موظفون",announce:"إعلان",refreshAll:"🔄 تحديث",join:"انضم",book:"حجز",login:"دخول",onDuty:"في العمل"},
+sw:{bookTitle:"BOOKA MUUGUZI - Huduma 13 - Ramani",fullName:"Jina Kamili",phone:"Simu",tapGps:"Gonga GPS Auto",gpsBtn:"GPS Auto",selectService:"-- Chagua Huduma (13) --",findNurses:"🔍 TAFTA WAUGUZI",bookSelected:"BOOKA ULIYECHAGUA",liveMap:"Ramani LIVE",nearby:"Karibu",refresh:"Onyesha upya",nurseReg:"Usajili Muuguzi - Huduma 13",register:"Jisajili",loginHere:"Umesajiliwa? Ingia",quickBook:"Book Haraka - 13",findOnMap:"Tafuta Ramani",bookNow:"Book Sasa",nurseLoginTitle:"Ingia Muuguzi",loginAsNurse:"Ingia Muuguzi",nurseDash:"Dashibodi Muuguzi",startDuty:"ANZA KAZI",stopDuty:"SIMAMA",logout:"Toka",newOffers:"Ofa Mpya",groupChat:"CHAT YA KIKUNDI",send:"Tuma",openFullChat:"Fungua Chat Kamili",staffDash:"Dashibodi Staff",loginAsStaff:"Ingia Staff",home:"Nyumbani",bookings:"Bookings",nurses:"Wauguzi",clients:"Wateja",payments:"Malipo",staff:"Staff",announce:"Tangazo",refreshAll:"🔄 Onyesha",join:"Jiunge",book:"Book",login:"Ingia",onDuty:"Kazini"}
+};
+function changeLanguage(){
+var lang=document.getElementById('langSelect').value; localStorage.setItem('selectedLang',lang);
+var dict=translations[lang]||translations['en'];
+document.querySelectorAll('[data-t]').forEach(el=>{var k=el.getAttribute('data-t'); if(dict[k]) el.innerText=dict[k];});
+document.querySelectorAll('[data-tp]').forEach(el=>{var k=el.getAttribute('data-tp'); if(dict[k]) el.placeholder=dict[k];});
+}
+function changeCountry(){
+var sel=document.getElementById('countrySelect'); var opt=sel.options[sel.selectedIndex];
+var lang=opt.getAttribute('data-lang'); var curr=opt.getAttribute('data-curr');
+document.getElementById('currencyDisplay').innerText=curr;
+if(translations[lang]){document.getElementById('langSelect').value=lang; changeLanguage();}
+localStorage.setItem('selectedCountry',sel.value);
+}
+
 function showPage(id){
- if(id==='ceo-dashboard' && localStorage.getItem('isCEOLogged')!=='true') id='ceo-login';
- if(id==='staff-dashboard' &&!localStorage.getItem('staffID')) id='staff-login';
- if(id==='nurse-dashboard' &&!localStorage.getItem('nursePhone')) id='nurse-login';
- if(id==='group-chat' &&!localStorage.getItem('isCEOLogged') &&!localStorage.getItem('nursePhone') &&!localStorage.getItem('staffID')){alert('Please login to join group chat - Clients cannot access'); id='nurse-login';}
- document.querySelectorAll('.page').forEach(p=>{p.classList.remove('active');p.style.display='none';});
- var el=document.getElementById('page-'+id);if(el){el.classList.add('active');el.style.display='block';}
- document.querySelectorAll('.bottomNav button').forEach(b=>b.classList.remove('active'));
- var navMap={'home':'nav-home','nurse-public':'nav-nurse','booking-public':'nav-book','nurse-login':'nav-login','nurse-dashboard':'nav-login','staff-dashboard':'nav-login','ceo-dashboard':'nav-home','group-chat':'nav-chat'};
- var navId=navMap[id]; if(navId){var nb=document.getElementById(navId); if(nb) nb.classList.add('active');}
- window.scrollTo(0,0);
- if(id==='home')setTimeout(()=>{if(!uberMap)initUberMap();else{uberMap.invalidateSize();fitMapWide();}},400);
- if(id==='ceo-dashboard')setTimeout(()=>{loadCeoData();initCeoMap();initGroupChat();toggleMasterClear();},500);
- if(id==='nurse-dashboard')setTimeout(()=>{loadNurseDashboard();initGroupChat();},400);
- if(id==='staff-dashboard')setTimeout(()=>{loadStaffData();initGroupChat();},400);
- if(id==='group-chat')setTimeout(()=>{initGroupChat();autoSetRole();toggleMasterClear();},400);
+if(id==='ceo-dashboard' && localStorage.getItem('isCEOLogged')!=='true') id='ceo-login';
+if(id==='staff-dashboard' &&!localStorage.getItem('staffID')) id='staff-login';
+if(id==='nurse-dashboard' &&!localStorage.getItem('nursePhone')) id='nurse-login';
+if(id==='group-chat' &&!localStorage.getItem('isCEOLogged') &&!localStorage.getItem('nursePhone') &&!localStorage.getItem('staffID')){alert('Login required for group chat - Clients blocked'); id='nurse-login';}
+document.querySelectorAll('.page').forEach(p=>{p.classList.remove('active');p.style.display='none';});
+var el=document.getElementById('page-'+id); if(el){el.classList.add('active');el.style.display='block';}
+document.querySelectorAll('.bottomNav button').forEach(b=>b.classList.remove('active'));
+var map={'home':'nav-home','nurse-public':'nav-nurse','booking-public':'nav-book','nurse-login':'nav-login','nurse-dashboard':'nav-login','staff-dashboard':'nav-login','ceo-dashboard':'nav-home','group-chat':'nav-chat'};
+var nid=map[id]; if(nid){var nb=document.getElementById(nid); if(nb) nb.classList.add('active');}
+window.scrollTo(0,0);
+if(id==='home') setTimeout(()=>{if(!uberMap)initUberMap();else{uberMap.invalidateSize();fitMapWide();}},300);
+if(id==='ceo-dashboard') setTimeout(()=>{loadCeoData();initCeoMap();initGroupChat();toggleMasterClear();},400);
+if(id==='nurse-dashboard') setTimeout(()=>{loadNurseDashboard();initGroupChat();},400);
+if(id==='staff-dashboard') setTimeout(()=>{loadStaffData();initGroupChat();},400);
+if(id==='group-chat') setTimeout(()=>{initGroupChat();autoSetRole();toggleMasterClear();},400);
 }
 function toggleMasterClear(){
- var isCEO=localStorage.getItem('isCEOLogged')==='true';
- document.querySelectorAll('#masterClearBtn,#ceoMasterClear').forEach(btn=>{if(btn){if(isCEO) btn.classList.remove('hidden'); else btn.classList.add('hidden');}});
+var isCEO=localStorage.getItem('isCEOLogged')==='true';
+document.querySelectorAll('#masterClearBtn,#ceoMasterClear').forEach(b=>{if(b){if(isCEO) b.classList.remove('hidden'); else b.classList.add('hidden');}});
 }
 (function(){
- var logo=document.getElementById('logoTapArea');var press=null;
- if(logo){
-  logo.addEventListener('click',function(){logoTapCount++;if(logoTapCount>=5){logoTapCount=0;showPage('staff-login');}setTimeout(()=>{logoTapCount=0},3000);});
-  logo.addEventListener('touchstart',function(){press=setTimeout(()=>{showPage('ceo-login');},1800);});
-  logo.addEventListener('touchend',function(){clearTimeout(press);});
-  logo.addEventListener('mousedown',function(){press=setTimeout(()=>{showPage('ceo-login');},1800);});
-  logo.addEventListener('mouseup',function(){clearTimeout(press);});
- }
- var staff=document.getElementById('staffLogo');
- if(staff){staff.addEventListener('click',function(){staffLogoTapCount++;if(staffLogoTapCount>=7){staffLogoTapCount=0;showPage('ceo-login');}setTimeout(()=>{staffLogoTapCount=0},3000);});}
-})();
-function autoGPS(inputId,statusId){
- var statusEl=document.getElementById(statusId);var inputEl=document.getElementById(inputId);
- if(statusEl){statusEl.classList.remove('hidden');statusEl.innerText='Getting GPS...';}
- navigator.geolocation.getCurrentPosition(pos=>{
-  var lat=pos.coords.latitude,lng=pos.coords.longitude;
-  if(inputId.includes('cLocation')){clientLat=lat;clientLng=lng;}
-  if(inputId.includes('nRegLocation')){nurseRegLat=lat;nurseRegLng=lng;}
-  fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`).then(r=>r.json()).then(data=>{inputEl.value=data.display_name||lat.toFixed(5)+','+lng.toFixed(5);if(statusEl)statusEl.innerText='GPS: '+lat.toFixed(4)+','+lng.toFixed(4);}).catch(()=>{inputEl.value=lat.toFixed(5)+','+lng.toFixed(5);});
- },err=>{if(statusEl)statusEl.innerText='GPS failed';},{enableHighAccuracy:true,timeout:15000});
+var logo=document.getElementById('logoTapArea'); var press=null;
+if(logo){
+logo.addEventListener('click',function(){logoTapCount++; if(logoTapCount>=5){logoTapCount=0;showPage('staff-login');} setTimeout(()=>{logoTapCount=0},3000);});
+logo.addEventListener('touchstart',function(){press=setTimeout(()=>{showPage('ceo-login');},1800);});
+logo.addEventListener('touchend',function(){clearTimeout(press);});
+logo.addEventListener('mousedown',function(){press=setTimeout(()=>{showPage('ceo-login');},1800);});
+logo.addEventListener('mouseup',function(){clearTimeout(press);});
 }
-function getFullPhone(codeId,phoneId){var code=document.getElementById(codeId).value;var phone=document.getElementById(phoneId).value.trim().replace(/^0+/,'');if(phone.startsWith('+'))return phone;return code+phone;}
-function getDistanceKm(lat1,lon1,lat2,lon2){if(!lat1||!lon1||!lat2||!lon2)return 9999;var R=6371;var dLat=(lat2-lat1)*Math.PI/180;var dLon=(lon2-lon1)*Math.PI/180;var a=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)*Math.sin(dLon/2);return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));}
-if(!localStorage.getItem('nurses')){localStorage.setItem('nurses',JSON.stringify([{id:1,name:"Nurse Grace",lat:5.675,lng:-0.165,location:"Madina",phone:"+233244001001",status:'on_duty',specialty:"General"},{id:2,name:"Nurse Esther",lat:5.682,lng:-0.185,location:"Haatso",phone:"+233244001002",status:'on_duty',specialty:"Elderly"}]));}
-function initUberMap(){var mapDiv=document.getElementById('uberMap');if(!mapDiv)return;if(uberMap){uberMap.invalidateSize();fitMapWide();return;}uberMap=L.map('uberMap').setView([5.6037,-0.1870],11);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(uberMap);nurseCluster=L.markerClusterGroup({showCoverageOnHover:false});uberMap.addLayer(nurseCluster);renderNurseMarkers();setTimeout(()=>{uberMap.invalidateSize();fitMapWide();},500);}
-function getAllNursesSource(){if(allWorkers&&allWorkers.length>0)return allWorkers;try{return JSON.parse(localStorage.getItem('nurses')||'[]');}catch(e){return [];}}
-function renderNurseMarkers(list){if(!uberMap||!nurseCluster)return;nurseCluster.clearLayers();var source=list||getAllNursesSource();if(clientLat&&clientLng){L.marker([clientLat,clientLng]).addTo(uberMap);}source.forEach(w=>{if(!w.lat||!w.lng)return;var m=L.marker([parseFloat(w.lat),parseFloat(w.lng)]);m.bindPopup(`<b>${w.name}</b>`);m.on('click',()=>selectNurseCard(w.phone||w.id));nurseCluster.addLayer(m);});}
-function fitMapWide(){if(!uberMap)return;var bounds=L.latLngBounds();var has=false;if(clientLat&&clientLng){bounds.extend([clientLat,clientLng]);has=true;}var list=nearbyNursesSorted.length>0?nearbyNursesSorted:getAllNursesSource();list.forEach(n=>{if(n.lat&&n.lng){bounds.extend([parseFloat(n.lat),parseFloat(n.lng)]);has=true;}});if(!has){uberMap.setView([5.6037,-0.1870],11);return;}uberMap.fitBounds(bounds,{padding:[60,60],maxZoom:13});}
-function toggleMap(){var w=document.getElementById('loveCareMapWrapper');w.classList.toggle('hidden');if(!w.classList.contains('hidden')){if(!uberMap)initUberMap();setTimeout(()=>{uberMap.invalidateSize();fitMapWide();},300);}}
-function findNursesUber(){var allSource=getAllNursesSource();if(!clientLat||!clientLng){alert('Tap GPS Auto first');return;}var radius=parseInt(document.getElementById('radiusSelect').value)||10;nearbyNursesSorted=allSource.filter(w=>w.lat&&w.lng).map(w=>{var d=getDistanceKm(clientLat,clientLng,parseFloat(w.lat),parseFloat(w.lng));return{...w,distance:d};}).filter(w=>w.distance<=radius).sort((a,b)=>a.distance-b.distance).slice(0,40);document.getElementById('nearbyCount').innerText=nearbyNursesSorted.length;document.getElementById('uberActionArea').classList.remove('hidden');document.getElementById('loveCareMapWrapper').classList.remove('hidden');if(!uberMap)initUberMap();setTimeout(()=>{uberMap.invalidateSize();renderNurseMarkers(nearbyNursesSorted);fitMapWide();},300);renderNearbyList();showPage('home');}
-function renderNearbyList(){var list=document.getElementById('loveCareLiveList');if(nearbyNursesSorted.length===0){list.innerHTML='<div style="padding:12px;background:#fef3c7;border-radius:10px;text-align:center"><b>No nurses within range</b></div>';return;}var html='';nearbyNursesSorted.forEach(n=>{html+=`<div class="uber-card" onclick="selectNurseCard('${n.phone||n.id}')"><img src="./logo.png"><div style="flex:1"><b>${n.name}</b> - ${n.distance.toFixed(1)}km<br><small>${n.location||''}</small></div><div class="nurse-dot"></div></div>`;});list.innerHTML=html;}
-function selectNurseCard(id){selectedNurseId=id;document.getElementById('selectedNurseInfo').innerText='Selected: '+id;}
-function randomSelectNurse(){if(nearbyNursesSorted.length===0){alert('No nurses');return;}var p=nearbyNursesSorted[Math.floor(Math.random()*nearbyNursesSorted.length)];selectNurseCard(p.phone||p.id);}
-function submitBooking(){var name=document.getElementById('cName').value.trim();var phone=document.getElementById('cPhone').value.trim();var fullPhone=getFullPhone('cPhoneCode','cPhone');var service=document.getElementById('cService').value;if(!name||!phone||!service){alert('Name Phone Service required');return;}if(!selectedNurseId&&nearbyNursesSorted[0])selectedNurseId=nearbyNursesSorted[0].phone||nearbyNursesSorted[0].id;var amount=parseFloat(document.getElementById('cBudget').value||0);var cur=document.getElementById('cCurrency').value;var id=Date.now();var b={id:id,name:name,phone:fullPhone,service:service,location:document.getElementById('cLocation').value,amount:amount,currency:cur,ghsEquivalent:convertToGHS(amount,cur),status:'pending_assignment',time:new Date().toLocaleString(),timestamp:Date.now(),lat:clientLat,lng:clientLng,selectedNurse:selectedNurseId};if(db)db.ref('bookings/'+id).set(b).then(()=>alert('Booked!'));}
-function registerNurse(){var name=document.getElementById('nRegName').value.trim();var fullPhone=getFullPhone('nRegPhoneCode','nRegPhone');var pass=document.getElementById('nRegPass').value.trim();var loc=document.getElementById('nRegLocation').value.trim();if(!name||!fullPhone||!pass||!loc){alert('All required');return;}if(!nurseRegLat){alert('GPS required');return;}var w={name:name,phone:fullPhone,password:pass,location:loc,timestamp:Date.now(),lat:nurseRegLat,lng:nurseRegLng,status:'on_duty',onDuty:true,specialty:document.getElementById('nRegSpecialty').value||'General'};if(db)db.ref('workers/'+fullPhone.replace(/[^0-9]/g,'')).set(w).then(()=>{alert('Registered! Now login');showPage('nurse-login');});}
-function submitBooking2(){document.getElementById('cName').value=document.getElementById('cName2').value;document.getElementById('cPhone').value=document.getElementById('cPhone2').value;document.getElementById('cLocation').value=document.getElementById('cLocation2').value;submitBooking();}
-function loginNurse(){var fullPhone=getFullPhone('nurseLoginCode','nurseLoginPhone');var pass=document.getElementById('nurseLoginPass').value.trim();if(db){db.ref('workers/'+fullPhone.replace(/[^0-9]/g,'')).once('value').then(snap=>{var d=snap.val();if(d&&d.password===pass){localStorage.setItem('nursePhone',fullPhone);localStorage.setItem('nurseName',d.name);showPage('nurse-dashboard');}else if(d){document.getElementById('nurseLoginResult').innerText='Wrong password';}else{localStorage.setItem('nursePhone',fullPhone);localStorage.setItem('nurseName',fullPhone);showPage('nurse-dashboard');}});}else{localStorage.setItem('nursePhone',fullPhone);showPage('nurse-dashboard');}}
-function loginStaff(){var id=document.getElementById('staffLoginID').value.trim();if(!id){alert('Enter ID');return;}localStorage.setItem('staffID',id);showPage('staff-dashboard');}
-function loginCEO(){var id=document.getElementById('ceoLoginID').value.trim().toUpperCase();var pass=document.getElementById('ceoLoginPass').value.trim();var r=document.getElementById('ceoLoginResult');if(id==='KUSIPETER'&&pass==='Peterasa80@you!'){localStorage.setItem('isCEOLogged','true');r.innerText='Success';setTimeout(()=>showPage('ceo-dashboard'),300);}else{r.innerText='Access denied';}}
+})();
+function autoGPS(i,s){var se=document.getElementById(s); var ie=document.getElementById(i); if(se){se.classList.remove('hidden');se.innerText='Getting GPS...';} navigator.geolocation.getCurrentPosition(p=>{var lat=p.coords.latitude,lng=p.coords.longitude; if(i.includes('cLocation')){clientLat=lat;clientLng=lng;} if(i.includes('nRegLocation')){nurseRegLat=lat;nurseRegLng=lng;} fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`).then(r=>r.json()).then(d=>{ie.value=d.display_name||lat.toFixed(5)+','+lng.toFixed(5); if(se) se.innerText='GPS: '+lat.toFixed(4)+','+lng.toFixed(4);}).catch(()=>{ie.value=lat.toFixed(5)+','+lng.toFixed(5);});},e=>{if(se) se.innerText='GPS failed';},{enableHighAccuracy:true,timeout:15000});}
+function getFullPhone(c,p){var code=document.getElementById(c).value; var ph=document.getElementById(p).value.trim().replace(/^0+/,''); if(ph.startsWith('+')) return ph; return code+ph;}
+function getDistanceKm(a,b,c,d){if(!a||!b||!c||!d) return 9999; var R=6371; var dLat=(c-a)*Math.PI/180; var dLon=(d-b)*Math.PI/180; var x=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(a*Math.PI/180)*Math.cos(c*Math.PI/180)*Math.sin(dLon/2)*Math.sin(dLon/2); return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));}
+if(!localStorage.getItem('nurses')){localStorage.setItem('nurses',JSON.stringify([{id:1,name:"Nurse Grace",lat:5.675,lng:-0.165,location:"Madina",phone:"+233244001001",status:'on_duty'},{id:2,name:"Nurse Esther",lat:5.682,lng:-0.185,location:"Haatso",phone:"+233244001002",status:'on_duty'}]));}
+function initUberMap(){var m=document.getElementById('uberMap'); if(!m) return; if(uberMap){uberMap.invalidateSize();fitMapWide();return;} uberMap=L.map('uberMap').setView([5.6037,-0.1870],11); L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(uberMap); nurseCluster=L.markerClusterGroup({showCoverageOnHover:false}); uberMap.addLayer(nurseCluster); renderNurseMarkers(); setTimeout(()=>{uberMap.invalidateSize();fitMapWide();},500);}
+function getAllNursesSource(){if(allWorkers&&allWorkers.length>0) return allWorkers; try{return JSON.parse(localStorage.getItem('nurses')||'[]');}catch(e){return [];}}
+function renderNurseMarkers(list){if(!uberMap||!nurseCluster) return; nurseCluster.clearLayers(); var src=list||getAllNursesSource(); if(clientLat&&clientLng){L.marker([clientLat,clientLng]).addTo(uberMap);} src.forEach(w=>{if(!w.lat||!w.lng) return; var mk=L.marker([parseFloat(w.lat),parseFloat(w.lng)]); mk.bindPopup(`<b>${w.name}</b>`); mk.on('click',()=>selectNurseCard(w.phone||w.id)); nurseCluster.addLayer(mk);});}
+function fitMapWide(){if(!uberMap) return; var b=L.latLngBounds(); var has=false; if(clientLat&&clientLng){b.extend([clientLat,clientLng]);has=true;} var list=nearbyNursesSorted.length>0?nearbyNursesSorted:getAllNursesSource(); list.forEach(n=>{if(n.lat&&n.lng){b.extend([parseFloat(n.lat),parseFloat(n.lng)]);has=true;}}); if(!has){uberMap.setView([5.6037,-0.1870],11);return;} uberMap.fitBounds(b,{padding:[60,60],maxZoom:13});}
+function toggleMap(){var w=document.getElementById('loveCareMapWrapper'); w.classList.toggle('hidden'); if(!w.classList.contains('hidden')){if(!uberMap) initUberMap(); setTimeout(()=>{uberMap.invalidateSize();fitMapWide();},300);}}
+function findNursesUber(){var src=getAllNursesSource(); if(!clientLat||!clientLng){alert('Tap GPS Auto first');return;} var rad=parseInt(document.getElementById('radiusSelect').value)||10; nearbyNursesSorted=src.filter(w=>w.lat&&w.lng).map(w=>{var d=getDistanceKm(clientLat,clientLng,parseFloat(w.lat),parseFloat(w.lng)); return {...w,distance:d};}).filter(w=>w.distance<=rad).sort((a,b)=>a.distance-b.distance).slice(0,40); document.getElementById('nearbyCount').innerText=nearbyNursesSorted.length; document.getElementById('uberActionArea').classList.remove('hidden'); document.getElementById('loveCareMapWrapper').classList.remove('hidden'); if(!uberMap) initUberMap(); setTimeout(()=>{uberMap.invalidateSize();renderNurseMarkers(nearbyNursesSorted);fitMapWide();},300); renderNearbyList(); showPage('home');}
+function renderNearbyList(){var l=document.getElementById('loveCareLiveList'); if(nearbyNursesSorted.length===0){l.innerHTML='<div style="padding:12px;background:#fef3c7;border-radius:10px;text-align:center">No nurses within range</div>';return;} var h=''; nearbyNursesSorted.forEach(n=>{h+=`<div class="uber-card" onclick="selectNurseCard('${n.phone||n.id}')"><img src="./logo.png" style="width:40px;height:40px;border-radius:50%"><div style="flex:1"><b>${n.name}</b> - ${n.distance.toFixed(1)}km<br><small>${n.location||''}</small></div><div class="nurse-dot"></div></div>`;}); l.innerHTML=h;}
+function selectNurseCard(id){selectedNurseId=id; document.getElementById('selectedNurseInfo').innerText='Selected: '+id;}
+function randomSelectNurse(){if(nearbyNursesSorted.length===0){alert('No nurses');return;} var p=nearbyNursesSorted[Math.floor(Math.random()*nearbyNursesSorted.length)]; selectNurseCard(p.phone||p.id);}
+function submitBooking(){var name=document.getElementById('cName').value.trim(); var phone=document.getElementById('cPhone').value.trim(); var fullPhone=getFullPhone('cPhoneCode','cPhone'); var service=document.getElementById('cService').value; if(!name||!phone||!service){alert('Name Phone Service required');return;} if(!selectedNurseId&&nearbyNursesSorted[0]) selectedNurseId=nearbyNursesSorted[0].phone||nearbyNursesSorted[0].id; var id=Date.now(); var b={id:id,name:name,phone:fullPhone,service:service,location:document.getElementById('cLocation').value,status:'pending_assignment',time:new Date().toLocaleString(),timestamp:Date.now(),lat:clientLat,lng:clientLng,selectedNurse:selectedNurseId}; if(db) db.ref('bookings/'+id).set(b).then(()=>alert('Booked!'));}
+function registerNurse(){var name=document.getElementById('nRegName').value.trim(); var fullPhone=getFullPhone('nRegPhoneCode','nRegPhone'); var pass=document.getElementById('nRegPass').value.trim(); var loc=document.getElementById('nRegLocation').value.trim(); if(!name||!fullPhone||!pass||!loc){alert('All required');return;} if(!nurseRegLat){alert('GPS required');return;} var w={name:name,phone:fullPhone,password:pass,location:loc,timestamp:Date.now(),lat:nurseRegLat,lng:nurseRegLng,status:'on_duty',onDuty:true,specialty:document.getElementById('nRegSpecialty').value||'General'}; if(db) db.ref('workers/'+fullPhone.replace(/[^0-9]/g,'')).set(w).then(()=>{alert('Registered! Now login');showPage('nurse-login');});}
+function submitBooking2(){document.getElementById('cName').value=document.getElementById('cName2').value; document.getElementById('cPhone').value=document.getElementById('cPhone2').value; document.getElementById('cLocation').value=document.getElementById('cLocation2').value; submitBooking();}
+function loginNurse(){var fullPhone=getFullPhone('nurseLoginCode','nurseLoginPhone'); var pass=document.getElementById('nurseLoginPass').value.trim(); if(db){db.ref('workers/'+fullPhone.replace(/[^0-9]/g,'')).once('value').then(s=>{var d=s.val(); if(d&&d.password===pass){localStorage.setItem('nursePhone',fullPhone);localStorage.setItem('nurseName',d.name);showPage('nurse-dashboard');}else if(d){document.getElementById('nurseLoginResult').innerText='Wrong password';}else{localStorage.setItem('nursePhone',fullPhone);localStorage.setItem('nurseName',fullPhone);showPage('nurse-dashboard');}});}else{localStorage.setItem('nursePhone',fullPhone);showPage('nurse-dashboard');}}
+function loginStaff(){var id=document.getElementById('staffLoginID').value.trim(); if(!id){alert('Enter ID');return;} localStorage.setItem('staffID',id); showPage('staff-dashboard');}
+function loginCEO(){var id=document.getElementById('ceoLoginID').value.trim().toUpperCase(); var pass=document.getElementById('ceoLoginPass').value.trim(); var r=document.getElementById('ceoLoginResult'); if(id==='KUSIPETER'&&pass==='Peterasa80@you!'){localStorage.setItem('isCEOLogged','true');r.innerText='Success - Loading CEO...';setTimeout(()=>showPage('ceo-dashboard'),400);}else{r.innerText='Access denied';}}
 function logoutCEO(){localStorage.removeItem('isCEOLogged');showPage('home');}
 function logoutStaff(){localStorage.removeItem('staffID');showPage('home');}
 function logoutNurse(){localStorage.removeItem('nursePhone');localStorage.removeItem('nurseName');showPage('home');}
-function triggerSOS(){alert('SOS SENT');}
-function startDuty(){var phone=localStorage.getItem('nursePhone');if(!phone)return;navigator.geolocation.getCurrentPosition(pos=>{var lat=pos.coords.latitude,lng=pos.coords.longitude;var key=phone.replace(/[^0-9]/g,'');if(db)db.ref('workers/'+key).update({lat:lat,lng:lng,status:'on_duty',onDuty:true});var el=document.getElementById('nurseGpsStatus');el.style.display='block';el.innerText='ON DUTY - GPS: '+lat.toFixed(4)+','+lng.toFixed(4);});}
-function stopDuty(){var phone=localStorage.getItem('nursePhone');var key=phone?phone.replace(/[^0-9]/g,''):null;if(db&&key)db.ref('workers/'+key).update({status:'off_duty',onDuty:false});var el=document.getElementById('nurseGpsStatus');if(el){el.style.display='block';el.innerText='OFF DUTY';}}
-function switchCeoTab(tab){document.querySelectorAll('.ceo-tab-content').forEach(t=>t.classList.add('hidden'));document.querySelectorAll('.ceoTabs button').forEach(b=>b.classList.remove('activeTab'));var show=document.getElementById('ceo-tab-'+tab); if(show) show.classList.remove('hidden');var btn=document.getElementById('btn-'+tab); if(btn) btn.classList.add('activeTab');if(tab==='nurses') setTimeout(()=>{initCeoMap();loadCeoData();},200);if(tab==='bookings' || tab==='clients' || tab==='payments' || tab==='staff') loadCeoData();if(tab==='chat') initGroupChat();}
-function loadCeoData(){if(!db)return;db.ref('bookings').once('value').then(snap=>{allBookings=Object.values(snap.val()||{});document.getElementById('statBookings').innerText=allBookings.length;renderBookings(allBookings);renderClients(allBookings);renderPayments(allBookings);});db.ref('workers').once('value').then(snap=>{allWorkers=Object.values(snap.val()||{});document.getElementById('statNurses').innerText=allWorkers.length;document.getElementById('statOnline').innerText=allWorkers.filter(w=>w.onDuty).length;renderNurses(allWorkers);});db.ref('staff').once('value').then(snap=>{renderStaff(Object.values(snap.val()||{}));});}
-function renderBookings(list){var c=document.getElementById('ceoBookingsList');if(!list.length){c.innerHTML='<div style="padding:20px;text-align:center;background:#fef3c7;border-radius:10px">No bookings yet</div>';return;}var h='<table><tr><th>Time</th><th>Client</th><th>Phone</th><th>Service</th><th>Nurse</th><th>Status</th><th>Action</th></tr>';list.sort((a,b)=>b.timestamp-a.timestamp).forEach(b=>{h+=`<tr><td>${b.time||''}</td><td>${b.name||''}</td><td>${b.phone||''}</td><td>${b.service||''}</td><td>${b.selectedNurse||''}</td><td><b>${b.status||''}</b></td><td><button onclick="updateBookingStatus(${b.id},'confirmed')" class="btnSmall" style="background:green;color:white">Confirm</button> <button onclick="deleteBooking(${b.id})" class="btnSmall" style="background:red;color:white">X</button></td></tr>`;});h+='</table>';c.innerHTML=h;}
-function renderNurses(list){var c=document.getElementById('ceoNursesList');if(!list.length){c.innerHTML='<div style="padding:20px;text-align:center;background:#fef3c7;border-radius:10px">No nurses yet</div>';return;}var h='<table><tr><th>Name</th><th>Phone</th><th>Location</th><th>Status</th><th>Action</th></tr>';list.forEach(w=>{h+=`<tr><td>${w.name||''}</td><td>${w.phone||''}</td><td>${w.location||''}</td><td>${w.status||''}</td><td><button onclick="deleteWorker('${(w.phone||'').replace(/[^0-9]/g,'')}')" class="btnSmall" style="background:red;color:white">Remove</button></td></tr>`;});h+='</table>';c.innerHTML=h;}
-function renderClients(b){var c=document.getElementById('ceoClientsList');var map={};b.forEach(x=>{if(x.phone)map[x.phone]={name:x.name,phone:x.phone,location:x.location,count:(map[x.phone]?.count||0)+1};});var clients=Object.values(map);if(!clients.length){c.innerHTML='<div style="padding:20px;text-align:center;background:#fef3c7;border-radius:10px">No clients yet</div>';return;}var h='<table><tr><th>Name</th><th>Phone</th><th>Bookings</th><th>Location</th></tr>';clients.forEach(x=>{h+=`<tr><td>${x.name||''}</td><td>${x.phone}</td><td>${x.count}</td><td>${x.location||''}</td></tr>`;});h+='</table>';c.innerHTML=h;}
-function renderPayments(b){var total=b.reduce((s,x)=>s+(parseFloat(x.ghsEquivalent)||0),0);document.getElementById('totalRevenue').innerText=total.toFixed(2)+' GHS';document.getElementById('pendingRevenue').innerText=b.filter(x=>x.status==='pending_assignment').reduce((s,x)=>s+(parseFloat(x.ghsEquivalent)||0),0).toFixed(2)+' GHS';var c=document.getElementById('ceoPaymentsList');if(!b.length){c.innerHTML='<div style="padding:20px;text-align:center;background:#fef3c7;border-radius:10px">No payments yet</div>';return;}var h='<table><tr><th>Client</th><th>Amount</th><th>GHS Equiv</th><th>Status</th></tr>';b.forEach(x=>{h+=`<tr><td>${x.name||''}</td><td>${x.amount||''} ${x.currency||''}</td><td>${(x.ghsEquivalent||0).toFixed(2)}</td><td>${x.status||''}</td></tr>`;});h+='</table>';c.innerHTML=h;}
-function renderStaff(list){var c=document.getElementById('ceoStaffList');if(!list.length){c.innerHTML='<div style="padding:20px;text-align:center;background:#fef3c7;border-radius:10px">No staff yet</div>';return;}var h='<table><tr><th>Staff ID</th><th>Action</th></tr>';list.forEach(s=>{h+=`<tr><td>${s.id||''}</td><td><button onclick="deleteStaff('${s.id}')" class="btnSmall" style="background:red;color:white">Delete</button></td></tr>`;});h+='</table>';c.innerHTML=h;}
-function filterBookings(){var q=document.getElementById('ceoSearchBooking').value.toLowerCase();var st=document.getElementById('ceoBookingFilter').value;var f=allBookings.filter(b=>(!q||(b.name||'').toLowerCase().includes(q)||(b.phone||'').includes(q))&&(!st||b.status===st));renderBookings(f);}
-function filterNurses(){var q=document.getElementById('ceoSearchNurse').value.toLowerCase();var f=allWorkers.filter(w=>(w.name||'').toLowerCase().includes(q)||(w.phone||'').includes(q));renderNurses(f);}
-function updateBookingStatus(id,status){if(!db)return;db.ref('bookings/'+id).update({status:status}).then(()=>{loadCeoData();});}
-function deleteBooking(id){if(confirm('Delete booking?')){if(db)db.ref('bookings/'+id).remove().then(()=>loadCeoData());}}
-function deleteWorker(k){if(confirm('Remove nurse?')){if(db)db.ref('workers/'+k).remove().then(()=>loadCeoData());}}
-function addStaff(){var id=document.getElementById('newStaffId').value.trim();var pass=document.getElementById('newStaffPass').value.trim();if(!id||!pass){alert('ID and password required');return;}if(db)db.ref('staff/'+id).set({id:id,password:pass,time:new Date().toLocaleString()}).then(()=>{alert('Staff added');document.getElementById('newStaffId').value='';document.getElementById('newStaffPass').value='';loadCeoData();});}
-function deleteStaff(id){if(confirm('Delete staff?')){if(db)db.ref('staff/'+id).remove().then(()=>loadCeoData());}}
-function applyAnnouncementConfig(cfg){if(!cfg) return;var root=document.documentElement;if(cfg.bg) root.style.setProperty('--announce-bg', cfg.bg);if(cfg.textColor) root.style.setProperty('--announce-text', cfg.textColor);if(cfg.border) root.style.setProperty('--announce-border', cfg.border);if(cfg.speed) root.style.setProperty('--announce-speed', cfg.speed);if(cfg.text) document.getElementById('announcementText').innerText=cfg.text;if(document.getElementById('announcementInput') && cfg.text) document.getElementById('announcementInput').value=cfg.text;if(document.getElementById('announceBgColor') && cfg.bg){document.getElementById('announceBgColor').value=cfg.bg;document.getElementById('bgVal').innerText=cfg.bg;}if(document.getElementById('announceTextColor') && cfg.textColor){document.getElementById('announceTextColor').value=cfg.textColor;document.getElementById('textVal').innerText=cfg.textColor;}if(document.getElementById('announceBorderColor') && cfg.border){document.getElementById('announceBorderColor').value=cfg.border;document.getElementById('borderVal').innerText=cfg.border;}if(document.getElementById('announceSpeed') && cfg.speed) document.getElementById('announceSpeed').value=cfg.speed;localStorage.setItem('announcementConfig', JSON.stringify(cfg));}
-function saveAnnouncement(){var txt=document.getElementById('announcementInput').value.trim();var bg=document.getElementById('announceBgColor').value;var tColor=document.getElementById('announceTextColor').value;var bColor=document.getElementById('announceBorderColor').value;var speed=document.getElementById('announceSpeed').value;if(!txt){alert('Enter announcement text');return;}var cfg={text:txt,bg:bg,textColor:tColor,border:bColor,speed:speed,timestamp:Date.now()};applyAnnouncementConfig(cfg);if(db){db.ref('settings/announcementConfig').set(cfg).then(()=>alert('✅ LIVE! Announcement updated')).catch(e=>alert(e.message));db.ref('settings/announcement').set(txt);}else{alert('Saved locally');}}
-function saveSettings(){var min=document.getElementById('minRateInput').value;localStorage.setItem('minRateGHS',min);if(db)db.ref('settings/minRate').set(parseFloat(min));alert('Min rate saved');}
+
+function switchCeoTab(tab){
+document.querySelectorAll('.ceo-tab').forEach(t=>t.classList.add('hidden'));
+document.querySelectorAll('.ceoTabs button').forEach(b=>b.classList.remove('activeTab'));
+var show=document.getElementById('ceo-tab-'+tab); if(show) show.classList.remove('hidden');
+var btn=document.getElementById('btn-'+tab); if(btn) btn.classList.add('activeTab');
+if(tab==='nurses') setTimeout(()=>{initCeoMap();loadCeoData();},200);
+if(tab==='bookings'||tab==='clients'||tab==='payments'||tab==='staff') loadCeoData();
+if(tab==='chat'){initGroupChat();toggleMasterClear();}
+}
+function loadCeoData(){if(!db) return; db.ref('bookings').once('value').then(s=>{allBookings=Object.values(s.val()||{});document.getElementById('statBookings').innerText=allBookings.length;renderBookings(allBookings);renderClients(allBookings);renderPayments(allBookings);}); db.ref('workers').once('value').then(s=>{allWorkers=Object.values(s.val()||{});document.getElementById('statNurses').innerText=allWorkers.length;document.getElementById('statOnline').innerText=allWorkers.filter(w=>w.onDuty).length;renderNurses(allWorkers);}); db.ref('staff').once('value').then(s=>{renderStaff(Object.values(s.val()||{}));});}
+function renderBookings(list){var c=document.getElementById('ceoBookingsList'); if(!list.length){c.innerHTML='<div style="padding:20px;text-align:center;background:#fef3c7;border-radius:10px">No bookings yet</div>';return;} var h='<table><tr><th>Time</th><th>Client</th><th>Phone</th><th>Service</th><th>Nurse</th><th>Status</th><th>Action</th></tr>'; list.sort((a,b)=>b.timestamp-a.timestamp).forEach(b=>{h+=`<tr><td>${b.time||''}</td><td>${b.name||''}</td><td>${b.phone||''}</td><td>${b.service||''}</td><td>${b.selectedNurse||''}</td><td><b>${b.status||''}</b></td><td><button onclick="updateBookingStatus(${b.id},'confirmed')" class="btnSmall" style="background:green;color:white">Confirm</button> <button onclick="deleteBooking(${b.id})" class="btnSmall" style="background:red;color:white">X</button></td></tr>`;}); h+='</table>'; c.innerHTML=h;}
+function renderNurses(list){var c=document.getElementById('ceoNursesList'); if(!list.length){c.innerHTML='<div style="padding:20px;text-align:center;background:#fef3c7;border-radius:10px">No nurses yet</div>';return;} var h='<table><tr><th>Name</th><th>Phone</th><th>Location</th><th>Status</th><th>Action</th></tr>'; list.forEach(w=>{h+=`<tr><td>${w.name||''}</td><td>${w.phone||''}</td><td>${w.location||''}</td><td>${w.status||''}</td><td><button onclick="deleteWorker('${(w.phone||'').replace(/[^0-9]/g,'')}')" class="btnSmall" style="background:red;color:white">Remove</button></td></tr>`;}); h+='</table>'; c.innerHTML=h;}
+function renderClients(b){var c=document.getElementById('ceoClientsList'); var map={}; b.forEach(x=>{if(x.phone) map[x.phone]={name:x.name,phone:x.phone,location:x.location,count:(map[x.phone]?.count||0)+1};}); var clients=Object.values(map); if(!clients.length){c.innerHTML='<div style="padding:20px;text-align:center;background:#fef3c7;border-radius:10px">No clients yet</div>';return;} var h='<table><tr><th>Name</th><th>Phone</th><th>Bookings</th><th>Location</th></tr>'; clients.forEach(x=>{h+=`<tr><td>${x.name||''}</td><td>${x.phone}</td><td>${x.count}</td><td>${x.location||''}</td></tr>`;}); h+='</table>'; c.innerHTML=h;}
+function renderPayments(b){var total=b.reduce((s,x)=>s+(x.ghsEquivalent||0),0); document.getElementById('totalRevenue').innerText=total.toFixed(2)+' GHS'; document.getElementById('pendingRevenue').innerText=b.filter(x=>x.status==='pending_assignment').reduce((s,x)=>s+(x.ghsEquivalent||0),0).toFixed(2)+' GHS'; var c=document.getElementById('ceoPaymentsList'); if(!b.length){c.innerHTML='<div style="padding:20px;text-align:center;background:#fef3c7;border-radius:10px">No payments yet</div>';return;} var h='<table><tr><th>Client</th><th>Service</th><th>Status</th></tr>'; b.forEach(x=>{h+=`<tr><td>${x.name||''}</td><td>${x.service||''}</td><td>${x.status||''}</td></tr>`;}); h+='</table>'; c.innerHTML=h;}
+function renderStaff(list){var c=document.getElementById('ceoStaffList'); if(!list.length){c.innerHTML='<div style="padding:20px;text-align:center;background:#fef3c7;border-radius:10px">No staff yet</div>';return;} var h='<table><tr><th>Staff ID</th><th>Action</th></tr>'; list.forEach(s=>{h+=`<tr><td>${s.id||''}</td><td><button onclick="deleteStaff('${s.id}')" class="btnSmall" style="background:red;color:white">Delete</button></td></tr>`;}); h+='</table>'; c.innerHTML=h;}
+function filterBookings(){var q=document.getElementById('ceoSearchBooking').value.toLowerCase(); var st=document.getElementById('ceoBookingFilter').value; var f=allBookings.filter(b=>(!q||(b.name||'').toLowerCase().includes(q)||(b.phone||'').includes(q))&&(!st||b.status===st)); renderBookings(f);}
+function filterNurses(){var q=document.getElementById('ceoSearchNurse').value.toLowerCase(); var f=allWorkers.filter(w=>(w.name||'').toLowerCase().includes(q)||(w.phone||'').includes(q)); renderNurses(f);}
+function updateBookingStatus(id,s){if(!db) return; db.ref('bookings/'+id).update({status:s}).then(()=>loadCeoData());}
+function deleteBooking(id){if(confirm('Delete booking?')){if(db) db.ref('bookings/'+id).remove().then(()=>loadCeoData());}}
+function deleteWorker(k){if(confirm('Remove nurse?')){if(db) db.ref('workers/'+k).remove().then(()=>loadCeoData());}}
+function addStaff(){var id=document.getElementById('newStaffId').value.trim(); var pass=document.getElementById('newStaffPass').value.trim(); if(!id||!pass){alert('ID and password required');return;} if(db) db.ref('staff/'+id).set({id:id,password:pass,time:new Date().toLocaleString()}).then(()=>{alert('Staff added');document.getElementById('newStaffId').value='';document.getElementById('newStaffPass').value='';loadCeoData();});}
+function deleteStaff(id){if(confirm('Delete staff?')){if(db) db.ref('staff/'+id).remove().then(()=>loadCeoData());}}
+function applyAnnouncementConfig(cfg){if(!cfg) return; var root=document.documentElement; if(cfg.bg) root.style.setProperty('--announce-bg',cfg.bg); if(cfg.textColor) root.style.setProperty('--announce-text',cfg.textColor); if(cfg.border) root.style.setProperty('--announce-border',cfg.border); if(cfg.speed) root.style.setProperty('--announce-speed',cfg.speed); if(cfg.text) document.getElementById('announcementText').innerText=cfg.text; if(document.getElementById('announcementInput')&&cfg.text) document.getElementById('announcementInput').value=cfg.text; if(document.getElementById('announceBgColor')&&cfg.bg){document.getElementById('announceBgColor').value=cfg.bg;document.getElementById('bgVal').innerText=cfg.bg;} if(document.getElementById('announceTextColor')&&cfg.textColor){document.getElementById('announceTextColor').value=cfg.textColor;document.getElementById('textVal').innerText=cfg.textColor;} if(document.getElementById('announceBorderColor')&&cfg.border){document.getElementById('announceBorderColor').value=cfg.border;document.getElementById('borderVal').innerText=cfg.border;} if(document.getElementById('announceSpeed')&&cfg.speed) document.getElementById('announceSpeed').value=cfg.speed; localStorage.setItem('announcementConfig',JSON.stringify(cfg));}
+function saveAnnouncement(){var txt=document.getElementById('announcementInput').value.trim(); var bg=document.getElementById('announceBgColor').value; var tColor=document.getElementById('announceTextColor').value; var bColor=document.getElementById('announceBorderColor').value; var speed=document.getElementById('announceSpeed').value; if(!txt){alert('Enter announcement text');return;} var cfg={text:txt,bg:bg,textColor:tColor,border:bColor,speed:speed,timestamp:Date.now()}; applyAnnouncementConfig(cfg); if(db){db.ref('settings/announcementConfig').set(cfg).then(()=>alert('✅ LIVE! Announcement updated')).catch(e=>alert(e.message));}}
+function saveSettings(){var min=document.getElementById('minRateInput').value; localStorage.setItem('minRateGHS',min); if(db) db.ref('settings/minRate').set(parseFloat(min)); alert('Min rate saved');}
+
 var groupChatListener=false;
-function initGroupChat(){if(!db || groupChatListener) return;groupChatListener=true;db.ref('group_chat').limitToLast(200).on('value', snap=>{var data=snap.val()||{};var msgs=Object.entries(data).map(([key,val])=>{return {...val, _key:key};}).sort((a,b)=>a.timestamp-b.timestamp);renderGroupChat(msgs);updateOnlineCounts(msgs);});}
+function initGroupChat(){if(!db||groupChatListener) return; groupChatListener=true; db.ref('group_chat').limitToLast(200).on('value',snap=>{var data=snap.val()||{}; var msgs=Object.entries(data).map(([k,v])=>{return {...v,_key:k};}).sort((a,b)=>a.timestamp-b.timestamp); renderGroupChat(msgs);});}
 function renderGroupChat(msgs){
- ['ceoChatBox','nurseChatBox','staffChatBox','globalChatBox'].forEach(id=>{
-   var box=document.getElementById(id); if(!box) return;
-   var meId=getCurrentId();
-   var html='';
-   msgs.forEach(m=>{
-     var isMe=m.senderId===meId;
-     var canEdit=isMe;
-     html+=`<div class="chatMsg ${isMe?'me':'other'}"><div style="display:flex;align-items:center;gap:5px"><b>${escapeHtml(m.senderName)}</b><span class="roleBadge role-${m.role}">${m.role}</span></div><div style="margin-top:4px">${escapeHtml(m.text)} ${m.edited?'<small>(edited)</small>':''}</div><div class="chatMeta"><span>${m.time||''}</span>${isMe?'<span>✓✓</span>':''}</div>${canEdit?`<div class="chatActions"><button class="btnEdit" onclick="editMessage('${m._key}')">✏️ Edit</button><button class="btnDel" onclick="deleteMessage('${m._key}')">🗑️ Delete</button></div>`:''}</div>`;
-   });
-   box.innerHTML=html||'<div style="text-align:center;color:#999;padding:20px"><b>👋 Welcome</b><br>Only Nurses, Staff, CEO can chat</div>';
-   box.scrollTop=box.scrollHeight;
- });
+['ceoChatBox','nurseChatBox','staffChatBox','globalChatBox'].forEach(id=>{
+var box=document.getElementById(id); if(!box) return;
+var meId=getCurrentId(); var html='';
+msgs.forEach(m=>{
+var isMe=m.senderId===meId;
+html+=`<div class="chatMsg ${isMe?'me':'other'}"><div style="display:flex;align-items:center;gap:5px"><b>${escapeHtml(m.senderName)}</b><span class="roleBadge role-${m.role}">${m.role}</span></div><div style="margin-top:4px">${escapeHtml(m.text)} ${m.edited?'<small>(edited)</small>':''}</div><div class="chatMeta"><span>${m.time||''}</span></div>${isMe?`<div class="chatActions"><button class="btnEdit" onclick="editMessage('${m._key}')">✏️ Edit</button><button class="btnDel" onclick="deleteMessage('${m._key}')">🗑️ Delete</button></div>`:''}</div>`;
+});
+box.innerHTML=html||'<div style="text-align:center;color:#999;padding:20px">No messages yet</div>'; box.scrollTop=box.scrollHeight;
+});
+var online=msgs.filter(m=>Date.now()-m.timestamp<300000).length;
+var el=document.getElementById('ceoOnlineCount'); if(el) el.innerText=online+' ONLINE';
+el=document.getElementById('globalOnline'); if(el) el.innerText=online+' ONLINE';
 }
-function editMessage(key){
- var current=groupChatListener?null:null;
- var msg=prompt('Edit your message:');
- if(msg===null) return;
- if(msg.trim()===''){alert('Cannot be empty');return;}
- if(db) db.ref('group_chat/'+key).update({text:msg.trim(), edited:true, editTime:Date.now()});
-}
-function deleteMessage(key){if(!confirm('Delete your message?')) return; if(db) db.ref('group_chat/'+key).remove();}
-function updateOnlineCounts(msgs){var recent=msgs.filter(m=>Date.now()-m.timestamp < 300000);var unique=new Set(recent.map(m=>m.senderId)).size;['ceoOnlineCount','nurseOnlineCount','staffOnlineCount','globalOnline'].forEach(id=>{var el=document.getElementById(id); if(el) el.innerText=unique>0?unique+' ONLINE': '0 ONLINE';});}
-function getCurrentId(){if(localStorage.getItem('isCEOLogged')==='true') return 'CEO_KUSIPETER';if(localStorage.getItem('nursePhone')) return localStorage.getItem('nursePhone');if(localStorage.getItem('staffID')) return localStorage.getItem('staffID');return 'guest_'+Math.random().toString(36).substr(2,5);}
-function getCurrentName(){if(localStorage.getItem('isCEOLogged')==='true') return 'CEO Peter';if(localStorage.getItem('nurseName')) return localStorage.getItem('nurseName');if(localStorage.getItem('nursePhone')) return localStorage.getItem('nursePhone');if(localStorage.getItem('staffID')) return 'Staff '+localStorage.getItem('staffID');return 'Guest';}
-function autoSetRole(){if(localStorage.getItem('isCEOLogged')==='true') document.getElementById('groupRole').value='CEO';else if(localStorage.getItem('staffID')) document.getElementById('groupRole').value='STAFF';else document.getElementById('groupRole').value='NURSE';}
-function sendGroupMessage(role){var inputId=role==='CEO'?'ceoChatInput':role==='NURSE'?'nurseChatInput':'staffChatInput';var input=document.getElementById(inputId); var text=input.value.trim(); if(!text) return;if(!db){alert('Firebase not connected');return;}var msg={text:text,role:role,senderId:getCurrentId(),senderName:getCurrentName(),timestamp:Date.now(),time:new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})};db.ref('group_chat/'+Date.now()+'_'+Math.random().toString(36).substr(2,5)).set(msg).then(()=>{input.value='';});}
-function sendGlobalChat(){var input=document.getElementById('globalChatInput'); var role=document.getElementById('groupRole').value; var text=input.value.trim(); if(!text) return; if(!db){alert('Firebase not connected');return;}var msg={text:text,role:role,senderId:getCurrentId(),senderName:getCurrentName(),timestamp:Date.now(),time:new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})};db.ref('group_chat/'+Date.now()+'_'+Math.random().toString(36).substr(2,5)).set(msg).then(()=>{input.value='';});}
+function editMessage(k){var cur=groupChatListener?null:null; var newText=prompt('Edit your message:'); if(!newText) return; if(db) db.ref('group_chat/'+k).update({text:newText.trim(),edited:true});}
+function deleteMessage(k){if(!confirm('Delete your message?')) return; if(db) db.ref('group_chat/'+k).remove();}
+function getCurrentId(){if(localStorage.getItem('isCEOLogged')==='true') return 'CEO_KUSIPETER'; if(localStorage.getItem('nursePhone')) return localStorage.getItem('nursePhone'); if(localStorage.getItem('staffID')) return localStorage.getItem('staffID'); return 'guest';}
+function getCurrentName(){if(localStorage.getItem('isCEOLogged')==='true') return 'CEO Peter'; if(localStorage.getItem('nurseName')) return localStorage.getItem('nurseName'); if(localStorage.getItem('nursePhone')) return localStorage.getItem('nursePhone'); if(localStorage.getItem('staffID')) return 'Staff '+localStorage.getItem('staffID'); return 'Guest';}
+function autoSetRole(){if(localStorage.getItem('isCEOLogged')==='true') document.getElementById('groupRole').value='CEO'; else if(localStorage.getItem('staffID')) document.getElementById('groupRole').value='STAFF'; else document.getElementById('groupRole').value='NURSE';}
+function sendGroupMessage(r){var id=r==='CEO'?'ceoChatInput':r==='NURSE'?'nurseChatInput':'staffChatInput'; var inp=document.getElementById(id); var t=inp.value.trim(); if(!t) return; if(!db){alert('Firebase not connected');return;} var msg={text:t,role:r,senderId:getCurrentId(),senderName:getCurrentName(),timestamp:Date.now(),time:new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}; db.ref('group_chat/'+Date.now()+'_'+Math.random().toString(36).substr(2,5)).set(msg).then(()=>{inp.value='';});}
+function sendGlobalChat(){var inp=document.getElementById('globalChatInput'); var role=document.getElementById('groupRole').value; var t=inp.value.trim(); if(!t) return; if(!db){alert('Firebase not connected');return;} var msg={text:t,role:role,senderId:getCurrentId(),senderName:getCurrentName(),timestamp:Date.now(),time:new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}; db.ref('group_chat/'+Date.now()+'_'+Math.random().toString(36).substr(2,5)).set(msg).then(()=>{inp.value='';});}
 function clearGroupChat(){
- var isCEO=localStorage.getItem('isCEOLogged')==='true';
- if(!isCEO){alert('⛔ Only CEO can Master Delete - Blocked');return;}
- if(!confirm('⚠️ CEO MASTER CLEAR: Delete ALL chats for EVERYONE?')) return;
- if(db) db.ref('group_chat').remove().then(()=>alert('✅ Entire board cleared by CEO'));
+var isCEO=localStorage.getItem('isCEOLogged')==='true';
+if(!isCEO){alert('⛔ Only CEO can Master Clear entire board');return;}
+if(!confirm('⚠️ CEO MASTER CLEAR: Delete ALL chats for EVERYONE permanently?')) return;
+if(db) db.ref('group_chat').remove().then(()=>alert('✅ Entire chat board cleared by CEO'));
 }
-function escapeHtml(t){var d=document.createElement('div');d.textContent=t;return d.innerHTML;}
-function loadStaffData(){if(!db)return;db.ref('bookings').once('value').then(snap=>{var vals=Object.values(snap.val()||{});var html=vals.length?'<table><tr><th>Client</th><th>Service</th><th>Phone</th></tr>':'No bookings';vals.slice(0,30).forEach(b=>{html+=`<tr><td>${b.name}</td><td>${b.service}</td><td>${b.phone}</td></tr>`});if(vals.length)html+='</table>';document.getElementById('staffBookingsList').innerHTML=html;});document.getElementById('staffDashName').innerText=localStorage.getItem('staffID')||'';}
-function loadNurseDashboard(){var phone=localStorage.getItem('nursePhone');if(!phone)return;document.getElementById('nurseDashName').innerText=localStorage.getItem('nurseName')||phone;if(db){db.ref('bookings').orderByChild('selectedNurse').equalTo(phone).once('value').then(snap=>{var vals=Object.values(snap.val()||{});var list=document.getElementById('nurseJobsList');if(!vals.length){list.innerHTML='No offers yet. Keep DUTY ON.';return;}var h='';vals.slice(-10).reverse().forEach(b=>{h+=`<div class="uber-card"><div style="flex:1"><b>${b.name}</b> - ${b.service}<br><small>${b.location||''} - ${b.time||''}</small></div><button class="btnSmall" style="background:#16a34a;color:white" onclick="updateBookingStatus(${b.id},'confirmed')">Accept</button></div>`;});list.innerHTML=h;});}}
-function initCeoMap(){var div=document.getElementById('ceoMap');if(!div)return;if(ceoMap){ceoMap.invalidateSize();return;}ceoMap=L.map('ceoMap').setView([5.6037,-0.1870],10);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(ceoMap);var workers=getAllNursesSource();workers.forEach(w=>{if(w.lat&&w.lng)L.marker([w.lat,w.lng]).addTo(ceoMap).bindPopup(w.name||'Nurse');});}
+function escapeHtml(t){var d=document.createElement('div'); d.textContent=t; return d.innerHTML;}
+function loadStaffData(){if(!db) return; db.ref('bookings').once('value').then(s=>{var v=Object.values(s.val()||{}); var h=v.length?'<table><tr><th>Client</th><th>Service</th><th>Phone</th></tr>':'No bookings'; v.slice(0,30).forEach(b=>{h+=`<tr><td>${b.name}</td><td>${b.service}</td><td>${b.phone}</td></tr>`;}); if(v.length) h+='</table>'; document.getElementById('staffBookingsList').innerHTML=h;}); document.getElementById('staffDashName').innerText=localStorage.getItem('staffID')||'';}
+function loadNurseDashboard(){var p=localStorage.getItem('nursePhone'); if(!p) return; document.getElementById('nurseDashName').innerText=localStorage.getItem('nurseName')||p; if(db){db.ref('bookings').orderByChild('selectedNurse').equalTo(p).once('value').then(s=>{var v=Object.values(s.val()||{}); var l=document.getElementById('nurseJobsList'); if(!v.length){l.innerHTML='No offers yet. Keep DUTY ON.';return;} var h=''; v.slice(-10).reverse().forEach(b=>{h+=`<div class="uber-card"><div style="flex:1"><b>${b.name}</b> - ${b.service}<br><small>${b.location||''} - ${b.time||''}</small></div><button class="btnSmall" style="background:#16a34a;color:white" onclick="updateBookingStatus(${b.id},'confirmed')">Accept</button></div>`;}); l.innerHTML=h;});}}
+function initCeoMap(){var d=document.getElementById('ceoMap'); if(!d) return; if(ceoMap){ceoMap.invalidateSize();return;} ceoMap=L.map('ceoMap').setView([5.6037,-0.1870],10); L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(ceoMap); var workers=getAllNursesSource(); workers.forEach(w=>{if(w.lat&&w.lng) L.marker([w.lat,w.lng]).addTo(ceoMap).bindPopup(w.name||'Nurse');});}
 window.onload=function(){
- populatePhoneCodes();
- if(db){
-  db.ref('bookings').on('value',s=>{allBookings=Object.values(s.val()||{});});
-  db.ref('workers').on('value',s=>{allWorkers=Object.values(s.val()||{});});
-  db.ref('settings/announcementConfig').on('value',snap=>{var cfg=snap.val();if(cfg){applyAnnouncementConfig(cfg);}else{db.ref('settings/announcement').once('value').then(s=>{if(s.val()) applyAnnouncementConfig({text:s.val(),bg:'#111827',textColor:'#eab308',border:'#eab308',speed:'22s'});});}});
-  initGroupChat();
- }
- try{var localCfg=JSON.parse(localStorage.getItem('announcementConfig')||'null');if(localCfg) applyAnnouncementConfig(localCfg);}catch(e){}
- ['announceBgColor','announceTextColor','announceBorderColor','announceSpeed'].forEach(id=>{var el=document.getElementById(id);if(el) el.addEventListener('input',()=>{var preview={text:document.getElementById('announcementInput').value||document.getElementById('announcementText').innerText,bg:document.getElementById('announceBgColor').value,textColor:document.getElementById('announceTextColor').value,border:document.getElementById('announceBorderColor').value,speed:document.getElementById('announceSpeed').value};applyAnnouncementConfig(preview);});});
- showPage('home');setTimeout(initUberMap,700);setTimeout(toggleMasterClear,1000);
+populatePhoneCodes();
+if(db){
+db.ref('bookings').on('value',s=>{allBookings=Object.values(s.val()||{});});
+db.ref('workers').on('value',s=>{allWorkers=Object.values(s.val()||{});});
+db.ref('settings/announcementConfig').on('value',snap=>{var cfg=snap.val(); if(cfg){applyAnnouncementConfig(cfg);}});
+initGroupChat();
+}
+try{var localCfg=JSON.parse(localStorage.getItem('announcementConfig')||'null'); if(localCfg) applyAnnouncementConfig(localCfg);}catch(e){}
+var savedLang=localStorage.getItem('selectedLang'); if(savedLang){document.getElementById('langSelect').value=savedLang; changeLanguage();}
+var savedCountry=localStorage.getItem('selectedCountry'); if(savedCountry){document.getElementById('countrySelect').value=savedCountry;}
+['announceBgColor','announceTextColor','announceBorderColor','announceSpeed'].forEach(id=>{var el=document.getElementById(id); if(el) el.addEventListener('input',()=>{var preview={text:document.getElementById('announcementInput').value||document.getElementById('announcementText').innerText,bg:document.getElementById('announceBgColor').value,textColor:document.getElementById('announceTextColor').value,border:document.getElementById('announceBorderColor').value,speed:document.getElementById('announceSpeed').value};applyAnnouncementConfig(preview);});});
+showPage('home'); setTimeout(initUberMap,700); setTimeout(toggleMasterClear,1000);
 };
 </script>
-<footer style="background:#111;color:#fff;padding:20px;text-align:center;margin-top:40px"><p>© 2026 LOVE CARE GLOBAL - 13 Services + 30 Codes + CEO Master Only</p></footer>
+<footer style="background:#111;color:#fff;padding:20px;text-align:center;margin-top:40px"><p>© 2026 LOVE CARE GLOBAL</p></footer>
 </body>
 </html>
