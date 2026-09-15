@@ -451,6 +451,12 @@ function startDuty(){
 }
 function stopDuty(){var phone=localStorage.getItem('nursePhone'); if(db && phone) db.ref('workers/'+phone.split('+').join('')).update({status:'off_duty',onDuty:false}); document.getElementById('nurseGpsStatus').innerText='OFF - Not on map';}
 window.onload=function(){
+  // FORCE CLEAR OLD CACHE - FIXES OLD FILE SHOWING
+  if(!localStorage.getItem('v3-fixed')){
+    localStorage.removeItem('nurses');
+    localStorage.setItem('v3-fixed','true');
+    console.log('Cleared old nurses cache');
+  }
   var saved=localStorage.getItem('loveCareCountry')||'GH';
   document.getElementById('countrySelect').value=saved; changeCountry();
   if(db){
@@ -460,9 +466,19 @@ window.onload=function(){
   showPage('home');
   setTimeout(initUberMap,700);
 };
+// FINAL CACHE KILLER - Unregister Service Worker that shows old file
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.getRegistrations().then(function(regs){
+    for(let r of regs){ r.unregister(); console.log('SW unregistered'); }
+  });
+}
+if(window.caches){
+  caches.keys().then(function(names){ for(let n of names) caches.delete(n); });
+}
 </script>
 <footer style="background:#111;color:#fff;padding:20px;text-align:center;margin-top:40px;">
-<p>(c) 2026 LOVE CARE GLOBAL - Accra Ghana - Uber Map Edition - WIDE ZOOM FIXED</p>
+<p>(c) 2026 LOVE CARE GLOBAL - Accra Ghana - Uber Map Edition - WIDE ZOOM FIXED v3.1 - <!-- CACHE_BUST_2026_05_15 --></p>
+<p style="font-size:9px;color:#eab308">If you still see old file: Open in Incognito + Hard Refresh CTRL+F5</p>
 </footer>
 </body>
 </html>
