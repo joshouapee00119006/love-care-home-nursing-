@@ -47,9 +47,6 @@ table{width:100%;border-collapse:collapse;font-size:11px;margin-top:8px} th,td{b
 .ceoTabs button{flex:1;min-width:70px;padding:11px 4px;border:3px solid transparent}
 .ceoTabs button.activeTab{border:3px solid #111827;transform:scale(1.05)}
 .chatBox{height:400px;overflow-y:auto;border:3px solid #16a34a;border-radius:12px;padding:10px;background:#f9fafb;display:flex;flex-direction:column;gap:8px}
-.chatMsg{max-width:85%;padding:10px 12px;border-radius:16px;font-size:12px;word-break:break-word}
-.chatMsg.me{align-self:flex-end;background:#16a34a;color:white;border-bottom-right-radius:4px}
-.chatMsg.other{align-self:flex-start;background:white;border:2px solid #e5e7eb;border-bottom-left-radius:4px}
 .roleBadge{font-size:8px;padding:2px 7px;border-radius:10px;font-weight:800;color:white}
 .role-CEO{background:#111827}.role-NURSE{background:#2563eb}.role-STAFF{background:#7c3aed}
 .colorRow{display:flex;gap:8px;align-items:center;margin:6px 0}
@@ -70,25 +67,32 @@ table{width:100%;border-collapse:collapse;font-size:11px;margin-top:8px} th,td{b
 .wageCard{background:linear-gradient(135deg,#fef3c7,#fde68a);border:2px solid #f59e0b;border-radius:12px;padding:10px;margin:8px 0}
 .wageRow{display:flex;justify-content:space-between;font-size:11px;font-weight:700;padding:3px 0}
 .totalRow{border-top:2px solid #92400e;margin-top:6px;padding-top:6px;font-size:13px;color:#92400e}
-.unitTabs{display:flex;gap:6px;margin-bottom:10px}
-.unitTabs button{flex:1;padding:12px 6px;border:2px solid #16a34a;border-radius:10px;font-weight:800;font-size:12px;background:white;color:#16a34a;cursor:pointer}
+.unitTabs{display:flex;gap:8px;margin-bottom:10px}
+.unitTabs button{flex:1;padding:14px 6px;border:2px solid #16a34a;border-radius:12px;font-weight:800;font-size:13px;background:white;color:#16a34a;cursor:pointer}
 .unitTabs button.active{background:#16a34a;color:white;transform:scale(1.03);box-shadow:0 3px 8px rgba(22,163,74,.3)}
-.unitInputBox{background:white;border-radius:10px;padding:14px;margin-top:6px;border:1px solid #bbf7d0;text-align:center}
-.unitInputBox label{font-size:12px;font-weight:800;color:#16a34a;display:block;margin-bottom:8px}
-.unitRow{display:flex;gap:8px;align-items:center;justify-content:center}
-.stepBtn{width:44px;height:44px;background:#16a34a;color:white;border:none;border-radius:10px;font-weight:800;font-size:20px;cursor:pointer}
+.unitInputBox{background:white;border-radius:12px;padding:14px;margin-top:6px;border:1px solid #bbf7d0}
+.unitInputBox label{font-size:11px;font-weight:800;color:#16a34a;display:block;margin-bottom:6px}
+.durationGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.durationItem{background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:10px;padding:8px;text-align:center}
+.durationItem label{font-size:10px;margin-bottom:4px}
+.durationItem input{text-align:center;font-weight:800;margin:0}
+.feedBox{background:#fffbeb;border:2px dashed #f59e0b;border-radius:12px;padding:12px;margin-top:12px}
+.feedRow{display:flex;gap:8px;margin-top:6px}
+.feedRow button{flex:1;padding:10px;border:2px solid #e5e7eb;border-radius:10px;font-weight:800;background:white;cursor:pointer}
+.feedRow button.activeYes{background:#16a34a;color:white;border-color:#16a34a}
+.feedRow button.activeNo{background:#ef4444;color:white;border-color:#ef4444}
+.stepBtn{width:40px;height:42px;background:#16a34a;color:white;border:none;border-radius:10px;font-weight:800;font-size:18px;cursor:pointer}
 .helpItem{border:2px solid #e5e7eb;border-radius:12px;margin:8px 0;background:white;overflow:hidden}
 .helpQ{padding:12px;font-weight:800;font-size:12px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;background:#f9fafb;color:#111827}
 .helpQ span{background:#16a34a;color:white;padding:2px 8px;border-radius:10px;font-size:12px}
 .helpA{display:none;padding:12px;background:white;border-top:1px solid #e5e7eb}
 .helpA.active{display:block}
-.helpA p{font-size:11px;color:#374151;line-height:1.6;margin:0}
 </style>
 </head>
 <body>
 <div class="sosFloat" onclick="alert('SOS Sent')">SOS</div>
-<div class="header"><div id="logoTapArea" style="display:flex;align-items:center;gap:10px;cursor:pointer"><img src="./logo.png" class="header-logo-img" onerror="this.style.display='none'"><div style="line-height:1"><b>LOVE CARE</b><br><span style="background:white;color:#16a34a;padding:2px 8px;border-radius:20px;font-size:8px;font-weight:800" data-i18n="global_home">GLOBAL HOME NURSING</span></div></div></div>
-<div class="announcementBar"><span id="announcementText">LOVE CARE GLOBAL - Ghana 15 GHS/hr Legal Nurse Minimum - Auto Pay Calculator - 32 Countries</span></div>
+<div class="header"><div id="logoTapArea" style="display:flex;align-items:center;gap:10px;cursor:pointer"><img src="./logo.png" class="header-logo-img" onerror="this.style.display='none'"><div style="line-height:1"><b>LOVE CARE</b><br><span style="background:white;color:#16a34a;padding:2px 8px;border-radius:20px;font-size:8px;font-weight:800">GLOBAL HOME NURSING</span></div></div></div>
+<div class="announcementBar"><span id="announcementText">LOVE CARE GLOBAL - Ghana 15 GHS/hr - Live-in / Live-out - Auto Pay Calculator</span></div>
 
 <div class="globalBar">
 <span style="font-size:11px;font-weight:800">🌍</span>
@@ -132,153 +136,127 @@ table{width:100%;border-collapse:collapse;font-size:11px;margin-top:8px} th,td{b
 </div>
 
 <div id="page-home" class="page active">
-<div class="card"><h2 data-i18n="book_title">BOOK NURSE - Auto Legal Pay Calculator</h2>
-<input id="cName" data-i18n-placeholder="full_name" placeholder="Full Name"><div class="phoneRow"><select id="cPhoneCode"></select><input id="cPhone" data-i18n-placeholder="phone" placeholder="Phone"></div>
-<input id="cEmail" data-i18n-placeholder="email" placeholder="Email"><div class="locationRow"><input id="cLocation" data-i18n-placeholder="gps_tap" placeholder="Tap GPS Auto"><button type="button" onclick="autoGPS('cLocation','clientGpsStatus')" data-i18n="gps_btn">GPS Auto</button></div><small id="clientGpsStatus" class="gpsBadge hidden"></small>
-<select id="cService"><option value="" data-i18n="select_service">-- Select Service (13 Services) --</option><option data-i18n="s_elderly">Elderly Care</option><option data-i18n="s_baby">Baby Care and Nanny</option><option>Hospital Support</option><option>Post-Surgery Care</option><option>Disability Support</option><option>Maternity Care</option><option>Night Nurse (12hrs)</option><option>Palliative Care</option><option>Physiotherapy</option><option>Injection and Wound Care</option><option>Diabetes Monitoring</option><option>Dementia Care</option><option>Child Special Needs Care</option></select>
+<div class="card"><h2 data-i18n="book_title">BOOK NURSE - Live-in / Live-out</h2>
+<input id="cName" placeholder="Full Name"><div class="phoneRow"><select id="cPhoneCode"></select><input id="cPhone" placeholder="Phone"></div>
+<input id="cEmail" placeholder="Email"><div class="locationRow"><input id="cLocation" placeholder="Tap GPS Auto"><button type="button" onclick="autoGPS('cLocation','clientGpsStatus')">GPS Auto</button></div><small id="clientGpsStatus" class="gpsBadge hidden"></small>
+<select id="cService"><option value="">-- Select Service (13 Services) --</option><option>Elderly Care</option><option>Baby Care and Nanny</option><option>Hospital Support</option><option>Post-Surgery Care</option><option>Disability Support</option><option>Maternity Care</option><option>Night Nurse (12hrs)</option><option>Palliative Care</option><option>Physiotherapy</option><option>Injection and Wound Care</option><option>Diabetes Monitoring</option><option>Dementia Care</option><option>Child Special Needs Care</option></select>
 
 <div style="border:2px dashed #16a34a;border-radius:12px;padding:10px;margin:8px 0;background:#f0fdf4">
-<h3 style="margin:0 0 8px 0;font-size:12px;color:#16a34a" data-i18n="how_long">⏱ How long do you need nurse?</h3>
+<h3 style="margin:0 0 10px 0;font-size:13px;color:#16a34a">🏠 Choose Service Type</h3>
 
 <div class="unitTabs">
-  <button id="btn-hourly" onclick="selectUnit('hourly')" data-i18n="tab_hourly">⏰ Hours</button>
-  <button id="btn-daily" class="active" onclick="selectUnit('daily')" data-i18n="tab_daily">📅 Days</button>
-  <button id="btn-weekly" onclick="selectUnit('weekly')" data-i18n="tab_weekly">🗓 Weeks</button>
-  <button id="btn-monthly" onclick="selectUnit('monthly')" data-i18n="tab_monthly">📆 Months</button>
+  <button id="btn-live-out" class="active" onclick="selectLiveType('live-out')">🏃‍♀️ LIVE-OUT<br><small style="font-size:9px">Comes & Goes</small></button>
+  <button id="btn-live-in" onclick="selectLiveType('live-in')">🏠 LIVE-IN<br><small style="font-size:9px">Stays With You</small></button>
 </div>
 
-<div id="panel-hourly" class="unitInputBox hidden">
-  <label data-i18n="q_hours">How many hours do you need?</label>
-  <div class="unitRow">
-    <button class="stepBtn" onclick="stepVal('inputHours',-1)">-</button>
-    <input id="inputHours" type="number" min="1" value="8" oninput="calculateTotal()" placeholder="e.g. 5" style="text-align:center;font-weight:800">
-    <button class="stepBtn" onclick="stepVal('inputHours',1)">+</button>
+<!-- LIVE-OUT PANEL -->
+<div id="panel-live-out" class="unitInputBox">
+  <label style="color:#2563eb">⏱ How long do you need the nurse? (We convert all to hours)</label>
+  <div class="durationGrid">
+    <div class="durationItem"><label>Hours</label><input id="outHours" type="number" min="0" value="0" oninput="calculateTotal()" placeholder="0"></div>
+    <div class="durationItem"><label>Days</label><input id="outDays" type="number" min="0" value="2" oninput="calculateTotal()" placeholder="0"></div>
+    <div class="durationItem"><label>Weeks</label><input id="outWeeks" type="number" min="0" value="0" oninput="calculateTotal()" placeholder="0"></div>
+    <div class="durationItem"><label>Months</label><input id="outMonths" type="number" min="0" value="0" oninput="calculateTotal()" placeholder="0"></div>
   </div>
+  <small style="font-size:10px;color:#6b7280;display:block;margin-top:6px">Example: 2 days + 3 hours = 51 hours total (1 day=24h, 1 week=7 days, 1 month=30 days)</small>
 </div>
 
-<div id="panel-daily" class="unitInputBox">
-  <label data-i18n="q_days">How many days?</label>
-  <div class="unitRow">
-    <button class="stepBtn" onclick="stepVal('inputDays',-1)">-</button>
-    <input id="inputDays" type="number" min="1" value="7" oninput="calculateTotal()" placeholder="e.g. 7" style="text-align:center;font-weight:800">
-    <button class="stepBtn" onclick="stepVal('inputDays',1)">+</button>
+<!-- LIVE-IN PANEL -->
+<div id="panel-live-in" class="unitInputBox hidden">
+  <label style="color:#16a34a">⏱ How long will nurse stay at your house? (Converted to hours)</label>
+  <div class="durationGrid">
+    <div class="durationItem"><label>Hours</label><input id="inHours" type="number" min="0" value="0" oninput="calculateTotal()" placeholder="0"></div>
+    <div class="durationItem"><label>Days</label><input id="inDays" type="number" min="0" value="7" oninput="calculateTotal()" placeholder="0"></div>
+    <div class="durationItem"><label>Weeks</label><input id="inWeeks" type="number" min="0" value="0" oninput="calculateTotal()" placeholder="0"></div>
+    <div class="durationItem"><label>Months</label><input id="inMonths" type="number" min="0" value="0" oninput="calculateTotal()" placeholder="0"></div>
   </div>
-</div>
 
-<div id="panel-weekly" class="unitInputBox hidden">
-  <label data-i18n="q_weeks">How many weeks?</label>
-  <div class="unitRow">
-    <button class="stepBtn" onclick="stepVal('inputWeeks',-1)">-</button>
-    <input id="inputWeeks" type="number" min="1" value="2" oninput="calculateTotal()" placeholder="e.g. 2" style="text-align:center;font-weight:800">
-    <button class="stepBtn" onclick="stepVal('inputWeeks',1)">+</button>
-  </div>
-</div>
+  <div class="feedBox">
+    <label style="color:#92400e">🍲 Feeding - Will you provide food for the nurse?</label>
+    <div class="feedRow">
+      <button id="feedYesBtn" onclick="setFeeding(true)">✅ YES, I Will Feed</button>
+      <button id="feedNoBtn" onclick="setFeeding(false)">❌ NO, Not Included</button>
+    </div>
 
-<div id="panel-monthly" class="unitInputBox hidden">
-  <label data-i18n="q_months">How many months?</label>
-  <div class="unitRow">
-    <button class="stepBtn" onclick="stepVal('inputMonths',-1)">-</button>
-    <input id="inputMonths" type="number" min="1" value="1" oninput="calculateTotal()" placeholder="e.g. 1" style="text-align:center;font-weight:800">
-    <button class="stepBtn" onclick="stepVal('inputMonths',1)">+</button>
+    <div id="feedingYesBox" class="hidden" style="margin-top:10px;background:white;border-radius:8px;padding:10px;border:1px solid #f59e0b">
+      <label>How many meals per day will you give the nurse?</label>
+      <select id="mealsPerDay" onchange="calculateTotal()">
+        <option value="1">1 Meal per day</option>
+        <option value="2" selected>2 Meals per day</option>
+        <option value="3">3 Meals per day (Full)</option>
+      </select>
+      <small style="font-size:10px;color:#16a34a">Nurse will eat with family - you provide meals</small>
+    </div>
+
+    <div id="feedingNoBox" class="hidden" style="margin-top:10px;background:white;border-radius:8px;padding:10px;border:1px solid #ef4444">
+      <label>Will you give the nurse money for food? How much?</label>
+      <div style="display:flex;gap:6px">
+        <input id="foodAllowance" type="number" min="0" value="0" oninput="calculateTotal()" placeholder="e.g. 20" style="flex:1;margin:0">
+        <select id="foodAllowanceCurrency" style="width:90px;margin:0" onchange="calculateTotal()">
+          <option>GHS</option><option>USD</option><option>NGN</option><option>ZAR</option><option>KES</option><option>EUR</option><option>GBP</option>
+        </select>
+      </div>
+      <select id="foodAllowancePeriod" style="margin-top:6px" onchange="calculateTotal()">
+        <option value="per_day">Per Day</option>
+        <option value="per_week">Per Week</option>
+        <option value="per_month">Per Month</option>
+        <option value="one_time">One Time Total</option>
+      </select>
+      <small style="font-size:10px;color:#ef4444">This will be added to total pay for nurse food</small>
+    </div>
   </div>
 </div>
 
 <div class="wageCard" id="wageBreakdown">
-<div class="wageRow"><span data-i18n="w_country">🌍 Country:</span><span id="breakCountry">GH</span></div>
-<div class="wageRow"><span data-i18n="w_min">👩⚕ Legal Min / Hour:</span><span id="breakHourly">Loading...</span></div>
-<div class="wageRow"><span data-i18n="w_duration">⏰ Duration:</span><span id="breakHours">-</span></div>
-<div class="wageRow"><span data-i18n="w_total_hours">⏳ Total Hours:</span><span id="breakTotalHours">0 hrs</span></div>
-<div class="wageRow totalRow"><span data-i18n="w_total_pay">💰 TOTAL MINIMUM:</span><span id="breakTotalPay" style="font-size:15px">0 GHS</span></div>
+<div class="wageRow"><span>🌍 Country:</span><span id="breakCountry">GH</span></div>
+<div class="wageRow"><span>🏠 Type:</span><span id="breakType">LIVE-OUT</span></div>
+<div class="wageRow"><span>👩⚕ Legal Min / Hour:</span><span id="breakHourly">Loading...</span></div>
+<div class="wageRow"><span>⏰ Duration Entered:</span><span id="breakDuration">-</span></div>
+<div class="wageRow"><span>⏳ Converted to Hours:</span><span id="breakTotalHours">0 hrs</span></div>
+<div class="wageRow" id="breakFeedRow"><span>🍲 Feeding:</span><span id="breakFeeding">-</span></div>
+<div class="wageRow totalRow"><span>💰 LEGAL MINIMUM TOTAL:</span><span id="breakTotalPay" style="font-size:15px">0 GHS</span></div>
+<div class="wageRow" id="breakFoodAllowanceRow" style="color:#ef4444"><span>🍛 + Food Allowance:</span><span id="breakFoodAllowance">0</span></div>
+<div class="wageRow totalRow" style="color:#16a34a"><span>💵 TOTAL TO PAY NURSE:</span><span id="breakGrandTotal">0 GHS</span></div>
 </div>
 </div>
 
-<div style="display:flex;gap:6px"><input id="cBudget" type="number" data-i18n-placeholder="your_offer" placeholder="Your Offer - Must be >= Minimum" style="flex:1" oninput="validateBudgetLive()"><select id="cCurrency" style="width:110px" onchange="calculateTotal();validateBudgetLive()"><option>GHS</option><option>USD</option><option>NGN</option><option>ZAR</option><option>KES</option><option>UGX</option><option>TZS</option><option>ETB</option><option>RWF</option><option>XAF</option><option>XOF</option><option>EGP</option><option>MAD</option><option>GBP</option><option>CAD</option><option>AUD</option><option>EUR</option><option>INR</option><option>PKR</option><option>BDT</option><option>PHP</option><option>IDR</option><option>BRL</option><option>MXN</option><option>SAR</option><option>AED</option><option>JPY</option></select></div>
+<div style="display:flex;gap:6px"><input id="cBudget" type="number" placeholder="Your Offer - Must be >= Minimum" style="flex:1" oninput="validateBudgetLive()"><select id="cCurrency" style="width:110px" onchange="calculateTotal();validateBudgetLive()"><option>GHS</option><option>USD</option><option>NGN</option><option>ZAR</option><option>KES</option><option>UGX</option><option>TZS</option><option>ETB</option><option>RWF</option><option>XAF</option><option>XOF</option><option>EGP</option><option>MAD</option><option>GBP</option><option>CAD</option><option>AUD</option><option>EUR</option><option>INR</option><option>PKR</option><option>BDT</option><option>PHP</option><option>IDR</option><option>BRL</option><option>MXN</option><option>SAR</option><option>AED</option><option>JPY</option></select></div>
 <small id="minRateInfo" style="font-size:10px;font-weight:800;color:#92400e;background:#fef3c7;border:1px solid #f59e0b;padding:6px 10px;border-radius:8px;margin:4px 0;display:block">Loading legal nurse rate...</small>
-<button class="btnSubmit" style="background:linear-gradient(90deg,#2563eb,#00b050)" onclick="findNursesUber()" data-i18n="find_nurses">🔍 FIND NURSES NEAR ME</button>
-<div id="uberActionArea" class="hidden"><div style="display:flex;gap:6px;margin-top:8px"><button class="btnSubmit" style="background:#eab308;color:#111;flex:1" onclick="randomSelectNurse()" data-i18n="random">🎲 RANDOM</button><button class="btnSubmit" style="background:#111827;flex:1" onclick="submitBooking()" data-i18n="book_selected">BOOK SELECTED</button></div><div id="selectedNurseInfo" style="font-size:10px;text-align:center;margin-top:4px;color:#16a34a;font-weight:800" data-i18n="no_nurse">No nurse selected</div></div></div>
+<button class="btnSubmit" style="background:linear-gradient(90deg,#2563eb,#00b050)" onclick="findNursesUber()">🔍 FIND NURSES NEAR ME</button>
+<div id="uberActionArea" class="hidden"><div style="display:flex;gap:6px;margin-top:8px"><button class="btnSubmit" style="background:#eab308;color:#111;flex:1" onclick="randomSelectNurse()">🎲 RANDOM</button><button class="btnSubmit" style="background:#111827;flex:1" onclick="submitBooking()">BOOK SELECTED</button></div><div id="selectedNurseInfo" style="font-size:10px;text-align:center;margin-top:4px;color:#16a34a;font-weight:800">No nurse selected</div></div></div>
 
-<div class="card" style="border:3px solid #2563eb"><h2 data-i18n="my_bookings">📋 MY BOOKINGS</h2><div class="phoneRow"><select id="myBookPhoneCode"></select><input id="myBookPhone" data-i18n-placeholder="enter_phone_load" placeholder="Enter phone to load"><button class="btnSmall" style="background:#2563eb;color:white;padding:12px 16px" onclick="loadMyBookings()" data-i18n="load">LOAD</button></div><div id="myBookingsList" style="margin-top:10px"><div style="text-align:center;color:#999;font-size:11px;padding:10px" data-i18n="no_bookings">No bookings loaded</div></div></div>
-<div class="card"><h2><span data-i18n="live_map">LIVE Map</span> - <span id="nearbyCount">0</span> <span data-i18n="nearby">Nearby</span></h2><div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap"><button class="btnMap" onclick="toggleMap()" data-i18n="map">🗺 Map</button><button class="btnSmall" style="background:#16a34a;color:white" onclick="findNursesUber()" data-i18n="refresh">Refresh</button><select id="radiusSelect" style="width:100px;padding:8px;border-radius:8px"><option value="5">5 km</option><option value="10" selected>10 km</option><option value="20">20 km</option><option value="50">50 km</option></select></div><div id="loveCareMapWrapper" class="map-wrapper"><div id="uberMap"></div></div><div id="loveCareLiveList"></div></div>
-</div>
-
-<div id="page-nurse-public" class="page"><div class="card"><h2 data-i18n="nurse_reg">Nurse Registration</h2><input id="nRegName" data-i18n-placeholder="full_name" placeholder="Full Name"><div class="phoneRow"><select id="nRegPhoneCode"></select><input id="nRegPhone" data-i18n-placeholder="phone" placeholder="Phone"></div><input id="nRegPass" type="password" data-i18n-placeholder="password" placeholder="Password"><div class="locationRow"><input id="nRegLocation" data-i18n-placeholder="gps_tap" placeholder="Tap GPS Auto"><button type="button" onclick="autoGPS('nRegLocation','nurseGpsStatus2')">GPS</button></div><small id="nurseGpsStatus2" class="gpsBadge hidden"></small><input id="nRegExperience" type="number" data-i18n-placeholder="years_exp" placeholder="Years Experience"><select id="nRegSpecialty"><option value="">-- Specialty (13) --</option><option>General Nurse</option><option>Elderly Care</option><option>Baby Care and Nanny</option><option>Hospital Support</option><option>Post-Surgery Care</option><option>Disability Support</option><option>Maternity Care</option><option>Night Nurse</option><option>Palliative Care</option><option>Physiotherapy</option><option>Injection and Wound Care</option><option>Diabetes Monitoring</option><option>Dementia Care</option><option>Child Special Needs Care</option></select><button class="btnSubmit" onclick="registerNurse()" data-i18n="register">Register</button><div style="text-align:center;margin-top:10px"><button class="btnSmall" style="background:#2563eb;color:white" onclick="showPage('nurse-login')" data-i18n="already_login">Already Registered? Login Here</button></div></div></div>
-
-<div id="page-booking-public" class="page">
-<div class="card" style="border:3px solid #2563eb">
-<h2 data-i18n="help_title">💡 LOVE CARE HELP CENTER</h2>
-<p style="font-size:12px;color:#374151" data-i18n="help_desc">Welcome to LOVE CARE GLOBAL. This help page answers your questions automatically.</p>
-<div style="background:#f0fdf4;border:2px solid #16a34a;border-radius:12px;padding:12px;margin:10px 0">
-<h3 style="margin:0 0 8px 0;font-size:13px;color:#16a34a" data-i18n="ask_me">🤖 Ask Me Anything - Auto Help Bot</h3>
-<div id="helpBotChat" style="height:220px;overflow-y:auto;background:white;border-radius:10px;padding:10px;border:1px solid #bbf7d0;display:flex;flex-direction:column;gap:8px">
-<div style="background:#e0f2fe;padding:8px 10px;border-radius:10px;font-size:11px;align-self:flex-start"><b>Bot:</b> Hi! I can help you. Ask me about booking, payment, GPS, legal rates, refunds, nurses, etc.</div>
-</div>
-<div style="display:flex;gap:6px;margin-top:8px">
-<input id="helpBotInput" data-i18n-placeholder="type_question" placeholder="Type your question... e.g. How to book nurse?" onkeypress="if(event.key==='Enter')helpBotAsk()" style="flex:1;margin:0;border:2px solid #16a34a">
-<button class="btnSmall" style="background:#16a34a;color:white;padding:12px 18px" onclick="helpBotAsk()" data-i18n="send">Send</button>
-</div>
-</div>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:10px 0">
-<div style="background:#fef3c7;border:2px solid #f59e0b;border-radius:10px;padding:10px;text-align:center"><b style="font-size:22px">1</b><br><small style="font-weight:800" data-i18n="step1">Enter Details</small></div>
-<div style="background:#dbeafe;border:2px solid #2563eb;border-radius:10px;padding:10px;text-align:center"><b style="font-size:22px">2</b><br><small style="font-weight:800" data-i18n="step2">Tap GPS</small></div>
-<div style="background:#dcfce7;border:2px solid #16a34a;border-radius:10px;padding:10px;text-align:center"><b style="font-size:22px">3</b><br><small style="font-weight:800" data-i18n="step3">Choose Time</small></div>
-<div style="background:#fce7f3;border:2px solid #ec4899;border-radius:10px;padding:10px;text-align:center"><b style="font-size:22px">4</b><br><small style="font-weight:800" data-i18n="step4">Find & Book</small></div>
-</div>
-</div>
+<div class="card" style="border:3px solid #2563eb"><h2>📋 MY BOOKINGS</h2><div class="phoneRow"><select id="myBookPhoneCode"></select><input id="myBookPhone" placeholder="Enter phone to load"><button class="btnSmall" style="background:#2563eb;color:white;padding:12px 16px" onclick="loadMyBookings()">LOAD</button></div><div id="myBookingsList" style="margin-top:10px"><div style="text-align:center;color:#999;font-size:11px;padding:10px">No bookings loaded</div></div></div>
+<div class="card"><h2>LIVE Map - <span id="nearbyCount">0</span> Nearby</h2><div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap"><button class="btnMap" onclick="toggleMap()">🗺 Map</button><button class="btnSmall" style="background:#16a34a;color:white" onclick="findNursesUber()">Refresh</button><select id="radiusSelect" style="width:100px;padding:8px;border-radius:8px"><option value="5">5 km</option><option value="10" selected>10 km</option><option value="20">20 km</option><option value="50">50 km</option></select></div><div id="loveCareMapWrapper" class="map-wrapper"><div id="uberMap"></div></div><div id="loveCareLiveList"></div></div>
 </div>
 
-<div id="page-nurse-login" class="page"><div class="card" style="margin:20px;border:3px solid #16a34a"><h2 data-i18n="nurse_login">Nurse Login</h2><div class="phoneRow"><select id="nurseLoginCode"></select><input id="nurseLoginPhone" data-i18n-placeholder="phone" placeholder="Phone"></div><input id="nurseLoginPass" type="password" data-i18n-placeholder="password" placeholder="Password"><button class="btnSubmit" onclick="loginNurse()" data-i18n="login_nurse">Login as Nurse</button><div id="nurseLoginResult" style="color:red;font-size:11px;margin-top:8px"></div></div></div>
-
-<div id="page-nurse-dashboard" class="page"><div class="card" style="border:3px solid #2563eb"><h2>Nurse Dashboard</h2><div style="display:flex;gap:5px"><button class="btnSubmit" style="width:auto;background:#00b050" onclick="startDuty()" data-i18n="start_duty">START DUTY</button><button class="btnSubmit" style="width:auto;background:#ef4444" onclick="stopDuty()" data-i18n="stop">STOP</button><button class="btnSubmit" style="width:auto;background:#111827" onclick="logoutNurse()" data-i18n="logout">Logout</button></div><div id="nurseGpsStatus" style="padding:8px;background:#e8f5e9;border:1px solid #16a34a;font-size:11px;display:none;margin-top:8px">OFF</div></div><div class="card"><h2 data-i18n="new_offers">New Offers</h2><div id="nurseJobsList">Start DUTY</div></div></div>
-
+<div id="page-nurse-public" class="page"><div class="card"><h2>Nurse Registration</h2><input id="nRegName" placeholder="Full Name"><div class="phoneRow"><select id="nRegPhoneCode"></select><input id="nRegPhone" placeholder="Phone"></div><input id="nRegPass" type="password" placeholder="Password"><div class="locationRow"><input id="nRegLocation" placeholder="Tap GPS Auto"><button type="button" onclick="autoGPS('nRegLocation','nurseGpsStatus2')">GPS</button></div><small id="nurseGpsStatus2" class="gpsBadge hidden"></small><input id="nRegExperience" type="number" placeholder="Years"><select id="nRegSpecialty"><option value="">-- Specialty --</option><option>General Nurse</option><option>Elderly Care</option><option>Baby Care</option><option>Hospital Support</option></select><button class="btnSubmit" onclick="registerNurse()">Register</button></div></div>
+<div id="page-booking-public" class="page"><div class="card"><h2>💡 HELP - Live-in vs Live-out</h2><p style="font-size:12px"><b>Live-Out:</b> Nurse comes daily, goes home after shift. You pay hourly rate x total hours.<br><br><b>Live-In:</b> Nurse stays in your house 24/7. You must provide feeding OR food money. Duration you enter (e.g. 2 weeks + 3 days) is converted to total hours: 1 day=24h, 1 week=7 days, 1 month=30 days.<br><br>Example: Live-in for 2 weeks = 14 days = 336 hours x 15 GHS = 5040 GHS minimum + food allowance if not feeding.</p></div></div>
+<div id="page-nurse-login" class="page"><div class="card" style="margin:20px;border:3px solid #16a34a"><h2>Nurse Login</h2><div class="phoneRow"><select id="nurseLoginCode"></select><input id="nurseLoginPhone" placeholder="Phone"></div><input id="nurseLoginPass" type="password" placeholder="Password"><button class="btnSubmit" onclick="loginNurse()">Login as Nurse</button></div></div>
+<div id="page-nurse-dashboard" class="page"><div class="card" style="border:3px solid #2563eb"><h2>Nurse Dashboard</h2><div style="display:flex;gap:5px"><button class="btnSubmit" style="width:auto;background:#00b050" onclick="startDuty()">START DUTY</button><button class="btnSubmit" style="width:auto;background:#ef4444" onclick="stopDuty()">STOP</button><button class="btnSubmit" style="width:auto;background:#111827" onclick="logoutNurse()">Logout</button></div><div id="nurseGpsStatus" style="padding:8px;background:#e8f5e9;border:1px solid #16a34a;font-size:11px;display:none;margin-top:8px">OFF</div></div><div class="card"><h2>New Offers</h2><div id="nurseJobsList">Start DUTY</div></div></div>
 <div id="page-staff-login" class="page"><div class="card" style="margin:20px;border:3px solid #7c3aed"><h2>Staff Portal</h2><input id="staffLoginID" placeholder="Staff ID"><input id="staffLoginPass" type="password" placeholder="Password"><button class="btnSubmit" style="background:#7c3aed" onclick="loginStaff()">Login as Staff</button></div></div>
-<div id="page-staff-dashboard" class="page"><div class="card"><h2>Staff Dashboard</h2><div id="staffBookingsList">Loading...</div></div><div style="margin:20px;display:flex;gap:8px"><button class="btnSubmit" style="background:#16a34a;flex:1" onclick="showPage('home')" data-i18n="home">Home</button><button class="btnSubmit" style="background:#ef4444;flex:1" onclick="logoutStaff()" data-i18n="logout">Logout</button></div></div>
-
-<div id="page-group-chat" class="page"><div class="card" style="border:3px solid #16a34a"><h2>GLOBAL GROUP CHAT</h2><div id="globalChatBox" class="chatBox" style="height:55vh"></div><div class="chatInputRow"><select id="groupRole" style="width:100px"><option value="NURSE">NURSE</option><option value="STAFF">STAFF</option><option value="CEO">CEO</option></select><input id="globalChatInput" placeholder="Type..." onkeypress="if(event.key==='Enter')sendGlobalChat()"><button class="btnSmall" style="background:#16a34a;color:white;padding:12px 20px" onclick="sendGlobalChat()" data-i18n="send">Send</button></div></div></div>
-
-<div id="page-ceo-login" class="page"><div class="card" style="margin:20px;border:3px solid #111827"><h2>Secure Access</h2><input id="ceoLoginID" placeholder="Access ID"><input id="ceoLoginPass" type="password" placeholder="Access Key"><button class="btnSubmit" style="background:#111827" onclick="loginCEO()">Login</button><div id="ceoLoginResult" style="color:red;font-size:11px;margin-top:8px"></div></div></div>
-
+<div id="page-staff-dashboard" class="page"><div class="card"><h2>Staff Dashboard</h2><div id="staffBookingsList">Loading...</div></div></div>
+<div id="page-group-chat" class="page"><div class="card" style="border:3px solid #16a34a"><h2>GLOBAL GROUP CHAT</h2><div id="globalChatBox" class="chatBox" style="height:55vh"></div><div class="chatInputRow" style="display:flex;gap:6px;margin-top:8px"><select id="groupRole" style="width:100px"><option value="NURSE">NURSE</option><option value="STAFF">STAFF</option><option value="CEO">CEO</option></select><input id="globalChatInput" placeholder="Type..." onkeypress="if(event.key==='Enter')sendGlobalChat()"><button class="btnSmall" style="background:#16a34a;color:white;padding:12px 20px" onclick="sendGlobalChat()">Send</button></div></div></div>
+<div id="page-ceo-login" class="page"><div class="card" style="margin:20px;border:3px solid #111827"><h2>Secure Access</h2><input id="ceoLoginID" placeholder="Access ID"><input id="ceoLoginPass" type="password" placeholder="Access Key"><button class="btnSubmit" style="background:#111827" onclick="loginCEO()">Login</button></div></div>
 <div id="page-ceo-dashboard" class="page">
-<div class="card" style="border:3px solid #111827"><h2>CEO Management <span style="background:#16a34a;color:white;padding:2px 8px;border-radius:10px;font-size:10px">LIVE</span></h2>
-<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;margin:10px 0">
-<div style="background:#f0fdf4;padding:10px;border-radius:10px;text-align:center;border:2px solid #16a34a"><b id="statBookings">0</b><br><small>Bookings</small></div>
-<div style="background:#fffbeb;padding:10px;border-radius:10px;text-align:center;border:2px solid #eab308"><b id="statNurses">0</b><br><small>Nurses</small></div>
-<div style="background:#eff6ff;padding:10px;border-radius:10px;text-align:center;border:2px solid #2563eb"><b id="statOnline">0</b><br><small>On Duty</small></div>
-<div style="background:#fef2f2;padding:10px;border-radius:10px;text-align:center;border:2px solid #ef4444"><b id="statRefunds">0</b><br><small>Refunds</small></div>
-</div>
-<div class="ceoTabs">
-<button id="btn-bookings" class="btnSmall activeTab" style="background:#111827;color:white" onclick="switchCeoTab('bookings')">Bookings</button>
-<button id="btn-nurses" class="btnSmall" style="background:#16a34a;color:white" onclick="switchCeoTab('nurses')">Nurses</button>
-<button id="btn-clients" class="btnSmall" style="background:#2563eb;color:white" onclick="switchCeoTab('clients')">Clients</button>
-<button id="btn-payments" class="btnSmall" style="background:#eab308;color:#111" onclick="switchCeoTab('payments')">Payments</button>
-<button id="btn-refunds" class="btnSmall" style="background:#ef4444;color:white" onclick="switchCeoTab('refunds')">💸 Refunds</button>
-<button id="btn-staff" class="btnSmall" style="background:#7c3aed;color:white" onclick="switchCeoTab('staff')">Staff</button>
-<button id="btn-announce" class="btnSmall" style="background:#0e7490;color:white" onclick="switchCeoTab('announce')">Announce</button>
-<button id="btn-chat" class="btnSmall" style="background:#ef4444;color:white" onclick="switchCeoTab('chat')">💬GROUP</button>
-</div>
-<div style="display:flex;gap:6px;margin-top:6px"><button class="btnSmall" style="background:#111827;color:white" onclick="loadCeoData()">🔄 Refresh All</button><button class="btnSmall" style="background:#ef4444;color:white" onclick="logoutCEO()">Logout</button></div>
-</div>
-<div id="ceo-tab-bookings" class="ceo-tab card"><h2>1. Bookings</h2><div style="display:flex;gap:6px;margin-bottom:8px"><input id="ceoSearchBooking" placeholder="Search" oninput="filterBookings()" style="flex:1;margin:0"><select id="ceoBookingFilter" onchange="filterBookings()" style="width:130px;margin:0"><option value="">All</option><option value="pending_assignment">pending</option><option value="confirmed">confirmed</option><option value="cancelled_by_client">cancelled</option><option value="refund_requested">refund req</option></select></div><div id="ceoBookingsList">Loading...</div></div>
-<div id="ceo-tab-nurses" class="ceo-tab card hidden"><h2>2. Nurses + Map</h2><input id="ceoSearchNurse" placeholder="Search nurse" oninput="filterNurses()" style="margin:0 0 8px 0"><div id="ceoNursesList">Loading...</div><div id="ceoMap" style="height:380px;border-radius:12px;border:2px solid #16a34a;margin-top:10px"></div></div>
-<div id="ceo-tab-clients" class="ceo-tab card hidden"><h2>3. Clients</h2><div id="ceoClientsList">Loading...</div></div>
-<div id="ceo-tab-payments" class="ceo-tab card hidden"><h2>4. Payments</h2><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px"><div style="background:#f0fdf4;padding:10px;border-radius:10px;border:2px solid #16a34a"><small>Total GHS</small><br><b id="totalRevenue">0</b></div><div style="background:#fffbeb;padding:10px;border-radius:10px;border:2px solid #eab308"><small>Pending</small><br><b id="pendingRevenue">0</b></div></div><div id="ceoPaymentsList">Loading...</div></div>
-<div id="ceo-tab-refunds" class="ceo-tab card hidden" style="border:3px solid #ef4444"><h2>💸 REFUND MANAGEMENT</h2><div id="ceoRefundsList">Loading refunds...</div></div>
-<div id="ceo-tab-staff" class="ceo-tab card hidden"><h2>5. Staff</h2><div style="display:flex;gap:6px;margin-bottom:10px"><input id="newStaffId" placeholder="New Staff ID" style="flex:1;margin:0"><input id="newStaffPass" placeholder="Password" style="flex:1;margin:0"><button class="btnSmall" style="background:#16a34a;color:white" onclick="addStaff()">Add</button></div><div id="ceoStaffList">Loading...</div></div>
-<div id="ceo-tab-announce" class="ceo-tab card hidden"><h2>6. Announcement & Nurse Legal Rates</h2><textarea id="announcementInput" rows="2" placeholder="Type announcement..."></textarea><div class="colorRow"><label>Background:</label><input id="announceBgColor" type="color" value="#111827"><span id="bgVal">#111827</span></div><div class="colorRow"><label>Text Color:</label><input id="announceTextColor" type="color" value="#eab308"><span id="textVal">#eab308</span></div><div class="colorRow"><label>Border:</label><input id="announceBorderColor" type="color" value="#eab308"><span id="borderVal">#eab308</span></div><div class="colorRow"><label>Speed:</label><select id="announceSpeed" style="width:120px"><option value="10s">Fast</option><option value="22s" selected>Normal</option><option value="40s">Slow</option></select></div><button class="btnSmall" style="background:#0e7490;color:white;width:100%;padding:12px;margin-top:8px" onclick="saveAnnouncement()">💾 SAVE LIVE</button>
-<div style="margin-top:12px;border-top:2px solid #eee;padding-top:8px"><label style="font-size:11px;font-weight:800">Edit Nurse Hourly Minimum Per Country (Legal) - Ghana now 15 GHS/hr</label><div id="minRateEditor" style="max-height:300px;overflow-y:auto;font-size:11px"></div><button class="btnSmall" style="background:#16a34a;color:white;margin-top:8px;width:100%;padding:12px" onclick="saveSettings()">💾 Save All Nurse Hourly Rates</button></div></div>
-<div id="ceo-tab-chat" class="ceo-tab card hidden" style="border:3px solid #ef4444"><h2>GROUP CHAT</h2><div id="ceoChatBox" class="chatBox"></div><div class="chatInputRow"><input id="ceoChatInput" placeholder="Broadcast..." onkeypress="if(event.key==='Enter')sendGroupMessage('CEO')"><button class="btnSmall" style="background:#111827;color:white;padding:12px 18px" onclick="sendGroupMessage('CEO')">Send</button></div></div>
+<div class="card" style="border:3px solid #111827"><h2>CEO Management</h2><div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;margin:10px 0"><div style="background:#f0fdf4;padding:10px;border-radius:10px;text-align:center;border:2px solid #16a34a"><b id="statBookings">0</b><br><small>Bookings</small></div><div style="background:#fffbeb;padding:10px;border-radius:10px;text-align:center;border:2px solid #eab308"><b id="statNurses">0</b><br><small>Nurses</small></div><div style="background:#eff6ff;padding:10px;border-radius:10px;text-align:center;border:2px solid #2563eb"><b id="statOnline">0</b><br><small>On Duty</small></div><div style="background:#fef2f2;padding:10px;border-radius:10px;text-align:center;border:2px solid #ef4444"><b id="statRefunds">0</b><br><small>Refunds</small></div></div><div class="ceoTabs"><button id="btn-bookings" class="btnSmall activeTab" style="background:#111827;color:white" onclick="switchCeoTab('bookings')">Bookings</button><button id="btn-nurses" class="btnSmall" style="background:#16a34a;color:white" onclick="switchCeoTab('nurses')">Nurses</button><button id="btn-clients" class="btnSmall" style="background:#2563eb;color:white" onclick="switchCeoTab('clients')">Clients</button><button id="btn-payments" class="btnSmall" style="background:#eab308;color:#111" onclick="switchCeoTab('payments')">Payments</button><button id="btn-refunds" class="btnSmall" style="background:#ef4444;color:white" onclick="switchCeoTab('refunds')">💸 Refunds</button><button id="btn-staff" class="btnSmall" style="background:#7c3aed;color:white" onclick="switchCeoTab('staff')">Staff</button><button id="btn-announce" class="btnSmall" style="background:#0e7490;color:white" onclick="switchCeoTab('announce')">Announce</button></div><div style="display:flex;gap:6px;margin-top:6px"><button class="btnSmall" style="background:#111827;color:white" onclick="loadCeoData()">🔄 Refresh</button><button class="btnSmall" style="background:#ef4444;color:white" onclick="logoutCEO()">Logout</button></div></div>
+<div id="ceo-tab-bookings" class="ceo-tab card"><h2>Bookings</h2><div id="ceoBookingsList">Loading...</div></div>
+<div id="ceo-tab-nurses" class="ceo-tab card hidden"><h2>Nurses</h2><div id="ceoNursesList">Loading...</div><div id="ceoMap" style="height:380px;border-radius:12px;border:2px solid #16a34a;margin-top:10px"></div></div>
+<div id="ceo-tab-clients" class="ceo-tab card hidden"><h2>Clients</h2><div id="ceoClientsList">Loading...</div></div>
+<div id="ceo-tab-payments" class="ceo-tab card hidden"><h2>Payments</h2><div id="ceoPaymentsList">Loading...</div></div>
+<div id="ceo-tab-refunds" class="ceo-tab card hidden"><h2>Refunds</h2><div id="ceoRefundsList">Loading...</div></div>
+<div id="ceo-tab-staff" class="ceo-tab card hidden"><h2>Staff</h2><div id="ceoStaffList">Loading...</div></div>
+<div id="ceo-tab-announce" class="ceo-tab card hidden"><h2>Announcement & Rates</h2><textarea id="announcementInput" rows="2" placeholder="Type announcement..."></textarea><button class="btnSmall" style="background:#0e7490;color:white;width:100%;padding:12px;margin-top:8px" onclick="saveAnnouncement()">💾 SAVE LIVE</button><div id="minRateEditor" style="max-height:300px;overflow-y:auto;font-size:11px;margin-top:10px"></div><button class="btnSmall" style="background:#16a34a;color:white;margin-top:8px;width:100%;padding:12px" onclick="saveSettings()">💾 Save Rates</button></div>
 </div>
 
-<div id="ratePopup" class="ratePopup hidden"><h3 style="color:#ef4444;margin:0 0 10px 0">⏰ No Nurse Picked Yet</h3><p id="ratePopupMsg" style="font-size:13px;color:#333"></p><p style="font-size:12px"><b id="ratePopupCurrent"></b></p><div style="display:flex;gap:8px;margin-top:12px"><button class="btnSubmit" style="background:#16a34a;flex:1" onclick="increaseRateAction()">Increase Rate</button><button class="btnSubmit" style="background:#6b7280;flex:1" onclick="closeRatePopup()">Later</button></div></div>
-<div id="legalWagePopup" class="ratePopup hidden" style="border-color:#b45309"><h3 style="color:#b45309;margin:0 0 10px 0">⚖ Below Legal Nurse Minimum</h3><p id="legalWageMsg" style="font-size:13px;color:#333"></p><button class="btnSubmit" style="background:#b45309" onclick="closeLegalWagePopup()">Adjust Rate</button></div>
-<div id="refundModal" class="ratePopup hidden" style="border-color:#7c3aed"><h3 style="color:#7c3aed;margin:0 0 10px 0">💸 Request Refund</h3><p style="font-size:12px;text-align:left">Booking ID: <b id="refundBookingId"></b><br>Amount: <b id="refundBookingAmount"></b></p><input id="refundReason" placeholder="Reason"><input id="refundAccount" placeholder="MoMo / Bank Account"><input id="refundAccountName" placeholder="Account Name"><div style="display:flex;gap:8px;margin-top:12px"><button class="btnSubmit" style="background:#7c3aed;flex:1" onclick="submitRefundRequest()">Submit</button><button class="btnSubmit" style="background:#6b7280;flex:1" onclick="closeRefundModal()">Cancel</button></div></div>
-<div id="legalModal" class="legalModal hidden" onclick="if(event.target===this)closeLegal()"><div class="legalContent"><div style="display:flex;justify-content:space-between;align-items:center"><h1 id="legalTitle">Policy</h1><button onclick="closeLegal()" style="background:#ef4444;color:white;border:none;padding:8px 14px;border-radius:8px;font-weight:800">✕ CLOSE</button></div><div id="legalBody"></div></div></div>
+<div id="legalWagePopup" class="ratePopup hidden" style="border-color:#b45309"><h3 style="color:#b45309;margin:0 0 10px 0">⚖ Below Legal Minimum</h3><p id="legalWageMsg"></p><button class="btnSubmit" style="background:#b45309" onclick="document.getElementById('legalWagePopup').classList.add('hidden')">Adjust</button></div>
+<div id="refundModal" class="ratePopup hidden" style="border-color:#7c3aed"><h3 style="color:#7c3aed">💸 Refund</h3><p>Booking <b id="refundBookingId"></b> <b id="refundBookingAmount"></b></p><input id="refundReason" placeholder="Reason"><input id="refundAccount" placeholder="MoMo / Bank"><input id="refundAccountName" placeholder="Name"><div style="display:flex;gap:8px"><button class="btnSubmit" style="background:#7c3aed;flex:1" onclick="submitRefundRequest()">Submit</button><button class="btnSubmit" style="background:#6b7280;flex:1" onclick="document.getElementById('refundModal').classList.add('hidden')">Cancel</button></div></div>
+<div id="legalModal" class="legalModal hidden" onclick="if(event.target===this)closeLegal()"><div class="legalContent"><div style="display:flex;justify-content:space-between"><h1 id="legalTitle">Policy</h1><button onclick="closeLegal()" style="background:#ef4444;color:white;border:none;padding:8px 14px;border-radius:8px;font-weight:800">✕</button></div><div id="legalBody"></div></div></div>
 
 <footer class="appFooter">
-<div style="font-weight:800;letter-spacing:1px;color:white">LOVE CARE GLOBAL</div>
-<div style="font-size:11px;margin-top:4px">13 Services | Ghana 15 GHS/hr Legal Nurse Rate | Auto Pay Calculator</div>
-<div class="footerLinks"><button onclick="openLegal('privacy')">🔒 Privacy</button><button onclick="openLegal('terms')">📄 Terms</button><button onclick="openLegal('cancel')">❌ Cancel</button><button onclick="openLegal('contact')">📧 Contact</button></div>
-<p style="font-size:11px;margin:8px 0">Email: <a href="mailto:lovecareglobal@gmail.com">lovecareglobal@gmail.com</a> | 0544121814</p>
-<p style="font-size:10px;color:#9ca3af">© 2026 LOVE CARE GLOBAL</p>
+<div style="font-weight:800;color:white">LOVE CARE GLOBAL</div>
+<div style="font-size:11px;margin-top:4px">Live-in / Live-out | Ghana 15 GHS/hr</div>
+<div class="footerLinks"><button onclick="openLegal('privacy')">Privacy</button><button onclick="openLegal('terms')">Terms</button><button onclick="openLegal('cancel')">Cancel</button><button onclick="openLegal('contact')">Contact</button></div>
+<p style="font-size:11px">lovecareglobal@gmail.com | 0544121814</p>
 </footer>
 
 <div class="bottomNav">
@@ -286,39 +264,33 @@ table{width:100%;border-collapse:collapse;font-size:11px;margin-top:8px} th,td{b
 <button id="nav-nurse" onclick="showPage('nurse-public')"><span>👩⚕</span><span>Join</span></button>
 <button id="nav-book" onclick="showPage('booking-public')"><span>💡</span><span>Help</span></button>
 <button id="nav-login" onclick="showPage('nurse-login')"><span>🔑</span><span>Login</span></button>
-<button id="nav-chat" onclick="showPage('group-chat')" style="background:#fef2f2;border:2px solid #ef4444"><span>💬</span><span>Group</span></button>
+<button id="nav-chat" onclick="showPage('group-chat')"><span>💬</span><span>Group</span></button>
 </div>
 
 <script>
-// ====== TRANSLATION SYSTEM - FIXED ======
+// ===== TRANSLATIONS =====
 var TRANSLATIONS = {
- en:{global_home:"GLOBAL HOME NURSING",book_title:"BOOK NURSE - Auto Legal Pay Calculator",full_name:"Full Name",phone:"Phone",email:"Email",gps_tap:"Tap GPS Auto",gps_btn:"GPS Auto",select_service:"-- Select Service (13 Services) --",how_long:"⏱ How long do you need nurse?",tab_hourly:"⏰ Hours",tab_daily:"📅 Days",tab_weekly:"🗓 Weeks",tab_monthly:"📆 Months",q_hours:"How many hours do you need?",q_days:"How many days do you need?",q_weeks:"How many weeks do you need?",q_months:"How many months do you need?",w_country:"🌍 Country:",w_min:"👩⚕ Legal Min / Hour:",w_duration:"⏰ Duration:",w_total_hours:"⏳ Total Hours:",w_total_pay:"💰 TOTAL MINIMUM:",your_offer:"Your Offer - Must be >= Minimum",find_nurses:"🔍 FIND NURSES NEAR ME",random:"🎲 RANDOM",book_selected:"BOOK SELECTED",no_nurse:"No nurse selected",my_bookings:"📋 MY BOOKINGS",enter_phone_load:"Enter phone to load",load:"LOAD",no_bookings:"No bookings loaded",live_map:"LIVE Map",nearby:"Nearby",map:"🗺 Map",refresh:"Refresh",nurse_reg:"Nurse Registration",password:"Password",years_exp:"Years Experience",register:"Register",already_login:"Already Registered? Login Here",help_title:"💡 LOVE CARE HELP CENTER",help_desc:"Welcome to LOVE CARE GLOBAL. Ask your question.",ask_me:"🤖 Ask Me Anything",type_question:"Type your question...",send:"Send",step1:"Enter Details",step2:"Tap GPS",step3:"Choose Time",step4:"Find & Book",nurse_login:"Nurse Login",login_nurse:"Login as Nurse",start_duty:"START DUTY",stop:"STOP",logout:"Logout",new_offers:"New Offers",home:"Home"},
- fr:{global_home:"SOINS INFIRMIERS À DOMICILE",book_title:"RÉSERVER INFIRMIÈRE - Calcul Auto Légal",full_name:"Nom Complet",phone:"Téléphone",email:"Email",gps_tap:"Appuyer GPS Auto",gps_btn:"GPS Auto",select_service:"-- Sélectionner Service --",how_long:"⏱ Combien de temps avez-vous besoin?",tab_hourly:"⏰ Heures",tab_daily:"📅 Jours",tab_weekly:"🗓 Semaines",tab_monthly:"📆 Mois",q_hours:"Combien d'heures?",q_days:"Combien de jours?",q_weeks:"Combien de semaines?",q_months:"Combien de mois?",w_country:"🌍 Pays:",w_min:"👩⚕ Min Légal / Heure:",w_duration:"⏰ Durée:",w_total_hours:"⏳ Heures Totales:",w_total_pay:"💰 TOTAL MINIMUM:",your_offer:"Votre Offre - Doit être >= Minimum",find_nurses:"🔍 TROUVER INFIRMIÈRES",random:"🎲 ALÉATOIRE",book_selected:"RÉSERVER",no_nurse:"Aucune infirmière sélectionnée",my_bookings:"📋 MES RÉSERVATIONS",enter_phone_load:"Entrez téléphone",load:"CHARGER",no_bookings:"Aucune réservation",live_map:"Carte LIVE",nearby:"Proche",map:"🗺 Carte",refresh:"Actualiser",nurse_reg:"Inscription Infirmière",password:"Mot de passe",years_exp:"Années Expérience",register:"S'inscrire",already_login:"Déjà inscrit? Connectez-vous",help_title:"💡 CENTRE D'AIDE",help_desc:"Bienvenue chez LOVE CARE GLOBAL",ask_me:"🤖 Posez-moi une question",type_question:"Tapez votre question...",send:"Envoyer",step1:"Détails",step2:"GPS",step3:"Temps",step4:"Réserver",nurse_login:"Connexion Infirmière",login_nurse:"Connexion",start_duty:"COMMENCER SERVICE",stop:"ARRÊT",logout:"Déconnexion",new_offers:"Nouvelles Offres",home:"Accueil"},
- es:{global_home:"ENFERMERÍA DOMICILIARIA GLOBAL",book_title:"RESERVAR ENFERMERA - Calculadora Legal",full_name:"Nombre Completo",phone:"Teléfono",email:"Correo",gps_tap:"Tocar GPS Auto",gps_btn:"GPS Auto",select_service:"-- Seleccionar Servicio --",how_long:"⏱ ¿Cuánto tiempo necesitas?",tab_hourly:"⏰ Horas",tab_daily:"📅 Días",tab_weekly:"🗓 Semanas",tab_monthly:"📆 Meses",q_hours:"¿Cuántas horas?",q_days:"¿Cuántos días?",q_weeks:"¿Cuántas semanas?",q_months:"¿Cuántos meses?",w_country:"🌍 País:",w_min:"👩⚕ Mín Legal / Hora:",w_duration:"⏰ Duración:",w_total_hours:"⏳ Horas Totales:",w_total_pay:"💰 TOTAL MÍNIMO:",your_offer:"Tu Oferta - Debe ser >= Mínimo",find_nurses:"🔍 BUSCAR ENFERMERAS",random:"🎲 ALEATORIO",book_selected:"RESERVAR SELECCIONADO",no_nurse:"Ninguna enfermera seleccionada",my_bookings:"📋 MIS RESERVAS",enter_phone_load:"Ingresa teléfono",load:"CARGAR",no_bookings:"Sin reservas",live_map:"Mapa VIVO",nearby:"Cercano",map:"🗺 Mapa",refresh:"Actualizar",nurse_reg:"Registro Enfermera",password:"Contraseña",years_exp:"Años Experiencia",register:"Registrar",already_login:"¿Ya registrado? Inicia sesión",help_title:"💡 CENTRO DE AYUDA",help_desc:"Bienvenido a LOVE CARE GLOBAL",ask_me:"🤖 Pregúntame",type_question:"Escribe tu pregunta...",send:"Enviar",step1:"Detalles",step2:"GPS",step3:"Tiempo",step4:"Reservar",nurse_login:"Login Enfermera",login_nurse:"Iniciar Sesión",start_duty:"INICIAR TURNO",stop:"PARAR",logout:"Cerrar Sesión",new_offers:"Nuevas Ofertas",home:"Inicio"},
- de:{global_home:"GLOBALE HAUSKRANKENPFLEGE",book_title:"KRANKENSCHWESTER BUCHEN - Legal Rechner",full_name:"Vollständiger Name",phone:"Telefon",email:"E-Mail",gps_tap:"GPS Auto tippen",gps_btn:"GPS Auto",select_service:"-- Service wählen --",how_long:"⏱ Wie lange benötigen Sie?",tab_hourly:"⏰ Stunden",tab_daily:"📅 Tage",tab_weekly:"🗓 Wochen",tab_monthly:"📆 Monate",q_hours:"Wie viele Stunden?",q_days:"Wie viele Tage?",q_weeks:"Wie viele Wochen?",q_months:"Wie viele Monate?",w_country:"🌍 Land:",w_min:"👩⚕ Gesetzl. Min / Stunde:",w_duration:"⏰ Dauer:",w_total_hours:"⏳ Gesamtstunden:",w_total_pay:"💰 GESAMT MINIMUM:",your_offer:"Ihr Angebot - Muss >= Minimum",find_nurses:"🔍 KRANKENSCHWESTERN FINDEN",random:"🎲 ZUFALL",book_selected:"AUSGEWÄHLT BUCHEN",no_nurse:"Keine Schwester ausgewählt",my_bookings:"📋 MEINE BUCHUNGEN",enter_phone_load:"Telefon eingeben",load:"LADEN",no_bookings:"Keine Buchungen",live_map:"LIVE Karte",nearby:"In der Nähe",map:"🗺 Karte",refresh:"Aktualisieren",nurse_reg:"Krankenschwester Registrierung",password:"Passwort",years_exp:"Jahre Erfahrung",register:"Registrieren",already_login:"Bereits registriert? Anmelden",help_title:"💡 HILFEZENTRUM",help_desc:"Willkommen bei LOVE CARE GLOBAL",ask_me:"🤖 Frag mich",type_question:"Frage eingeben...",send:"Senden",step1:"Details",step2:"GPS",step3:"Zeit",step4:"Buchen",nurse_login:"Schwester Login",login_nurse:"Anmelden",start_duty:"DIENST STARTEN",stop:"STOP",logout:"Abmelden",new_offers:"Neue Angebote",home:"Startseite"},
- pt:{global_home:"ENFERMAGEM DOMICILIAR GLOBAL",book_title:"RESERVAR ENFERMEIRA - Calculadora Legal",full_name:"Nome Completo",phone:"Telefone",email:"Email",gps_tap:"Toque GPS Auto",gps_btn:"GPS Auto",select_service:"-- Selecionar Serviço --",how_long:"⏱ Quanto tempo precisa?",tab_hourly:"⏰ Horas",tab_daily:"📅 Dias",tab_weekly:"🗓 Semanas",tab_monthly:"📆 Meses",q_hours:"Quantas horas?",q_days:"Quantos dias?",q_weeks:"Quantas semanas?",q_months:"Quantos meses?",w_country:"🌍 País:",w_min:"👩⚕ Mín Legal / Hora:",w_duration:"⏰ Duração:",w_total_hours:"⏳ Horas Totais:",w_total_pay:"💰 TOTAL MÍNIMO:",your_offer:"Sua Oferta - Deve ser >= Mínimo",find_nurses:"🔍 ENCONTRAR ENFERMEIRAS",random:"🎲 ALEATÓRIO",book_selected:"RESERVAR SELECIONADO",no_nurse:"Nenhuma enfermeira selecionada",my_bookings:"📋 MINHAS RESERVAS",enter_phone_load:"Digite telefone",load:"CARREGAR",no_bookings:"Sem reservas",live_map:"Mapa AO VIVO",nearby:"Próximo",map:"🗺 Mapa",refresh:"Atualizar",nurse_reg:"Registro de Enfermeira",password:"Senha",years_exp:"Anos Experiência",register:"Registrar",already_login:"Já registrado? Faça login",help_title:"💡 CENTRAL DE AJUDA",help_desc:"Bem-vindo ao LOVE CARE GLOBAL",ask_me:"🤖 Pergunte-me",type_question:"Digite sua pergunta...",send:"Enviar",step1:"Detalhes",step2:"GPS",step3:"Tempo",step4:"Reservar",nurse_login:"Login Enfermeira",login_nurse:"Entrar",start_duty:"INICIAR SERVIÇO",stop:"PARAR",logout:"Sair",new_offers:"Novas Ofertas",home:"Início"},
- ar:{global_home:"التمريض المنزلي العالمي",book_title:"حجز ممرضة - حاسبة قانونية",full_name:"الاسم الكامل",phone:"الهاتف",email:"البريد",gps_tap:"اضغط GPS تلقائي",gps_btn:"GPS تلقائي",select_service:"-- اختر الخدمة --",how_long:"⏱ كم من الوقت تحتاج ممرضة؟",tab_hourly:"⏰ ساعات",tab_daily:"📅 أيام",tab_weekly:"🗓 أسابيع",tab_monthly:"📆 أشهر",q_hours:"كم ساعة تحتاج؟",q_days:"كم يوم تحتاج؟",q_weeks:"كم أسبوع تحتاج؟",q_months:"كم شهر تحتاج؟",w_country:"🌍 الدولة:",w_min:"👩⚕ الحد القانوني / ساعة:",w_duration:"⏰ المدة:",w_total_hours:"⏳ إجمالي الساعات:",w_total_pay:"💰 الحد الأدنى الإجمالي:",your_offer:"عرضك - يجب أن يكون >= الحد الأدنى",find_nurses:"🔍 ابحث عن ممرضات قريبة",random:"🎲 عشوائي",book_selected:"احجز المحدد",no_nurse:"لم يتم اختيار ممرضة",my_bookings:"📋 حجوزاتي",enter_phone_load:"أدخل الهاتف",load:"تحميل",no_bookings:"لا توجد حجوزات",live_map:"خريطة مباشرة",nearby:"قريب",map:"🗺 خريطة",refresh:"تحديث",nurse_reg:"تسجيل ممرضة",password:"كلمة المرور",years_exp:"سنوات الخبرة",register:"تسجيل",already_login:"مسجل بالفعل؟ تسجيل الدخول",help_title:"💡 مركز المساعدة",help_desc:"مرحبا بكم في LOVE CARE GLOBAL",ask_me:"🤖 اسألني",type_question:"اكتب سؤالك...",send:"إرسال",step1:"التفاصيل",step2:"GPS",step3:"الوقت",step4:"الحجز",nurse_login:"دخول ممرضة",login_nurse:"تسجيل الدخول",start_duty:"بدء العمل",stop:"توقف",logout:"تسجيل خروج",new_offers:"عروض جديدة",home:"الرئيسية"},
- hi:{global_home:"ग्लोबल होम नर्सिंग",book_title:"नर्स बुक करें - कानूनी कैलकुलेटर",full_name:"पूरा नाम",phone:"फोन",email:"ईमेल",gps_tap:"GPS ऑटो टैप करें",gps_btn:"GPS ऑटो",select_service:"-- सेवा चुनें --",how_long:"⏱ आपको कितने समय के लिए नर्स चाहिए?",tab_hourly:"⏰ घंटे",tab_daily:"📅 दिन",tab_weekly:"🗓 सप्ताह",tab_monthly:"📆 महीने",q_hours:"कितने घंटे चाहिए?",q_days:"कितने दिन चाहिए?",q_weeks:"कितने सप्ताह चाहिए?",q_months:"कितने महीने चाहिए?",w_country:"🌍 देश:",w_min:"👩⚕ कानूनी न्यूनतम / घंटा:",w_duration:"⏰ अवधि:",w_total_hours:"⏳ कुल घंटे:",w_total_pay:"💰 कुल न्यूनतम:",your_offer:"आपकी पेशकश - न्यूनतम से अधिक होनी चाहिए",find_nurses:"🔍 पास की नर्स खोजें",random:"🎲 रैंडम",book_selected:"चयनित बुक करें",no_nurse:"कोई नर्स चयनित नहीं",my_bookings:"📋 मेरी बुकिंग",enter_phone_load:"फोन दर्ज करें",load:"लोड",no_bookings:"कोई बुकिंग नहीं",live_map:"लाइव मानचित्र",nearby:"नजदीकी",map:"🗺 मानचित्र",refresh:"रिफ्रेश",nurse_reg:"नर्स पंजीकरण",password:"पासवर्ड",years_exp:"अनुभव वर्ष",register:"पंजीकरण",already_login:"पहले से पंजीकृत? लॉगिन करें",help_title:"💡 सहायता केंद्र",help_desc:"LOVE CARE GLOBAL में आपका स्वागत है",ask_me:"🤖 मुझसे पूछें",type_question:"अपना प्रश्न लिखें...",send:"भेजें",step1:"विवरण",step2:"GPS",step3:"समय",step4:"बुक करें",nurse_login:"नर्स लॉगिन",login_nurse:"लॉगिन",start_duty:"ड्यूटी शुरू करें",stop:"रोकें",logout:"लॉगआउट",new_offers:"नए ऑफर",home:"होम"},
- sw:{global_home:"UUGUZI WA NYUMBANI DUNIANI",book_title:"WEKA NURSE - Kikokotoo Halali",full_name:"Jina Kamili",phone:"Simu",email:"Barua pepe",gps_tap:"Gusa GPS Auto",gps_btn:"GPS Auto",select_service:"-- Chagua Huduma --",how_long:"⏱ Unahitaji muuguzi kwa muda gani?",tab_hourly:"⏰ Masaa",tab_daily:"📅 Siku",tab_weekly:"🗓 Wiki",tab_monthly:"📆 Miezi",q_hours:"Masaa mangapi?",q_days:"Siku ngapi?",q_weeks:"Wiki ngapi?",q_months:"Miezi mingapi?",w_country:"🌍 Nchi:",w_min:"👩⚕ Kima cha Kisheria / Saa:",w_duration:"⏰ Muda:",w_total_hours:"⏳ Jumla ya Masaa:",w_total_pay:"💰 JUMLA YA CHINI:",your_offer:"Ofa Yako - Lazima >= Kima cha Chini",find_nurses:"🔍 TAFUTA WAUGUZI KARIBU",random:"🎲 BAHATI",book_selected:"WEKA ULIYECHAGUA",no_nurse:"Hakuna muuguzi aliyechaguliwa",my_bookings:"📋 WEKA ZANGU",enter_phone_load:"Ingiza simu",load:"PAKIA",no_bookings:"Hakuna booking",live_map:"Ramani LIVE",nearby:"Karibu",map:"🗺 Ramani",refresh:"Onyesha upya",nurse_reg:"Usajili wa Muuguzi",password:"Nenosiri",years_exp:"Miaka ya Uzoefu",register:"Sajili",already_login:"Tayari umesajiliwa? Ingia",help_title:"💡 KITUO CHA MSAADA",help_desc:"Karibu LOVE CARE GLOBAL",ask_me:"🤖 Niulize",type_question:"Andika swali lako...",send:"Tuma",step1:"Maelezo",step2:"GPS",step3:"Muda",step4:"Weka",nurse_login:"Ingia Muuguzi",login_nurse:"Ingia",start_duty:"ANZA KAZI",stop:"SIMAMA",logout:"Toka",new_offers:"Ofa Mpya",home:"Nyumbani"},
- it:{global_home:"ASSISTENZA DOMICILIARE GLOBALE",book_title:"PRENOTA INFERMIERE - Calcolatore Legale",full_name:"Nome Completo",phone:"Telefono",email:"Email",gps_tap:"Tocca GPS Auto",gps_btn:"GPS Auto",select_service:"-- Seleziona Servizio --",how_long:"⏱ Per quanto tempo hai bisogno?",tab_hourly:"⏰ Ore",tab_daily:"📅 Giorni",tab_weekly:"🗓 Settimane",tab_monthly:"📆 Mesi",q_hours:"Quante ore?",q_days:"Quanti giorni?",q_weeks:"Quante settimane?",q_months:"Quanti mesi?",w_country:"🌍 Paese:",w_min:"👩⚕ Min Legale / Ora:",w_duration:"⏰ Durata:",w_total_hours:"⏳ Ore Totali:",w_total_pay:"💰 TOTALE MINIMO:",your_offer:"La tua Offerta - Deve essere >= Minimo",find_nurses:"🔍 TROVA INFERMIERI VICINI",random:"🎲 CASUALE",book_selected:"PRENOTA SELEZIONATO",no_nurse:"Nessun infermiere selezionato",my_bookings:"📋 MIE PRENOTAZIONI",enter_phone_load:"Inserisci telefono",load:"CARICA",no_bookings:"Nessuna prenotazione",live_map:"Mappa LIVE",nearby:"Vicino",map:"🗺 Mappa",refresh:"Aggiorna",nurse_reg:"Registrazione Infermiere",password:"Password",years_exp:"Anni Esperienza",register:"Registra",already_login:"Già registrato? Accedi",help_title:"💡 CENTRO AIUTO",help_desc:"Benvenuto in LOVE CARE GLOBAL",ask_me:"🤖 Chiedimi",type_question:"Scrivi la tua domanda...",send:"Invia",step1:"Dettagli",step2:"GPS",step3:"Tempo",step4:"Prenota",nurse_login:"Login Infermiere",login_nurse:"Accedi",start_duty:"INIZIA TURNO",stop:"FERMA",logout:"Esci",new_offers:"Nuove Offerte",home:"Home"},
- ja:{global_home:"グローバル在宅看護",book_title:"看護師を予約 - 法定計算機",full_name:"氏名",phone:"電話",email:"メール",gps_tap:"GPS自動をタップ",gps_btn:"GPS自動",select_service:"-- サービスを選択 --",how_long:"⏱ どのくらいの期間必要ですか？",tab_hourly:"⏰ 時間",tab_daily:"📅 日",tab_weekly:"🗓 週",tab_monthly:"📆 月",q_hours:"何時間必要ですか？",q_days:"何日必要ですか？",q_weeks:"何週間必要ですか？",q_months:"何ヶ月必要ですか？",w_country:"🌍 国:",w_min:"👩⚕ 法定最低 / 時間:",w_duration:"⏰ 期間:",w_total_hours:"⏳ 合計時間:",w_total_pay:"💰 合計最低:",your_offer:"あなたの提示額 - 最低以上必要",find_nurses:"🔍 近くの看護師を探す",random:"🎲 ランダム",book_selected:"選択を予約",no_nurse:"看護師が選択されていません",my_bookings:"📋 私の予約",enter_phone_load:"電話を入力",load:"読み込み",no_bookings:"予約なし",live_map:"ライブマップ",nearby:"近く",map:"🗺 地図",refresh:"更新",nurse_reg:"看護師登録",password:"パスワード",years_exp:"経験年数",register:"登録",already_login:"登録済み？ログイン",help_title:"💡 ヘルプセンター",help_desc:"LOVE CARE GLOBALへようこそ",ask_me:"🤖 何でも聞いて",type_question:"質問を入力...",send:"送信",step1:"詳細",step2:"GPS",step3:"時間",step4:"予約",nurse_login:"看護師ログイン",login_nurse:"ログイン",start_duty:"勤務開始",stop:"停止",logout:"ログアウト",new_offers:"新しいオファー",home:"ホーム"}
+ en:{book_title:"BOOK NURSE - Live-in / Live-out",live_out:"LIVE-OUT",live_in:"LIVE-IN"},
+ fr:{book_title:"RÉSERVER - Live-in / Live-out",live_out:"EXTERNE",live_in:"INTERNE"},
+ es:{book_title:"RESERVAR - Live-in / Live-out",live_out:"EXTERNA",live_in:"INTERNA"},
+ de:{book_title:"BUCHEN - Live-in / Live-out",live_out:"EXTERN",live_in:"INTERN"},
+ pt:{book_title:"RESERVAR - Live-in / Live-out",live_out:"EXTERNA",live_in:"INTERNA"},
+ ar:{book_title:"حجز ممرضة - مقيمة / غير مقيمة",live_out:"غير مقيمة",live_in:"مقيمة"},
+ hi:{book_title:"नर्स बुक करें - Live-in / Live-out",live_out:"लाइव-आउट",live_in:"लाइव-इन"},
+ sw:{book_title:"WEKA NURSE - Live-in / Live-out",live_out:"Live-Out",live_in:"Live-In"},
+ it:{book_title:"PRENOTA - Live-in / Live-out",live_out:"Esterna",live_in:"Interna"},
+ ja:{book_title:"予約 - Live-in / Live-out",live_out:"通い",live_in:"住み込み"}
 };
-
 function applyTranslation(lang){
- var dict = TRANSLATIONS[lang] || TRANSLATIONS['en'];
+ var dict=TRANSLATIONS[lang]||TRANSLATIONS['en'];
  document.querySelectorAll('[data-i18n]').forEach(el=>{
-   var key = el.getAttribute('data-i18n');
-   if(dict[key]) el.innerText = dict[key];
- });
- document.querySelectorAll('[data-i18n-placeholder]').forEach(el=>{
-   var key = el.getAttribute('data-i18n-placeholder');
-   if(dict[key]) el.placeholder = dict[key];
+   var k=el.getAttribute('data-i18n');
+   if(dict[k]) el.innerText=dict[k];
  });
 }
 
-// ========= LEGAL NURSE MINIMUM PER HOUR - GHANA NOW 15 GHS/HR =========
 var NURSE_HOURLY_MIN = {
- GH: { amount: 15, currency: "GHS", label: "Ghana - 15 GHS/hr" },
+ GH: { amount: 15, currency: "GHS", label: "Ghana 15 GHS/hr" },
  NG: { amount: 1500, currency: "NGN", label: "Nigeria" },
  ZA: { amount: 80, currency: "ZAR", label: "South Africa" },
  KE: { amount: 300, currency: "KES", label: "Kenya" },
@@ -350,17 +322,14 @@ var NURSE_HOURLY_MIN = {
  AE: { amount: 35, currency: "AED", label: "UAE" },
  JP: { amount: 1800, currency: "JPY", label: "Japan" }
 };
-
 var FX_TO_USD = { GHS:0.064, NGN:0.00062, ZAR:0.054, KES:0.0077, UGX:0.00027, TZS:0.00038, ETB:0.0079, RWF:0.00077, XAF:0.0016, XOF:0.0016, EGP:0.019, MAD:0.10, USD:1, GBP:1.27, CAD:0.73, AUD:0.65, EUR:1.08, INR:0.012, PKR:0.0036, BDT:0.0091, PHP:0.017, IDR:0.000061, BRL:0.19, MXN:0.058, SAR:0.266, AED:0.272, JPY:0.0066 };
-function convertCurrency(amount, fromCurr, toCurr){
- if(fromCurr===toCurr) return amount;
- var usd = amount * (FX_TO_USD[fromCurr]||1);
- return usd / (FX_TO_USD[toCurr]||1);
-}
+function convertCurrency(a,f,t){ if(f===t) return a; var usd=a*(FX_TO_USD[f]||1); return usd/(FX_TO_USD[t]||1); }
 
-var bookingUnit = 'daily';
+var bookingLiveType = 'live-out';
+var feedingIncluded = null; // true/false
 var currentTotalMin = 0;
 var currentTotalHours = 0;
+var currentFoodAllowanceTotal = 0;
 
 function getCurrentNurseRate(){
  var country = document.getElementById('countrySelect').value || 'GH';
@@ -372,66 +341,108 @@ function getCurrentNurseRate(){
  return data;
 }
 
-function stepVal(id, delta){
-  var el = document.getElementById(id);
-  var v = parseInt(el.value)||0;
-  v = v + delta;
-  if(v<1) v=1;
-  el.value=v;
-  calculateTotal();
+function selectLiveType(type){
+ bookingLiveType = type;
+ document.querySelectorAll('.unitTabs button').forEach(b=>b.classList.remove('active'));
+ document.getElementById('btn-'+type).classList.add('active');
+ document.querySelectorAll('[id^="panel-"]').forEach(p=>p.classList.add('hidden'));
+ document.getElementById('panel-'+type).classList.remove('hidden');
+ calculateTotal();
 }
 
-function selectUnit(unit){
-  bookingUnit = unit;
-  document.querySelectorAll('.unitTabs button').forEach(b=>b.classList.remove('active'));
-  document.getElementById('btn-'+unit).classList.add('active');
-  document.querySelectorAll('[id^="panel-"]').forEach(p=>p.classList.add('hidden'));
-  document.getElementById('panel-'+unit).classList.remove('hidden');
-  calculateTotal();
+function setFeeding(isIncluded){
+ feedingIncluded = isIncluded;
+ document.getElementById('feedYesBtn').classList.remove('activeYes');
+ document.getElementById('feedNoBtn').classList.remove('activeNo');
+ if(isIncluded){
+   document.getElementById('feedYesBtn').classList.add('activeYes');
+   document.getElementById('feedingYesBox').classList.remove('hidden');
+   document.getElementById('feedingNoBox').classList.add('hidden');
+ } else {
+   document.getElementById('feedNoBtn').classList.add('activeNo');
+   document.getElementById('feedingYesBox').classList.add('hidden');
+   document.getElementById('feedingNoBox').classList.remove('hidden');
+ }
+ calculateTotal();
 }
 
-// NEW SIMPLE LOGIC - NO HRS/DAY BOX
+function getDurationInputs(){
+ var h=0,d=0,w=0,m=0;
+ if(bookingLiveType==='live-out'){
+   h = parseInt(document.getElementById('outHours').value)||0;
+   d = parseInt(document.getElementById('outDays').value)||0;
+   w = parseInt(document.getElementById('outWeeks').value)||0;
+   m = parseInt(document.getElementById('outMonths').value)||0;
+ } else {
+   h = parseInt(document.getElementById('inHours').value)||0;
+   d = parseInt(document.getElementById('inDays').value)||0;
+   w = parseInt(document.getElementById('inWeeks').value)||0;
+   m = parseInt(document.getElementById('inMonths').value)||0;
+ }
+ // convert all to hours: 1 day=24h, 1 week=7*24, 1 month=30*24
+ var totalHours = h + (d*24) + (w*7*24) + (m*30*24);
+ if(totalHours===0) totalHours=1; // minimum 1 hour
+ var display = [];
+ if(h>0) display.push(h+'h');
+ if(d>0) display.push(d+'d');
+ if(w>0) display.push(w+'w');
+ if(m>0) display.push(m+'m');
+ return {h,d,w,m,totalHours, display: display.join(' + ') || '0' };
+}
+
 function calculateTotal(){
  var rateData = getCurrentNurseRate();
- var totalHours = 0;
- var displayDuration = '';
+ var dur = getDurationInputs();
+ currentTotalHours = dur.totalHours;
 
- if(bookingUnit === 'hourly'){
-   var h = parseInt(document.getElementById('inputHours').value) || 1;
-   totalHours = h;
-   displayDuration = h + ' Hours';
- }
- else if(bookingUnit === 'daily'){
-   var d = parseInt(document.getElementById('inputDays').value) || 1;
-   totalHours = d * 24; // 1 day = 24 hours full care
-   displayDuration = d + ' Days';
- }
- else if(bookingUnit === 'weekly'){
-   var w = parseInt(document.getElementById('inputWeeks').value) || 1;
-   totalHours = w * 7 * 24;
-   displayDuration = w + ' Weeks';
- }
- else if(bookingUnit === 'monthly'){
-   var m = parseInt(document.getElementById('inputMonths').value) || 1;
-   totalHours = m * 30 * 24;
-   displayDuration = m + ' Months';
- }
-
- currentTotalHours = totalHours;
  var selectedCurr = document.getElementById('cCurrency').value;
- var totalMinLegal = rateData.amount * totalHours;
+ var totalMinLegal = rateData.amount * dur.totalHours;
  var totalMinInSelectedCurr = Math.ceil(convertCurrency(totalMinLegal, rateData.currency, selectedCurr));
  currentTotalMin = totalMinInSelectedCurr;
 
+ // food allowance calculation
+ var foodAllowanceTotal = 0;
+ var feedingText = '-';
+ if(bookingLiveType==='live-in'){
+   if(feedingIncluded===true){
+     var meals = document.getElementById('mealsPerDay').value;
+     feedingText = 'YES - '+meals+' meals/day';
+   } else if(feedingIncluded===false){
+     var allowance = parseFloat(document.getElementById('foodAllowance').value)||0;
+     var allowanceCurr = document.getElementById('foodAllowanceCurrency').value;
+     var period = document.getElementById('foodAllowancePeriod').value;
+     var totalDays = dur.totalHours/24;
+     if(period==='per_day') foodAllowanceTotal = allowance * totalDays;
+     else if(period==='per_week') foodAllowanceTotal = allowance * (totalDays/7);
+     else if(period==='per_month') foodAllowanceTotal = allowance * (totalDays/30);
+     else foodAllowanceTotal = allowance;
+     // convert allowance to selected currency
+     foodAllowanceTotal = Math.ceil(convertCurrency(foodAllowanceTotal, allowanceCurr, selectedCurr));
+     feedingText = 'NO - Allowance '+allowance+' '+allowanceCurr+' '+period;
+   } else {
+     feedingText = 'Please select feeding option';
+   }
+ } else {
+   feedingText = 'N/A - Live-out';
+ }
+
+ currentFoodAllowanceTotal = foodAllowanceTotal;
+
  document.getElementById('breakCountry').innerText = document.getElementById('countrySelect').options[document.getElementById('countrySelect').selectedIndex].text;
+ document.getElementById('breakType').innerText = bookingLiveType.toUpperCase() + (bookingLiveType==='live-in'? ' (Stays)' : ' (Comes & Goes)');
  document.getElementById('breakHourly').innerText = rateData.amount + ' ' + rateData.currency + '/hr';
- document.getElementById('breakHours').innerText = displayDuration;
- document.getElementById('breakTotalHours').innerText = totalHours + ' hrs';
- document.getElementById('breakTotalPay').innerText = totalMinInSelectedCurr + ' ' + selectedCurr + ' (Min)';
- document.getElementById('cBudget').placeholder = 'Min ' + totalMinInSelectedCurr + ' ' + selectedCurr;
- document.getElementById('cBudget').min = totalMinInSelectedCurr;
+ document.getElementById('breakDuration').innerText = dur.display;
+ document.getElementById('breakTotalHours').innerText = dur.totalHours + ' hrs';
+ document.getElementById('breakFeeding').innerText = feedingText;
+ document.getElementById('breakTotalPay').innerText = totalMinInSelectedCurr + ' ' + selectedCurr;
+ document.getElementById('breakFoodAllowance').innerText = foodAllowanceTotal + ' ' + selectedCurr;
+ document.getElementById('breakGrandTotal').innerText = (totalMinInSelectedCurr + foodAllowanceTotal) + ' ' + selectedCurr;
+
+ document.getElementById('cBudget').placeholder = 'Min ' + (totalMinInSelectedCurr + foodAllowanceTotal) + ' ' + selectedCurr;
+ document.getElementById('cBudget').min = totalMinInSelectedCurr + foodAllowanceTotal;
+
  validateBudgetLive();
- return { totalMin: totalMinInSelectedCurr, totalHours: totalHours, rateData: rateData, displayDuration: displayDuration, unit: bookingUnit };
+ return { totalMin: totalMinInSelectedCurr, grandTotal: totalMinInSelectedCurr+foodAllowanceTotal, totalHours: dur.totalHours, rateData: rateData, displayDuration: dur.display, foodAllowance: foodAllowanceTotal };
 }
 
 function validateBudgetLive(){
@@ -439,85 +450,55 @@ function validateBudgetLive(){
  var amt = parseFloat(document.getElementById('cBudget').value);
  var calc = calculateTotal();
  if(info){
-   info.innerHTML = '⚖ <b>' + calc.rateData.label + '</b> Legal: <b>' + calc.rateData.amount + ' ' + calc.rateData.currency + '/hr</b> | ' + calc.displayDuration + ' = ' + calc.totalHours + ' hrs | <b>MIN TOTAL = ' + calc.totalMin + ' ' + document.getElementById('cCurrency').value + '</b>';
-   if(amt && amt < calc.totalMin){
+   info.innerHTML = '⚖ <b>' + calc.rateData.label + '</b> Legal: <b>' + calc.rateData.amount + ' ' + calc.rateData.currency + '/hr</b> | ' + calc.displayDuration + ' = ' + calc.totalHours + ' hrs | <b>MIN TOTAL = ' + calc.grandTotal + ' ' + document.getElementById('cCurrency').value + '</b> (incl. food allowance)';
+   if(amt && amt < calc.grandTotal){
      info.style.background='#fee2e2'; info.style.borderColor='#ef4444'; info.style.color='#991b1b';
      info.innerHTML += ' ❌ TOO LOW';
    } else {
      info.style.background='#fef3c7'; info.style.borderColor='#f59e0b'; info.style.color='#92400e';
    }
  }
- return { valid:!amt || amt >= calc.totalMin, minRequired: calc.totalMin, calc: calc };
+ return { valid:!amt || amt >= calc.grandTotal, minRequired: calc.grandTotal, calc: calc };
 }
 
 function enforceMinRate(){
  var result = validateBudgetLive();
+ if(bookingLiveType==='live-in' && feedingIncluded===null){
+   alert('Please select if feeding is included for Live-in nurse');
+   return false;
+ }
  if(!result.valid){
-   document.getElementById('legalWageMsg').innerHTML = 'Ghana Legal Nurse Minimum = <b>15 GHS/hour</b><br><br>You selected: ' + result.calc.displayDuration + ' = ' + result.calc.totalHours + ' hours<br>Minimum you must pay: <b>' + result.minRequired + ' ' + document.getElementById('cCurrency').value + '</b><br><br>Increase your offer.';
+   document.getElementById('legalWageMsg').innerHTML = 'Legal Minimum = <b>'+result.calc.rateData.amount+' '+result.calc.rateData.currency+'/hr</b><br>You selected: '+result.calc.displayDuration+' = '+result.calc.totalHours+' hours<br>Food allowance: '+result.calc.foodAllowance+'<br>Minimum you must pay: <b>'+result.minRequired+' '+document.getElementById('cCurrency').value+'</b><br><br>Increase your offer.';
    document.getElementById('legalWagePopup').classList.remove('hidden');
    return false;
  }
  return true;
 }
-function closeLegalWagePopup(){ document.getElementById('legalWagePopup').classList.add('hidden'); }
 
 var firebaseConfig={apiKey:"AIzaSyB52-X1D8Cg-wUDWPds_tR7D8cF82dMdRg",authDomain:"web-care-618e8.firebaseapp.com",databaseURL:"https://web-care-618e8-default-rtdb.firebaseio.com",projectId:"web-care-618e8",storageBucket:"web-care-618e8.firebasestorage.app",messagingSenderId:"1062578660694",appId:"1:1062578660694:web:f94dfe12c929df05bce2f7"};
-var db=null,allBookings=[],allWorkers=[],allRefunds=[],clientLat=null,clientLng=null,nurseRegLat=null,nurseRegLng=null;
+var db=null,allBookings=[],allWorkers=[],clientLat=null,clientLng=null,nurseRegLat=null,nurseRegLng=null;
 var uberMap=null,ceoMap=null,nurseCluster=null,selectedNurseId=null,nearbyNursesSorted=[];
-var lastBookingId=null,lastBookingCurrency='GHS',lastBookingAmount=0,currentRefundBookingId=null;
 var countryCodes=[{c:'Ghana',code:'+233',flag:'🇬🇭'},{c:'Nigeria',code:'+234',flag:'🇳🇬'},{c:'South Africa',code:'+27',flag:'🇿🇦'},{c:'Kenya',code:'+254',flag:'🇰🇪'},{c:'Uganda',code:'+256',flag:'🇺🇬'},{c:'Tanzania',code:'+255',flag:'🇹🇿'},{c:'Ethiopia',code:'+251',flag:'🇪🇹'},{c:'Rwanda',code:'+250',flag:'🇷🇼'},{c:'Cameroon',code:'+237',flag:'🇨🇲'},{c:'Senegal',code:'+221',flag:'🇸🇳'},{c:'Ivory Coast',code:'+225',flag:'🇨🇮'},{c:'Egypt',code:'+20',flag:'🇪🇬'},{c:'Morocco',code:'+212',flag:'🇲🇦'},{c:'USA',code:'+1',flag:'🇺🇸'},{c:'UK',code:'+44',flag:'🇬🇧'},{c:'Canada',code:'+1',flag:'🇨🇦'},{c:'Australia',code:'+61',flag:'🇦🇺'},{c:'Germany',code:'+49',flag:'🇩🇪'},{c:'France',code:'+33',flag:'🇫🇷'},{c:'Italy',code:'+39',flag:'🇮🇹'},{c:'Spain',code:'+34',flag:'🇪🇸'},{c:'India',code:'+91',flag:'🇮🇳'},{c:'Pakistan',code:'+92',flag:'🇵🇰'},{c:'Bangladesh',code:'+880',flag:'🇧🇩'},{c:'Philippines',code:'+63',flag:'🇵🇭'},{c:'Indonesia',code:'+62',flag:'🇮🇩'},{c:'Brazil',code:'+55',flag:'🇧🇷'},{c:'Mexico',code:'+52',flag:'🇲🇽'},{c:'Saudi Arabia',code:'+966',flag:'🇸🇦'},{c:'UAE',code:'+971',flag:'🇦🇪'},{c:'Japan',code:'+81',flag:'🇯🇵'}];
 function populatePhoneCodes(){var html='';countryCodes.forEach(o=>{html+=`<option value="${o.code}">${o.flag} ${o.code} ${o.c}</option>`;});['cPhoneCode','nRegPhoneCode','nurseLoginCode','myBookPhoneCode'].forEach(id=>{var el=document.getElementById(id); if(el) el.innerHTML=html;});}
 try{firebase.initializeApp(firebaseConfig);db=firebase.database();}catch(e){}
-const legalPages={privacy:{title:"Privacy Policy",body:"<p>Legal nurse wage enforced.</p>"},terms:{title:"Terms",body:"<p>Bookings below legal minimum blocked.</p>"},cancel:{title:"Cancellation",body:"<p>Email lovecareglobal@gmail.com</p>"},contact:{title:"Contact",body:"<p>0544121814</p>"}};
-function openLegal(key){document.getElementById('legalTitle').innerText=legalPages[key].title;document.getElementById('legalBody').innerHTML=legalPages[key].body;document.getElementById('legalModal').classList.remove('hidden');}
+function openLegal(k){document.getElementById('legalTitle').innerText=k;document.getElementById('legalBody').innerHTML='<p>Contact lovecareglobal@gmail.com</p>';document.getElementById('legalModal').classList.remove('hidden');}
 function closeLegal(){document.getElementById('legalModal').classList.add('hidden');}
-
-function changeLanguage(){
- var lang=document.getElementById('langSelect').value;
- localStorage.setItem('selectedLang',lang);
- applyTranslation(lang);
- // also change country lang if needed
- var countrySel=document.getElementById('countrySelect');
- var opt=countrySel.options[countrySel.selectedIndex];
- var cLang=opt.getAttribute('data-lang');
- // auto set currency display
- changeCountry();
-}
-
-function changeCountry(){
- var sel=document.getElementById('countrySelect');
- var opt=sel.options[sel.selectedIndex];
- var curr=opt.getAttribute('data-curr');
- var clang=opt.getAttribute('data-lang');
- document.getElementById('currencyDisplay').innerText=curr;
- document.getElementById('cCurrency').value=curr;
- localStorage.setItem('selectedCountry',sel.value);
- // auto language switch based on country if user hasn't manually changed
- if(clang && TRANSLATIONS[clang]){
-   // don't override if user explicitly selected different lang recently? we will sync
-   // document.getElementById('langSelect').value=clang;
-   // applyTranslation(clang);
- }
- calculateTotal();
-}
-
+function changeLanguage(){var lang=document.getElementById('langSelect').value; localStorage.setItem('selectedLang',lang); applyTranslation(lang); changeCountry();}
+function changeCountry(){ var sel=document.getElementById('countrySelect'); var opt=sel.options[sel.selectedIndex]; var curr=opt.getAttribute('data-curr'); document.getElementById('currencyDisplay').innerText=curr; document.getElementById('cCurrency').value=curr; document.getElementById('foodAllowanceCurrency').value=curr; localStorage.setItem('selectedCountry',sel.value); calculateTotal(); }
 function showPage(id){
 if(id==='ceo-dashboard' && localStorage.getItem('isCEOLogged')!=='true') id='ceo-login';
 if(id==='staff-dashboard' &&!localStorage.getItem('staffID')) id='staff-login';
 if(id==='nurse-dashboard' &&!localStorage.getItem('nursePhone')) id='nurse-login';
-if(id==='group-chat' &&!localStorage.getItem('isCEOLogged') &&!localStorage.getItem('nursePhone') &&!localStorage.getItem('staffID')){alert('Login required'); id='nurse-login';}
 document.querySelectorAll('.page').forEach(p=>{p.classList.remove('active');p.style.display='none';});
 var el=document.getElementById('page-'+id); if(el){el.classList.add('active');el.style.display='block';}
 document.querySelectorAll('.bottomNav button').forEach(b=>b.classList.remove('active'));
 var map={'home':'nav-home','nurse-public':'nav-nurse','booking-public':'nav-book','nurse-login':'nav-login','nurse-dashboard':'nav-login','staff-dashboard':'nav-login','ceo-dashboard':'nav-home','group-chat':'nav-chat'};
 var nid=map[id]; if(nid){var nb=document.getElementById(nid); if(nb) nb.classList.add('active');}
-window.scrollTo(0,0);
 if(id==='home') setTimeout(()=>{if(!uberMap)initUberMap();else{uberMap.invalidateSize();fitMapWide();}},300);
 if(id==='ceo-dashboard') setTimeout(()=>{loadCeoData();initCeoMap();renderMinRateEditor();},400);
 if(id==='nurse-dashboard') setTimeout(()=>{loadNurseDashboard();},400);
-if(id==='staff-dashboard') setTimeout(()=>{loadStaffData();},400);
 }
-(function(){var logo=document.getElementById('logoTapArea');var press=null;var tapCount=0;if(logo){logo.addEventListener('click',function(){tapCount++; if(tapCount>=5){tapCount=0;showPage('staff-login');} setTimeout(()=>{tapCount=0},3000);});logo.addEventListener('touchstart',function(){press=setTimeout(()=>{showPage('ceo-login');},1800);});logo.addEventListener('touchend',function(){clearTimeout(press);});logo.addEventListener('mousedown',function(){press=setTimeout(()=>{showPage('ceo-login');},1800);});logo.addEventListener('mouseup',function(){clearTimeout(press);});}})();
+(function(){var logo=document.getElementById('logoTapArea');if(logo){logo.addEventListener('click',function(){var c=logo._tapCount||0;c++;logo._tapCount=c;if(c>=5){logo._tapCount=0;showPage('staff-login');}setTimeout(()=>{logo._tapCount=0},3000);});var press=null;logo.addEventListener('touchstart',function(){press=setTimeout(()=>{showPage('ceo-login');},1800);});logo.addEventListener('touchend',function(){clearTimeout(press);});}})();
 function autoGPS(i,s){var se=document.getElementById(s); var ie=document.getElementById(i); if(se){se.classList.remove('hidden');se.innerText='Getting GPS...';} navigator.geolocation.getCurrentPosition(p=>{var lat=p.coords.latitude,lng=p.coords.longitude; if(i.includes('cLocation')){clientLat=lat;clientLng=lng;} if(i.includes('nRegLocation')){nurseRegLat=lat;nurseRegLng=lng;} fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`).then(r=>r.json()).then(d=>{ie.value=d.display_name||lat.toFixed(5)+','+lng.toFixed(5); if(se) se.innerText='GPS: '+lat.toFixed(4)+','+lng.toFixed(4);}).catch(()=>{ie.value=lat.toFixed(5)+','+lng.toFixed(5);});},e=>{if(se) se.innerText='GPS failed';},{enableHighAccuracy:true,timeout:15000});}
 function getFullPhone(c,p){var code=document.getElementById(c).value; var ph=document.getElementById(p).value.trim().replace(/^0+/,''); if(ph.startsWith('+')) return ph; return code+ph;}
 function getDistanceKm(a,b,c,d){if(!a||!b||!c||!d) return 9999; var R=6371; var dLat=(c-a)*Math.PI/180; var dLon=(d-b)*Math.PI/180; var x=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(a*Math.PI/180)*Math.cos(c*Math.PI/180)*Math.sin(dLon/2)*Math.sin(dLon/2); return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));}
@@ -541,12 +522,14 @@ function submitBooking(){
   if(!selectedNurseId&&nearbyNursesSorted[0])selectedNurseId=nearbyNursesSorted[0].phone||nearbyNursesSorted[0].id;
   var calc = calculateTotal();
   var amount=parseFloat(document.getElementById('cBudget').value||0);
-  if(amount < calc.totalMin){ alert('BLOCKED: Offer '+amount+' below legal total '+calc.totalMin); return; }
+  if(amount < calc.grandTotal){ alert('BLOCKED: Offer '+amount+' below legal total '+calc.grandTotal); return; }
   var cur=document.getElementById('cCurrency').value;
   var country = document.getElementById('countrySelect').value;
   var id=Date.now();
-  var b={id:id,name:name,phone:fullPhone,service:service,location:document.getElementById('cLocation').value,amount:amount,currency:cur,status:'pending_assignment',time:new Date().toLocaleString(),timestamp:Date.now(),lat:clientLat,lng:clientLng,selectedNurse:selectedNurseId,email:document.getElementById('cEmail').value.trim(),country:country,days:calc.displayDuration,totalHours:calc.totalHours,hourlyRate:calc.rateData.amount,hourlyCurrency:calc.rateData.currency,legalMinTotal:calc.totalMin, bookingUnit:calc.unit};
-  if(db)db.ref('bookings/'+id).set(b).then(()=>{ alert('✅ Booked! Total '+amount+' '+cur+' for '+calc.displayDuration+' = '+calc.totalHours+'hrs. Legal min verified.'); localStorage.setItem('lastClientPhone', fullPhone); document.getElementById('myBookPhone').value=document.getElementById('cPhone').value; document.getElementById('myBookPhoneCode').value=document.getElementById('cPhoneCode').value; loadMyBookings(); });
+  var mealsPerDay = feedingIncluded? document.getElementById('mealsPerDay').value : null;
+  var foodAllowance =!feedingIncluded && bookingLiveType==='live-in'? { amount: document.getElementById('foodAllowance').value, currency: document.getElementById('foodAllowanceCurrency').value, period: document.getElementById('foodAllowancePeriod').value, totalConverted: calc.foodAllowance } : null;
+  var b={id:id,name:name,phone:fullPhone,service:service,location:document.getElementById('cLocation').value,amount:amount,currency:cur,status:'pending_assignment',time:new Date().toLocaleString(),timestamp:Date.now(),lat:clientLat,lng:clientLng,selectedNurse:selectedNurseId,email:document.getElementById('cEmail').value.trim(),country:country,days:calc.displayDuration,totalHours:calc.totalHours,hourlyRate:calc.rateData.amount,hourlyCurrency:calc.rateData.currency,legalMinTotal:calc.totalMin, foodAllowanceTotal:calc.foodAllowance, grandTotal:calc.grandTotal, bookingType:bookingLiveType, feedingIncluded:feedingIncluded, mealsPerDay:mealsPerDay, foodAllowanceDetail:foodAllowance};
+  if(db)db.ref('bookings/'+id).set(b).then(()=>{ alert('✅ Booked! '+bookingLiveType.toUpperCase()+' for '+calc.displayDuration+' = '+calc.totalHours+'hrs. Total '+amount+' '+cur+' incl. food.'); localStorage.setItem('lastClientPhone', fullPhone); document.getElementById('myBookPhone').value=document.getElementById('cPhone').value; document.getElementById('myBookPhoneCode').value=document.getElementById('cPhoneCode').value; loadMyBookings(); });
 }
 function loadMyBookings(){
  var codeEl=document.getElementById('myBookPhoneCode'); var phoneEl=document.getElementById('myBookPhone');
@@ -560,97 +543,45 @@ function loadMyBookings(){
    var all = Object.values(snap.val()||{}); var mine = all.filter(b=> (b.phone||'').replace(/[^0-9]/g,'').endsWith(suffix) ); mine.sort((a,b)=>b.timestamp-a.timestamp);
    if(mine.length===0){ listDiv.innerHTML='<div style="text-align:center;color:#999;padding:10px">No bookings for '+fullPhone+'</div>'; return; }
    var h=''; mine.forEach(b=>{
-     var statusClass='st-pending'; if(b.status==='confirmed') statusClass='st-confirmed'; if(b.status==='cancelled_by_client') statusClass='st-cancelled'; if(b.status==='refund_requested') statusClass='st-refund_req'; if(b.status==='refund_approved') statusClass='st-refund_ok'; if(b.status==='refunded') statusClass='st-refunded';
-     h+=`<div class="bookingClientCard"><div style="display:flex;justify-content:space-between"><b>#${b.id}</b><span class="statusBadge ${statusClass}">${(b.status||'').toUpperCase()}</span></div><div style="font-size:11px;margin-top:6px"><b>${b.service}</b> - ${b.amount} ${b.currency}<br>📅 ${b.days||'?'} = ${b.totalHours||'?'} hrs<br>👩⚕ Rate: ${b.hourlyRate} ${b.hourlyCurrency}/hr | Min: ${b.legalMinTotal} ${b.currency}<br>📍 ${b.location||''}<br>⏰ ${b.time||''}</div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">`;
+     var statusClass='st-pending'; if(b.status==='confirmed') statusClass='st-confirmed'; if(b.status==='cancelled_by_client') statusClass='st-cancelled'; if(b.status==='refund_requested') statusClass='st-refund_req';
+     var feedInfo = b.bookingType==='live-in'? (b.feedingIncluded? '🍲 '+b.mealsPerDay+' meals/day' : '🍛 Food money '+ (b.foodAllowanceDetail?.amount||'') ) : 'Live-out';
+     h+=`<div class="bookingClientCard"><div style="display:flex;justify-content:space-between"><b>#${b.id} ${b.bookingType||''}</b><span class="statusBadge ${statusClass}">${(b.status||'').toUpperCase()}</span></div><div style="font-size:11px;margin-top:6px"><b>${b.service}</b> - ${b.amount} ${b.currency}<br>📅 ${b.days||'?'} = ${b.totalHours||'?'} hrs<br>${feedInfo}<br>📍 ${b.location||''}<br>⏰ ${b.time||''}</div><div style="display:flex;gap:6px;margin-top:8px">`;
      if(b.status==='pending_assignment' || b.status==='confirmed'){ h+=`<button class="btnSmall" style="background:#ef4444;color:white;flex:1" onclick="cancelBookingClient(${b.id})">❌ Cancel</button>`; }
-     if(b.status==='cancelled_by_client' || b.status==='confirmed'){ h+=`<button class="btnSmall" style="background:#7c3aed;color:white;flex:1" onclick="openRefundModal(${b.id}, '${b.amount} ${b.currency}')">💸 Refund</button>`; }
      h+=`</div></div>`; }); listDiv.innerHTML=h;
  });
 }
 function cancelBookingClient(id){ if(!confirm('Cancel booking?')) return; if(!db) return; db.ref('bookings/'+id).update({status:'cancelled_by_client', cancelTime:Date.now()}).then(()=>{ alert('Cancelled'); loadMyBookings(); });}
 function openRefundModal(id, amountStr){ currentRefundBookingId=id; document.getElementById('refundBookingId').innerText=id; document.getElementById('refundBookingAmount').innerText=amountStr; document.getElementById('refundModal').classList.remove('hidden');}
-function closeRefundModal(){document.getElementById('refundModal').classList.add('hidden');}
 function submitRefundRequest(){
  var reason=document.getElementById('refundReason').value.trim(); var acct=document.getElementById('refundAccount').value.trim(); var acctName=document.getElementById('refundAccountName').value.trim();
  if(!reason||!acct){ alert('Reason and account required'); return; } if(!db ||!currentRefundBookingId) return;
- db.ref('bookings/'+currentRefundBookingId).once('value').then(snap=>{
-   var b=snap.val(); if(!b){ alert('Not found'); return; }
-   var update={status:'refund_requested', refundReason:reason, refundAccount:acct, refundAccountName:acctName, refundRequestTime:Date.now()};
-   db.ref('bookings/'+currentRefundBookingId).update(update).then(()=>{ db.ref('refunds/'+currentRefundBookingId).set({...b,...update}).then(()=>{ alert('Refund request sent'); closeRefundModal(); loadMyBookings(); }); });
- });
+ db.ref('bookings/'+currentRefundBookingId).update({status:'refund_requested', refundReason:reason, refundAccount:acct, refundAccountName:acctName}).then(()=>{ alert('Refund sent'); document.getElementById('refundModal').classList.add('hidden'); loadMyBookings(); });
 }
-function registerNurse(){var name=document.getElementById('nRegName').value.trim(); var fullPhone=getFullPhone('nRegPhoneCode','nRegPhone'); var pass=document.getElementById('nRegPass').value.trim(); var loc=document.getElementById('nRegLocation').value.trim(); if(!name||!fullPhone||!pass||!loc){alert('All required');return;} if(!nurseRegLat){alert('GPS required');return;} var w={name:name,phone:fullPhone,password:pass,location:loc,timestamp:Date.now(),lat:nurseRegLat,lng:nurseRegLng,status:'on_duty',onDuty:true,specialty:document.getElementById('nRegSpecialty').value||'General'}; if(db) db.ref('workers/'+fullPhone.replace(/[^0-9]/g,'')).set(w).then(()=>{alert('Registered! Now login');showPage('nurse-login');});}
-function loginNurse(){var fullPhone=getFullPhone('nurseLoginCode','nurseLoginPhone'); var pass=document.getElementById('nurseLoginPass').value.trim(); if(db){db.ref('workers/'+fullPhone.replace(/[^0-9]/g,'')).once('value').then(s=>{var d=s.val(); if(d&&d.password===pass){localStorage.setItem('nursePhone',fullPhone);localStorage.setItem('nurseName',d.name);showPage('nurse-dashboard');}else if(d){document.getElementById('nurseLoginResult').innerText='Wrong password';}else{localStorage.setItem('nursePhone',fullPhone);localStorage.setItem('nurseName',fullPhone);showPage('nurse-dashboard');}});}else{localStorage.setItem('nursePhone',fullPhone);showPage('nurse-dashboard');}}
+function registerNurse(){var name=document.getElementById('nRegName').value.trim(); var fullPhone=getFullPhone('nRegPhoneCode','nRegPhone'); var pass=document.getElementById('nRegPass').value.trim(); var loc=document.getElementById('nRegLocation').value.trim(); if(!name||!fullPhone||!pass||!loc){alert('All required');return;} if(!nurseRegLat){alert('GPS required');return;} var w={name:name,phone:fullPhone,password:pass,location:loc,timestamp:Date.now(),lat:nurseRegLat,lng:nurseRegLng,status:'on_duty',onDuty:true}; if(db) db.ref('workers/'+fullPhone.replace(/[^0-9]/g,'')).set(w).then(()=>{alert('Registered!');showPage('nurse-login');});}
+function loginNurse(){var fullPhone=getFullPhone('nurseLoginCode','nurseLoginPhone'); var pass=document.getElementById('nurseLoginPass').value.trim(); if(db){db.ref('workers/'+fullPhone.replace(/[^0-9]/g,'')).once('value').then(s=>{var d=s.val(); if(d&&d.password===pass){localStorage.setItem('nursePhone',fullPhone);showPage('nurse-dashboard');}else{alert('Wrong password or not found');}});}else{localStorage.setItem('nursePhone',fullPhone);showPage('nurse-dashboard');}}
 function loginStaff(){var id=document.getElementById('staffLoginID').value.trim(); if(!id){alert('Enter ID');return;} localStorage.setItem('staffID',id); showPage('staff-dashboard');}
-function loginCEO(){var id=document.getElementById('ceoLoginID').value.trim().toUpperCase(); var pass=document.getElementById('ceoLoginPass').value.trim(); var r=document.getElementById('ceoLoginResult'); if(id==='KUSIPETER'&&pass==='Peterasa80@you!'){localStorage.setItem('isCEOLogged','true');r.innerText='Success';setTimeout(()=>showPage('ceo-dashboard'),400);}else{r.innerText='Access denied';}}
+function loginCEO(){var id=document.getElementById('ceoLoginID').value.trim().toUpperCase(); var pass=document.getElementById('ceoLoginPass').value.trim(); if(id==='KUSIPETER'&&pass==='Peterasa80@you!'){localStorage.setItem('isCEOLogged','true');showPage('ceo-dashboard');}else{alert('Access denied');}}
 function logoutCEO(){localStorage.removeItem('isCEOLogged');showPage('home');}
 function logoutStaff(){localStorage.removeItem('staffID');showPage('home');}
-function logoutNurse(){localStorage.removeItem('nursePhone');localStorage.removeItem('nurseName');showPage('home');}
-function renderMinRateEditor(){
- var container = document.getElementById('minRateEditor'); if(!container) return;
- var override = {}; try{ override = JSON.parse(localStorage.getItem('nurseHourlyOverride')||'{}'); }catch(e){}
- var html = '<table><tr><th>Country</th><th>Legal $/hr</th><th>Edit</th></tr>';
- Object.keys(NURSE_HOURLY_MIN).forEach(code=>{
-   var d = NURSE_HOURLY_MIN[code]; var val = override[code] || d.amount;
-   html += `<tr><td>${code} - ${d.label}</td><td>${d.amount} ${d.currency}/hr</td><td><input id="min-${code}" type="number" value="${val}" style="width:90px;margin:0"><span style="font-size:10px"> ${d.currency}/hr</span></td></tr>`;
- }); html+='</table>'; container.innerHTML=html;
-}
-function switchCeoTab(tab){
-document.querySelectorAll('.ceo-tab').forEach(t=>t.classList.add('hidden')); document.querySelectorAll('.ceoTabs button').forEach(b=>b.classList.remove('activeTab'));
-var show=document.getElementById('ceo-tab-'+tab); if(show) show.classList.remove('hidden'); var btn=document.getElementById('btn-'+tab); if(btn) btn.classList.add('activeTab');
-if(tab==='nurses') setTimeout(()=>{initCeoMap();loadCeoData();},200);
-if(tab==='bookings'||tab==='clients'||tab==='payments'||tab==='staff'||tab==='refunds') loadCeoData();
-if(tab==='announce') renderMinRateEditor();
-}
-function loadCeoData(){if(!db) return; db.ref('bookings').once('value').then(s=>{allBookings=Object.values(s.val()||{});document.getElementById('statBookings').innerText=allBookings.length;renderBookings(allBookings);renderClients(allBookings);renderPayments(allBookings);renderRefundsCEO(allBookings);}); db.ref('workers').once('value').then(s=>{allWorkers=Object.values(s.val()||{});document.getElementById('statNurses').innerText=allWorkers.length;document.getElementById('statOnline').innerText=allWorkers.filter(w=>w.onDuty).length;renderNurses(allWorkers);}); db.ref('staff').once('value').then(s=>{renderStaff(Object.values(s.val()||{}));}); db.ref('refunds').once('value').then(s=>{allRefunds=Object.values(s.val()||{}); document.getElementById('statRefunds').innerText=allRefunds.length;});}
-function renderBookings(list){var c=document.getElementById('ceoBookingsList'); if(!list.length){c.innerHTML='<div style="padding:20px;text-align:center;background:#fef3c7;border-radius:10px">No bookings yet</div>';return;} var h='<table><tr><th>Time</th><th>Client</th><th>Service</th><th>Duration</th><th>Amount</th><th>Status</th><th>Action</th></tr>'; list.sort((a,b)=>b.timestamp-a.timestamp).forEach(b=>{ var badge=`<span class="statusBadge st-pending">${b.status||''}</span>`; if(b.status==='confirmed') badge=`<span class="statusBadge st-confirmed">${b.status}</span>`; if(b.status==='cancelled_by_client') badge=`<span class="statusBadge st-cancelled">CANCELLED</span>`; if(b.status==='refund_requested') badge=`<span class="statusBadge st-refund_req">REFUND REQ</span>`; h+=`<tr><td>${b.time||''}</td><td>${b.name||''}</td><td>${b.service||''}</td><td>${b.days||''}<br><small>${b.totalHours||''}h</small></td><td>${b.amount||''} ${b.currency||''}</td><td>${badge}</td><td><button onclick="updateBookingStatus(${b.id},'confirmed')" class="btnSmall" style="background:green;color:white">Confirm</button><button onclick="deleteBooking(${b.id})" class="btnSmall" style="background:#111;color:white">X</button></td></tr>`;}); h+='</table>'; c.innerHTML=h;}
-function renderRefundsCEO(bookingsList){ var c=document.getElementById('ceoRefundsList'); var refunds = bookingsList.filter(b=> b.status==='refund_requested' || b.status==='refund_approved' || b.status==='refunded' || b.refundReason); if(refunds.length===0){ c.innerHTML='<div style="padding:20px;text-align:center;background:#fef3c7;border-radius:10px">No refunds</div>'; return; } var h='<table><tr><th>Client</th><th>Amount</th><th>Account</th><th>Status</th><th>Action</th></tr>'; refunds.forEach(b=>{ h+=`<tr><td>${b.name||''}</td><td>${b.amount} ${b.currency}</td><td>${b.refundAccount||''}</td><td>${b.status}</td><td>`; if(b.status==='refund_requested'){ h+=`<button onclick="approveRefund(${b.id})" class="btnSmall" style="background:#16a34a;color:white">Approve</button>`; } h+=`</td></tr>`; }); h+='</table>'; c.innerHTML=h;}
-function approveRefund(id){ if(!confirm('Approve?')) return; if(!db) return; db.ref('bookings/'+id).update({status:'refund_approved'}).then(()=>{ loadCeoData(); });}
-function renderNurses(list){var c=document.getElementById('ceoNursesList'); if(!list.length){c.innerHTML='<div style="padding:20px;text-align:center;background:#fef3c7;border-radius:10px">No nurses</div>';return;} var h='<table><tr><th>Name</th><th>Phone</th><th>Location</th><th>Status</th><th>Action</th></tr>'; list.forEach(w=>{h+=`<tr><td>${w.name||''}</td><td>${w.phone||''}</td><td>${w.location||''}</td><td>${w.status||''}</td><td><button onclick="deleteWorker('${(w.phone||'').replace(/[^0-9]/g,'')}')" class="btnSmall" style="background:red;color:white">Remove</button></td></tr>`;}); h+='</table>'; c.innerHTML=h;}
-function renderClients(b){var c=document.getElementById('ceoClientsList'); var map={}; b.forEach(x=>{if(x.phone) map[x.phone]={name:x.name,phone:x.phone,location:x.location,count:(map[x.phone]?.count||0)+1};}); var clients=Object.values(map); if(!clients.length){c.innerHTML='<div style="padding:20px;text-align:center;background:#fef3c7;border-radius:10px">No clients</div>';return;} var h='<table><tr><th>Name</th><th>Phone</th><th>Bookings</th></tr>'; clients.forEach(x=>{h+=`<tr><td>${x.name||''}</td><td>${x.phone}</td><td>${x.count}</td></tr>`;}); h+='</table>'; c.innerHTML=h;}
-function renderPayments(b){var total=b.reduce((s,x)=>s+(x.amount||0),0); document.getElementById('totalRevenue').innerText=total.toFixed(2); document.getElementById('pendingRevenue').innerText=b.filter(x=>x.status==='pending_assignment').reduce((s,x)=>s+(x.amount||0),0).toFixed(2); var c=document.getElementById('ceoPaymentsList'); if(!b.length){c.innerHTML='<div style="padding:20px;text-align:center">No payments</div>';return;} var h='<table><tr><th>Client</th><th>Service</th><th>Amount</th></tr>'; b.forEach(x=>{h+=`<tr><td>${x.name||''}</td><td>${x.service||''}</td><td>${x.amount} ${x.currency}</td></tr>`;}); h+='</table>'; c.innerHTML=h;}
-function renderStaff(list){var c=document.getElementById('ceoStaffList'); if(!list.length){c.innerHTML='<div style="padding:20px;text-align:center">No staff</div>';return;} var h='<table><tr><th>Staff ID</th><th>Action</th></tr>'; list.forEach(s=>{h+=`<tr><td>${s.id||''}</td><td><button onclick="deleteStaff('${s.id}')" class="btnSmall" style="background:red;color:white">Delete</button></td></tr>`;}); h+='</table>'; c.innerHTML=h;}
-function filterBookings(){var q=document.getElementById('ceoSearchBooking').value.toLowerCase(); var st=document.getElementById('ceoBookingFilter').value; var f=allBookings.filter(b=>(!q||(b.name||'').toLowerCase().includes(q))&&(!st||b.status===st)); renderBookings(f);}
-function filterNurses(){var q=document.getElementById('ceoSearchNurse').value.toLowerCase(); var f=allWorkers.filter(w=>(w.name||'').toLowerCase().includes(q)); renderNurses(f);}
-function updateBookingStatus(id,s){if(!db) return; db.ref('bookings/'+id).update({status:s}).then(()=>loadCeoData());}
-function deleteBooking(id){if(confirm('Delete?')){if(db) db.ref('bookings/'+id).remove().then(()=>{ loadCeoData(); });}}
-function deleteWorker(k){if(confirm('Remove nurse?')){if(db) db.ref('workers/'+k).remove().then(()=>loadCeoData());}}
-function addStaff(){var id=document.getElementById('newStaffId').value.trim(); var pass=document.getElementById('newStaffPass').value.trim(); if(!id||!pass){alert('ID and pass required');return;} if(db) db.ref('staff/'+id).set({id:id,password:pass}).then(()=>{alert('Staff added');loadCeoData();});}
-function deleteStaff(id){if(confirm('Delete staff?')){if(db) db.ref('staff/'+id).remove().then(()=>loadCeoData());}}
-function applyAnnouncementConfig(cfg){if(!cfg) return; var root=document.documentElement; if(cfg.bg) root.style.setProperty('--announce-bg',cfg.bg); if(cfg.textColor) root.style.setProperty('--announce-text',cfg.textColor); if(cfg.border) root.style.setProperty('--announce-border',cfg.border); if(cfg.speed) root.style.setProperty('--announce-speed',cfg.speed); if(cfg.text) document.getElementById('announcementText').innerText=cfg.text; if(document.getElementById('announcementInput')&&cfg.text) document.getElementById('announcementInput').value=cfg.text; localStorage.setItem('announcementConfig',JSON.stringify(cfg));}
-function saveAnnouncement(){var txt=document.getElementById('announcementInput').value.trim(); var bg=document.getElementById('announceBgColor').value; var tColor=document.getElementById('announceTextColor').value; var bColor=document.getElementById('announceBorderColor').value; var speed=document.getElementById('announceSpeed').value; if(!txt){alert('Enter text');return;} var cfg={text:txt,bg:bg,textColor:tColor,border:bColor,speed:speed}; applyAnnouncementConfig(cfg); if(db){db.ref('settings/announcementConfig').set(cfg).then(()=>alert('LIVE!'));}}
-function saveSettings(){
- var override = {};
- Object.keys(NURSE_HOURLY_MIN).forEach(code=>{
-   var el = document.getElementById('min-'+code);
-   if(el) override[code] = parseFloat(el.value);
- });
- localStorage.setItem('nurseHourlyOverride', JSON.stringify(override));
- Object.keys(override).forEach(k=>{ NURSE_HOURLY_MIN[k].amount = override[k]; });
- if(db){ db.ref('settings/nurseHourly').set(override).then(()=>alert('✅ Rates saved - Live')); } else { alert('Saved locally'); }
- calculateTotal();
-}
-
-function initCeoMap(){var d=document.getElementById('ceoMap'); if(!d) return; if(ceoMap){ceoMap.invalidateSize();return;} ceoMap=L.map('ceoMap').setView([5.6037,-0.1870],10); L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(ceoMap); var workers=getAllNursesSource(); workers.forEach(w=>{if(w.lat&&w.lng) L.marker([w.lat,w.lng]).addTo(ceoMap).bindPopup(w.name||'Nurse');});}
-
-function loadStaffData(){if(!db) return; db.ref('bookings').once('value').then(s=>{var v=Object.values(s.val()||{}); var h=v.length?'<table><tr><th>Client</th><th>Service</th></tr>':'No bookings'; v.slice(0,30).forEach(b=>{h+=`<tr><td>${b.name}</td><td>${b.service}</td></tr>`;}); if(v.length) h+='</table>'; document.getElementById('staffBookingsList').innerHTML=h;});}
-function loadNurseDashboard(){var p=localStorage.getItem('nursePhone'); if(!p) return; if(db){db.ref('bookings').orderByChild('selectedNurse').equalTo(p).once('value').then(s=>{var v=Object.values(s.val()||{}); var l=document.getElementById('nurseJobsList'); if(!v.length){l.innerHTML='No offers yet.';return;} var h=''; v.slice(-10).reverse().forEach(b=>{h+=`<div class="uber-card"><div style="flex:1"><b>${b.name}</b> - ${b.service}<br><small>${b.days||''} = ${b.totalHours}h - ${b.amount} ${b.currency}</small></div><button class="btnSmall" style="background:#16a34a;color:white" onclick="updateBookingStatus(${b.id},'confirmed')">Accept</button></div>`;}); l.innerHTML=h;});}}
-function closeRatePopup(){document.getElementById('ratePopup').classList.add('hidden');}
-function increaseRateAction(){ var calc = calculateTotal(); var suggested = Math.max(Math.round(lastBookingAmount*1.5), calc.totalMin); var newAmt=prompt("Enter new higher rate ("+lastBookingCurrency+") - Legal Min total is "+calc.totalMin+":", suggested); if(newAmt &&!isNaN(parseFloat(newAmt))){ if(parseFloat(newAmt) < calc.totalMin){ alert('Below legal total '+calc.totalMin); return; } if(db && lastBookingId){ db.ref('bookings/'+lastBookingId).update({amount:parseFloat(newAmt)}).then(()=>{ alert("Rate increased to "+newAmt); closeRatePopup(); }); } } }
-
+function logoutNurse(){localStorage.removeItem('nursePhone');showPage('home');}
+function renderMinRateEditor(){ var c=document.getElementById('minRateEditor'); if(!c) return; var html='<table><tr><th>Country</th><th>Rate</th><th>Edit</th></tr>'; Object.keys(NURSE_HOURLY_MIN).forEach(code=>{var d=NURSE_HOURLY_MIN[code]; html+=`<tr><td>${code}</td><td>${d.amount} ${d.currency}</td><td><input id="min-${code}" type="number" value="${d.amount}" style="width:80px;margin:0"></td></tr>`;}); html+='</table>'; c.innerHTML=html; }
+function switchCeoTab(tab){document.querySelectorAll('.ceo-tab').forEach(t=>t.classList.add('hidden')); var show=document.getElementById('ceo-tab-'+tab); if(show) show.classList.remove('hidden'); if(tab==='nurses') setTimeout(()=>{initCeoMap();loadCeoData();},200); else loadCeoData();}
+function loadCeoData(){if(!db) return; db.ref('bookings').once('value').then(s=>{var all=Object.values(s.val()||{});document.getElementById('statBookings').innerText=all.length; var h='<table><tr><th>Time</th><th>Client</th><th>Type</th><th>Duration</th><th>Feeding</th><th>Amount</th><th>Status</th></tr>'; all.sort((a,b)=>b.timestamp-a.timestamp).forEach(b=>{var feed=b.bookingType==='live-in'?(b.feedingIncluded?'YES '+b.mealsPerDay+' meals':'NO - '+ (b.foodAllowanceDetail?.amount||'')+' '+ (b.foodAllowanceDetail?.currency||'')):'Live-out'; h+=`<tr><td>${b.time||''}</td><td>${b.name||''}</td><td>${b.bookingType||''}</td><td>${b.days||''} (${b.totalHours||''}h)</td><td>${feed}</td><td>${b.amount} ${b.currency}<br><small>Food ${b.foodAllowanceTotal||0}</small></td><td>${b.status||''}</td></tr>`;}); h+='</table>'; document.getElementById('ceoBookingsList').innerHTML=h;}); db.ref('workers').once('value').then(s=>{var all=Object.values(s.val()||{});document.getElementById('statNurses').innerText=all.length; var h='<table><tr><th>Name</th><th>Phone</th><th>Loc</th></tr>'; all.forEach(w=>{h+=`<tr><td>${w.name}</td><td>${w.phone}</td><td>${w.location}</td></tr>`;}); h+='</table>'; document.getElementById('ceoNursesList').innerHTML=h;});}
+function saveAnnouncement(){var txt=document.getElementById('announcementInput').value.trim(); if(!txt){alert('Enter text');return;} var cfg={text:txt}; if(db){db.ref('settings/announcementConfig').set(cfg).then(()=>{document.getElementById('announcementText').innerText=txt; alert('LIVE!');});}}
+function saveSettings(){ var override={}; Object.keys(NURSE_HOURLY_MIN).forEach(code=>{var el=document.getElementById('min-'+code); if(el) override[code]=parseFloat(el.value);}); localStorage.setItem('nurseHourlyOverride', JSON.stringify(override)); if(db){db.ref('settings/nurseHourly').set(override).then(()=>alert('Saved')); } calculateTotal(); }
+function initCeoMap(){var d=document.getElementById('ceoMap'); if(!d) return; if(ceoMap){ceoMap.invalidateSize();return;} ceoMap=L.map('ceoMap').setView([5.6037,-0.1870],10); L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(ceoMap);}
+function loadStaffData(){}
+function loadNurseDashboard(){ var p=localStorage.getItem('nursePhone'); if(!p||!db) return; db.ref('bookings').orderByChild('selectedNurse').equalTo(p).once('value').then(s=>{var v=Object.values(s.val()||{}); var l=document.getElementById('nurseJobsList'); if(!v.length){l.innerHTML='No offers';return;} var h=''; v.slice(-10).reverse().forEach(b=>{h+=`<div class="uber-card"><div style="flex:1"><b>${b.name}</b> - ${b.service}<br><small>${b.bookingType} ${b.days} ${b.totalHours}h - ${b.feedingIncluded?'Feed '+b.mealsPerDay+' meals':'Food money '+b.foodAllowanceTotal}</small></div></div>`;}); l.innerHTML=h;});}
+function startDuty(){ if(!db||!localStorage.getItem('nursePhone')) return; db.ref('workers/'+localStorage.getItem('nursePhone').replace(/[^0-9]/g,'')).update({onDuty:true}); alert('On Duty');}
+function stopDuty(){ if(!db||!localStorage.getItem('nursePhone')) return; db.ref('workers/'+localStorage.getItem('nursePhone').replace(/[^0-9]/g,'')).update({onDuty:false}); alert('Off Duty');}
+function sendGlobalChat(){}
 window.onload=function(){
 populatePhoneCodes();
 if(db){
-db.ref('bookings').on('value',s=>{allBookings=Object.values(s.val()||{});});
-db.ref('workers').on('value',s=>{allWorkers=Object.values(s.val()||{});});
-db.ref('settings/announcementConfig').on('value',snap=>{var cfg=snap.val(); if(cfg){applyAnnouncementConfig(cfg);}});
-db.ref('settings/nurseHourly').on('value',snap=>{ var remote=snap.val(); if(remote){ localStorage.setItem('nurseHourlyOverride', JSON.stringify(remote)); Object.keys(remote).forEach(k=>{ if(NURSE_HOURLY_MIN[k]) NURSE_HOURLY_MIN[k].amount=parseFloat(remote[k]); }); calculateTotal(); } });
+db.ref('settings/announcementConfig').on('value',snap=>{var cfg=snap.val(); if(cfg&&cfg.text) document.getElementById('announcementText').innerText=cfg.text;});
 }
-try{var localCfg=JSON.parse(localStorage.getItem('announcementConfig')||'null'); if(localCfg) applyAnnouncementConfig(localCfg);}catch(e){}
-var savedCountry=localStorage.getItem('selectedCountry'); if(savedCountry){document.getElementById('countrySelect').value=savedCountry; var opt=document.getElementById('countrySelect').options[document.getElementById('countrySelect').selectedIndex]; if(opt) document.getElementById('cCurrency').value=opt.getAttribute('data-curr');}
-var savedLang=localStorage.getItem('selectedLang') || 'en';
-document.getElementById('langSelect').value=savedLang;
-applyTranslation(savedLang);
+var savedCountry=localStorage.getItem('selectedCountry'); if(savedCountry){document.getElementById('countrySelect').value=savedCountry;}
+var savedLang=localStorage.getItem('selectedLang')||'en'; document.getElementById('langSelect').value=savedLang; applyTranslation(savedLang);
 showPage('home'); setTimeout(initUberMap,700); setTimeout(()=>{calculateTotal();},1000);
 };
 </script>
