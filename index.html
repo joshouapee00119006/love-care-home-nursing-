@@ -342,7 +342,7 @@ function setWorkTime(s,e){
 <div class="card"><h2>LIVE Map - <span id="nearbyCount">0</span> Nearby</h2><div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap"><button class="btnMap" onclick="toggleMap()">🗺 Map</button><button class="btnSmall" style="background:#16a34a;color:white" onclick="findNursesUber()">Refresh</button><select id="radiusSelect" style="width:100px;padding:8px;border-radius:8px"><option value="5">5 km</option><option value="10" selected>10 km</option><option value="20">20 km</option><option value="50">50 km</option></select></div><div id="loveCareMapWrapper" class="map-wrapper"><div id="uberMap"></div></div><div id="loveCareLiveList"></div></div>
 </div>
 
-<div id="page-nurse-public" class="page"><div class="card"><h2>Nurse Registration</h2><input id="nRegName" placeholder="Full Name"><div class="phoneRow"><select id="nRegPhoneCode"></select><input id="nRegPhone" placeholder="Phone"></div><input id="nRegPass" type="password" placeholder="Password"><div class="locationRow"><input id="nRegLocation" placeholder="Tap GPS Auto"><button type="button" onclick="autoGPS('nRegLocation','nurseGpsStatus2')">GPS</button></div><small id="nurseGpsStatus2" class="gpsBadge hidden"></small><div style="background:#f0fdf4;border:2px solid #16a34a;border-radius:10px;padding:10px;margin:8px 0"><h4 style="margin:0 0 6px 0;font-size:11px;color:#16a34a">📄 Upload CV (Resume)</h4><input type="file" id="nRegCV" accept=".pdf,.doc,.docx,.jpg,.png" style="width:100%;padding:8px;border:2px dashed #16a34a;border-radius:8px;background:white"><small style="font-size:9px;color:#666">PDF, DOC, JPG, PNG</small><div id="nRegCVPreview" style="margin-top:6px;font-size:10px;color:#16a34a"></div></div><div style="background:#eff6ff;border:2px solid #2563eb;border-radius:10px;padding:10px;margin:8px 0"><h4 style="margin:0 0 6px 0;font-size:11px;color:#2563eb">🪪 PIN Photo (Professional ID)</h4><input type="file" id="nRegPINPhoto" accept="image/*" style="width:100%;padding:8px;border:2px dashed #2563eb;border-radius:8px;background:white"><small style="font-size:9px;color:#666">Nursing PIN / License / ID Photo</small><div style="margin-top:6px"><img id="nRegPINImg" style="max-width:100%;max-height:120px;display:none;border-radius:8px;border:2px solid #2563eb"></div></div><input id="nRegExperience" type="number" placeholder="Years"><select id="nRegSpecialty"><option value="">-- Specialty (13) --</option><option>General Nurse</option><option>Elderly Care</option><option>Baby Care and Nanny</option><option>Hospital Support</option><option>Post-Surgery Care</option><option>Disability Support</option><option>Maternity Care</option><option>Night Nurse</option><option>Palliative Care</option><option>Physiotherapy</option><option>Injection and Wound Care</option><option>Diabetes Monitoring</option><option>Dementia Care</option><option>Child Special Needs Care</option></select><button class="btnSubmit" onclick="registerNurse()">Register</button><div style="text-align:center;margin-top:10px"><button class="btnSmall" style="background:#2563eb;color:white" onclick="showPage('nurse-public')">Already Registered? Login Here</button></div></div></div>
+<div id="page-nurse-public" class="page"><div class="card"><h2>Nurse Registration</h2><input id="nRegName" placeholder="Full Name"><div class="phoneRow"><select id="nRegPhoneCode"></select><input id="nRegPhone" placeholder="Phone"></div><input id="nRegPass" type="password" placeholder="Password"><div class="locationRow"><input id="nRegLocation" placeholder="Tap GPS Auto"><button type="button" onclick="autoGPS('nRegLocation','nurseGpsStatus2')">GPS</button></div><small id="nurseGpsStatus2" class="gpsBadge hidden"></small><div style="background:#fefce8;border:2px solid #eab308;border-radius:10px;padding:10px;margin:8px 0"><h4 style="margin:0 0 6px 0;font-size:11px;color:#92400e">📸 Upload Your Photo (Nurse Profile Photo)</h4><input type="file" id="nRegPhoto" accept="image/*" style="width:100%;padding:8px;border:2px dashed #eab308;border-radius:8px;background:white"><small style="font-size:9px;color:#666">Your clear face photo - will be shown to clients</small><div style="margin-top:6px"><img id="nRegPhotoImg" style="max-width:100%;max-height:120px;display:none;border-radius:8px;border:2px solid #eab308"></div></div><div style="background:#f0fdf4;border:2px solid #16a34a;border-radius:10px;padding:10px;margin:8px 0"><h4 style="margin:0 0 6px 0;font-size:11px;color:#16a34a">📄 Upload CV (Resume)</h4><input type="file" id="nRegCV" accept=".pdf,.doc,.docx,.jpg,.png" style="width:100%;padding:8px;border:2px dashed #16a34a;border-radius:8px;background:white"><small style="font-size:9px;color:#666">PDF, DOC, JPG, PNG</small><div id="nRegCVPreview" style="margin-top:6px;font-size:10px;color:#16a34a"></div></div><div style="background:#eff6ff;border:2px solid #2563eb;border-radius:10px;padding:10px;margin:8px 0"><h4 style="margin:0 0 6px 0;font-size:11px;color:#2563eb">🪪 PIN Photo (Professional ID)</h4><input type="file" id="nRegPINPhoto" accept="image/*" style="width:100%;padding:8px;border:2px dashed #2563eb;border-radius:8px;background:white"><small style="font-size:9px;color:#666">Nursing PIN / License / ID Photo</small><div style="margin-top:6px"><img id="nRegPINImg" style="max-width:100%;max-height:120px;display:none;border-radius:8px;border:2px solid #2563eb"></div></div><input id="nRegExperience" type="number" placeholder="Years"><select id="nRegSpecialty"><option value="">-- Specialty (13) --</option><option>General Nurse</option><option>Elderly Care</option><option>Baby Care and Nanny</option><option>Hospital Support</option><option>Post-Surgery Care</option><option>Disability Support</option><option>Maternity Care</option><option>Night Nurse</option><option>Palliative Care</option><option>Physiotherapy</option><option>Injection and Wound Care</option><option>Diabetes Monitoring</option><option>Dementia Care</option><option>Child Special Needs Care</option></select><button class="btnSubmit" onclick="registerNurse()">Register</button><div style="text-align:center;margin-top:10px"><button class="btnSmall" style="background:#2563eb;color:white" onclick="showPage('nurse-public')">Already Registered? Login Here</button></div></div></div>
 <div id="page-booking-public" class="page">
 <div class="card" style="border:3px solid #2563eb">
 <h2>💡 LOVE CARE HELP CENTER - How To Use The App</h2>
@@ -1335,6 +1335,50 @@ document.addEventListener('DOMContentLoaded', function(){
         var text=bal.innerText;
         var num=text.split(' ')[0];
         bal.innerText=num+' '+curr;
+      }
+    });
+  }
+});
+</script>
+
+
+<script>
+// Preview for Nurse Photo
+document.addEventListener('DOMContentLoaded', function(){
+  var photoInput=document.getElementById('nRegPhoto');
+  if(photoInput){
+    photoInput.addEventListener('change', function(e){
+      var file=e.target.files[0];
+      if(file){
+        var reader=new FileReader();
+        reader.onload=function(ev){
+          var img=document.getElementById('nRegPhotoImg');
+          if(img){img.src=ev.target.result;img.style.display='block';}
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  }
+  // Existing previews for CV and PIN
+  var cvInput=document.getElementById('nRegCV');
+  if(cvInput){
+    cvInput.addEventListener('change', function(e){
+      var file=e.target.files[0];
+      var prev=document.getElementById('nRegCVPreview');
+      if(file && prev){prev.innerText='Selected: '+file.name+' ('+Math.round(file.size/1024)+' KB)';}
+    });
+  }
+  var pinInput=document.getElementById('nRegPINPhoto');
+  if(pinInput){
+    pinInput.addEventListener('change', function(e){
+      var file=e.target.files[0];
+      if(file){
+        var reader=new FileReader();
+        reader.onload=function(ev){
+          var img=document.getElementById('nRegPINImg');
+          if(img){img.src=ev.target.result;img.style.display='block';}
+        };
+        reader.readAsDataURL(file);
       }
     });
   }
