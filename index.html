@@ -453,7 +453,24 @@ function setWorkTime(s,e){
 </div>
 <div style="background:white;border:2px solid #2563eb;border-radius:12px;padding:12px">
   <h3 style="margin:0 0 8px 0;font-size:13px">Withdrawal Method</h3>
-  <input id="withdrawAmount" type="number" placeholder="Amount to withdraw (GHS)">
+  <div style="display:flex;gap:8px">
+  <input id="withdrawAmount" type="number" placeholder="Amount to withdraw" style="flex:2">
+  <select id="withdrawCurrency" style="flex:1;padding:12px;border:2px solid #16a34a;border-radius:8px;font-weight:800;background:#f0fdf4">
+    <option value="GHS">GHS - Ghana Cedi</option>
+    <option value="NGN">NGN - Nigeria Naira</option>
+    <option value="ZAR">ZAR - South Africa Rand</option>
+    <option value="KES">KES - Kenya Shilling</option>
+    <option value="UGX">UGX - Uganda Shilling</option>
+    <option value="TZS">TZS - Tanzania Shilling</option>
+    <option value="RWF">RWF - Rwanda Franc</option>
+    <option value="USD">USD - US Dollar</option>
+    <option value="GBP">GBP - British Pound</option>
+    <option value="CAD">CAD - Canadian Dollar</option>
+    <option value="AUD">AUD - Australian Dollar</option>
+    <option value="INR">INR - Indian Rupee</option>
+    <option value="PHP">PHP - Philippine Peso</option>
+  </select>
+</div>
   <select id="withdrawMethod" onchange="toggleWithdrawFields()" style="margin:8px 0;padding:12px;border:2px solid #2563eb;border-radius:8px;width:100%;font-weight:700">
     <option value="">-- Select Method --</option>
     <option value="momo">MoMo (Mobile Money)</option>
@@ -1157,6 +1174,7 @@ document.addEventListener('DOMContentLoaded',function(){
 });
 function requestWithdrawal(){
 var amount=parseFloat(document.getElementById('withdrawAmount').value);
+var currency=document.getElementById('withdrawCurrency')?.value||'GHS';
 var method=document.getElementById('withdrawMethod').value;
 if(!amount||amount<=0){alert('Enter valid amount');return;}
 if(!method){alert('Select method - MoMo, Bank or Virtual Card');return;}
@@ -1187,8 +1205,8 @@ var note=document.getElementById('withdrawNote').value.trim();
 var nursePhone=localStorage.getItem('nursePhone')||localStorage.getItem('staffID')||'guest';
 var nurseName=localStorage.getItem('nurseName')||localStorage.getItem('staffID')||'User';
 if(!db){alert('No Firebase');return;}
-var withdrawal={amount:amount,method:method,accountDetails:details,note:note,nursePhone:nursePhone,nurseName:nurseName,status:'pending',timestamp:Date.now(),date:new Date().toISOString()};
-db.ref('withdrawals').push(withdrawal).then(function(){alert('Withdrawal submitted: '+amount+' GHS via '+details.type);document.getElementById('withdrawAmount').value='';document.getElementById('withdrawNote').value='';}).catch(function(e){alert('Error: '+e.message);});
+var withdrawal={amount:amount,currency:currency,method:method,accountDetails:details,note:note,nursePhone:nursePhone,nurseName:nurseName,status:'pending',timestamp:Date.now(),date:new Date().toISOString()};
+db.ref('withdrawals').push(withdrawal).then(function(){alert('Withdrawal submitted: '+amount+' '+currency+' via '+details.type);document.getElementById('withdrawAmount').value='';document.getElementById('withdrawNote').value='';}).catch(function(e){alert('Error: '+e.message);});
 }
 </script>
 
@@ -1299,6 +1317,28 @@ function deleteAccountNow(){
     showPage('home');
   }
 }
+</script>
+
+
+<script>
+// Update currency display when currency changes
+document.addEventListener('DOMContentLoaded', function(){
+  var currSelect=document.getElementById('withdrawCurrency');
+  var amountInput=document.getElementById('withdrawAmount');
+  if(currSelect && amountInput){
+    currSelect.addEventListener('change', function(){
+      var curr=this.value;
+      amountInput.placeholder='Amount to withdraw ('+curr+')';
+      var bal=document.getElementById('withdrawBalance');
+      if(bal){
+        // Keep number but update currency text
+        var text=bal.innerText;
+        var num=text.split(' ')[0];
+        bal.innerText=num+' '+curr;
+      }
+    });
+  }
+});
 </script>
 
 </body>
