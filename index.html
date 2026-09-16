@@ -433,6 +433,20 @@ function setWorkTime(s,e){
 <div id="page-nurse-withdrawal" class="page">
 <div class="card" style="border:3px solid #16a34a">
 <h2>💸 WITHDRAWAL</h2>
+<div style="display:flex;gap:8px;margin:10px 0">
+  <button class="btnSmall" style="background:#2563eb;color:white;flex:1;padding:10px;font-weight:800" onclick="showPage('nurse-login')">👩‍⚕ Nurse Login</button>
+  <button class="btnSmall" style="background:#7c3aed;color:white;flex:1;padding:10px;font-weight:800" onclick="showPage('staff-login')">🧑‍💼 Staff Login</button>
+  <button class="btnSmall" style="background:#111827;color:white;flex:1;padding:10px;font-weight:800" onclick="showPage('ceo-login')">👑 CEO Login</button>
+</div>
+<div style="display:flex;gap:8px;margin:10px 0">
+  <button class="btnSmall" style="background:#ef4444;color:white;flex:1;padding:10px;font-weight:800" onclick="logoutNurse();logoutStaff();localStorage.clear();alert('Logged out');showPage('home')">🚪 Logout</button>
+  <button class="btnSmall" style="background:#16a34a;color:white;flex:1;padding:10px;font-weight:800" onclick="showPage('home')">🏠 Home</button>
+</div>
+<div id="withdrawalLoginPrompt" class="hidden" style="background:#fff3cd;border:3px solid #eab308;border-radius:12px;padding:16px;margin:12px 0;text-align:center">
+<h3>🔒 Login Required</h3><p>You must login as Nurse or Staff before withdrawal</p>
+<div style="display:flex;gap:8px;margin-top:12px"><button class="btnSubmit" style="background:#2563eb;flex:1" onclick="showPage('nurse-login')">Nurse Login</button><button class="btnSubmit" style="background:#7c3aed;flex:1" onclick="showPage('staff-login')">Staff Login</button></div>
+</div>
+
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0">
   <div style="background:#dcfce7;padding:14px;border-radius:12px;border:2px solid #16a34a;text-align:center"><small>Balance</small><br><b id="withdrawBalance" style="font-size:22px;color:#16a34a">0 GHS</b><br><small id="withdrawPending">Pending: 0</small></div>
   <div style="background:#fef3c7;padding:14px;border-radius:12px;border:2px solid #eab308;text-align:center"><small>Total Earned</small><br><b id="withdrawTotalEarned">0 GHS</b><br><small id="withdrawTotalJobs">0 Jobs</small></div>
@@ -475,13 +489,7 @@ function setWorkTime(s,e){
 </div>
 </div>
 
-<footer class="appFooter">
-<div style="font-weight:800;letter-spacing:1px;color:white">LOVE CARE GLOBAL - 65% OFF</div>
-<div style="font-size:11px;margin-top:4px">13 Services | Ghana 6.04 GHS/hr Legal Nurse Rate (65% OFF) | Auto Pay Calculator</div>
-<div class="footerLinks"><button onclick="openLegal('privacy')">🔒 Privacy</button><button onclick="openLegal('terms')">📄 Terms</button><button onclick="openLegal('cancel')">❌ Cancel</button><button onclick="openLegal('contact')">📧 Contact</button></div>
-<p style="font-size:11px;margin:8px 0">Email: <a href="mailto:lovecareglobal@gmail.com">lovecareglobal@gmail.com</a> | 0544121814</p>
-<p style="font-size:10px;color:#9ca3af">© 2026 LOVE CARE GLOBAL - Ghana 6.04 GHS/hr (65% OFF +15%) enforced - 32 Countries Reduced 65%</p>
-</footer>
+
 
 <div class="bottomNav">
 <button id="nav-home" class="active" onclick="showPage('home')"><span>🏠</span><span>Home</span></button>
