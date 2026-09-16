@@ -369,7 +369,7 @@ function setWorkTime(s,e){
 <div id="page-nurse-login" class="page"><div class="card" style="margin:20px;border:3px solid #16a34a"><h2>Nurse Login</h2><div class="phoneRow"><select id="nurseLoginCode"></select><input id="nurseLoginPhone" placeholder="Phone"></div><input id="nurseLoginPass" type="password" placeholder="Password"><button class="btnSubmit" onclick="loginNurse()">Login as Nurse</button><div id="nurseLoginResult" style="color:red;font-size:11px;margin-top:8px"></div></div></div>
 <div id="page-nurse-dashboard" class="page"><div class="card" style="border:3px solid #2563eb"><h2>Nurse Dashboard</h2><div style="display:flex;gap:5px"><button class="btnSubmit" style="width:auto;background:#00b050" onclick="startDuty()">START DUTY</button><button class="btnSubmit" style="width:auto;background:#ef4444" onclick="stopDuty()">STOP</button><button class="btnSubmit" style="width:auto;background:#111827" onclick="logoutNurse()">Logout</button></div><div id="nurseGpsStatus" style="padding:8px;background:#e8f5e9;border:1px solid #16a34a;font-size:11px;display:none;margin-top:8px">OFF</div></div><div class="card"><h2>New Offers</h2><div id="nurseJobsList">Start DUTY</div></div><div class="card" style="border:3px solid #2563eb"><h2>GROUP CHAT</h2>
 <div class="loginBar"><button onclick="showPage('nurse-login')" style="border-color:#2563eb">👩‍⚕ Nurse Login</button><button onclick="showPage('staff-login')" style="border-color:#7c3aed">🧑‍💼 Staff Login</button><button onclick="showPage('ceo-login')" style="border-color:#111827">👑 CEO Login</button></div>
-<div id="nurseChatBox" class="chatBox"></div><div class="chatInputRow"><input id="nurseChatInput" placeholder="Message..." onkeypress="if(event.key==='Enter')sendGroupMessage('NURSE')"><button class="btnSmall" style="background:#2563eb;color:white;padding:12px 18px" onclick="sendGroupMessage('NURSE')">Send</button></div><button class="btnSmall" style="background:#111827;color:white;width:100%;margin-top:6px" onclick="showPage('group-chat')">Open Full Chat</button></div></div>
+<div id="nurseChatBox" class="chatBox"></div><div class="chatInputRow"><input id="nurseChatInput" placeholder="Message..." onkeypress="if(event.key==='Enter')sendGroupMessage('NURSE')"><button class="btnSmall" style="background:#2563eb;color:white;padding:12px 18px" onclick="sendGroupMessage('NURSE')">Send</button></div><button class="btnSmall" style="background:#111827;color:white;width:100%;margin-top:6px" onclick="showPage('group-chat')">Open Full Chat</button><button class="btnSmall" style="background:#111827;color:white;width:100%;margin-top:6px;border:2px solid #eab308" onclick="showPage('settings')">⚙️ Settings - Delete Account & More</button></div></div>
 <div id="page-staff-login" class="page"><div class="card" style="margin:20px;border:3px solid #7c3aed"><h2>Staff Portal</h2><input id="staffLoginID" placeholder="Staff ID"><input id="staffLoginPass" type="password" placeholder="Password"><button class="btnSubmit" style="background:#7c3aed" onclick="loginStaff()">Login as Staff</button></div></div>
 <div id="page-staff-dashboard" class="page"><div class="card"><h2>Staff Dashboard</h2><div id="staffBookingsList">Loading...</div></div><div class="card" style="border:3px solid #7c3aed"><h2>GROUP CHAT</h2>
 <div class="loginBar"><button onclick="showPage('nurse-login')" style="border-color:#2563eb">👩‍⚕ Nurse Login</button><button onclick="showPage('staff-login')" style="border-color:#7c3aed">🧑‍💼 Staff Login</button><button onclick="showPage('ceo-login')" style="border-color:#111827">👑 CEO Login</button></div>
@@ -515,6 +515,7 @@ function setWorkTime(s,e){
 <button id="nav-login" onclick="showPage('nurse-login')"><span>🔑</span><span>Login</span></button>
 <button id="nav-withdraw" onclick="showPage('nurse-withdrawal')" style="background:#dcfce7;border:2px solid #16a34a"><span>💸</span><span>Withdraw</span></button>
 <button id="nav-chat" onclick="showPage('group-chat')" style="background:#fef2f2;border:2px solid #ef4444"><span>💬</span><span>Group</span></button>
+<button id="nav-settings" onclick="showPage('settings')" style="background:#111827;color:white;border:2px solid #eab308"><span>⚙️</span><span>Settings</span></button>
 </div>
 
 <script>
@@ -1383,6 +1384,213 @@ document.addEventListener('DOMContentLoaded', function(){
     });
   }
 });
+</script>
+
+
+<div id="page-settings" class="page"><div class="card" style="margin:10px;border:3px solid #111827">
+<h2>⚙️ Settings - LOVE CARE GLOBAL</h2>
+<div style="background:#f9fafb;border:2px solid #111827;border-radius:12px;padding:12px;margin:10px 0">
+<h3 style="margin:0 0 8px 0;font-size:13px">👤 Profile Settings (Nurses & Staff)</h3>
+<div style="display:flex;flex-direction:column;gap:8px">
+<div style="background:white;border:2px solid #16a34a;border-radius:10px;padding:10px">
+<label style="font-size:10px;font-weight:800">Full Name</label>
+<input id="settingsName" placeholder="Your full name" style="width:100%;padding:8px;border:2px solid #16a34a;border-radius:8px;margin-top:4px">
+</div>
+<div style="background:white;border:2px solid #2563eb;border-radius:10px;padding:10px">
+<label style="font-size:10px;font-weight:800">Phone Number</label>
+<input id="settingsPhone" placeholder="Phone" style="width:100%;padding:8px;border:2px solid #2563eb;border-radius:8px;margin-top:4px" disabled>
+<small style="font-size:9px;color:#666">Phone cannot be changed - contact support</small>
+</div>
+<div style="background:white;border:2px solid #eab308;border-radius:10px;padding:10px">
+<label style="font-size:10px;font-weight:800">Location (GPS)</label>
+<div class="locationRow"><input id="settingsLocation" placeholder="Your location"><button type="button" onclick="autoGPS('settingsLocation','settingsGpsStatus')">GPS</button></div>
+<small id="settingsGpsStatus" class="gpsBadge hidden"></small>
+</div>
+<div style="background:white;border:2px solid #7c3aed;border-radius:10px;padding:10px">
+<label style="font-size:10px;font-weight:800">Email (Optional)</label>
+<input id="settingsEmail" placeholder="Email" style="width:100%;padding:8px;border:2px solid #7c3aed;border-radius:8px;margin-top:4px">
+</div>
+<button class="btnSubmit" style="background:#16a34a" onclick="saveSettings()">💾 Save Profile</button>
+</div>
+</div>
+
+<div style="background:#eff6ff;border:2px solid #2563eb;border-radius:12px;padding:12px;margin:10px 0">
+<h3 style="margin:0 0 8px 0;font-size:13px">📸 Documents & Photos</h3>
+<div style="display:flex;flex-direction:column;gap:8px">
+<div style="background:white;border:2px dashed #eab308;border-radius:10px;padding:8px">
+<label style="font-size:10px;font-weight:800">📸 Profile Photo</label>
+<input type="file" id="settingsPhoto" accept="image/*" style="width:100%;padding:6px">
+<img id="settingsPhotoPreview" style="max-width:100%;max-height:100px;display:none;border-radius:8px;margin-top:6px;border:2px solid #eab308">
+</div>
+<div style="background:white;border:2px dashed #16a34a;border-radius:10px;padding:8px">
+<label style="font-size:10px;font-weight:800">📄 CV / Resume</label>
+<input type="file" id="settingsCV" accept=".pdf,.doc,.docx,.jpg,.png" style="width:100%;padding:6px">
+<div id="settingsCVPreview" style="font-size:10px;color:#16a34a;margin-top:4px"></div>
+</div>
+<div style="background:white;border:2px dashed #2563eb;border-radius:10px;padding:8px">
+<label style="font-size:10px;font-weight:800">🪪 PIN / License Photo</label>
+<input type="file" id="settingsPIN" accept="image/*" style="width:100%;padding:6px">
+<img id="settingsPINPreview" style="max-width:100%;max-height:100px;display:none;border-radius:8px;margin-top:6px;border:2px solid #2563eb">
+</div>
+<button class="btnSmall" style="background:#2563eb;color:white;width:100%;padding:10px" onclick="saveDocuments()">💾 Update Documents</button>
+</div>
+</div>
+
+<div style="background:#f0fdf4;border:2px solid #16a34a;border-radius:12px;padding:12px;margin:10px 0">
+<h3 style="margin:0 0 8px 0;font-size:13px">🔔 Notification Settings</h3>
+<div style="display:flex;flex-direction:column;gap:8px;font-size:12px">
+<label style="display:flex;justify-content:space-between;align-items:center;background:white;padding:10px;border-radius:8px;border:1px solid #16a34a"><span>📲 New Booking Alerts</span><input type="checkbox" id="notifBooking" checked></label>
+<label style="display:flex;justify-content:space-between;align-items:center;background:white;padding:10px;border-radius:8px;border:1px solid #16a34a"><span>💬 Group Chat Messages</span><input type="checkbox" id="notifChat" checked></label>
+<label style="display:flex;justify-content:space-between;align-items:center;background:white;padding:10px;border-radius:8px;border:1px solid #16a34a"><span>💸 Withdrawal Updates</span><input type="checkbox" id="notifWithdrawal" checked></label>
+<label style="display:flex;justify-content:space-between;align-items:center;background:white;padding:10px;border-radius:8px;border:1px solid #16a34a"><span>📍 Location Tracking (Duty)</span><input type="checkbox" id="notifLocation" checked></label>
+</div>
+</div>
+
+<div style="background:#fffbeb;border:2px solid #eab308;border-radius:12px;padding:12px;margin:10px 0">
+<h3 style="margin:0 0 8px 0;font-size:13px">🔒 Security & Privacy</h3>
+<div style="display:flex;flex-direction:column;gap:8px">
+<button class="btnSmall" style="background:white;border:2px solid #eab308;color:#92400e;text-align:left;padding:12px" onclick="showPage('privacy')">🔒 Privacy Policy - https://.../privacy.html</button>
+<button class="btnSmall" style="background:white;border:2px solid #eab308;color:#92400e;text-align:left;padding:12px" onclick="showPage('terms')">📄 Terms of Service - https://.../terms.html</button>
+<div style="background:white;border:2px solid #111827;border-radius:10px;padding:10px">
+<label style="font-size:10px;font-weight:800">Change Password</label>
+<input id="settingsOldPass" type="password" placeholder="Old Password" style="width:100%;padding:8px;border:2px solid #111827;border-radius:8px;margin:4px 0">
+<input id="settingsNewPass" type="password" placeholder="New Password" style="width:100%;padding:8px;border:2px solid #111827;border-radius:8px;margin:4px 0">
+<input id="settingsConfirmPass" type="password" placeholder="Confirm New Password" style="width:100%;padding:8px;border:2px solid #111827;border-radius:8px;margin:4px 0">
+<button class="btnSmall" style="background:#111827;color:white;width:100%;padding:10px" onclick="changePassword()">🔑 Change Password</button>
+</div>
+</div>
+</div>
+
+<div style="background:#fef2f2;border:3px solid #ef4444;border-radius:12px;padding:12px;margin:10px 0">
+<h3 style="margin:0 0 8px 0;font-size:13px;color:#991b1b">⚠️ Danger Zone - Account Management</h3>
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="background:white;border:2px solid #fca5a5;border-radius:10px;padding:12px">
+<h4 style="margin:0 0 6px 0;font-size:11px;color:#991b1b">🗑 Delete My Account - Nurses & Staff</h4>
+<p style="font-size:10px;color:#666;margin:4px 0">Permanently delete your account, profile, photos, CV, bookings, earnings. This cannot be undone. Data deleted within 48 hours as per Privacy Policy.</p>
+<p style="font-size:9px;color:#2563eb">Link: https://joshouapee00119006.github.io/love-care-home-nursing-/privacy.html</p>
+<input id="settingsDeletePhone" placeholder="Enter your phone number to confirm" style="width:100%;padding:10px;border:2px solid #ef4444;border-radius:8px;margin:6px 0">
+<div style="display:flex;gap:8px">
+<button class="btnSmall" style="background:#fee2e2;border:2px solid #ef4444;color:#991b1b;flex:1;padding:10px;font-weight:800" onclick="showPage('delete-account')">📄 View Delete Instructions</button>
+<button class="btnSmall" style="background:#ef4444;color:white;flex:1;padding:10px;font-weight:800" onclick="deleteAccountFromSettings()">🗑 Delete Account Now</button>
+</div>
+</div>
+<div style="background:white;border:2px solid #111827;border-radius:10px;padding:12px">
+<h4 style="margin:0 0 6px 0;font-size:11px">🚪 Logout</h4>
+<p style="font-size:10px;color:#666;margin:4px 0">Logout from this device. You will need to login again to access bookings and withdrawals.</p>
+<button class="btnSubmit" style="background:#111827" onclick="logoutFromSettings()">🚪 Logout From App</button>
+</div>
+</div>
+</div>
+
+<div style="display:flex;gap:8px;margin-top:12px">
+<button class="btnSmall" style="background:#16a34a;color:white;flex:1;padding:12px" onclick="showPage('home')">🏠 Home</button>
+<button class="btnSmall" style="background:#111827;color:white;flex:1;padding:12px" onclick="showPage('nurse-dashboard')">👩‍⚕ Dashboard</button>
+</div>
+
+<div style="background:#111827;color:white;padding:12px;border-radius:10px;margin-top:12px;text-align:center;font-size:9px">
+<div>LOVE CARE GLOBAL Settings - Accra Ghana</div>
+<div style="margin-top:4px"><a href="https://joshouapee00119006.github.io/love-care-home-nursing-/privacy.html" target="_blank" style="color:#eab308">Privacy</a> | <a href="https://joshouapee00119006.github.io/love-care-home-nursing-/terms.html" target="_blank" style="color:#eab308">Terms</a> | <a href="https://joshouapee00119006.github.io/love-care-home-nursing-/privacy.html" target="_blank" style="color:#fca5a5">Delete Account</a></div>
+<div style="margin-top:4px">lovecareglobal@gmail.com - Emergency 112</div>
+</div>
+</div></div>
+
+
+<script>
+function saveSettings(){
+  var name=document.getElementById('settingsName').value.trim();
+  var location=document.getElementById('settingsLocation').value.trim();
+  var email=document.getElementById('settingsEmail').value.trim();
+  var phone=localStorage.getItem('nursePhone')||localStorage.getItem('staffID');
+  if(!phone){alert('Please login first');return;}
+  if(typeof db!=='undefined' && db){
+    var updates={};
+    if(name) updates.name=name;
+    if(location) updates.location=location;
+    if(email) updates.email=email;
+    updates.updatedAt=Date.now();
+    // Try to update in nurses or staffs
+    db.ref('nurses/'+phone).update(updates).then(function(){
+      alert('✅ Profile saved: '+(name||'')+' - '+(location||''));
+      localStorage.setItem('nurseName', name||'');
+    }).catch(function(){
+      db.ref('staffs/'+phone).update(updates).then(function(){
+        alert('✅ Staff profile saved');
+      }).catch(function(e){alert('Error saving: '+e.message);});
+    });
+  }else{alert('Settings saved locally: '+name);}
+}
+function saveDocuments(){
+  alert('📸 Documents update - photos will be updated on next login. For now saved locally. In production, upload to Firebase Storage.');
+  var photo=document.getElementById('settingsPhoto').files[0];
+  var pin=document.getElementById('settingsPIN').files[0];
+  if(photo){
+    var reader=new FileReader();
+    reader.onload=function(e){localStorage.setItem('nursePhoto', e.target.result);};
+    reader.readAsDataURL(photo);
+  }
+}
+function changePassword(){
+  var oldP=document.getElementById('settingsOldPass').value;
+  var newP=document.getElementById('settingsNewPass').value;
+  var conf=document.getElementById('settingsConfirmPass').value;
+  if(!oldP||!newP||!conf){alert('Fill all password fields');return;}
+  if(newP!==conf){alert('New passwords do not match');return;}
+  var phone=localStorage.getItem('nursePhone');
+  if(typeof db!=='undefined' && db && phone){
+    db.ref('nurses/'+phone).once('value').then(function(snap){
+      var data=snap.val();
+      if(data && data.password===oldP){
+        db.ref('nurses/'+phone).update({password:newP}).then(function(){alert('✅ Password changed');document.getElementById('settingsOldPass').value='';document.getElementById('settingsNewPass').value='';document.getElementById('settingsConfirmPass').value='';});
+      }else{alert('Old password incorrect');}
+    });
+  }else{alert('Password change requires login and Firebase');}
+}
+function deleteAccountFromSettings(){
+  var phone=document.getElementById('settingsDeletePhone').value.trim();
+  if(!phone){alert('Enter your phone number to confirm deletion');return;}
+  if(!confirm('⚠️ PERMANENTLY DELETE account for '+phone+'?\n\nAll data: profile, photos, CV, bookings, earnings will be deleted within 48 hours as per Privacy Policy: https://joshouapee00119006.github.io/love-care-home-nursing-/privacy.html\n\nThis cannot be undone!'))return;
+  if(typeof db!=='undefined' && db){
+    db.ref('delete_requests').push({phone:phone,nursePhone:localStorage.getItem('nursePhone')||'',staffID:localStorage.getItem('staffID')||'',timestamp:Date.now(),date:new Date().toISOString(),status:'pending',source:'settings'}).then(function(){
+      alert('✅ Delete request submitted for '+phone+'\n\nWe will delete your account within 48 hours.\n\nAs per: https://joshouapee00119006.github.io/love-care-home-nursing-/privacy.html\n\nYou will be logged out now.');
+      localStorage.clear();
+      showPage('home');
+    }).catch(function(e){alert('Error: '+e.message+'\nEmail lovecareglobal@gmail.com with subject Delete My Account');});
+  }else{
+    alert('Delete request for '+phone+' - Email lovecareglobal@gmail.com');
+    localStorage.clear();
+    showPage('home');
+  }
+}
+function logoutFromSettings(){
+  if(confirm('Logout from LOVE CARE GLOBAL?')){
+    localStorage.clear();
+    if(typeof logoutNurse==='function') logoutNurse();
+    if(typeof logoutStaff==='function') logoutStaff();
+    alert('Logged out');
+    showPage('home');
+  }
+}
+// Auto-fill settings when page opens
+var origShowPage=window.showPage;
+window.showPage=function(id){
+  if(origShowPage) origShowPage(id);
+  if(id==='settings'){
+    var nurseName=localStorage.getItem('nurseName')||'';
+    var nursePhone=localStorage.getItem('nursePhone')||localStorage.getItem('staffID')||'';
+    var elName=document.getElementById('settingsName');
+    var elPhone=document.getElementById('settingsPhone');
+    var elDel=document.getElementById('settingsDeletePhone');
+    if(elName) elName.value=nurseName;
+    if(elPhone) elPhone.value=nursePhone;
+    if(elDel) elDel.value=nursePhone;
+    // Load photo previews
+    var savedPhoto=localStorage.getItem('nursePhoto');
+    if(savedPhoto){
+      var prev=document.getElementById('settingsPhotoPreview');
+      if(prev){prev.src=savedPhoto;prev.style.display='block';}
+    }
+  }
+};
 </script>
 
 </body>
