@@ -41,33 +41,30 @@ input,select,textarea{width:100%;padding:12px;margin:6px 0;border-radius:10px;bo
 .uber-card{background:white;border:2px solid #16a34a;border-radius:12px;padding:10px;margin:8px 0;display:flex;gap:10px;font-size:12px;align-items:center}
 .nurse-dot{width:12px;height:12px;background:#00ff88;border-radius:50%;border:2px solid white;box-shadow:0 0 0 2px #16a34a;animation:pulse 1.5s infinite}
 @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(22,163,74,.7)}70%{box-shadow:0 0 0 10px rgba(22,163,74,0)}100%{box-shadow:0 0 0 0 rgba(22,163,74,0)}}
-table{width:100%;border-collapse:collapse;font-size:11px;margin-top:8px} th,td{border:1px solid #e5e7eb;padding:6px;text-align:left} th{background:#f0fdf4;color:#16a34a}
-.ceoTabs{display:flex;gap:4px;flex-wrap:wrap;margin:10px 0}
-.ceoTabs button{flex:1;min-width:70px;padding:11px 4px;border:3px solid transparent}
-.ceoTabs button.activeTab{border:3px solid #111827;transform:scale(1.05)}
 .chatBox{height:400px;overflow-y:auto;border:3px solid #16a34a;border-radius:12px;padding:10px;background:#f9fafb;display:flex;flex-direction:column;gap:8px}
 .chatMsg{max-width:85%;padding:10px 12px;border-radius:16px;font-size:12px;word-break:break-word}
-.chatMsg.me{align-self:flex-end;background:#16a34a;color:white;border-bottom-right-radius:4px}
-.chatMsg.other{align-self:flex-start;background:white;border:2px solid #e5e7eb;border-bottom-left-radius:4px}
+.chatMsg.me{align-self:flex-end;background:#16a34a;color:white}
+.chatMsg.other{align-self:flex-start;background:white;border:2px solid #e5e7eb}
 .roleBadge{font-size:8px;padding:2px 7px;border-radius:10px;font-weight:800;color:white}
 .role-CEO{background:#111827}.role-NURSE{background:#2563eb}.role-STAFF{background:#7c3aed}
-.ceo-tab{display:block}.ceo-tab.hidden{display:none!important}
 .sosFloat{position:fixed;bottom:110px;right:15px;width:56px;height:56px;background:radial-gradient(circle,#ef4444,#b91c1c);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:11px;z-index:99998;border:3px solid white;cursor:pointer}
 .ratePopup{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:white;border:4px solid #ef4444;border-radius:20px;padding:20px;width:92%;max-width:400px;z-index:100000;box-shadow:0 10px 30px rgba(0,0,0,.3);text-align:center}
 .statusBadge{padding:3px 8px;border-radius:20px;font-size:9px;font-weight:800;color:white;display:inline-block}
-.st-pending{background:#eab308;color:#111}.st-confirmed{background:#16a34a}.st-cancelled{background:#ef4444}
+.st-pending{background:#eab308;color:#111}.st-confirmed{background:#16a34a}
 .bookingClientCard{border:2px solid #16a34a;border-radius:12px;padding:12px;margin:8px 0;background:#f0fdf4}
-.appFooter{background:#111827;color:#d1d5db;padding:28px 16px 40px 16px;margin-top:40px;text-align:center;border-top:4px solid #eab308}
+.appFooter{background:#111827;color:#d1d5db;padding:28px 16px 50px 16px;margin-top:40px;text-align:center;border-top:4px solid #eab308}
+.appFooter a{color:#eab308;text-decoration:none;font-weight:700}
 .footerLinks{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin:14px 0}
 .footerLinks button{background:none;border:1px solid #374151;color:#e5e7eb;padding:8px 14px;border-radius:20px;font-weight:800;font-size:12px;cursor:pointer}
+.footerLinks button:hover{background:#eab308;color:#111827}
 .legalModal{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.7);z-index:100001;display:flex;justify-content:center;align-items:flex-start;padding:20px;overflow-y:auto}
 .legalContent{background:white;color:#111827;width:100%;max-width:800px;border-radius:16px;padding:22px;margin-top:20px;max-height:90vh;overflow-y:auto;text-align:left;line-height:1.6}
 .wageCard{background:linear-gradient(135deg,#fef3c7,#fde68a);border:2px solid #f59e0b;border-radius:12px;padding:10px;margin:8px 0}
 .wageRow{display:flex;justify-content:space-between;font-size:11px;font-weight:700;padding:3px 0}
 .totalRow{border-top:2px solid #92400e;margin-top:6px;padding-top:6px;font-size:13px;color:#92400e}
 .unitTabs{display:flex;gap:8px;margin-bottom:10px}
-.unitTabs button{flex:1;padding:14px 6px;border:2px solid #16a34a;border-radius:12px;font-weight:800;font-size:13px;background:white;color:#16a34a;cursor:pointer;line-height:1.2}
-.unitTabs button.active{background:#16a34a;color:white;transform:scale(1.03);box-shadow:0 3px 8px rgba(22,163,74,.3)}
+.unitTabs button{flex:1;padding:14px 6px;border:2px solid #16a34a;border-radius:12px;font-weight:800;font-size:13px;background:white;color:#16a34a;cursor:pointer}
+.unitTabs button.active{background:#16a34a;color:white;transform:scale(1.03)}
 .unitInputBox{background:white;border-radius:12px;padding:14px;margin-top:6px;border:1px solid #bbf7d0}
 .durationGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .durationItem{background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:10px;padding:8px;text-align:center}
@@ -81,49 +78,19 @@ table{width:100%;border-collapse:collapse;font-size:11px;margin-top:8px} th,td{b
 </style>
 </head>
 <body>
-<div class="sosFloat" onclick="alert('SOS Sent')">SOS</div>
+<div class="sosFloat" onclick="alert('SOS - Emergency Sent to Admin')">SOS</div>
 <div class="header"><div id="logoTapArea" style="display:flex;align-items:center;gap:10px;cursor:pointer"><img src="./logo.png" class="header-logo-img" onerror="this.style.display='none'"><div style="line-height:1"><b>LOVE CARE</b><br><span style="background:white;color:#16a34a;padding:2px 8px;border-radius:20px;font-size:8px;font-weight:800" data-i18n="global_home">GLOBAL HOME NURSING</span></div></div></div>
-<div class="announcementBar"><span id="announcementText">LOVE CARE GLOBAL - Ghana 6 GHS/hr Legal Minimum - Live-in / Live-out - 40% of old price</span></div>
+<div class="announcementBar"><span id="announcementText">LOVE CARE GLOBAL - Ghana 6 GHS/hr Legal Minimum - 60% OFF - Live-in / Live-out - feeding options included</span></div>
 
 <div class="globalBar">
 <span style="font-size:11px;font-weight:800">🌍</span>
 <select id="countrySelect" onchange="changeCountry()" style="flex:1;min-width:130px">
-<option value="GH" data-lang="en" data-curr="GHS">🇬🇭 Ghana GHS</option>
-<option value="NG" data-lang="en" data-curr="NGN">🇳🇬 Nigeria NGN</option>
-<option value="ZA" data-lang="en" data-curr="ZAR">🇿🇦 South Africa ZAR</option>
-<option value="KE" data-lang="sw" data-curr="KES">🇰🇪 Kenya KES</option>
-<option value="UG" data-lang="en" data-curr="UGX">🇺🇬 Uganda UGX</option>
-<option value="TZ" data-lang="sw" data-curr="TZS">🇹🇿 Tanzania TZS</option>
-<option value="ET" data-lang="am" data-curr="ETB">🇪🇹 Ethiopia ETB</option>
-<option value="RW" data-lang="en" data-curr="RWF">🇷🇼 Rwanda RWF</option>
-<option value="CM" data-lang="fr" data-curr="XAF">🇨🇲 Cameroon XAF</option>
-<option value="SN" data-lang="fr" data-curr="XOF">🇸🇳 Senegal XOF</option>
-<option value="CI" data-lang="fr" data-curr="XOF">🇨🇮 Ivory Coast XOF</option>
-<option value="EG" data-lang="ar" data-curr="EGP">🇪🇬 Egypt EGP</option>
-<option value="MA" data-lang="ar" data-curr="MAD">🇲🇦 Morocco MAD</option>
-<option value="US" data-lang="en" data-curr="USD">🇺🇸 USA USD</option>
-<option value="UK" data-lang="en" data-curr="GBP">🇬🇧 UK GBP</option>
-<option value="CA" data-lang="en" data-curr="CAD">🇨🇦 Canada CAD</option>
-<option value="AU" data-lang="en" data-curr="AUD">🇦🇺 Australia AUD</option>
-<option value="DE" data-lang="de" data-curr="EUR">🇩🇪 Germany EUR</option>
-<option value="FR" data-lang="fr" data-curr="EUR">🇫🇷 France EUR</option>
-<option value="IT" data-lang="it" data-curr="EUR">🇮🇹 Italy EUR</option>
-<option value="ES" data-lang="es" data-curr="EUR">🇪🇸 Spain EUR</option>
-<option value="IN" data-lang="hi" data-curr="INR">🇮🇳 India INR</option>
-<option value="PK" data-lang="ur" data-curr="PKR">🇵🇰 Pakistan PKR</option>
-<option value="BD" data-lang="bn" data-curr="BDT">🇧🇩 Bangladesh BDT</option>
-<option value="PH" data-lang="en" data-curr="PHP">🇵🇭 Philippines PHP</option>
-<option value="ID" data-lang="id" data-curr="IDR">🇮🇩 Indonesia IDR</option>
-<option value="BR" data-lang="pt" data-curr="BRL">🇧🇷 Brazil BRL</option>
-<option value="MX" data-lang="es" data-curr="MXN">🇲🇽 Mexico MXN</option>
-<option value="SA" data-lang="ar" data-curr="SAR">🇸🇦 Saudi Arabia SAR</option>
-<option value="AE" data-lang="ar" data-curr="AED">🇦🇪 UAE AED</option>
-<option value="JP" data-lang="ja" data-curr="JPY">🇯🇵 Japan JPY</option>
+<option value="GH" data-curr="GHS">🇬🇭 Ghana GHS</option><option value="NG" data-curr="NGN">🇳🇬 Nigeria NGN</option><option value="ZA" data-curr="ZAR">🇿🇦 South Africa ZAR</option><option value="KE" data-curr="KES">🇰🇪 Kenya KES</option><option value="UG" data-curr="UGX">🇺🇬 Uganda UGX</option><option value="TZ" data-curr="TZS">🇹🇿 Tanzania TZS</option><option value="ET" data-curr="ETB">🇪🇹 Ethiopia ETB</option><option value="RW" data-curr="RWF">🇷🇼 Rwanda RWF</option><option value="CM" data-curr="XAF">🇨🇲 Cameroon XAF</option><option value="SN" data-curr="XOF">🇸🇳 Senegal XOF</option><option value="CI" data-curr="XOF">🇨🇮 Ivory Coast XOF</option><option value="EG" data-curr="EGP">🇪🇬 Egypt EGP</option><option value="MA" data-curr="MAD">🇲🇦 Morocco MAD</option><option value="US" data-curr="USD">🇺🇸 USA USD</option><option value="UK" data-curr="GBP">🇬🇧 UK GBP</option><option value="CA" data-curr="CAD">🇨🇦 Canada CAD</option><option value="AU" data-curr="AUD">🇦🇺 Australia AUD</option><option value="DE" data-curr="EUR">🇩🇪 Germany EUR</option><option value="FR" data-curr="EUR">🇫🇷 France EUR</option><option value="IT" data-curr="EUR">🇮🇹 Italy EUR</option><option value="ES" data-curr="EUR">🇪🇸 Spain EUR</option><option value="IN" data-curr="INR">🇮🇳 India INR</option><option value="PK" data-curr="PKR">🇵🇰 Pakistan PKR</option><option value="BD" data-curr="BDT">🇧🇩 Bangladesh BDT</option><option value="PH" data-curr="PHP">🇵🇭 Philippines PHP</option><option value="ID" data-curr="IDR">🇮🇩 Indonesia IDR</option><option value="BR" data-curr="BRL">🇧🇷 Brazil BRL</option><option value="MX" data-curr="MXN">🇲🇽 Mexico MXN</option><option value="SA" data-curr="SAR">🇸🇦 Saudi Arabia SAR</option><option value="AE" data-curr="AED">🇦🇪 UAE AED</option><option value="JP" data-curr="JPY">🇯🇵 Japan JPY</option>
 </select>
 <select id="langSelect" onchange="changeLanguage()" style="width:130px;font-weight:800">
 <option value="en">English</option><option value="fr">Français</option><option value="es">Español</option><option value="de">Deutsch</option><option value="pt">Português</option><option value="ar">العربية</option><option value="hi">हिन्दी</option><option value="sw">Kiswahili</option><option value="it">Italiano</option><option value="ja">日本語</option>
 </select>
-<span id="currencyDisplay" style="font-weight:800;color:#16a34a;font-size:11px">GHS</span>
+<span id="currencyDisplay" style="font-weight:800;color:#16a34a">GHS</span>
 </div>
 
 <div id="page-home" class="page active">
@@ -141,7 +108,7 @@ table{width:100%;border-collapse:collapse;font-size:11px;margin-top:8px} th,td{b
 </div>
 
 <div id="panel-live-out" class="unitInputBox">
-  <label style="color:#2563eb" data-i18n="duration_label">⏱ How long do you need the nurse? (We convert all to hours)</label>
+  <label style="color:#2563eb" data-i18n="duration_label">⏱ How long do you need nurse? (All converted to hours)</label>
   <div class="durationGrid">
     <div class="durationItem"><label data-i18n="hours">Hours</label><input id="outHours" type="number" min="0" value="0" oninput="calculateTotal()"></div>
     <div class="durationItem"><label data-i18n="days">Days</label><input id="outDays" type="number" min="0" value="2" oninput="calculateTotal()"></div>
@@ -172,7 +139,7 @@ table{width:100%;border-collapse:collapse;font-size:11px;margin-top:8px} th,td{b
         <option value="2" selected data-i18n="meals_2">2 Meals per day</option>
         <option value="3" data-i18n="meals_3">3 Meals per day (Full)</option>
       </select>
-      <small style="font-size:10px;color:#16a34a" data-i18n="meals_note">Nurse will eat with family</small>
+      <small style="font-size:10px;color:#16a34a" data-i18n="meals_note">Nurse will eat with family - you provide meals</small>
     </div>
     <div id="feedingNoBox" class="hidden" style="margin-top:10px;background:white;border-radius:8px;padding:10px;border:1px solid #ef4444">
       <label data-i18n="food_money_q">Will you give the nurse money for food? How much?</label>
@@ -186,7 +153,7 @@ table{width:100%;border-collapse:collapse;font-size:11px;margin-top:8px} th,td{b
         <option value="per_month" data-i18n="per_month">Per Month</option>
         <option value="one_time" data-i18n="one_time">One Time Total</option>
       </select>
-      <small style="font-size:10px;color:#ef4444" data-i18n="food_note">This will be added to total pay</small>
+      <small style="font-size:10px;color:#ef4444" data-i18n="food_note">This will be added to total pay for nurse food</small>
     </div>
   </div>
 </div>
@@ -204,34 +171,32 @@ table{width:100%;border-collapse:collapse;font-size:11px;margin-top:8px} th,td{b
 </div>
 </div>
 
-<div style="display:flex;gap:6px"><input id="cBudget" type="number" data-i18n-ph="your_offer" placeholder="Your Offer >= Minimum" style="flex:1" oninput="validateBudgetLive()"><select id="cCurrency" style="width:110px" onchange="calculateTotal()"><option>GHS</option><option>USD</option><option>NGN</option><option>ZAR</option><option>KES</option><option>EUR</option><option>GBP</option></select></div>
+<div style="display:flex;gap:6px"><input id="cBudget" type="number" data-i18n-ph="your_offer" placeholder="Your Offer >= Minimum" style="flex:1" oninput="validateBudgetLive()"><select id="cCurrency" style="width:110px" onchange="calculateTotal()"><option>GHS</option><option>USD</option><option>NGN</option><option>ZAR</option><option>KES</option><option>UGX</option><option>EUR</option><option>GBP</option><option>CAD</option><option>AUD</option><option>INR</option></select></div>
 <small id="minRateInfo" style="font-size:10px;font-weight:800;color:#92400e;background:#fef3c7;border:1px solid #f59e0b;padding:6px 10px;border-radius:8px;margin:4px 0;display:block">Loading...</small>
 <button class="btnSubmit" style="background:linear-gradient(90deg,#2563eb,#00b050)" onclick="findNursesUber()" data-i18n="find_nurses">🔍 FIND NURSES NEAR ME</button>
 <div id="uberActionArea" class="hidden"><div style="display:flex;gap:6px;margin-top:8px"><button class="btnSubmit" style="background:#eab308;color:#111;flex:1" onclick="randomSelectNurse()" data-i18n="random">🎲 RANDOM</button><button class="btnSubmit" style="background:#111827;flex:1" onclick="submitBooking()" data-i18n="book_selected">BOOK SELECTED</button></div><div id="selectedNurseInfo" style="font-size:10px;text-align:center;margin-top:4px;color:#16a34a" data-i18n="no_nurse">No nurse selected</div></div></div>
-<div class="card" style="border:3px solid #2563eb"><h2 data-i18n="my_bookings">📋 MY BOOKINGS</h2><div class="phoneRow"><select id="myBookPhoneCode"></select><input id="myBookPhone" data-i18n-ph="enter_phone" placeholder="Enter phone"><button class="btnSmall" style="background:#2563eb;color:white;padding:12px 16px" onclick="loadMyBookings()" data-i18n="load">LOAD</button></div><div id="myBookingsList" style="margin-top:10px"></div></div>
+<div class="card" style="border:3px solid #2563eb"><h2 data-i18n="my_bookings">📋 MY BOOKINGS</h2><div class="phoneRow"><select id="myBookPhoneCode"></select><input id="myBookPhone" data-i18n-ph="enter_phone" placeholder="Enter phone"><button class="btnSmall" style="background:#2563eb;color:white;padding:12px 16px" onclick="loadMyBookings()" data-i18n="load">LOAD</button></div><div id="myBookingsList"></div></div>
 <div class="card"><h2><span data-i18n="live_map">LIVE Map</span> - <span id="nearbyCount">0</span> <span data-i18n="nearby">Nearby</span></h2><div style="display:flex;gap:6px;margin-bottom:8px"><button class="btnMap" onclick="toggleMap()" data-i18n="map">🗺 Map</button><button class="btnSmall" style="background:#16a34a;color:white" onclick="findNursesUber()" data-i18n="refresh">Refresh</button><select id="radiusSelect" style="width:100px;padding:8px;border-radius:8px"><option value="5">5 km</option><option value="10" selected>10 km</option><option value="20">20 km</option><option value="50">50 km</option></select></div><div id="loveCareMapWrapper" class="map-wrapper"><div id="uberMap"></div></div><div id="loveCareLiveList"></div></div>
 </div>
 
-<div id="page-nurse-public" class="page"><div class="card"><h2 data-i18n="nurse_reg">Nurse Registration</h2><input id="nRegName" data-i18n-ph="full_name" placeholder="Full Name"><div class="phoneRow"><select id="nRegPhoneCode"></select><input id="nRegPhone" data-i18n-ph="phone" placeholder="Phone"></div><input id="nRegPass" type="password" data-i18n-ph="password" placeholder="Password"><div class="locationRow"><input id="nRegLocation" data-i18n-ph="gps_tap" placeholder="Tap GPS Auto"><button type="button" onclick="autoGPS('nRegLocation','nurseGpsStatus2')" data-i18n="gps_btn">GPS</button></div><small id="nurseGpsStatus2" class="gpsBadge hidden"></small><button class="btnSubmit" onclick="registerNurse()" data-i18n="register">Register</button></div></div>
-<div id="page-booking-public" class="page"><div class="card"><h2 data-i18n="help_title">💡 HELP - Live-in vs Live-out</h2><p style="font-size:12px" data-i18n="help_desc">Live-Out: Nurse comes daily. Live-In: Nurse stays 24/7. 1 day=24h, 1 week=7 days, 1 month=30 days.</p></div></div>
+<div id="page-nurse-public" class="page"><div class="card"><h2 data-i18n="nurse_reg">Nurse Registration</h2><input id="nRegName" data-i18n-ph="full_name" placeholder="Full Name"><div class="phoneRow"><select id="nRegPhoneCode"></select><input id="nRegPhone" data-i18n-ph="phone" placeholder="Phone"></div><input id="nRegPass" type="password" data-i18n-ph="password" placeholder="Password"><div class="locationRow"><input id="nRegLocation" data-i18n-ph="gps_tap" placeholder="Tap GPS Auto"><button type="button" onclick="autoGPS('nRegLocation','nurseGpsStatus2')" data-i18n="gps_btn">GPS</button></div><small id="nurseGpsStatus2" class="gpsBadge hidden"></small><input id="nRegExperience" type="number" placeholder="Years"><select id="nRegSpecialty"><option>General Nurse</option><option>Elderly Care</option></select><button class="btnSubmit" onclick="registerNurse()" data-i18n="register">Register</button></div></div>
+<div id="page-booking-public" class="page"><div class="card"><h2 data-i18n="help_title">💡 HELP</h2><p data-i18n="help_desc" style="font-size:12px">Live-Out comes daily, Live-In stays 24/7. 1 day=24h, 1 week=7 days, 1 month=30 days.</p></div></div>
 <div id="page-nurse-login" class="page"><div class="card" style="margin:20px;border:3px solid #16a34a"><h2 data-i18n="nurse_login">Nurse Login</h2><div class="phoneRow"><select id="nurseLoginCode"></select><input id="nurseLoginPhone" data-i18n-ph="phone" placeholder="Phone"></div><input id="nurseLoginPass" type="password" data-i18n-ph="password" placeholder="Password"><button class="btnSubmit" onclick="loginNurse()" data-i18n="login_nurse">Login as Nurse</button></div></div>
 <div id="page-staff-login" class="page"><div class="card" style="margin:20px;border:3px solid #7c3aed"><h2 data-i18n="staff_login">Staff Portal</h2><input id="staffLoginID" data-i18n-ph="staff_id" placeholder="Staff ID"><input id="staffLoginPass" type="password" data-i18n-ph="password" placeholder="Password"><button class="btnSubmit" style="background:#7c3aed" onclick="loginStaff()" data-i18n="login_staff">Login as Staff</button></div></div>
+<div id="page-ceo-login" class="page"><div class="card" style="margin:20px;border:3px solid #111827"><h2 data-i18n="secure_access">Secure Access</h2><input id="ceoLoginID" data-i18n-ph="ceo_id" placeholder="Access ID"><input id="ceoLoginPass" type="password" data-i18n-ph="ceo_key" placeholder="Access Key"><button class="btnSubmit" style="background:#111827" onclick="loginCEO()" data-i18n="login">Login</button><div id="ceoLoginResult" style="color:red;font-size:11px;margin-top:8px"></div></div></div>
 
-<!-- GLOBAL GROUP CHAT WITH LOGIN BUTTON -->
 <div id="page-group-chat" class="page">
 <div class="card" style="border:3px solid #16a34a">
 <h2 data-i18n="group_chat">GLOBAL GROUP CHAT</h2>
 
-<!-- LOGIN BOX FOR CHAT - NEW -->
 <div id="chatLoginBox" class="card" style="border:3px solid #ef4444;background:#fef2f2;margin:0 0 12px 0">
 <h3 style="color:#ef4444;font-size:13px;margin:0 0 8px 0" data-i18n="chat_login_title">🔑 Login to Chat - Password Only</h3>
-<p style="font-size:11px;color:#6b7280" data-i18n="chat_login_desc">Enter your login details to join group chat. Nurses use phone + password, Staff use Staff ID, CEO use CEO ID.</p>
-<div id="chatLoginTabs" style="display:flex;gap:6px;margin:8px 0">
-<button class="btnSmall activeTab" style="background:#2563eb;color:white;flex:1" onclick="switchChatLogin('nurse')" data-i18n="tab_nurse">Nurse</button>
-<button class="btnSmall" style="background:#7c3aed;color:white;flex:1" onclick="switchChatLogin('staff')" data-i18n="tab_staff">Staff</button>
-<button class="btnSmall" style="background:#111827;color:white;flex:1" onclick="switchChatLogin('ceo')" data-i18n="tab_ceo">CEO</button>
+<p style="font-size:11px;color:#6b7280" data-i18n="chat_login_desc">Enter your login details to join group chat</p>
+<div style="display:flex;gap:6px;margin:8px 0">
+<button id="chatTabNurse" class="btnSmall" style="background:#2563eb;color:white;flex:1" onclick="switchChatLogin('nurse')" data-i18n="tab_nurse">Nurse</button>
+<button id="chatTabStaff" class="btnSmall" style="background:#7c3aed;color:white;flex:1" onclick="switchChatLogin('staff')" data-i18n="tab_staff">Staff</button>
+<button id="chatTabCeo" class="btnSmall" style="background:#111827;color:white;flex:1" onclick="switchChatLogin('ceo')" data-i18n="tab_ceo">CEO</button>
 </div>
-
 <div id="chatLoginNurse">
 <div class="phoneRow"><select id="chatLoginCode"></select><input id="chatLoginPhone" data-i18n-ph="phone" placeholder="Phone"></div>
 <input id="chatLoginPass" type="password" data-i18n-ph="password" placeholder="Password">
@@ -243,8 +208,8 @@ table{width:100%;border-collapse:collapse;font-size:11px;margin-top:8px} th,td{b
 <button class="btnSubmit" style="background:#7c3aed" onclick="loginChatStaff()" data-i18n="login_staff">Login as Staff</button>
 </div>
 <div id="chatLoginCeo" class="hidden">
-<input id="chatCeoID" data-i18n-ph="ceo_id" placeholder="CEO Access ID">
-<input id="chatCeoPass" type="password" data-i18n-ph="ceo_key" placeholder="CEO Access Key">
+<input id="chatCeoID" data-i18n-ph="ceo_id" placeholder="CEO ID">
+<input id="chatCeoPass" type="password" data-i18n-ph="ceo_key" placeholder="Key">
 <button class="btnSubmit" style="background:#111827" onclick="loginChatCeo()" data-i18n="login_ceo">Login as CEO</button>
 </div>
 <div id="chatLoginResult" style="font-size:11px;color:red;margin-top:6px"></div>
@@ -252,44 +217,58 @@ table{width:100%;border-collapse:collapse;font-size:11px;margin-top:8px} th,td{b
 
 <div id="chatMainArea" class="hidden">
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-<span style="font-size:12px;font-weight:800">👤 <span id="chatUserName">-</span> <span id="chatUserRole" class="roleBadge">-</span></span>
+<span>👤 <span id="chatUserName">-</span> <span id="chatUserRole" class="roleBadge">-</span></span>
 <button class="btnSmall" style="background:#ef4444;color:white" onclick="logoutChat()" data-i18n="logout">Logout</button>
 </div>
 <div id="globalChatBox" class="chatBox" style="height:50vh"></div>
-<div style="display:flex;gap:6px;margin-top:8px"><select id="groupRole" style="width:100px"><option value="NURSE">NURSE</option><option value="STAFF">STAFF</option><option value="CEO">CEO</option></select><input id="globalChatInput" data-i18n-ph="type_message" placeholder="Type message..." onkeypress="if(event.key==='Enter')sendGlobalChat()" style="flex:1"><button class="btnSmall" style="background:#16a34a;color:white;padding:12px 20px" onclick="sendGlobalChat()" data-i18n="send">Send</button></div>
+<div style="display:flex;gap:6px;margin-top:8px"><select id="groupRole" style="width:100px"><option value="NURSE">NURSE</option><option value="STAFF">STAFF</option><option value="CEO">CEO</option></select><input id="globalChatInput" data-i18n-ph="type_message" placeholder="Type message..." style="flex:1" onkeypress="if(event.key==='Enter')sendGlobalChat()"><button class="btnSmall" style="background:#16a34a;color:white;padding:12px 20px" onclick="sendGlobalChat()" data-i18n="send">Send</button></div>
+</div>
+</div>
 </div>
 
-</div>
-</div>
-
-<div id="page-ceo-login" class="page"><div class="card" style="margin:20px;border:3px solid #111827"><h2 data-i18n="secure_access">Secure Access</h2><input id="ceoLoginID" data-i18n-ph="ceo_id" placeholder="Access ID"><input id="ceoLoginPass" type="password" data-i18n-ph="ceo_key" placeholder="Access Key"><button class="btnSubmit" style="background:#111827" onclick="loginCEO()" data-i18n="login">Login</button></div></div>
-<div id="page-ceo-dashboard" class="page"><div class="card"><h2>CEO</h2><div id="ceoBookingsList">Loading...</div></div><div id="ceoMap" style="height:380px;border:2px solid #16a34a"></div></div>
-<div id="page-nurse-dashboard" class="page"><div class="card"><h2>Nurse Dashboard</h2><div style="display:flex;gap:5px"><button class="btnSubmit" style="width:auto;background:#00b050" onclick="startDuty()" data-i18n="start_duty">START DUTY</button><button class="btnSubmit" style="width:auto;background:#ef4444" onclick="stopDuty()" data-i18n="stop">STOP</button><button class="btnSubmit" style="width:auto;background:#111827" onclick="logoutNurse()" data-i18n="logout">Logout</button></div></div><div class="card"><h2 data-i18n="new_offers">New Offers</h2><div id="nurseJobsList"></div></div></div>
-<div id="page-staff-dashboard" class="page"><div class="card"><h2>Staff</h2><div id="staffBookingsList"></div></div></div>
+<div id="page-ceo-dashboard" class="page"><div class="card" style="border:3px solid #111827"><h2>CEO Dashboard - <span id="statBookings">0</span> Bookings</h2><div style="display:flex;gap:6px"><button class="btnSmall" style="background:#111827;color:white" onclick="loadCeoData()" data-i18n="refresh">Refresh</button><button class="btnSmall" style="background:#ef4444;color:white" onclick="logoutCEO()" data-i18n="logout">Logout</button></div><div id="ceoBookingsList" style="margin-top:10px">Loading...</div></div><div id="ceoMap" style="height:380px;border:2px solid #16a34a;border-radius:12px;margin:8px"></div></div>
+<div id="page-nurse-dashboard" class="page"><div class="card"><h2>Nurse Dashboard</h2><div style="display:flex;gap:5px"><button class="btnSubmit" style="width:auto;background:#00b050" onclick="startDuty()" data-i18n="start_duty">START DUTY</button><button class="btnSubmit" style="width:auto;background:#ef4444" onclick="stopDuty()" data-i18n="stop">STOP</button><button class="btnSubmit" style="width:auto;background:#111827" onclick="logoutNurse()" data-i18n="logout">Logout</button></div></div><div class="card"><div id="nurseJobsList">No jobs</div></div></div>
+<div id="page-staff-dashboard" class="page"><div class="card"><h2>Staff Dashboard</h2><div id="staffBookingsList">Loading...</div><button class="btnSubmit" style="background:#ef4444" onclick="logoutStaff()" data-i18n="logout">Logout</button></div></div>
 
 <div id="legalWagePopup" class="ratePopup hidden"><h3 style="color:#b45309">⚖ Below Minimum</h3><p id="legalWageMsg"></p><button class="btnSubmit" style="background:#b45309" onclick="this.parentElement.classList.add('hidden')">OK</button></div>
-<div id="legalModal" class="legalModal hidden" onclick="if(event.target===this)closeLegal()"><div class="legalContent"><h1 id="legalTitle">Policy</h1><div id="legalBody"></div><button onclick="closeLegal()">Close</button></div></div>
 
-<footer class="appFooter"><div style="font-weight:800;color:white">LOVE CARE GLOBAL</div><div style="font-size:11px" data-i18n="footer_desc">Live-in / Live-out | Ghana 6 GHS/hr - 60% OFF</div></footer>
+<!-- LEGAL MODAL - FIXED -->
+<div id="legalModal" class="legalModal hidden" onclick="if(event.target===this)closeLegal()">
+<div class="legalContent">
+<div style="display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #e5e7eb;padding-bottom:10px;margin-bottom:10px">
+<h1 id="legalTitle" style="margin:0;color:#16a34a">Policy</h1>
+<button onclick="closeLegal()" style="background:#ef4444;color:white;border:none;padding:8px 14px;border-radius:8px;font-weight:800;cursor:pointer">✕ CLOSE</button>
+</div>
+<div id="legalBody" style="font-size:13px;line-height:1.7"></div>
+</div>
+</div>
+
+<!-- FOOTER - FIXED WITH WORKING BUTTONS -->
+<footer class="appFooter">
+<div style="font-weight:800;letter-spacing:1px;color:white;font-size:16px">LOVE CARE GLOBAL</div>
+<div style="font-size:11px;margin-top:4px" data-i18n="footer_desc">Live-in / Live-out | Ghana 6 GHS/hr - 60% OFF | 13 Services</div>
+<div class="footerLinks">
+<button onclick="openLegal('privacy')" data-i18n="footer_privacy">🔒 Privacy</button>
+<button onclick="openLegal('terms')" data-i18n="footer_terms">📄 Terms</button>
+<button onclick="openLegal('cancel')" data-i18n="footer_cancel">❌ Cancellation</button>
+<button onclick="openLegal('contact')" data-i18n="footer_contact">📧 Contact</button>
+</div>
+<p style="font-size:11px;margin:8px 0">Email: <a href="mailto:lovecareglobal@gmail.com">lovecareglobal@gmail.com</a> | <span data-i18n="footer_phone">Phone</span>: 0544121814</p>
+<p style="font-size:10px;color:#9ca3af">© 2026 LOVE CARE GLOBAL - <span data-i18n="footer_rights">All Rights Reserved</span></p>
+</footer>
+
 <div class="bottomNav">
 <button id="nav-home" class="active" onclick="showPage('home')"><span>🏠</span><span data-i18n="nav_home">Home</span></button>
 <button id="nav-nurse" onclick="showPage('nurse-public')"><span>👩⚕</span><span data-i18n="nav_join">Join</span></button>
 <button id="nav-book" onclick="showPage('booking-public')"><span>💡</span><span data-i18n="nav_help">Help</span></button>
 <button id="nav-login" onclick="showPage('nurse-login')"><span>🔑</span><span data-i18n="nav_login">Login</span></button>
-<button id="nav-chat" onclick="showPage('group-chat')"><span>💬</span><span data-i18n="nav_group">Group</span></button>
+<button id="nav-chat" onclick="showPage('group-chat')" style="background:#fef2f2;border:2px solid #ef4444"><span>💬</span><span data-i18n="nav_group">Group</span></button>
 </div>
 
 <script>
-// ===== FULL TRANSLATION - FIXED ALL WORDS =====
-var TRANSLATIONS = {
-en:{
-global_home:"GLOBAL HOME NURSING",book_title:"BOOK NURSE - Live-in / Live-out",full_name:"Full Name",phone:"Phone",email:"Email",gps_tap:"Tap GPS Auto",gps_btn:"GPS Auto",select_service:"-- Select Service --",s_elderly:"Elderly Care",s_baby:"Baby Care and Nanny",choose_type:"🏠 Choose Service Type",live_out:"LIVE-OUT",live_out_desc:"Comes & Goes",live_in:"LIVE-IN",live_in_desc:"Stays With You",duration_label:"⏱ How long do you need the nurse? (We convert all to hours)",duration_label_in:"⏱ How long will nurse stay at your house?",hours:"Hours",days:"Days",weeks:"Weeks",months:"Months",example_convert:"Example: 2 days + 3 hours = 51 hours total (1 day=24h, 1 week=7 days, 1 month=30 days)",feeding_q:"🍲 Feeding - Will you provide food?",feeding_yes:"✅ YES, I Will Feed",feeding_no:"❌ NO, Not Included",meals_label:"How many meals per day?",meals_1:"1 Meal per day",meals_2:"2 Meals per day",meals_3:"3 Meals per day (Full)",meals_note:"Nurse will eat with family",food_money_q:"Will you give nurse money for food? How much?",amount:"e.g. 20",per_day:"Per Day",per_week:"Per Week",per_month:"Per Month",one_time:"One Time Total",food_note:"This will be added to total pay",w_country:"🌍 Country:",w_type:"🏠 Type:",w_min:"👩⚕ Legal Min / Hour:",w_duration:"⏰ Duration:",w_total_hours:"⏳ Converted Hours:",w_feeding:"🍲 Feeding:",w_total_min:"💰 LEGAL MINIMUM:",w_food_allowance:"🍛 + Food Money:",w_grand_total:"💵 TOTAL TO PAY:",your_offer:"Your Offer >= Minimum",find_nurses:"🔍 FIND NURSES NEAR ME",random:"🎲 RANDOM",book_selected:"BOOK SELECTED",no_nurse:"No nurse selected",my_bookings:"📋 MY BOOKINGS",enter_phone:"Enter phone",load:"LOAD",live_map:"LIVE Map",nearby:"Nearby",map:"🗺 Map",refresh:"Refresh",nurse_reg:"Nurse Registration",password:"Password",register:"Register",help_title:"💡 HELP - Live-in vs Live-out",help_desc:"Live-Out: Nurse comes daily. Live-In: Nurse stays 24/7. 1 day=24h, 1 week=7 days, 1 month=30 days.",nurse_login:"Nurse Login",login_nurse:"Login as Nurse",staff_login:"Staff Portal",staff_id:"Staff ID",login_staff:"Login as Staff",secure_access:"Secure Access",ceo_id:"Access ID",ceo_key:"Access Key",login:"Login",start_duty:"START DUTY",stop:"STOP",logout:"Logout",new_offers:"New Offers",group_chat:"GLOBAL GROUP CHAT",chat_login_title:"🔑 Login to Chat - Password Only",chat_login_desc:"Enter your login details to join group chat. Nurses use phone + password, Staff use Staff ID, CEO use CEO ID.",tab_nurse:"Nurse",tab_staff:"Staff",tab_ceo:"CEO",login_ceo:"Login as CEO",type_message:"Type message...",send:"Send",footer_desc:"Live-in / Live-out | Ghana 6 GHS/hr - 60% OFF",nav_home:"Home",nav_join:"Join",nav_help:"Help",nav_login:"Login",nav_group:"Group"
-},
-fr:{
-global_home:"SOINS INFIRMIERS MONDIAUX",book_title:"RÉSERVER INFIRMIÈRE - Live-in / Live-out",full_name:"Nom Complet",phone:"Téléphone",email:"Email",gps_tap:"Appuyer GPS Auto",gps_btn:"GPS Auto",select_service:"-- Sélectionner Service --",s_elderly:"Soins aux Personnes Âgées",s_baby:"Garde Bébé et Nounou",choose_type:"🏠 Choisir Type de Service",live_out:"EXTERNE",live_out_desc:"Vient et Part",live_in:"INTERNE",live_in_desc:"Reste Chez Vous",duration_label:"⏱ Combien de temps avez-vous besoin? (Converti en heures)",duration_label_in:"⏱ Combien de temps l'infirmière restera?",hours:"Heures",days:"Jours",weeks:"Semaines",months:"Mois",example_convert:"Exemple: 2 jours + 3 heures = 51 heures total",feeding_q:"🍲 Nourriture - Allez-vous nourrir l'infirmière?",feeding_yes:"✅ OUI, Je Vais Nourrir",feeding_no:"❌ NON, Non Inclus",meals_label:"Combien de repas par jour?",meals_1:"1 Repas par jour",meals_2:"2 Repas par jour",meals_3:"3 Repas par jour (Complet)",meals_note:"L'infirmière mangera en famille",food_money_q:"Allez-vous donner de l'argent pour la nourriture?",amount:"ex. 20",per_day:"Par Jour",per_week:"Par Semaine",per_month:"Par Mois",one_time:"Total Unique",food_note:"Sera ajouté au total",w_country:"🌍 Pays:",w_type:"🏠 Type:",w_min:"👩⚕ Min Légal / Heure:",w_duration:"⏰ Durée:",w_total_hours:"⏳ Heures Converties:",w_feeding:"🍲 Nourriture:",w_total_min:"💰 MINIMUM LÉGAL:",w_food_allowance:"🍛 + Argent Nourriture:",w_grand_total:"💵 TOTAL À PAYER:",your_offer:"Votre Offre >= Minimum",find_nurses:"🔍 TROUVER INFIRMIÈRES",random:"🎲 ALÉATOIRE",book_selected:"RÉSERVER",no_nurse:"Aucune infirmière sélectionnée",my_bookings:"📋 MES RÉSERVATIONS",enter_phone:"Entrez téléphone",load:"CHARGER",live_map:"Carte LIVE",nearby:"Proche",map:"🗺 Carte",refresh:"Actualiser",nurse_reg:"Inscription Infirmière",password:"Mot de passe",register:"S'inscrire",help_title:"💡 AIDE - Interne vs Externe",help_desc:"Externe: Vient quotidiennement. Interne: Reste 24/7.",nurse_login:"Connexion Infirmière",login_nurse:"Connexion Infirmière",staff_login:"Portail Personnel",staff_id:"ID Personnel",login_staff:"Connexion Personnel",secure_access:"Accès Sécurisé",ceo_id:"ID d'Accès",ceo_key:"Clé d'Accès",login:"Connexion",start_duty:"COMMENCER SERVICE",stop:"ARRÊT",logout:"Déconnexion",new_offers:"Nouvelles Offres",group_chat:"CHAT DE GROUPE MONDIAL",chat_login_title:"🔑 Connexion au Chat - Mot de Passe Seulement",chat_login_desc:"Entrez vos identifiants pour rejoindre le chat.",tab_nurse:"Infirmière",tab_staff:"Personnel",tab_ceo:"PDG",login_ceo:"Connexion PDG",type_message:"Tapez message...",send:"Envoyer",footer_desc:"Interne / Externe | Ghana 6 GHS/h - 60% OFF",nav_home:"Accueil",nav_join:"Rejoindre",nav_help:"Aide",nav_login:"Connexion",nav_group:"Groupe"
-},
-es:{
-global_home:"ENFERMERÍA GLOBAL",book_title:"RESERVAR ENFERMERA - Live-in / Live-out",full_name:"Nombre Completo",phone:"Teléfono",email:"Correo",gps_tap:"Tocar GPS Auto",gps_btn:"GPS Auto",select_service:"-- Seleccionar Servicio --",s_elderly:"Cuidado de Ancianos",s_baby:"Cuidado de Bebé y Niñera",choose_type:"🏠 Elegir Tipo de Servicio",live_out:"EXTERNA",live_out_desc:"Viene y Va",live_in:"INTERNA",live_in_desc:"Se Queda Contigo",duration_label:"⏱ ¿Cuánto tiempo necesita enfermera? (Convertimos a horas)",duration_label_in:"⏱ ¿Cuánto tiempo se quedará la enfermera?",hours:"Horas",days:"Días",weeks:"Semanas",months:"Meses",example_convert:"Ejemplo: 2 días + 3 horas = 51 horas total",feeding_q:"🍲 Comida - ¿Alimentará a la enfermera?",feeding_yes:"✅ SÍ, Alimentaré",feeding_no:"❌ NO, No Incluido",meals_label:"¿Cuántas comidas por día?",meals_1:"1 Comida por día",meals_2:"2 Comidas por día",meals_3:"3 Comidas por día (Completo)",meals_note:"La enfermera comerá con la familia",food_money_q:"¿Dará dinero para comida? ¿Cuánto?",amount:"ej. 20",per_day:"Por Día",per_week:"Por Semana",per_month:"Por Mes",one_time:"Total Único",food_note:"Se agregará al pago total",w_country:"🌍 País:",w_type:"🏠 Tipo:",w_min:"👩⚕ Mín Legal / Hora:",w_duration:"⏰ Duración:",w_total_hours:"⏳ Horas Convertidas:",w_feeding:"🍲 Alimentación:",w_total_min:"💰 MÍNIMO LEGAL:",w_food_allowance:"🍛 + Dinero Comida:",w_grand_total:"💵 TOTAL A PAGAR:",your_offer:"Tu Oferta >= Mínimo",find_nurses:"🔍 BUSCAR ENFERMERAS",random:"🎲 ALEATORIO",book_selected:"RESERVAR SELECCIONADO",no_nurse:"Ninguna enfermera seleccionada",my_bookings:"📋 MIS RESERVAS",enter_phone:"Ingresa teléfono",load:"CARGAR",live_map:"Mapa VIVO",nearby:"Cercano",map:"🗺 Mapa",refresh:"Actualizar",nurse_reg:"Registro Enfermera",password:"Contraseña",register:"Registrar",help_title:"💡 AYUDA - Interna vs Externa",help_desc:"Externa: Viene diario. Interna: Se queda 24/7.",nurse_login:"Login Enfermera",login_nurse:"Iniciar Sesión",staff_login:"Portal Personal",staff_id:"ID Personal",login_staff:"Login Personal",secure_access:"Acceso Seguro",ceo_id:"ID Acceso",ceo_key:"Clave Acceso",login:"Iniciar",start_duty:"INICIAR TURNO",stop:"PARAR",logout:"Cerrar Sesión",new_offers:"Nuevas Ofertas",group_chat:"CHAT GRUPAL GLOBAL",chat_login_title:"🔑 Login para Chatear - Solo Contraseña",chat_login_desc:"Ingrese sus datos para unirse al chat.",tab_nurse:"Enfermera",tab_staff:"Personal",tab_ceo:"CEO",login_ceo:"Login CEO",type_message:"Escribe mensaje...",send:"Enviar",footer_desc:"Interna / Externa | Ghana 6 GHS/h - 60% OFF",nav_home:"Inicio",nav_join:"Unirse",nav_help:"Ayuda",nav_login:"Login",nav_group:"Grupo"
-},
-de:{
-global_home:"GLOBALE PFLEGE",book_title:"KRANKENSCHWESTER BUCHEN - Live-in / Live-out",full_name:"Vollständiger Name",phone:"Telefon",email:"E-Mail",gps_tap:"GPS Auto tippen",gps_btn:"GPS Auto",select_service:"-- Service wählen --",s_elderly:"Altenpflege",s_baby:"Babybetreuung",choose_type:"🏠 Service Typ Wählen",live_out:"EXTERN",live_out_desc:"Kommt & Geht",live_in:"INTERN",live_in_desc:"Bleibt bei Ihnen",duration_label:"⏱ Wie lange brauchen Sie? (In Stunden umgerechnet)",duration_label_in:"⏱ Wie lange bleibt Krankenschwester?",hours:"Stunden",days:"Tage",weeks:"Wochen",months:"Monate",example_convert:"Beispiel: 2 Tage + 3 Stunden = 51 Stunden",feeding_q:"🍲 Verpflegung - Werden Sie Krankenschwester verpflegen?",feeding_yes:"✅ JA, Ich Verpflege",feeding_no:"❌ NEIN, Nicht Inklusive",meals_label:"Wie viele Mahlzeiten pro Tag?",meals_1:"1 Mahlzeit pro Tag",meals_2:"2 Mahlzeiten pro Tag",meals_3:"3 Mahlzeiten pro Tag (Voll)",meals_note:"Schwester isst mit Familie",food_money_q:"G
+// ===== FULL TRANSLATION =====
+var TRANSLATIONS={
+en:{global_home:"GLOBAL HOME NURSING",book_title:"BOOK NURSE - Live-in / Live-out",full_name:"Full Name",phone:"Phone",email:"Email",gps_tap:"Tap GPS Auto",gps_btn:"GPS Auto",select_service:"-- Select Service --",s_elderly:"Elderly Care",s_baby:"Baby Care and Nanny",choose_type:"🏠 Choose Service Type",live_out:"LIVE-OUT",live_out_desc:"Comes & Goes",live_in:"LIVE-IN",live_in_desc:"Stays With You",duration_label:"⏱ How long do you need nurse? (All converted to hours)",duration_label_in:"⏱ How long will nurse stay at your house?",hours:"Hours",days:"Days",weeks:"Weeks",months:"Months",example_convert:"Example: 2 days + 3 hours = 51 hours total (1 day=24h, 1 week=7 days, 1 month=30 days)",feeding_q:"🍲 Feeding - Will you provide food for the nurse?",feeding_yes:"✅ YES, I Will Feed",feeding_no:"❌ NO, Not Included",meals_label:"How many meals per day will you give the nurse?",meals_1:"1 Meal per day",meals_2:"2 Meals per day",meals_3:"3 Meals per day (Full)",meals_note:"Nurse will eat with family",food_money_q:"Will you give the nurse money for food? How much?",amount:"e.g. 20",per_day:"Per Day",per_week:"Per Week",per_month:"Per Month",one_time:"One Time Total",food_note:"This will be added to total pay",w_country:"🌍 Country:",w_type:"🏠 Type:",w_min:"👩⚕ Legal Min / Hour:",w_duration:"⏰ Duration:",w_total_hours:"⏳ Converted Hours:",w_feeding:"🍲 Feeding:",w_total_min:"💰 LEGAL MINIMUM:",w_food_allowance:"🍛 + Food Money:",w_grand_total:"💵 TOTAL TO PAY:",your_offer:"Your Offer >= Minimum",find_nurses:"🔍 FIND NURSES NEAR ME",random:"🎲 RANDOM",book_selected:"BOOK SELECTED",no_nurse:"No nurse selected",my_bookings:"📋 MY BOOKINGS",enter_phone:"Enter phone",load:"LOAD",live_map:"LIVE Map",nearby:"Nearby",map:"🗺 Map",refresh:"Refresh",nurse_reg:"Nurse Registration",password:"Password",register:"Register",help_title:"💡 HELP - Live-in vs Live-out",help_desc:"Live-Out: Nurse comes daily, goes home. Live-In: Nurse stays 24/7 in your house. 1 day=24h, 1 week=7 days, 1 month=30 days. If feeding included, choose meals per day. If not, give money for food.",nurse_login:"Nurse Login",login_nurse:"Login as Nurse",staff_login:"Staff Portal",staff_id:"Staff ID",login_staff:"Login as Staff",secure_access:"Secure Access",ceo_id:"Access ID",ceo_key:"Access Key",login:"Login",start_duty:"START DUTY",stop:"STOP",logout:"Logout",group_chat:"GLOBAL GROUP CHAT",chat_login_title:"🔑 Login to Chat - Password Only",chat_login_desc:"Enter your login details to join group chat. Nurses use phone + password, Staff use Staff ID, CEO use CEO ID.",tab_nurse:"Nurse",tab_staff:"Staff",tab_ceo:"CEO",login_ceo:"Login as CEO",type_message:"Type message...",send:"Send",footer_desc:"Live-in / Live-out | Ghana 6 GHS/hr - 60% OFF | 13 Services",footer_privacy:"🔒 Privacy",footer_terms:"📄 Terms",footer_cancel:"❌ Cancellation",footer_contact:"📧 Contact",footer_phone:"Phone",footer_rights:"All Rights Reserved",nav_home:"Home",nav_join:"Join",nav_help:"Help",nav_login:"Login",nav_group:"Group"},
+fr:{global_home:"SOINS MONDIAUX",book_title:"RÉSERVER INFIRMIÈRE - Live-in / Live-out",full_name:"Nom Complet",phone:"Téléphone",email:"Email",gps_tap:"Appuyer GPS Auto",gps_btn:"GPS Auto",select_service:"-- Sélectionner Service --",s_elderly:"Soins aux Personnes Âgées",s_baby:"Garde Bébé et Nounou",choose_type:"🏠 Choisir Type",live_out:"EXTERNE",live_out_desc:"Vient et Part",live_in:"INTERNE",live_in_desc:"Reste Chez Vous",duration_label:"⏱ Combien de temps? (Converti en heures)",duration_label_in:"⏱ Combien de temps l'infirmière restera?",hours:"Heures",days:"Jours",weeks:"Semaines",months:"Mois",example_convert:"Exemple: 2 jours + 3h = 51h total",feeding_q:"🍲 Nourriture - Allez-vous nourrir l'infirmière?",feeding_yes:"✅ OUI, Je Vais Nourrir",feeding_no:"❌ NON, Non Inclus",meals_label:"Combien de repas par jour?",meals_1:"1 Repas par jour",meals_2:"2 Repas par jour",meals_3:"3 Repas par jour",meals_note:"L'infirmière mangera en famille",food_money_q:"Allez-vous donner de l'argent pour la nourriture?",amount:"ex. 20",per_day:"Par Jour",per_week:"Par Semaine",per_month:"Par Mois",one_time:"Total Unique",food_note:"Sera ajouté au total",w_country:"🌍 Pays:",w_type:"🏠 Type:",w_min:"👩⚕ Min Légal / Heure:",w_duration:"⏰ Durée:",w_total_hours:"⏳ Heures Converties:",w_feeding:"🍲 Nourriture:",w_total_min:"💰 MINIMUM LÉGAL:",w_food_allowance:"🍛 + Argent Nourriture:",w_grand_total:"💵 TOTAL À PAYER:",your_offer:"Votre Offre >= Minimum",find_nurses:"🔍 TROUVER INFIRMIÈRES",random:"🎲 ALÉATOIRE",book_selected:"RÉSERVER",no_nurse:"Aucune infirmière sélectionnée",my_bookings:"📋 MES RÉSERVATIONS",enter_phone:"Entrez téléphone",load:"CHARGER",live_map:"Carte LIVE",nearby:"Proche",map:"🗺 Carte",refresh:"Actualiser",nurse_reg:"Inscription Infirmière",password:"Mot de passe",register:"S'inscrire",help_title:"💡 AIDE",help_desc:"Externe: Vient quotidiennement. Interne: Reste 24/7.",nurse_login:"Connexion Infirmière",login_nurse:"Connexion",staff_login:"Portail Personnel",staff_id:"ID Personnel",login_staff:"Connexion",secure_access:"Accès Sécurisé",ceo_id:"ID d'Accès",ceo_key:"Clé d'Accès",login:"Connexion",start_duty:"COMMENCER SERVICE",stop:"ARRÊT",logout:"Déconnexion",group_chat:"CHAT DE GROUPE MONDIAL",chat_login_title:"🔑 Connexion au Chat",chat_login_desc:"Entrez vos identifiants pour rejoindre le chat.",tab_nurse:"Infirmière",tab_staff:"Personnel",tab_ceo:"PDG",login_ceo:"Connexion PDG",type_message:"Tapez message...",send:"Envoyer",footer_desc:"Interne / Externe | Ghana 6 GHS/h - 60% OFF",footer_privacy:"🔒 Confidentialité",footer_terms:"📄 Conditions",footer_cancel:"❌ Annulation",footer_contact:"📧 Contact",footer_phone:"Téléphone",footer_rights:"Tous Droits Réservés",nav_home:"Accueil",nav_join:"Rejoindre",nav_help:"Aide",nav_login:"Connexion",nav_group:"Groupe"},
+es:{global_home:"ENFERMERÍA GLOBAL",book_title:"RESERVAR ENFERMERA - Live-in / Live-out",full_name:"Nombre Completo",phone:"Teléfono",email:"Correo",gps_tap:"Tocar GPS Auto",gps_btn:"GPS Auto",select_service:"-- Seleccionar Servicio --",s_elderly:"Cuidado de Ancianos",s_baby:"Cuidado de Bebé y Niñera",choose_type:"🏠 Elegir Tipo",live_out:"EXTERNA",live_out_desc:"Viene y Va",live_in:"INTERNA",live_in_desc:"Se Queda Contigo",duration_label:"⏱ ¿Cuánto tiempo? (Convertimos a horas)",duration_label_in:"⏱ ¿Cuánto tiempo se quedará?",hours:"Horas",days:"Días",weeks:"Semanas",months:"Meses",example_convert:"Ejemplo: 2 días + 3h = 51h",feeding_q:"🍲 Comida - ¿Alimentará a la enfermera?",feeding_yes:"✅ SÍ, Alimentaré",feeding_no:"❌ NO, No Incluido",meals_label:"¿Cuántas comidas por día?",meals_1:"1 Comida por día",meals_2:"2 Comidas por día",meals_3:"3 Comidas por día",food_money_q:"¿Dará dinero para comida? ¿Cuánto?",amount:"ej. 20",per_day:"Por Día",per_week:"Por Semana",per_month:"Por Mes",one_time:"Total Único",food_note:"Se agregará al total",w_country:"🌍 País:",w_type:"🏠 Tipo:",w_min:"👩⚕ Mín Legal / Hora:",w_duration:"⏰ Duración:",w_total_hours:"⏳ Horas Convertidas:",w_feeding:"🍲 Alimentación:",w_total_min:"💰 MÍNIMO LEGAL:",w_food_allowance:"🍛 + Dinero Comida:",w_grand_total:"💵 TOTAL A PAGAR:",your_offer:"Tu Oferta >= Mínimo",find_nurses:"🔍 BUSCAR ENFERMERAS",random:"🎲 ALEATORIO",book_selected:"RESERVAR SELECCIONADO",no_nurse:"Ninguna seleccionada",my_bookings:"📋 MIS RESERVAS",enter_phone:"Ingresa teléfono",load:"CARGAR",live_map:"Mapa VIVO",nearby:"Cercano",map:"🗺 Mapa",refresh:"Actualizar",nurse_reg:"Registro Enfermera",password:"Contraseña",register:"Registrar",help_title:"💡 AYUDA",help_desc:"Externa diario, Interna 24/7",nurse_login:"Login Enfermera",login_nurse:"Iniciar Sesión",staff_login:"Portal Personal",staff_id:"ID Personal",login_staff:"Login Personal",secure_access:"Acceso Seguro",ceo_id:"ID Acceso",ceo_key:"Clave Acceso",login:"Iniciar",start_duty:"INICIAR TURNO",stop:"PARAR",logout:"Cerrar Sesión",group_chat:"CHAT GRUPAL GLOBAL",chat_login_title:"🔑 Login para Chatear",chat_login_desc:"Ingrese sus datos para unirse al chat.",tab_nurse:"Enfermera",tab_staff:"Personal",tab_ceo:"CEO",login_ceo:"Login CEO",type_message:"Escribe mensaje...",send:"Enviar",footer_desc:"Interna / Externa | Ghana 6 GHS/h - 60% OFF",footer_privacy:"🔒 Privacidad",footer_terms:"📄 Términos",footer_cancel:"❌ Cancelación",footer_contact:"📧 Contacto",footer_phone:"Teléfono",footer_rights:"Todos los Derechos Reservados",nav_home:"Inicio",nav_join:"Unirse",nav_help:"Ayuda",nav_login:"Login",nav_group:"Grupo"},
+de:{global_home:"GLOBALE PFLEGE",book_title:"KRANKENSCHWESTER BUCHEN - Live-in / Live-out",full_name:"Vollständiger Name",phone:"Telefon",email:"E-Mail",gps_tap:"GPS Auto tippen",gps_btn:"GPS Auto",select_service:"-- Service wählen --",s_elderly:"Altenpflege",s_baby:"Babybetreuung",choose_type:"🏠 Service Typ Wählen",live_out:"EXTERN",live_out_desc:"Kommt & Geht",live_in:"INTERN",live_in_desc:"Bleibt bei Ihnen",duration_label:"⏱ Wie lange? (In Stunden umgerechnet)",duration_label_in:"⏱ Wie lange bleibt?",hours:"Stunden",days:"Tage",weeks:"Wochen",months:"Monate",example_convert:"2 Tage + 3h = 51h",feeding_q:"🍲 Verpflegung - Werden Sie verpflegen?",feeding_yes:"✅ JA, Ich Verpflege",feeding_no:"❌ NEIN, Nicht Inklusive",meals_label:"Wie viele Mahlzeiten pro Tag?",meals_1:"1 Mahlzeit pro Tag",meals_2
