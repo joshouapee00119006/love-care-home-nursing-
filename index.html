@@ -318,7 +318,7 @@ function setWorkTime(s,e){
 </div>
 </div>
 
-<div style="display:flex;gap:6px"><input id="cBudget" type="number" placeholder="Your Offer - Must be >= Min" oninput="validateBudgetLive()" onchange="validateBudgetLive()" onkeyup="validateBudgetLive()"= Minimum" style="flex:1" oninput="validateBudgetLive()"><select id="cCurrency" style="width:110px" onchange="calculateTotal();validateBudgetLive()"><option>GHS</option><option>USD</option><option>NGN</option><option>ZAR</option><option>KES</option><option>UGX</option><option>TZS</option><option>ETB</option><option>RWF</option><option>XAF</option><option>XOF</option><option>EGP</option><option>MAD</option><option>GBP</option><option>CAD</option><option>AUD</option><option>EUR</option><option>INR</option><option>PKR</option><option>BDT</option><option>PHP</option><option>IDR</option><option>BRL</option><option>MXN</option><option>SAR</option><option>AED</option><option>JPY</option></select></div>
+<div style="display:flex;gap:6px"><input id="cBudget" type="number" placeholder="Your Offer - Must be >= Min" min="1" step="0.01" oninput="validateBudgetLive()" onchange="validateBudgetLive()" onkeyup="validateBudgetLive()" style="border:2px solid #16a34a;padding:12px;border-radius:8px;width:100%;font-weight:700">= Min" oninput="validateBudgetLive()" onchange="validateBudgetLive()" onkeyup="validateBudgetLive()"= Minimum" style="flex:1" oninput="validateBudgetLive()"><select id="cCurrency" style="width:110px" onchange="calculateTotal();validateBudgetLive()"><option>GHS</option><option>USD</option><option>NGN</option><option>ZAR</option><option>KES</option><option>UGX</option><option>TZS</option><option>ETB</option><option>RWF</option><option>XAF</option><option>XOF</option><option>EGP</option><option>MAD</option><option>GBP</option><option>CAD</option><option>AUD</option><option>EUR</option><option>INR</option><option>PKR</option><option>BDT</option><option>PHP</option><option>IDR</option><option>BRL</option><option>MXN</option><option>SAR</option><option>AED</option><option>JPY</option></select></div>
 <small id="minRateInfo" style="font-size:10px;font-weight:800;color:#92400e;background:#fef3c7;border:1px solid #f59e0b;padding:6px 10px;border-radius:8px;margin:4px 0;display:block">Loading legal nurse rate...</small>
 
 <div class="card" style="border:3px solid #0a0a0a;background:linear-gradient(135deg,#f0fdf4,#dcfce7)">
@@ -329,17 +329,17 @@ function setWorkTime(s,e){
 <div class="wageRow hidden"><span>Nurse:</span><span id="payNurseShare">0</span></div><div class="wageRow hidden"><span>CEO:</span><span id="payCeoShare">0</span></div>
 </div>
 <div style="display:flex;gap:6px">
-<button class="btnSubmit" style="background:linear-gradient(90deg,#0a0a0a,#16a34a);flex:1" onclick="payWithPaystack()" id="paystackBtn">💳 PAY NOW WITH PAYSTACK</button>
+<button class="btnSubmit" style="background:linear-gradient(90deg,#0a0a0a,#16a34a);flex:1" onclick="window.payWithPaystack()" id="paystackBtn" style="cursor:pointer;pointer-events:auto !important;opacity:1 !important">💳 PAY NOW WITH PAYSTACK</button>
 <button class="btnSmall" style="background:#f0fdf4;border:2px solid #16a34a;color:#16a34a" onclick="updatePaystackSplit()">🔄 Update</button>
 </div>
 <div id="paystackStatus" style="font-size:11px;margin-top:8px;padding:8px;border-radius:8px;display:none"></div>
 </div>
 
-<button class="btnSubmit" style="background:linear-gradient(90deg,#2563eb,#00b050)" id="findNursesBtn" onclick="findNursesUber()">🔍 FIND NURSES NEAR ME</button>
-<div id="uberActionArea" class="hidden"><div style="display:flex;gap:6px;margin-top:8px"><button class="btnSubmit" style="background:#eab308;color:#111;flex:1" onclick="randomSelectNurse()">🎲 RANDOM</button><button class="btnSubmit" style="background:#111827;flex:1" id="bookSelectedBtn" onclick="submitBooking()">BOOK SELECTED</button></div><div id="selectedNurseInfo" style="font-size:10px;text-align:center;margin-top:4px;color:#16a34a;font-weight:800">No nurse selected</div></div></div>
+<button class="btnSubmit" style="background:linear-gradient(90deg,#2563eb,#00b050)" id="findNursesBtn" onclick="window.findNursesUber()" style="cursor:pointer;pointer-events:auto !important;opacity:1 !important">🔍 FIND NURSES NEAR ME</button>
+<div id="uberActionArea" class="hidden"><div style="display:flex;gap:6px;margin-top:8px"><button class="btnSubmit" style="background:#eab308;color:#111;flex:1" onclick="randomSelectNurse()">🎲 RANDOM</button><button class="btnSubmit" style="background:#111827;flex:1" id="bookSelectedBtn" onclick="window.submitBooking()" style="cursor:pointer;pointer-events:auto !important">BOOK SELECTED</button></div><div id="selectedNurseInfo" style="font-size:10px;text-align:center;margin-top:4px;color:#16a34a;font-weight:800">No nurse selected</div></div></div>
 
 <div class="card" style="border:3px solid #2563eb"><h2>📋 MY BOOKINGS</h2><div class="phoneRow"><select id="myBookPhoneCode"></select><input id="myBookPhone" placeholder="Enter phone to load"><button class="btnSmall" style="background:#2563eb;color:white;padding:12px 16px" onclick="loadMyBookings()">LOAD</button></div><div id="myBookingsList" style="margin-top:10px"><div style="text-align:center;color:#999;font-size:11px;padding:10px">No bookings loaded</div></div></div>
-<div class="card"><h2>LIVE Map - <span id="nearbyCount">0</span> Nearby</h2><div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap"><button class="btnMap" onclick="toggleMap()">🗺 Map</button><button class="btnSmall" style="background:#16a34a;color:white" id="findNursesBtn" onclick="findNursesUber()">Refresh</button><select id="radiusSelect" style="width:100px;padding:8px;border-radius:8px"><option value="5">5 km</option><option value="10" selected>10 km</option><option value="20">20 km</option><option value="50">50 km</option></select></div><div id="loveCareMapWrapper" class="map-wrapper"><div id="uberMap"></div></div><div id="loveCareLiveList"></div></div>
+<div class="card"><h2>LIVE Map - <span id="nearbyCount">0</span> Nearby</h2><div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap"><button class="btnMap" onclick="toggleMap()">🗺 Map</button><button class="btnSmall" style="background:#16a34a;color:white" id="findNursesBtn" onclick="window.findNursesUber()" style="cursor:pointer;pointer-events:auto !important;opacity:1 !important">Refresh</button><select id="radiusSelect" style="width:100px;padding:8px;border-radius:8px"><option value="5">5 km</option><option value="10" selected>10 km</option><option value="20">20 km</option><option value="50">50 km</option></select></div><div id="loveCareMapWrapper" class="map-wrapper"><div id="uberMap"></div></div><div id="loveCareLiveList"></div></div>
 </div>
 
 <div id="page-nurse-public" class="page"><div class="card"><h2>Nurse Registration</h2><input id="nRegName" placeholder="Full Name"><div class="phoneRow"><select id="nRegPhoneCode"></select><input id="nRegPhone" placeholder="Phone"></div><input id="nRegPass" type="password" placeholder="Password"><div class="locationRow"><input id="nRegLocation" placeholder="Tap GPS Auto"><button type="button" onclick="autoGPS('nRegLocation','nurseGpsStatus2')">GPS</button></div><small id="nurseGpsStatus2" class="gpsBadge hidden"></small><div style="background:#fefce8;border:2px solid #eab308;border-radius:10px;padding:10px;margin:8px 0"><h4 style="margin:0 0 6px 0;font-size:11px;color:#92400e">📸 Upload Your Photo (Nurse Profile Photo)</h4><input type="file" id="nRegPhoto" accept="image/*" style="width:100%;padding:8px;border:2px dashed #eab308;border-radius:8px;background:white"><small style="font-size:9px;color:#666">Your clear face photo - will be shown to clients</small><div style="margin-top:6px"><img id="nRegPhotoImg" style="max-width:100%;max-height:120px;display:none;border-radius:8px;border:2px solid #eab308"></div></div><div style="background:#f0fdf4;border:2px solid #16a34a;border-radius:10px;padding:10px;margin:8px 0"><h4 style="margin:0 0 6px 0;font-size:11px;color:#16a34a">📄 Upload CV (Resume)</h4><input type="file" id="nRegCV" accept=".pdf,.doc,.docx,.jpg,.png" style="width:100%;padding:8px;border:2px dashed #16a34a;border-radius:8px;background:white"><small style="font-size:9px;color:#666">PDF, DOC, JPG, PNG</small><div id="nRegCVPreview" style="margin-top:6px;font-size:10px;color:#16a34a"></div></div><div style="background:#eff6ff;border:2px solid #2563eb;border-radius:10px;padding:10px;margin:8px 0"><h4 style="margin:0 0 6px 0;font-size:11px;color:#2563eb">🪪 PIN Photo (Professional ID)</h4><input type="file" id="nRegPINPhoto" accept="image/*" style="width:100%;padding:8px;border:2px dashed #2563eb;border-radius:8px;background:white"><small style="font-size:9px;color:#666">Nursing PIN / License / ID Photo</small><div style="margin-top:6px"><img id="nRegPINImg" style="max-width:100%;max-height:120px;display:none;border-radius:8px;border:2px solid #2563eb"></div></div><input id="nRegExperience" type="number" placeholder="Years"><select id="nRegSpecialty"><option value="">-- Specialty (13) --</option><option>General Nurse</option><option>Elderly Care</option><option>Baby Care and Nanny</option><option>Hospital Support</option><option>Post-Surgery Care</option><option>Disability Support</option><option>Maternity Care</option><option>Night Nurse</option><option>Palliative Care</option><option>Physiotherapy</option><option>Injection and Wound Care</option><option>Diabetes Monitoring</option><option>Dementia Care</option><option>Child Special Needs Care</option></select><button class="btnSubmit" onclick="registerNurse()">Register</button><div style="text-align:center;margin-top:10px"><button class="btnSmall" style="background:#2563eb;color:white" onclick="showPage('nurse-public')">Already Registered? Login Here</button></div></div></div>
@@ -554,8 +554,8 @@ function calculateTotal(){
 function validateBudgetLive(){
   var info = document.getElementById('minRateInfo');
   var budgetInput = document.getElementById('cBudget');
-  var findBtn = document.querySelector('button[id="findNursesBtn" onclick="findNursesUber()"]');
-  var bookBtn = document.querySelector('button[id="bookSelectedBtn" onclick="submitBooking()"]');
+  var findBtn = document.querySelector('button[id="findNursesBtn" onclick="window.findNursesUber()" style="cursor:pointer;pointer-events:auto !important;opacity:1 !important"]');
+  var bookBtn = document.querySelector('button[id="bookSelectedBtn" onclick="window.submitBooking()" style="cursor:pointer;pointer-events:auto !important"]');
   var amt = parseFloat(budgetInput.value);
   var calc = calculateTotal();
   if(!info) return { valid:true, minRequired: calc.totalMin, calc: calc };
@@ -565,8 +565,8 @@ function validateBudgetLive(){
   if(!amt || amt==0 || isNaN(amt)){
     info.innerHTML = minText + '<br><span style="color:white;background:#f59e0b;padding:4px 12px;border-radius:10px;font-weight:800">⚠️ ENTER OFFER: Minimum is '+calc.totalMin+' '+document.getElementById('cCurrency').value+' - You must enter at least minimum</span><br><span style="color:#92400e;font-size:11px">Enter your offer above to enable booking</span>';
     info.style.background='#fef3c7'; info.style.borderColor='#f59e0b'; info.style.color='#92400e';
-    if(findBtn){ findBtn.disabled=true; findBtn.style.opacity='0.4'; findBtn.style.pointerEvents='none'; findBtn.innerText='🔒 ENTER OFFER FIRST - Min '+calc.totalMin; }
-    if(bookBtn){ bookBtn.disabled=true; bookBtn.style.opacity='0.4'; bookBtn.style.pointerEvents='none'; }
+    if(findBtn){ findBtn.disabled=false; findBtn.style.opacity='0.6'; findBtn.style.pointerEvents='auto'; findBtn.style.cursor='not-allowed'; findBtn.innerText='🔒 ENTER OFFER FIRST - Min '+calc.totalMin; findBtn.style.background='#ef4444'; }
+    if(bookBtn){ bookBtn.disabled=false; bookBtn.style.opacity='0.6'; bookBtn.style.pointerEvents='auto'; bookBtn.style.cursor='not-allowed'; bookBtn.style.background='#ef4444'; }
     if(budgetInput){ budgetInput.style.border='3px solid #f59e0b'; budgetInput.style.background='#fef3c7'; }
     return { valid:false, minRequired: calc.totalMin, calc: calc };
   }
@@ -577,15 +577,19 @@ function validateBudgetLive(){
     info.style.background='#fee2e2'; info.style.borderColor='#ef4444'; info.style.color='#991b1b';
     // DISABLE BUTTONS - STRICT BLOCK
     if(findBtn){ 
-      findBtn.disabled=true; 
-      findBtn.style.opacity='0.4'; 
-      findBtn.style.pointerEvents='none';
-      findBtn.innerText='🔒 BLOCKED - Increase Offer First';
+      findBtn.disabled=false; 
+      findBtn.style.opacity='0.6'; 
+      findBtn.style.pointerEvents='auto';
+      findBtn.style.cursor='not-allowed';
+      findBtn.innerText='🔒 BLOCKED - Min '+calc.totalMin;
+      findBtn.style.background='#ef4444';
     }
     if(bookBtn){ 
-      bookBtn.disabled=true; 
-      bookBtn.style.opacity='0.4'; 
-      bookBtn.style.pointerEvents='none';
+      bookBtn.disabled=false; 
+      bookBtn.style.opacity='0.6'; 
+      bookBtn.style.pointerEvents='auto';
+      bookBtn.style.cursor='not-allowed';
+      bookBtn.style.background='#ef4444';
     }
     if(budgetInput){ budgetInput.style.border='3px solid #ef4444'; budgetInput.style.background='#fee2e2'; }
     return { valid:false, minRequired: calc.totalMin, calc: calc };
@@ -985,7 +989,13 @@ function findNursesUber(){
     if(typeof renderNurseMarkers==='function') renderNurseMarkers(nearbyNursesSorted);
     if(typeof fitMapWide==='function') fitMapWide();
   },500); 
-  if(typeof renderNearbyList==='function') renderNearbyList(); 
+  if(typeof renderNearbyList==='function') renderNearbyList();
+}
+window.findNursesUber = findNursesUber;
+window.payWithPaystack = payWithPaystack;
+window.submitBooking = submitBooking;
+function _dummy(){}
+ 
   // Don't change page - stay on booking page
   var info=document.getElementById('minRateInfo');
   if(info){ info.innerHTML += '<br><span style="background:#2563eb;color:white;padding:4px 12px;border-radius:10px">✅ Found '+nearbyNursesSorted.length+' nurses near you!</span>'; }
@@ -1460,6 +1470,49 @@ document.addEventListener('DOMContentLoaded', function(){
       }
     });
   }
+});
+</script>
+
+
+<script>
+// Backup click listeners - ensure buttons always work even if inline onclick fails
+document.addEventListener('DOMContentLoaded', function(){
+  console.log('Setting up backup listeners for Find Nurses and Paystack');
+  var findBtn = document.getElementById('findNursesBtn');
+  if(findBtn){
+    findBtn.addEventListener('click', function(e){
+      e.preventDefault();
+      console.log('Find Nurses backup listener clicked');
+      if(typeof findNursesUber==='function'){ findNursesUber(); }
+      else if(typeof window.findNursesUber==='function'){ window.findNursesUber(); }
+      else { alert('Finding nurses... please wait'); if(typeof enforceMinRate==='function' && !enforceMinRate()) return; }
+    });
+  }
+  var payBtn = document.getElementById('paystackBtn');
+  if(payBtn){
+    payBtn.addEventListener('click', function(e){
+      e.preventDefault();
+      console.log('Paystack backup listener clicked');
+      if(typeof payWithPaystack==='function'){ payWithPaystack(); }
+      else if(typeof window.payWithPaystack==='function'){ window.payWithPaystack(); }
+      else { alert('Paystack loading...'); }
+    });
+  }
+  // Also add listeners for any button with text FIND NURSES
+  document.querySelectorAll('button').forEach(function(btn){
+    if(btn.textContent.includes('FIND NURSES')){
+      btn.style.pointerEvents='auto';
+      btn.style.cursor='pointer';
+      btn.style.opacity='1';
+      if(!btn.id) btn.id='findNursesBtn';
+    }
+    if(btn.textContent.includes('PAY NOW WITH PAYSTACK') || btn.textContent.includes('PAYSTACK')){
+      btn.style.pointerEvents='auto';
+      btn.style.cursor='pointer';
+      btn.style.opacity='1';
+      if(!btn.id) btn.id='paystackBtn';
+    }
+  });
 });
 </script>
 
