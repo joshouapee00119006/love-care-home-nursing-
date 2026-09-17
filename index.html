@@ -450,7 +450,7 @@ function setWorkTime(s,e){
 <button id="nav-nurse" onclick="showPage('nurse-public')"><span>👩⚕</span><span>Join</span></button>
 <button id="nav-book" onclick="showPage('booking-public')"><span>💡</span><span>Help</span></button>
 <button id="nav-login" onclick="showPage('nurse-login')"><span>🔑</span><span>Login</span></button>
-<button id="nav-withdraw" onclick="showPage('nurse-withdrawal')" style="background:#dcfce7;border:2px solid #16a34a"><span>💸</span><span>Withdraw</span></button>
+<!-- Withdrawal removed from homepage as requested -->
 <button id="nav-settings" onclick="showPage('settings')" style="background:#111827;color:white;border:2px solid #eab308"><span>⚙️</span><span>Settings</span></button>
 <button id="nav-chat" onclick="showPage('group-chat')" style="background:#fef2f2;border:2px solid #ef4444"><span>💬</span><span>Group</span></button>
 </div>
@@ -904,22 +904,102 @@ function submitBooking(){
   var startTime = document.getElementById('cStartTime') ? document.getElementById('cStartTime').value : '';
   var endTime = document.getElementById('cEndTime') ? document.getElementById('cEndTime').value : '';
 
-  if(!enforceMinRate()) return;
   var name=document.getElementById('cName').value.trim();
   var phone=document.getElementById('cPhone').value.trim();
-  var fullPhone=getFullPhone('cPhoneCode','cPhone');
+  var fullPhone=typeof getFullPhone==='function' ? getFullPhone('cPhoneCode','cPhone') : phone;
   var service=document.getElementById('cService').value;
-  if(!name||!phone||!service){alert('Name Phone Service required');return;}
-  if(!selectedNurseId&&nearbyNursesSorted[0])selectedNurseId=nearbyNursesSorted[0].phone||nearbyNursesSorted[0].id;
-  var calc = calculateTotal();
-  var amount=parseFloat(document.getElementById('cBudget').value||0);
-  if(amount < calc.totalMin){ alert('BLOCKED: Offer '+amount+' below legal total '+calc.totalMin); return; }
-  var cur=document.getElementById('cCurrency').value;
-  var country = document.getElementById('countrySelect').value;
+  if(!name||!phone||!service){alert('Please enter Name, Phone, and Service');return;}
+  // Allow booking even if no nurses nearby - admin will assign
+  if(!selectedNurseId && typeof nearbyNursesSorted !== 'undefined' && nearbyNursesSorted[0]){
+    selectedNurseId=nearbyNursesSorted[0].phone||nearbyNursesSorted[0].id;
+  }
+  var calc = typeof calculateTotal==='function' ? calculateTotal() : {totalMin: 0, totalHours: 8, rateData: {amount: 6.04, currency: 'GHS'}, displayDuration: '1 day', unit: 'daily'};
+  var budgetEl = document.getElementById('cBudget');
+  var amount = budgetEl ? parseFloat(budgetEl.value) : 0;
+  if(!amount || amount<=0) amount = calc.totalMin || 100;
+  var curEl = document.getElementById('cCurrency');
+  var cur = curEl ? curEl.value : 'GHS';
+  var countryEl = document.getElementById('countrySelect');
+  var country = countryEl ? countryEl.value : 'GH';
+  var locationEl = document.getElementById('cLocation');
+  var location = locationEl ? locationEl.value : '';
+  var emailEl = document.getElementById('cEmail');
+  var email = emailEl ? emailEl.value.trim() : '';
   var id=Date.now();
-  var b={id:id,name:name,phone:fullPhone,service:service,location:document.getElementById('cLocation').value,amount:amount,currency:cur,status:'pending_assignment',time:new Date().toLocaleString(),timestamp:Date.now(),lat:clientLat,lng:clientLng,selectedNurse:selectedNurseId,email:document.getElementById('cEmail').value.trim(),country:country,hoursPerDay:0,startTime:startTime,endTime:endTime,days:calc.displayDuration,totalHours:calc.totalHours,hourlyRate:calc.rateData.amount,hourlyCurrency:calc.rateData.currency,legalMinTotal:calc.totalMin, bookingUnit:calc.unit};
-  if(db)db.ref('bookings/'+id).set(b).then(()=>{ alert('✅ Booked! Total '+amount+' '+cur+' for '+calc.displayDuration+' = '+calc.totalHours+'hrs. Legal min verified. 65% OFF applied.'); scheduleRateCheck(id, amount, cur, fullPhone); localStorage.setItem('lastClientPhone', fullPhone); document.getElementById('myBookPhone').value=document.getElementById('cPhone').value; document.getElementById('myBookPhoneCode').value=document.getElementById('cPhoneCode').value; loadMyBookings(); });
+  var isAutoAssigned = !!selectedNurseId;
+  var b={
+    id:id,
+    name:name,
+    phone:fullPhone,
+    service:service,
+    location:location,
+    amount:amount,
+    currency:cur,
+    status: isAutoAssigned ? 'pending_assignment' : 'pending_admin_assignment',
+    time:new Date().toLocaleString(),
+    timestamp:Date.now(),
+    lat:typeof clientLat !== 'undefined' ? clientLat : 5.6037,
+    lng:typeof clientLng !== 'undefined' ? clientLng : -0.1870,
+    selectedNurse:selectedNurseId||null,
+    email:email,
+    country:country,
+    hoursPerDay:0,
+    startTime:startTime,
+    endTime:endTime,
+    days:calc.displayDuration,
+    totalHours:calc.totalHours,
+    hourlyRate:calc.rateData ? calc.rateData.amount : 6.04,
+    hourlyCurrency:calc.rateData ? calc.rateData.currency : 'GHS',
+    legalMinTotal:calc.totalMin,
+    bookingUnit:calc.unit,
+    needsAdminAssignment: !isAutoAssigned,
+    adminNote: !isAutoAssigned ? 'No nurses nearby - needs admin to assign from nurses list' : ''
+  };
+  if(typeof db !== 'undefined' && db){
+    db.ref('bookings/'+id).set(b).then(()=>{
+      if(isAutoAssigned){
+        alert('✅ Booked! Total '+amount+' '+cur+' for '+calc.displayDuration+' = '+calc.totalHours+'hrs. Nurse: '+(selectedNurseId||'Auto')+'
+
+Admin will confirm shortly.');
+      } else {
+        alert('✅ Booking Request Submitted!
+
+Total: '+amount+' '+cur+' for '+calc.displayDuration+'
+
+No nurses nearby your area, but admin will assign a nurse from nurses list shortly.
+
+Your booking is PENDING ADMIN ASSIGNMENT - you will be notified.
+
+Booking ID: '+id);
+      }
+      if(typeof scheduleRateCheck === 'function') scheduleRateCheck(id, amount, cur, fullPhone);
+      localStorage.setItem('lastClientPhone', fullPhone);
+      var myPhoneEl = document.getElementById('myBookPhone');
+      var myCodeEl = document.getElementById('myBookPhoneCode');
+      var cPhoneEl = document.getElementById('cPhone');
+      var cCodeEl = document.getElementById('cPhoneCode');
+      if(myPhoneEl && cPhoneEl) myPhoneEl.value = cPhoneEl.value;
+      if(myCodeEl && cCodeEl) myCodeEl.value = cCodeEl.value;
+      if(typeof loadMyBookings === 'function') loadMyBookings();
+      // Clear selected nurse
+      selectedNurseId = null;
+      var infoEl = document.getElementById('selectedNurseInfo');
+      if(infoEl) infoEl.innerText = 'No nurse selected - Admin will assign';
+    }).catch(function(e){
+      alert('Booking error: '+e.message);
+    });
+  } else {
+    alert('✅ Booking Request Submitted (Demo)!
+
+Total: '+amount+' '+cur+'
+
+'+(isAutoAssigned ? 'Nurse: '+selectedNurseId : 'No nurses nearby - Admin will assign from nurses list')+'
+
+In production, admin will assign nurse.');
+  }
 }
+window.submitBooking = submitBooking;
+
 function loadMyBookings(){ var codeEl=document.getElementById('myBookPhoneCode'); var phoneEl=document.getElementById('myBookPhone'); var fullPhone = codeEl && phoneEl? (codeEl.value + phoneEl.value.trim().replace(/^0+/,'').replace(/\+/g,'')) : ''; if(phoneEl.value.trim().startsWith('+')) fullPhone = phoneEl.value.trim(); else if(phoneEl.value.trim()!=''){ try{ fullPhone = getFullPhone('myBookPhoneCode','myBookPhone'); }catch(e){} } else { fullPhone = localStorage.getItem('lastClientPhone')||''; } if(!fullPhone){ alert('Enter your phone'); return; } var listDiv=document.getElementById('myBookingsList'); listDiv.innerHTML='Loading...'; if(!db){ listDiv.innerHTML='Firebase not connected'; return; } var suffix = fullPhone.replace(/[^0-9]/g,'').slice(-9); db.ref('bookings').once('value').then(snap=>{ var all = Object.values(snap.val()||{}); var mine = all.filter(b=> (b.phone||'').replace(/[^0-9]/g,'').endsWith(suffix) ); mine.sort((a,b)=>b.timestamp-a.timestamp); if(mine.length===0){ listDiv.innerHTML='<div style="text-align:center;color:#999;padding:10px">No bookings for '+fullPhone+'</div>'; return; } var h=''; mine.forEach(b=>{ var statusClass='st-pending'; if(b.status==='confirmed') statusClass='st-confirmed'; if(b.status==='cancelled_by_client') statusClass='st-cancelled'; if(b.status==='refund_requested') statusClass='st-refund_req'; if(b.status==='refund_approved') statusClass='st-refund_ok'; if(b.status==='refunded') statusClass='st-refunded'; h+=`<div class="bookingClientCard"><div style="display:flex;justify-content:space-between"><b>#${b.id}</b><span class="statusBadge ${statusClass}">${(b.status||'').toUpperCase()}</span></div><div style="font-size:11px;margin-top:6px"><b>${b.service}</b> - ${b.amount} ${b.currency}<br>📅 ${b.days||'?'} = ${b.totalHours||'?'} hrs<br>👩⚕ Rate: ${b.hourlyRate} ${b.hourlyCurrency}/hr (65% OFF) | Min: ${b.legalMinTotal} ${b.currency}<br>📍 ${b.location||''}<br>⏰ ${b.time||''}</div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">`; if(b.status==='pending_assignment' || b.status==='confirmed'){ h+=`<button class="btnSmall" style="background:#ef4444;color:white;flex:1" onclick="cancelBookingClient(${b.id})">❌ Cancel</button>`; } if(b.status==='cancelled_by_client' || b.status==='confirmed'){ h+=`<button class="btnSmall" style="background:#7c3aed;color:white;flex:1" onclick="openRefundModal(${b.id}, '${b.amount} ${b.currency}')">💸 Refund</button>`; } h+=`</div></div>`; }); listDiv.innerHTML=h; }); }
 function cancelBookingClient(id){ if(!confirm('Cancel booking?')) return; if(!db) return; db.ref('bookings/'+id).update({status:'cancelled_by_client', cancelTime:Date.now()}).then(()=>{ alert('Cancelled'); loadMyBookings(); });}
 function openRefundModal(id, amountStr){ currentRefundBookingId=id; document.getElementById('refundBookingId').innerText=id; document.getElementById('refundBookingAmount').innerText=amountStr; document.getElementById('refundModal').classList.remove('hidden');}
@@ -1260,7 +1340,7 @@ External Links:
 <h3 style="color:#991b1b">⚠️ Danger Zone</h3>
 <input id="settingsDeletePhone" placeholder="Enter phone to confirm delete" style="width:100%;padding:10px;border:2px solid #ef4444;border-radius:8px;margin:6px 0">
 <button class="btnSubmit" style="background:#ef4444" onclick="if(confirm('Delete '+document.getElementById('settingsDeletePhone').value+'?')){localStorage.clear();alert('Delete request submitted - 48 hours');showPage('home');}">🗑 Delete Account Now</button>
-<button class="btnSubmit" style="background:#111827;margin-top:8px" onclick="localStorage.clear();alert('Logged out');showPage('home');">🚪 Logout</button>
+<button class="btnSubmit" style="background:#111827;margin-top:8px" onclick="localStorage.clear();alert('Logged out');showPage('home');">🚪 Logout</button><button class="btnSmall" style="background:#dcfce7;border:2px solid #16a34a;color:#065f46;width:100%;padding:12px;margin-top:8px" onclick="showPage('nurse-withdrawal')">💸 Withdrawal Portal</button>
 </div>
 <button class="btnSmall" style="background:#16a34a;color:white;flex:1;padding:12px" onclick="showPage('home')">🏠 Home</button>
 </div></div>
