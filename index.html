@@ -100,6 +100,114 @@ table{width:100%;border-collapse:collapse;font-size:11px;margin-top:8px} th,td{b
 .loginBar{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
 .loginBar button{padding:8px 12px;border-radius:20px;font-size:11px;font-weight:800;border:2px solid #16a34a;background:white;color:#16a34a;cursor:pointer}
 @keyframes shake{0%,100%{transform:translate(-50%,-50%)} 25%{transform:translate(-48%,-50%)} 75%{transform:translate(-52%,-50%)}} </style>
+
+<style>
+/* MOVING BACKGROUND - Nurse working on patients at home moving right to left */
+@keyframes moveBackground {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+@keyframes moveBackgroundReverse {
+  0% { transform: translateX(-50%); }
+  100% { transform: translateX(0); }
+}
+
+body {
+  position: relative;
+  background: #f8fafc;
+}
+
+#movingNurseBackground {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 200%;
+  height: 100%;
+  z-index: -2;
+  opacity: 0.18;
+  pointer-events: none;
+  display: flex;
+  animation: moveBackground 60s linear infinite;
+}
+
+.movingBgItem {
+  min-width: 400px;
+  height: 100vh;
+  background-size: cover;
+  background-position: center;
+  margin-right: 20px;
+  border-radius: 0;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 80px;
+  filter: grayscale(20%) blur(0.5px);
+}
+
+.movingBgOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(240,253,244,0.85) 0%, rgba(239,246,255,0.85) 50%, rgba(254,252,232,0.85) 100%);
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Nurse working illustrations moving */
+#movingNurseStrip {
+  position: fixed;
+  bottom: 20px;
+  left: 0;
+  width: 200%;
+  height: 120px;
+  z-index: -1;
+  opacity: 0.25;
+  pointer-events: none;
+  display: flex;
+  gap: 40px;
+  animation: moveBackground 45s linear infinite;
+  align-items: center;
+}
+
+.nurseWorkingCard {
+  min-width: 280px;
+  height: 100px;
+  background: white;
+  border-radius: 16px;
+  border: 2px solid #16a34a;
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  gap: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  white-space: nowrap;
+}
+</style>
+<div id="movingNurseBackground">
+  <div class="movingBgItem" style="background: linear-gradient(135deg, #dcfce7, #bbf7d0);">👩‍⚕️🏠👴</div>
+  <div class="movingBgItem" style="background: linear-gradient(135deg, #dbeafe, #bfdbfe);">👩‍⚕️👶🏠</div>
+  <div class="movingBgItem" style="background: linear-gradient(135deg, #fef3c7, #fde68a);">🏠💉👩‍⚕️</div>
+  <div class="movingBgItem" style="background: linear-gradient(135deg, #fce7f3, #fbcfe8);">👩‍⚕️🏠❤️</div>
+  <div class="movingBgItem" style="background: linear-gradient(135deg, #e0e7ff, #c7d2fe);">👵👩‍⚕️🏠</div>
+  <div class="movingBgItem" style="background: linear-gradient(135deg, #dcfce7, #bbf7d0);">👩‍⚕️🏠👴</div>
+  <div class="movingBgItem" style="background: linear-gradient(135deg, #dbeafe, #bfdbfe);">👩‍⚕️👶🏠</div>
+  <div class="movingBgItem" style="background: linear-gradient(135deg, #fef3c7, #fde68a);">🏠💉👩‍⚕️</div>
+  <div class="movingBgItem" style="background: linear-gradient(135deg, #fce7f3, #fbcfe8);">👩‍⚕️🏠❤️</div>
+  <div class="movingBgItem" style="background: linear-gradient(135deg, #e0e7ff, #c7d2fe);">👵👩‍⚕️🏠</div>
+</div>
+<div class="movingBgOverlay"></div>
+<div id="movingNurseStrip">
+  <div class="nurseWorkingCard"><span style="font-size:40px">👩‍⚕️</span><div><b style="font-size:12px">Nurse caring elderly at home</b><br><small style="font-size:9px">Home nursing - Accra</small></div><span style="font-size:30px">🏠</span><span style="font-size:30px">👴</span></div>
+  <div class="nurseWorkingCard"><span style="font-size:40px">👩‍⚕️</span><div><b style="font-size:12px">Baby care & nanny at home</b><br><small style="font-size:9px">Baby care - Labone</small></div><span style="font-size:30px">👶</span><span style="font-size:30px">🏠</span></div>
+  <div class="nurseWorkingCard"><span style="font-size:40px">👩‍⚕️</span><div><b style="font-size:12px">Wound dressing at home</b><br><small style="font-size:9px">Injection care - Osu</small></div><span style="font-size:30px">💉</span><span style="font-size:30px">🏠</span></div>
+  <div class="nurseWorkingCard"><span style="font-size:40px">👩‍⚕️</span><div><b style="font-size:12px">Hospital support at home</b><br><small style="font-size:9px">Post-surgery - East Legon</small></div><span style="font-size:30px">🏥</span><span style="font-size:30px">🏠</span></div>
+  <div class="nurseWorkingCard"><span style="font-size:40px">👩‍⚕️</span><div><b style="font-size:12px">Nurse caring elderly at home</b><br><small style="font-size:9px">Home nursing - Accra</small></div><span style="font-size:30px">🏠</span><span style="font-size:30px">👴</span></div>
+  <div class="nurseWorkingCard"><span style="font-size:40px">👩‍⚕️</span><div><b style="font-size:12px">Baby care & nanny at home</b><br><small style="font-size:9px">Baby care - Labone</small></div><span style="font-size:30px">👶</span><span style="font-size:30px">🏠</span></div>
+</div>
+
 </head>
 <body>
 <div class="sosFloat" onclick="alert('SOS Sent')">SOS</div>
@@ -362,7 +470,25 @@ function setWorkTime(s,e){
 </div>
 </div>
 
-<div id="page-nurse-public" class="page"><div class="card"><h2>Nurse Registration</h2><input id="nRegName" placeholder="Full Name"><div class="phoneRow"><select id="nRegPhoneCode"></select><input id="nRegPhone" placeholder="Phone"></div><input id="nRegPass" type="password" placeholder="Password"><div class="locationRow"><input id="nRegLocation" placeholder="Tap GPS Auto"><button type="button" onclick="autoGPS('nRegLocation','nurseGpsStatus2')">GPS</button></div><small id="nurseGpsStatus2" class="gpsBadge hidden"></small><div style="background:#fefce8;border:2px solid #eab308;border-radius:10px;padding:10px;margin:8px 0"><h4 style="margin:0 0 6px 0;font-size:11px;color:#92400e">📸 Upload Your Photo (Nurse Profile Photo)</h4><input type="file" id="nRegPhoto" accept="image/*" style="width:100%;padding:8px;border:2px dashed #eab308;border-radius:8px;background:white"><small style="font-size:9px;color:#666">Your clear face photo - will be shown to clients</small><div style="margin-top:6px"><img id="nRegPhotoImg" style="max-width:100%;max-height:120px;display:none;border-radius:8px;border:2px solid #eab308"></div></div><div style="background:#f0fdf4;border:2px solid #16a34a;border-radius:10px;padding:10px;margin:8px 0"><h4 style="margin:0 0 6px 0;font-size:11px;color:#16a34a">📄 Upload CV (Resume)</h4><input type="file" id="nRegCV" accept=".pdf,.doc,.docx,.jpg,.png" style="width:100%;padding:8px;border:2px dashed #16a34a;border-radius:8px;background:white"><small style="font-size:9px;color:#666">PDF, DOC, JPG, PNG</small><div id="nRegCVPreview" style="margin-top:6px;font-size:10px;color:#16a34a"></div></div><div style="background:#eff6ff;border:2px solid #2563eb;border-radius:10px;padding:10px;margin:8px 0"><h4 style="margin:0 0 6px 0;font-size:11px;color:#2563eb">🪪 PIN Photo (Professional ID)</h4><input type="file" id="nRegPINPhoto" accept="image/*" style="width:100%;padding:8px;border:2px dashed #2563eb;border-radius:8px;background:white"><small style="font-size:9px;color:#666">Nursing PIN / License / ID Photo</small><div style="margin-top:6px"><img id="nRegPINImg" style="max-width:100%;max-height:120px;display:none;border-radius:8px;border:2px solid #2563eb"></div></div><div style="background:#f3e8ff;border:2px solid #9333ea;border-radius:10px;padding:10px;margin:8px 0">
+<div id="page-nurse-public" class="page"><div class="card"><h2>Nurse Registration</h2><input id="nRegName" placeholder="Full Name"><div class="phoneRow"><select id="nRegPhoneCode"></select><input id="nRegPhone" placeholder="Phone"></div><input id="nRegPass" type="password" placeholder="Password"><div class="locationRow"><input id="nRegLocation" placeholder="Tap GPS Auto"><button type="button" onclick="autoGPS('nRegLocation','nurseGpsStatus2')">GPS</button></div><small id="nurseGpsStatus2" class="gpsBadge hidden"></small><div style="background:#fefce8;border:2px solid #eab308;border-radius:10px;padding:10px;margin:8px 0"><h4 style="margin:0 0 6px 0;font-size:11px;color:#92400e">📸 Upload Your Photo (Nurse Profile Photo)</h4><input type="file" id="nRegPhoto" accept="image/*" style="width:100%;padding:8px;border:2px dashed #eab308;border-radius:8px;background:white"><small style="font-size:9px;color:#666">Your clear face photo - will be shown to clients</small><div style="margin-top:6px"><img id="nRegPhotoImg" style="max-width:100%;max-height:120px;display:none;border-radius:8px;border:2px solid #eab308"></div></div><div style="background:#f0fdf4;border:2px solid #16a34a;border-radius:10px;padding:10px;margin:8px 0"><h4 style="margin:0 0 6px 0;font-size:11px;color:#16a34a">📄 Upload CV (Resume)</h4><input type="file" id="nRegCV" accept=".pdf,.doc,.docx,.jpg,.png" style="width:100%;padding:8px;border:2px dashed #16a34a;border-radius:8px;background:white"><small style="font-size:9px;color:#666">PDF, DOC, JPG, PNG</small><div id="nRegCVPreview" style="margin-top:6px;font-size:10px;color:#16a34a"></div></div><div style="background:#eff6ff;border:2px solid #2563eb;border-radius:10px;padding:10px;margin:8px 0"><h4 style="margin:0 0 6px 0;font-size:11px;color:#2563eb">🪪 PIN Photo (Professional ID)</h4><input type="file" id="nRegPINPhoto" accept="image/*" style="width:100%;padding:8px;border:2px dashed #2563eb;border-radius:8px;background:white"><small style="font-size:9px;color:#666">Nursing PIN / License / ID Photo</small><div style="margin-top:6px"><img id="nRegPINImg" style="max-width:100%;max-height:120px;display:none;border-radius:8px;border:2px solid #2563eb"></div></div>
+
+<div style="background:#fffbeb;border:3px solid #f59e0b;border-radius:12px;padding:12px;margin:8px 0;box-shadow:0 2px 8px rgba(245,158,11,0.2)"><h4 style="margin:0 0 6px 0;font-size:12px;color:#92400e">🆔 National ID Upload (Required) - Ghana Card / Passport / Voter ID</h4>
+<select id="nRegNationalIDType" style="width:100%;padding:10px;margin:4px 0;border:2px solid #f59e0b;border-radius:8px;font-weight:700">
+<option value="">-- Select National ID Type --</option>
+<option value="Ghana Card">🇬🇭 Ghana Card</option>
+<option value="Passport">🛂 Passport</option>
+<option value="Voter ID">🗳 Voter ID</option>
+<option value="Driver License">🚗 Driver License</option>
+<option value="NHIS">🏥 NHIS Card</option>
+<option value="Other">📄 Other National ID</option>
+</select>
+<input type="text" id="nRegNationalIDNumber" placeholder="National ID Number - Example: GHA-123456789-0" style="width:100%;padding:10px;margin:4px 0;border:2px solid #f59e0b;border-radius:8px;font-weight:700">
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
+<div><label style="font-size:10px;font-weight:800;color:#92400e">Front of National ID</label><input type="file" id="nRegNationalIDFront" accept="image/*" style="width:100%;padding:8px;border:2px dashed #f59e0b;border-radius:8px;background:white"><img id="nRegNationalIDFrontImg" style="max-width:100%;max-height:120px;display:none;border-radius:8px;border:2px solid #f59e0b;margin-top:6px"></div>
+<div><label style="font-size:10px;font-weight:800;color:#92400e">Back of National ID</label><input type="file" id="nRegNationalIDBack" accept="image/*" style="width:100%;padding:8px;border:2px dashed #f59e0b;border-radius:8px;background:white"><img id="nRegNationalIDBackImg" style="max-width:100%;max-height:120px;display:none;border-radius:8px;border:2px solid #f59e0b;margin-top:6px"></div>
+</div>
+<small style="font-size:9px;color:#92400e;font-weight:700;display:block;margin-top:6px">⚠️ Required for verification - Your ID will be verified by Admin. Clear photo of front and back.</small>
+</div><div style="background:#f3e8ff;border:2px solid #9333ea;border-radius:10px;padding:10px;margin:8px 0">
 <h4 style="margin:0 0 6px 0;font-size:11px;color:#9333ea">🎥 Upload 1-Minute Video Introduction (Required)</h4>
 <input type="file" id="nRegVideo" accept="video/*" style="width:100%;padding:8px;border:2px dashed #9333ea;border-radius:8px;background:white">
 <small style="font-size:9px;color:#666;display:block;margin-top:4px">⏱ Max 1 minute (60 seconds) - Introduce yourself, experience, skills. Client will watch before booking. Max 50MB.</small>
@@ -1173,7 +1299,52 @@ function cancelBookingClient(id){ if(!confirm('Cancel booking?')) return; if(!db
 function openRefundModal(id, amountStr){ currentRefundBookingId=id; document.getElementById('refundBookingId').innerText=id; document.getElementById('refundBookingAmount').innerText=amountStr; document.getElementById('refundModal').classList.remove('hidden');}
 function closeRefundModal(){document.getElementById('refundModal').classList.add('hidden');}
 function submitRefundRequest(){ var reason=document.getElementById('refundReason').value.trim(); var acct=document.getElementById('refundAccount').value.trim(); var acctName=document.getElementById('refundAccountName').value.trim(); if(!reason||!acct){ alert('Reason and account required'); return; } if(!db ||!currentRefundBookingId) return; db.ref('bookings/'+currentRefundBookingId).once('value').then(snap=>{ var b=snap.val(); if(!b){ alert('Not found'); return; } var update={status:'refund_requested', refundReason:reason, refundAccount:acct, refundAccountName:acctName, refundRequestTime:Date.now()}; db.ref('bookings/'+currentRefundBookingId).update(update).then(()=>{ db.ref('refunds/'+currentRefundBookingId).set({...b,...update}).then(()=>{ alert('Refund request sent'); closeRefundModal(); loadMyBookings(); }); }); }); }
-function registerNurse(){var name=document.getElementById('nRegName').value.trim(); var fullPhone=getFullPhone('nRegPhoneCode','nRegPhone'); var pass=document.getElementById('nRegPass').value.trim(); var loc=document.getElementById('nRegLocation').value.trim(); if(!name||!fullPhone||!pass||!loc){alert('All required');return;} if(!nurseRegLat){alert('GPS required');return;} var w={name:name,phone:fullPhone,password:pass,location:loc,timestamp:Date.now(),lat:nurseRegLat,lng:nurseRegLng,status:'on_duty',onDuty:true,specialty:document.getElementById('nRegSpecialty').value||'General'}; if(db) db.ref('workers/'+fullPhone.replace(/[^0-9]/g,'')).set(w).then(()=>{alert('Registered! Now login');showPage('nurse-login');});}
+function registerNurse(){
+  var name=document.getElementById('nRegName').value.trim();
+  var fullPhone=getFullPhone('nRegPhoneCode','nRegPhone');
+  var pass=document.getElementById('nRegPass').value.trim();
+  var loc=document.getElementById('nRegLocation').value.trim();
+  var specialty=document.getElementById('nRegSpecialty')?document.getElementById('nRegSpecialty').value||'General':'General';
+  var idType=document.getElementById('nRegNationalIDType')?document.getElementById('nRegNationalIDType').value:'';
+  var idNumber=document.getElementById('nRegNationalIDNumber')?document.getElementById('nRegNationalIDNumber').value.trim():'';
+  var profile=document.getElementById('nRegProfile')?document.getElementById('nRegProfile').value.trim():'';
+  
+  if(!name||!fullPhone||!pass||!loc){alert('All required: Name, Phone, Password, Location');return;}
+  if(!idType||!idNumber){alert('⚠️ National ID Required!\n\nPlease select National ID Type (Ghana Card, Passport, etc) and enter ID Number');return;}
+  if(!nurseRegLat){alert('GPS required - Tap GPS Auto');return;}
+  
+  var w={
+    name:name,
+    phone:fullPhone,
+    password:pass,
+    location:loc,
+    timestamp:Date.now(),
+    lat:nurseRegLat,
+    lng:nurseRegLng,
+    status:'pending_verification',
+    onDuty:false,
+    specialty:specialty,
+    nationalIDType:idType,
+    nationalIDNumber:idNumber,
+    profile:profile,
+    verificationStatus:'pending',
+    hasNationalID:true,
+    hasPhoto: document.getElementById('nRegPhoto') && document.getElementById('nRegPhoto').files.length>0,
+    hasCV: document.getElementById('nRegCV') && document.getElementById('nRegCV').files.length>0,
+    hasPIN: document.getElementById('nRegPINPhoto') && document.getElementById('nRegPINPhoto').files.length>0,
+    hasIDFront: document.getElementById('nRegNationalIDFront') && document.getElementById('nRegNationalIDFront').files.length>0,
+    hasIDBack: document.getElementById('nRegNationalIDBack') && document.getElementById('nRegNationalIDBack').files.length>0
+  };
+  
+  if(db) db.ref('workers/'+fullPhone.replace(/[^0-9]/g,'')).set(w).then(()=>{
+    alert('✅ Registered Successfully with National ID!\n\nName: '+name+'\nID Type: '+idType+'\nID Number: '+idNumber+'\n\nYour National ID will be verified by Admin.\nStatus: Pending Verification\n\nNow login after verification.');
+    showPage('nurse-login');
+  });
+  else {
+    alert('✅ Registered (Demo) with National ID: '+idType+' - '+idNumber);
+    showPage('nurse-login');
+  }
+}
 function loginNurse(){var fullPhone=getFullPhone('nurseLoginCode','nurseLoginPhone'); var pass=document.getElementById('nurseLoginPass').value.trim(); if(db){db.ref('workers/'+fullPhone.replace(/[^0-9]/g,'')).once('value').then(s=>{var d=s.val(); if(d&&d.password===pass){localStorage.setItem('nursePhone',fullPhone);localStorage.setItem('nurseName',d.name);document.getElementById('authStatus').innerText='✅ Logged in as NURSE - '+d.name;showPage('nurse-dashboard');}else if(d){document.getElementById('nurseLoginResult').innerText='Wrong password';}else{localStorage.setItem('nursePhone',fullPhone);localStorage.setItem('nurseName',fullPhone);showPage('nurse-dashboard');}});}else{localStorage.setItem('nursePhone',fullPhone);showPage('nurse-dashboard');}}
 function loginStaff(){var id=document.getElementById('staffLoginID').value.trim(); if(!id){alert('Enter ID');return;} localStorage.setItem('staffID',id);document.getElementById('authStatus').innerText='✅ Logged in as STAFF - '+id;showPage('staff-dashboard');}
 function loginCEO(){var id=document.getElementById('ceoLoginID').value.trim().toUpperCase(); var pass=document.getElementById('ceoLoginPass').value.trim(); var r=document.getElementById('ceoLoginResult'); if(id==='KUSIPETER'&&pass==='Peterasa80@you!'){localStorage.setItem('isCEOLogged','true');document.getElementById('authStatus').innerText='✅ Logged in as CEO';r.innerText='Success';setTimeout(()=>showPage('ceo-dashboard'),400);}else{r.innerText='Access denied';}}
@@ -4533,6 +4704,60 @@ function addClearHistoryButtons(phone, count){
 }
 
 console.log('Clear History buttons added - Client can disappear history after load');
+</script>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  // National ID Front preview
+  var frontInput = document.getElementById('nRegNationalIDFront');
+  if(frontInput){
+    frontInput.addEventListener('change', function(){
+      var file=this.files[0];
+      if(file){
+        var reader=new FileReader();
+        reader.onload=function(e){
+          var img=document.getElementById('nRegNationalIDFrontImg');
+          if(img){ img.src=e.target.result; img.style.display='block'; }
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  }
+  // National ID Back preview
+  var backInput = document.getElementById('nRegNationalIDBack');
+  if(backInput){
+    backInput.addEventListener('change', function(){
+      var file=this.files[0];
+      if(file){
+        var reader=new FileReader();
+        reader.onload=function(e){
+          var img=document.getElementById('nRegNationalIDBackImg');
+          if(img){ img.src=e.target.result; img.style.display='block'; }
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  }
+  
+  // Pause moving background on hover for readability
+  var bg = document.getElementById('movingNurseBackground');
+  var strip = document.getElementById('movingNurseStrip');
+  if(bg){
+    document.addEventListener('mouseover', function(e){
+      if(e.target.closest('.card')){
+        bg.style.animationPlayState='paused';
+        if(strip) strip.style.animationPlayState='paused';
+      }
+    });
+    document.addEventListener('mouseout', function(e){
+      if(e.target.closest('.card')){
+        bg.style.animationPlayState='running';
+        if(strip) strip.style.animationPlayState='running';
+      }
+    });
+  }
+});
 </script>
 
 </body>
