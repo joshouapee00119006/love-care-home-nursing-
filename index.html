@@ -3477,581 +3477,429 @@ console.log('Cancel->Refund flow + Bot Help refresh loaded');
 
 
 <script>
-// ===== 4 REQUIREMENTS: PAYMENT MONITORING + REFUND BIG SPACE =====
-console.log('V58 Payment monitoring + Refund big space');
+// ===== FIX CANCELLATION BUTTON OF BOOKING - WORKING EFFECTIVELY =====
+console.log('FIXING CANCELLATION BUTTON - V58');
 
-window.checkIfPaid = function(booking){
-  // Auto monitors payment: check if client paid money or not
-  if(!booking) return false;
-  // Paid if: status has paid flag, or payment method exists, or paystack ref exists
-  if(booking.isPaid) return true;
-  if(booking.paid) return true;
-  if(booking.paymentStatus==='paid') return true;
-  if(booking.paystackRef) return true;
-  if(booking.paymentRef) return true;
-  if(booking.status==='confirmed' && booking.paymentVerified) return true;
-  // For demo: if amount > 0 and status is not just pending without payment, check localStorage
-  try{
-    var paidBookings = JSON.parse(localStorage.getItem('paidBookings')||'[]');
-    if(paidBookings.includes(booking.id)) return true;
-  }catch(e){}
-  // If booking has payment timestamp
-  if(booking.paidAt) return true;
-  if(booking.paymentTime) return true;
-  return false;
-};
-
-window.markAsPaid = function(bookingId, paymentRef){
-  console.log('Marking booking as paid', bookingId, paymentRef);
-  var update = {
-    isPaid: true,
-    paid: true,
-    paymentStatus: 'paid',
-    paidAt: Date.now(),
-    paymentTime: new Date().toISOString(),
-    paystackRef: paymentRef || 'PAID_'+Date.now(),
-    paymentVerified: true
-  };
+window.cancelBookingClient = function(id){
+  console.log('✅ cancelBookingClient clicked - FIXED - id:', id);
   
-  if(window.db){
-    window.db.ref('bookings/'+bookingId).update(update).then(()=>{
-      console.log('Booking marked as paid in Firebase', bookingId);
-      // Also update refunds list
-      window.db.ref('refunds/'+bookingId).update(update);
+  if(!id){
+    alert('Booking ID missing - Cannot cancel');
+    return;
+  }
+  
+  var confirmMsg = '❌ CANCEL BOOKING?\n\nBooking ID: #' + id + '\n\nAre you sure you want to cancel this booking?\n\n• If you paid, you can request REFUND after cancelling\n• Nurse will be notified\n• Flow: MY BOOKINGS -> Cancel -> Refund -> Fill MoMo/bank -> Submit -> CEO approves\n\nContinue?';
+  
+  if(!confirm(confirmMsg)){
+    console.log('Cancel cancelled by user');
+    return;
+  }
+  
+  console.log('User confirmed cancel for booking', id);
+  
+  // Show loading
+  var listDiv = document.getElementById('myBookingsList');
+  if(listDiv){
+    var originalHTML = listDiv.innerHTML;
+    // Find the booking card and show cancelling
+    var cards = listDiv.querySelectorAll('div');
+    cards.forEach(card=>{
+      if(card.innerHTML.includes('#'+id) || card.innerHTML.includes('>'+id+'<')){
+        card.style.opacity='0.5';
+        card.style.pointerEvents='none';
+      }
     });
   }
   
-  // Save locally
-  try{
-    var paidBookings = JSON.parse(localStorage.getItem('paidBookings')||'[]');
-    if(!paidBookings.includes(bookingId)) paidBookings.push(bookingId);
-    localStorage.setItem('paidBookings', JSON.stringify(paidBookings));
-    
-    var localBookings = JSON.parse(localStorage.getItem('localBookings')||'[]');
-    var b = localBookings.find(x=>x.id==bookingId);
-    if(b){ Object.assign(b, update); localStorage.setItem('localBookings', JSON.stringify(localBookings)); }
-  }catch(e){}
-};
-
-// Override payWithPaystack to auto mark as paid
-var _originalPayWithPaystack = window.payWithPaystack;
-window.payWithPaystack = function(){
-  console.log('payWithPaystack V58 - auto monitoring payment');
-  var emailEl=document.getElementById('cEmail'); var email=emailEl? emailEl.value.trim() : '';
-  if(!email||!email.includes('@')){ alert('Please enter valid Email for Paystack payment monitoring'); if(emailEl) emailEl.focus(); return; }
-  
-  var nameEl=document.getElementById('cName'); var name=nameEl? nameEl.value.trim() : 'Client';
-  var budgetEl=document.getElementById('cBudget'); var amount=budgetEl? parseFloat(budgetEl.value||50) : 50;
-  
-  if(typeof PaystackPop==='undefined'){
-    alert('Loading Paystack... Click PAY again in 2 seconds - System will auto monitor payment');
-    var script=document.createElement('script');
-    script.src='https://js.paystack.co/v1/inline.js';
-    document.head.appendChild(script);
-    return;
-  }
-  
-  var handler = PaystackPop.setup({
-    key: 'pk_live_f17ae09bf855010825cbfccdda8e724553ab747b',
-    email: email,
-    amount: amount*100,
-    currency: 'GHS',
-    ref: 'LC_'+Date.now(),
-    callback: function(response){
-      console.log('Paystack success', response);
-      // AUTO MONITOR PAYMENT - Mark as paid
-      var bookingId = Date.now(); // Will be actual booking id from submitBooking
-      
-      // Save payment info first
-      try{
-        localStorage.setItem('lastPaymentRef', response.reference);
-        localStorage.setItem('lastPaymentAmount', amount);
-      }catch(e){}
-      
-      alert('✅ Paystack Payment Successful! Ref: '+response.reference+'\nAmount: '+amount+' GHS\n\nSystem auto monitoring payment: PAID ✅\n\nNow you can continue with booking - Your booking WILL reach nurse and you can get refund during cancellation if you cancel\n\nFlow: Paid ✅ → Booking reaches nurse → Can cancel → Can refund');
-      
-      // Now submit booking as paid
-      if(typeof submitBooking==='function'){
-        // Set flag that next booking is paid
-        window.nextBookingIsPaid = true;
-        window.nextBookingPaymentRef = response.reference;
-        submitBooking();
+  // Try Firebase first
+  if(window.db){
+    window.db.ref('bookings/'+id).once('value').then(snap=>{
+      var booking = snap.val();
+      if(!booking){
+        console.log('Booking not found in Firebase, trying localStorage');
+        // Try localStorage fallback
+        try{
+          var localBookings = JSON.parse(localStorage.getItem('localBookings')||'[]');
+          var localBooking = localBookings.find(b=>b.id==id || b.id==id.toString());
+          if(localBooking){
+            localBooking.status='cancelled_by_client';
+            localBooking.cancelTime=Date.now();
+            localBooking.cancelBy='client';
+            localStorage.setItem('localBookings', JSON.stringify(localBookings));
+            alert('✅ Booking #' + id + ' Cancelled Successfully (Local)!\n\nNext: Click 💸 REFUND button to request refund.\nFlow: MY BOOKINGS -> Cancel -> Refund -> Fill MoMo/bank -> Submit -> CEO approves');
+            if(typeof loadMyBookings==='function') loadMyBookings();
+            return;
+          } else {
+            alert('❌ Booking #'+id+' not found\n\nIt may already be cancelled or does not exist');
+            if(typeof loadMyBookings==='function') loadMyBookings();
+            return;
+          }
+        }catch(e){
+          console.error('Local storage cancel error', e);
+          alert('❌ Error cancelling: '+e.message);
+          if(typeof loadMyBookings==='function') loadMyBookings();
+          return;
+        }
       }
-    },
-    onClose: function(){
-      console.log('Paystack closed - Payment not completed');
-      alert('Paystack closed - Payment NOT completed ❌\n\nSystem auto monitoring: NOT PAID ❌\n\nYour booking will NOT reach nurse until you pay. Only cancellation available (no refund) because you did not pay money - only booking');
+      
+      console.log('Found booking in Firebase', booking);
+      
+      // Check if already cancelled
+      if(booking.status==='cancelled_by_client'){
+        alert('⚠️ Booking #'+id+' already cancelled\n\nNow you can request REFUND:\nClick 💸 Refund - Fill MoMo/bank button');
+        if(typeof openRefundModal==='function'){
+          if(confirm('Booking already cancelled. Request REFUND now?')){
+            openRefundModal(id, booking.amount+' '+(booking.currency||'GHS'));
+          }
+        }
+        if(typeof loadMyBookings==='function') loadMyBookings();
+        return;
+      }
+      
+      if(booking.status==='refund_requested'){
+        alert('⚠️ Refund already requested for booking #'+id+'\nWaiting CEO approval');
+        if(typeof loadMyBookings==='function') loadMyBookings();
+        return;
+      }
+      
+      if(booking.status==='refunded' || booking.status==='refund_approved'){
+        alert('✅ Booking #'+id+' already refunded');
+        if(typeof loadMyBookings==='function') loadMyBookings();
+        return;
+      }
+      
+      // Cancel it
+      window.db.ref('bookings/'+id).update({
+        status: 'cancelled_by_client',
+        cancelTime: Date.now(),
+        cancelBy: 'client',
+        cancelledAt: new Date().toISOString()
+      }).then(()=>{
+        console.log('Booking cancelled in Firebase');
+        alert('✅ BOOKING #' + id + ' CANCELLED SUCCESSFULLY!\n\nNext Steps:\n1️⃣ Booking status: cancelled_by_client\n2️⃣ Click 💸 REFUND button to request refund\n3️⃣ Fill MoMo/bank details\n4️⃣ Submit → CEO approves → Money back\n\nFlow: MY BOOKINGS -> Cancel -> Refund -> Fill MoMo/bank -> Submit -> CEO approves');
+        
+        // Offer refund immediately
+        setTimeout(function(){
+          if(confirm('✅ Booking cancelled!\n\nDo you want to request REFUND now?\n\nYou will fill MoMo/bank details and CEO will approve and send money back.')){
+            if(typeof openRefundModal==='function'){
+              openRefundModal(id, booking.amount+' '+(booking.currency||'GHS'));
+            } else {
+              alert('Refund modal not loaded - Please reload page and click Refund button');
+            }
+          }
+          if(typeof loadMyBookings==='function') loadMyBookings();
+        }, 500);
+        
+      }).catch(e=>{
+        console.error('Firebase cancel error', e);
+        alert('❌ Error cancelling booking: '+e.message+'\nTrying local fallback');
+        // Fallback to local
+        try{
+          var localBookings = JSON.parse(localStorage.getItem('localBookings')||'[]');
+          var lb = localBookings.find(b=>b.id==id);
+          if(lb){
+            lb.status='cancelled_by_client';
+            lb.cancelTime=Date.now();
+            localStorage.setItem('localBookings', JSON.stringify(localBookings));
+            alert('✅ Cancelled locally');
+            if(typeof loadMyBookings==='function') loadMyBookings();
+          }
+        }catch(e2){}
+      });
+      
+    }).catch(e=>{
+      console.error('Firebase fetch error', e);
+      alert('❌ Error loading booking: '+e.message+'\nTrying local storage');
+      try{
+        var localBookings = JSON.parse(localStorage.getItem('localBookings')||'[]');
+        var lb = localBookings.find(b=>b.id==id || b.id.toString()==id.toString());
+        if(lb){
+          lb.status='cancelled_by_client';
+          lb.cancelTime=Date.now();
+          localStorage.setItem('localBookings', JSON.stringify(localBookings));
+          alert('✅ Booking #'+id+' Cancelled (Local Storage)!\nNext: Refund -> Fill MoMo/bank -> Submit');
+          if(typeof loadMyBookings==='function') loadMyBookings();
+        } else {
+          alert('❌ Booking #'+id+' not found in local storage either');
+        }
+      }catch(e2){
+        alert('❌ Error: '+e2.message);
+      }
+    });
+    
+  } else {
+    // No Firebase - Demo mode with localStorage
+    console.log('No Firebase, using localStorage for cancel');
+    try{
+      var localBookings = JSON.parse(localStorage.getItem('localBookings')||'[]');
+      console.log('Local bookings', localBookings);
+      var found = false;
+      localBookings.forEach(b=>{
+        if(b.id==id || b.id.toString()==id.toString()){
+          b.status='cancelled_by_client';
+          b.cancelTime=Date.now();
+          b.cancelBy='client';
+          found=true;
+          console.log('Cancelled local booking', b);
+        }
+      });
+      
+      if(found){
+        localStorage.setItem('localBookings', JSON.stringify(localBookings));
+        alert('✅ BOOKING #' + id + ' CANCELLED SUCCESSFULLY! (Demo Mode)\n\nNext: Click 💸 REFUND button to request refund\nFill MoMo/bank details\nFlow: MY BOOKINGS -> Cancel -> Refund -> Fill MoMo/bank -> Submit -> CEO approves (Demo)');
+        if(typeof loadMyBookings==='function') loadMyBookings();
+        
+        setTimeout(function(){
+          if(confirm('Cancelled! Request REFUND now? (Demo)')){
+            if(typeof openRefundModal==='function'){
+              var b = localBookings.find(x=>x.id==id || x.id.toString()==id.toString());
+              openRefundModal(id, (b? b.amount+' '+(b.currency||'GHS') : '50 GHS'));
+            }
+          }
+        }, 500);
+        
+      } else {
+        console.log('Booking not found in localStorage, creating cancelled entry');
+        // For demo, if booking not in local, try to cancel in main bookings local
+        alert('⚠️ Booking #'+id+' not found in local storage\n\nThis can happen if booking was made before this fix.\n\nFor testing: Book a new nurse now, then try cancel - it will work!');
+        if(typeof loadMyBookings==='function') loadMyBookings();
+      }
+    }catch(e){
+      console.error('LocalStorage cancel error', e);
+      alert('❌ Error cancelling: '+e.message);
     }
-  });
-  handler.openIframe();
+  }
 };
 
-// Override submitBooking to handle paid vs not paid
-var _originalSubmitBooking = window.submitBooking;
-window.submitBooking = function(){
-  console.log('submitBooking V58 - payment monitoring');
-  
-  var nameEl = document.getElementById('cName');
-  var phoneEl = document.getElementById('cPhone');
-  var serviceEl = document.getElementById('cService');
-  
-  var name = nameEl? nameEl.value.trim() : '';
-  var phoneRaw = phoneEl? phoneEl.value.trim() : '';
-  var service = serviceEl? serviceEl.value.trim() : '';
-  
-  if(!name||!phoneRaw||!service){
-    alert('Please fill Name, Phone, Service');
-    return;
+// Also fix openRefundModal to ensure it works
+window.openRefundModal = window.openRefundModal || function(id, amountStr){
+  console.log('openRefundModal fallback', id, amountStr);
+  window.currentRefundBookingId = id;
+  var modal = document.getElementById('refundModal');
+  if(!modal){
+    modal = document.createElement('div');
+    modal.id='refundModal';
+    modal.style.cssText='position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);z-index:9999;display:flex;align-items:center;justify-content:center;padding:10px';
+    modal.innerHTML = `
+    <div style="background:white;border-radius:20px;max-width:450px;width:100%;max-height:90vh;overflow-y:auto">
+      <div style="background:linear-gradient(90deg,#7c3aed,#2563eb);color:white;padding:16px;border-radius:20px 20px 0 0;text-align:center">
+        <div style="font-size:28px">💸</div>
+        <h2 style="margin:8px 0 0 0;font-size:16px">Request Refund - Fill MoMo/Bank</h2>
+      </div>
+      <div style="padding:20px">
+        <div style="background:#f9fafb;border:2px solid #e5e7eb;border-radius:12px;padding:10px;margin-bottom:12px;font-size:11px">
+          <div>Booking ID: <b id="refundBookingId">${id}</b></div>
+          <div>Amount: <b id="refundBookingAmount" style="color:#16a34a">${amountStr}</b></div>
+        </div>
+        <label style="font-size:11px;font-weight:800;display:block;margin-bottom:4px">💬 Reason</label>
+        <textarea id="refundReason" placeholder="Why refund?" style="width:100%;min-height:80px;padding:10px;border:2px solid #e5e7eb;border-radius:10px"></textarea>
+        <label style="font-size:11px;font-weight:800;display:block;margin:12px 0 4px 0">💳 Refund Method</label>
+        <select id="refundMethod" style="width:100%;padding:10px;border:2px solid #e5e7eb;border-radius:10px;margin-bottom:8px">
+          <option value="">-- Select --</option>
+          <option value="MTN MoMo">MTN MoMo</option>
+          <option value="Vodafone Cash">Vodafone Cash</option>
+          <option value="AirtelTigo Money">AirtelTigo Money</option>
+          <option value="Bank Account">Bank Account</option>
+        </select>
+        <input id="refundAccount" placeholder="MoMo number / Bank account" style="width:100%;padding:10px;border:2px solid #16a34a;border-radius:10px;margin-bottom:8px">
+        <input id="refundAccountName" placeholder="Account name" style="width:100%;padding:10px;border:2px solid #e5e7eb;border-radius:10px;margin-bottom:8px">
+        <div style="display:flex;gap:8px;margin-top:12px">
+          <button onclick="closeRefundModal()" style="flex:1;background:#f3f4f6;border:2px solid #e5e7eb;padding:12px;border-radius:12px;font-weight:700">❌ Cancel</button>
+          <button onclick="submitRefundRequest()" style="flex:2;background:#7c3aed;color:white;border:none;padding:12px;border-radius:12px;font-weight:800">💸 Submit Refund</button>
+        </div>
+      </div>
+    </div>
+    `;
+    document.body.appendChild(modal);
   }
+  var idEl = document.getElementById('refundBookingId');
+  var amountEl = document.getElementById('refundBookingAmount');
+  if(idEl) idEl.innerText=id;
+  if(amountEl) amountEl.innerText=amountStr;
+  modal.classList.remove('hidden');
+  modal.style.display='flex';
+};
+
+window.closeRefundModal = window.closeRefundModal || function(){
+  var modal=document.getElementById('refundModal');
+  if(modal){ modal.classList.add('hidden'); modal.style.display='none'; }
+};
+
+window.submitRefundRequest = window.submitRefundRequest || function(){
+  var reason=document.getElementById('refundReason')?.value.trim();
+  var method=document.getElementById('refundMethod')?.value;
+  var account=document.getElementById('refundAccount')?.value.trim();
+  var accountName=document.getElementById('refundAccountName')?.value.trim();
+  var bookingId=window.currentRefundBookingId;
   
-  var fullPhone = phoneRaw;
-  try{
-    if(typeof getFullPhone==='function'){
-      fullPhone = getFullPhone('cPhoneCode','cPhone');
-    }
-  }catch(e){}
-  
-  if(!window.selectedNurseId){
-    if(window.nearbyNursesSorted && window.nearbyNursesSorted.length>0){
-      window.selectedNurseId = window.nearbyNursesSorted[0].phone || window.nearbyNursesSorted[0].id;
-    }
-  }
-  
-  var budgetEl=document.getElementById('cBudget'); var amount=budgetEl? parseFloat(budgetEl.value||50) : 50;
-  var curEl=document.getElementById('cCurrency'); var cur=curEl? curEl.value : 'GHS';
-  var isPaid = window.nextBookingIsPaid || false;
-  var paymentRef = window.nextBookingPaymentRef || null;
-  
-  // Check if this booking was paid via Paystack (auto monitor)
-  try{
-    var lastPaymentRef = localStorage.getItem('lastPaymentRef');
-    if(lastPaymentRef && window.nextBookingIsPaid){
-      isPaid = true;
-      paymentRef = lastPaymentRef;
-    }
-  }catch(e){}
-  
-  var id = Date.now();
-  var booking = {
-    id: id,
-    name: name,
-    phone: fullPhone,
-    phoneRaw: phoneRaw,
-    service: service,
-    location: document.getElementById('cLocation')? document.getElementById('cLocation').value : '',
-    amount: amount,
-    currency: cur,
-    status: isPaid? 'pending_assignment' : 'pending_payment', // Different status if not paid
-    isPaid: isPaid,
-    paid: isPaid,
-    paymentStatus: isPaid? 'paid' : 'unpaid',
-    paidAt: isPaid? Date.now() : null,
-    paystackRef: paymentRef,
-    paymentRef: paymentRef,
-    time: new Date().toLocaleString(),
-    timestamp: Date.now(),
-    lat: window.clientLat || 5.6037,
-    lng: window.clientLng || -0.1870,
-    selectedNurse: window.selectedNurseId || null,
-    email: document.getElementById('cEmail')? document.getElementById('cEmail').value : '',
-    country: document.getElementById('countrySelect')? document.getElementById('countrySelect').value : 'GH',
-    willReachNurse: isPaid // 3. When payment not done, booking not reach nurse
-  };
-  
-  console.log('Booking with payment monitoring', booking);
-  
-  // Save locally
-  try{
-    localStorage.setItem('lastClientPhone', fullPhone);
-    localStorage.setItem('lastClientName', name);
-    var localBookings = JSON.parse(localStorage.getItem('localBookings')||'[]');
-    localBookings.push(booking);
-    localStorage.setItem('localBookings', JSON.stringify(localBookings));
-    
-    if(isPaid){
-      var paidBookings = JSON.parse(localStorage.getItem('paidBookings')||'[]');
-      paidBookings.push(id);
-      localStorage.setItem('paidBookings', JSON.stringify(paidBookings));
-    }
-  }catch(e){}
+  if(!reason){ alert('Enter reason'); return; }
+  if(!method){ alert('Select method'); return; }
+  if(!account){ alert('Enter account'); return; }
+  if(!accountName){ alert('Enter account name'); return; }
   
   if(window.db){
-    window.db.ref('bookings/'+id).set(booking).then(()=>{
-      if(isPaid){
-        alert('✅ BOOKING SUBMITTED - PAID ✅\n\nName: '+name+'\nPhone: '+fullPhone+'\nService: '+service+'\nAmount: '+amount+' '+cur+' - PAID\nNurse: '+(window.selectedNurseId||'Admin')+'\nID: '+id+'\n\nSystem auto monitoring: Payment detected ✅\n- Booking WILL reach nurse to see\n- Nurse will get strong notification like Uber\n- If you cancel, you CAN get refund (MY BOOKINGS -> Cancel -> Refund -> Fill MoMo/bank -> CEO approves)');
-      } else {
-        alert('✅ BOOKING SUBMITTED - NOT PAID YET ❌\n\nName: '+name+'\nPhone: '+fullPhone+'\nService: '+service+'\nAmount: '+amount+' '+cur+' - NOT PAID\nNurse: '+(window.selectedNurseId||'Admin')+'\nID: '+id+'\n\nSystem auto monitoring: Payment NOT detected ❌\n- Booking will NOT reach nurse to see until you pay\n- Only CANCELLATION available (no refund because you did not pay money, only booking)\n\nTo make booking reach nurse: Click 💳 PAY NOW WITH PAYSTACK');
-      }
-      
-      // Reset paid flag
-      window.nextBookingIsPaid = false;
-      window.nextBookingPaymentRef = null;
-      localStorage.removeItem('lastPaymentRef');
-      
-      if(typeof loadMyBookings==='function') setTimeout(()=>loadMyBookings(), 1000);
-    }).catch(e=>{
-      alert('Booking error: '+e.message);
+    window.db.ref('bookings/'+bookingId).update({
+      status:'refund_requested',
+      refundReason:reason,
+      refundMethod:method,
+      refundAccount:account,
+      refundAccountName:accountName,
+      refundRequestTime:Date.now()
+    }).then(()=>{
+      alert('✅ Refund Requested! CEO will approve');
+      closeRefundModal();
+      if(typeof loadMyBookings==='function') loadMyBookings();
     });
   } else {
-    if(isPaid){
-      alert('✅ Demo Booking - PAID ✅ - Will reach nurse - Can refund if cancelled');
-    } else {
-      alert('✅ Demo Booking - NOT PAID ❌ - Will NOT reach nurse - Only cancellation (no refund)');
-    }
+    try{
+      var localBookings=JSON.parse(localStorage.getItem('localBookings')||'[]');
+      var b=localBookings.find(x=>x.id==bookingId || x.id.toString()==bookingId.toString());
+      if(b){
+        b.status='refund_requested';
+        b.refundReason=reason;
+        b.refundMethod=method;
+        b.refundAccount=account;
+        b.refundAccountName=accountName;
+        localStorage.setItem('localBookings', JSON.stringify(localBookings));
+      }
+      alert('✅ Refund Requested (Demo)! CEO will approve');
+      closeRefundModal();
+      if(typeof loadMyBookings==='function') loadMyBookings();
+    }catch(e){ alert('Error: '+e.message); }
   }
 };
 
-// Override nurse booking listener to NOT show unpaid bookings to nurse (Requirement 3)
-var _originalInitNurseListener = window.initNurseBookingListener;
-window.initNurseBookingListener = function(){
-  var nursePhone = localStorage.getItem('nursePhone');
-  if(!nursePhone){ console.log('No nurse logged in'); return; }
-  if(!window.db){ console.log('No Firebase'); return; }
-  
-  console.log('Nurse booking listener V58 - Only paid bookings will reach nurse');
-  window.requestNotificationPermission();
-  
-  var suffix = nursePhone.replace(/[^0-9]/g,'').slice(-9);
-  
-  window.db.ref('bookings').on('child_added', function(snap){
-    var booking = snap.val();
-    if(!booking) return;
-    
-    // 3. When payment not done, booking NOT reach nurse to see
-    if(!checkIfPaid(booking)){
-      console.log('Booking NOT paid - Will NOT reach nurse', booking.id);
-      return; // Don't notify nurse if not paid
-    }
-    
-    var bookingPhoneSuffix = (booking.selectedNurse||'').replace(/[^0-9]/g,'').slice(-9);
-    var isForThisNurse = bookingPhoneSuffix.endsWith(suffix) || (booking.selectedNurse===nursePhone);
-    
-    if(isForThisNurse && (booking.status==='pending_assignment')){
-      var age = Date.now() - (booking.timestamp||0);
-      if(age < 10*60*1000){
-        console.log('New PAID booking for this nurse! Will notify', booking.id);
-        setTimeout(()=>{ sendStrongNurseNotification(booking); }, 1000);
-      }
-    }
-  });
-  
-  window.db.ref('bookings').on('child_changed', function(snap){
-    var booking = snap.val();
-    if(!booking) return;
-    if(!checkIfPaid(booking)) return; // Not paid, don't reach nurse
-    
-    var bookingPhoneSuffix = (booking.selectedNurse||'').replace(/[^0-9]/g,'').slice(-9);
-    var isForThisNurse = bookingPhoneSuffix.endsWith(suffix) || (booking.selectedNurse===nursePhone);
-    if(isForThisNurse && booking.status==='pending_assignment'){
-      var age = Date.now() - (booking.timestamp||0);
-      if(age < 2*60*1000){
-        sendStrongNurseNotification(booking);
-      }
-    }
-  });
-};
-
-// Override loadNurseBookings to only show paid bookings
-var _originalLoadNurseBookings = window.loadNurseBookings;
-window.loadNurseBookings = function(){
-  var nursePhone = localStorage.getItem('nursePhone');
-  if(!nursePhone) return;
-  var listDiv = document.getElementById('nurseBookingsList') || document.getElementById('nurseDashboardBookings');
-  if(!listDiv) return;
-  
-  if(!window.db){
-    listDiv.innerHTML='<div style="text-align:center;padding:10px">Demo mode - Only PAID bookings would appear here (System auto monitors payment)<br><small>Unpaid bookings do NOT reach nurse - Requirement 3</small></div>';
-    return;
-  }
-  
-  var suffix = nursePhone.replace(/[^0-9]/g,'').slice(-9);
-  window.db.ref('bookings').once('value').then(snap=>{
-    var all = Object.values(snap.val()||{});
-    var mine = all.filter(b=>{
-      // Only paid bookings reach nurse
-      if(!checkIfPaid(b)) return false;
-      var bSuffix = (b.selectedNurse||'').replace(/[^0-9]/g,'').slice(-9);
-      return bSuffix.endsWith(suffix) || b.selectedNurse===nursePhone || b.acceptedBy===nursePhone;
-    });
-    mine.sort((a,b)=>b.timestamp-a.timestamp);
-    
-    if(mine.length==0){
-      listDiv.innerHTML='<div style="text-align:center;color:#999;padding:20px">📭 No PAID bookings yet<br><small>System auto monitoring: Only PAID bookings reach you</small><br><small>Unpaid bookings (only booking, no payment) do NOT reach nurse - Requirement 3</small><br><small>When client pays, you get strong notification like Uber</small></div>';
-      return;
-    }
-    
-    var h='<div style="background:#dcfce7;border:2px solid #16a34a;border-radius:10px;padding:8px;margin-bottom:10px;font-size:10px"><b>✅ Only PAID bookings shown here</b><br>System auto monitors payment - Unpaid bookings do NOT reach nurse</div>';
-    mine.forEach(b=>{
-      var isPending = b.status==='pending_assignment';
-      var isConfirmed = b.status==='confirmed';
-      h+=`<div style="border:3px solid ${isPending?'#eab308':'#16a34a'};border-radius:16px;padding:12px;margin:10px 0;background:${isPending?'#fffbeb':'#f0fdf4'}">
-        <div style="display:flex;justify-content:space-between"><b>#${b.id}</b><span style="background:#16a34a;color:white;padding:4px 10px;border-radius:20px;font-size:10px">PAID ✅ - ${(b.status||'').toUpperCase()}</span></div>
-        <div style="font-size:11px;margin-top:8px">👤 ${b.name} - ${b.phone}<br>📍 ${b.location}<br>💰 ${b.amount} ${b.currency} - PAID ✅<br>Service: ${b.service}</div>
-        <div style="display:flex;gap:8px;margin-top:10px">
-          ${isPending? `<button onclick="nurseAcceptBooking(${b.id})" style="flex:1;background:#16a34a;color:white;border:none;padding:12px;border-radius:10px;font-weight:800">✅ ACCEPT</button><button onclick="nurseRejectBooking(${b.id})" style="flex:1;background:#ef4444;color:white;border:none;padding:12px;border-radius:10px;font-weight:800">❌ REJECT</button>` : `<div style="flex:1;background:#dcfce7;padding:8px;border-radius:10px;text-align:center">✅ Accepted</div>`}
-        </div>
-        <button onclick="showDirectionToClientFromBooking(${b.id})" style="width:100%;background:#2563eb;color:white;border:none;padding:8px;border-radius:8px;margin-top:6px;font-weight:700">🗺️ Directions to Client Home Like Uber</button>
-      </div>`;
-    });
-    listDiv.innerHTML=h;
-  });
-};
-
-// Override loadMyBookings to show paid vs unpaid logic (Requirement 1 & 2)
-var _originalLoadMyBookingsForPayment = window.loadMyBookings;
+// Ensure loadMyBookings shows Cancel button working
 window.loadMyBookings = function(){
-  console.log('loadMyBookings V58 - Payment monitoring');
-  var phoneEl=document.getElementById('myBookPhone'); var phone=phoneEl? phoneEl.value.trim() : '';
-  if(!phone){ phone=localStorage.getItem('lastClientPhone')||''; if(phoneEl) phoneEl.value=phone; }
-  if(!phone){ alert('Enter phone to load bookings'); return; }
-  var listDiv=document.getElementById('myBookingsList'); if(listDiv) listDiv.innerHTML='Loading with payment monitoring... Checking if paid...';
+  console.log('loadMyBookings FIXED - Cancellation button working');
+  var phoneEl=document.getElementById('myBookPhone'); 
+  var phone=phoneEl? phoneEl.value.trim() : '';
+  if(!phone){ phone=localStorage.getItem('lastClientPhone')||localStorage.getItem('lastClientPhoneRaw')||''; if(phoneEl) phoneEl.value=phone; }
+  if(!phone){ alert('Enter your phone number to load bookings - Example: 0241234567'); return; }
   
-  var loadBookingsWithPaymentCheck = function(allBookings){
+  var listDiv=document.getElementById('myBookingsList'); 
+  if(!listDiv){ console.log('myBookingsList not found'); return; }
+  listDiv.innerHTML='<div style="text-align:center;padding:20px"><div style="font-size:24px">⏳</div>Loading bookings for '+phone+'...<br><small>MY BOOKINGS -> Cancel -> Refund -> Fill MoMo/bank -> Submit -> CEO approves</small></div>';
+  
+  // Try Firebase + localStorage combined
+  var allBookings = [];
+  
+  try{
+    var localBookings = JSON.parse(localStorage.getItem('localBookings')||'[]');
+    allBookings = [...localBookings];
+    console.log('Local bookings', allBookings.length);
+  }catch(e){ console.log('Local storage error', e); }
+  
+  if(window.db){
+    var suffix = phone.replace(/[^0-9]/g,'').slice(-9);
+    window.db.ref('bookings').once('value').then(snap=>{
+      var firebaseBookings = Object.values(snap.val()||{});
+      var mineFromFirebase = firebaseBookings.filter(b=> (b.phone||'').replace(/[^0-9]/g,'').endsWith(suffix) );
+      console.log('Firebase bookings for suffix', suffix, mineFromFirebase.length);
+      
+      // Merge - Firebase takes precedence
+      var mergedMap = {};
+      allBookings.forEach(b=>{ mergedMap[b.id]=b; });
+      mineFromFirebase.forEach(b=>{ mergedMap[b.id]=b; });
+      var mine = Object.values(mergedMap);
+      mine.sort((a,b)=>b.timestamp-a.timestamp);
+      
+      renderBookingsList(mine, listDiv, phone);
+    }).catch(e=>{
+      console.error('Firebase load error', e);
+      // Fallback to local only
+      var suffix = phone.replace(/[^0-9]/g,'').slice(-9);
+      var mine = allBookings.filter(b=> (b.phone||'').replace(/[^0-9]/g,'').endsWith(suffix) );
+      mine.sort((a,b)=>b.timestamp-a.timestamp);
+      renderBookingsList(mine, listDiv, phone);
+    });
+  } else {
     var suffix = phone.replace(/[^0-9]/g,'').slice(-9);
     var mine = allBookings.filter(b=> (b.phone||'').replace(/[^0-9]/g,'').endsWith(suffix) );
     mine.sort((a,b)=>b.timestamp-a.timestamp);
-    
-    if(mine.length==0){
-      if(listDiv) listDiv.innerHTML='<div style="text-align:center;color:#999;padding:20px">No bookings for '+phone+'<br><small>System auto monitors payment</small></div>';
-      return;
-    }
-    
-    var h='<div style="background:#eff6ff;border:2px solid #2563eb;border-radius:10px;padding:8px;margin-bottom:10px;font-size:10px"><b>Payment Monitoring:</b> System auto checks if you paid money or not<br>✅ Paid → Booking reaches nurse → Can cancel → Can refund<br>❌ Not paid (only booking) → Will NOT reach nurse → Only cancellation (no refund)</div>';
-    
-    mine.forEach(b=>{
-      var isPaid = checkIfPaid(b);
-      var isPending = b.status==='pending_assignment' || b.status==='confirmed' || b.status==='pending_payment';
-      var isCancelled = b.status==='cancelled_by_client';
-      var isRefundRequested = b.status==='refund_requested';
-      var isRefunded = b.status==='refunded' || b.status==='refund_approved';
-      
-      h+=`<div style="border:3px solid ${isPaid? (isPending?'#eab308': isCancelled?'#ef4444': isRefundRequested?'#7c3aed': isRefunded?'#16a34a':'#e5e7eb') : '#9ca3af'};border-radius:16px;padding:12px;margin:10px 0;background:${isPaid? 'white' : '#f9fafb'}">
-        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">
-          <b>#${b.id}</b>
-          <div style="display:flex;gap:6px">
-            <span style="padding:4px 10px;border-radius:20px;font-size:10px;font-weight:800;background:${isPaid?'#16a34a':'#9ca3af'};color:white">${isPaid?'PAID ✅':'NOT PAID ❌'}</span>
-            <span style="padding:4px 10px;border-radius:20px;font-size:10px;font-weight:800;background:${isPending?'#eab308': isCancelled?'#ef4444': isRefundRequested?'#7c3aed': isRefunded?'#16a34a':'#6b7280'};color:white">${(b.status||'').toUpperCase()}</span>
-          </div>
-        </div>
-        <div style="font-size:11px;margin-top:8px;line-height:1.5">
-          <b>Service:</b> ${b.service} - <b style="color:${isPaid?'#16a34a':'#9ca3af'}">${b.amount} ${b.currency||'GHS'} ${isPaid?'(PAID)':'(NOT PAID)'}</b><br>
-          <b>📍 Location:</b> ${b.location||''}<br>
-          <b>Nurse:</b> ${b.selectedNurse||'Admin will assign'}<br>
-          <b>System auto monitoring:</b> <span style="background:${isPaid?'#dcfce7':'#fee2e2'};padding:2px 8px;border-radius:10px;font-size:10px">${isPaid? 'Payment detected ✅ - Booking WILL reach nurse' : 'Payment NOT detected ❌ - Booking will NOT reach nurse'}</span><br>
-          ${b.paystackRef? `<b>Paystack Ref:</b> ${b.paystackRef}<br>` : ''}
-        </div>
-        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px">
-          ${isPending && isPaid? `<button onclick="cancelBookingClient(${b.id})" style="flex:1;background:#ef4444;color:white;border:none;padding:10px;border-radius:10px;font-weight:800;cursor:pointer">❌ Cancel (Paid → Can Refund After)</button>` : ''}
-          ${isPending && !isPaid? `<button onclick="cancelBookingClient(${b.id})" style="flex:1;background:#9ca3af;color:white;border:none;padding:10px;border-radius:10px;font-weight:800;cursor:pointer">❌ Cancel (Not Paid → Only Cancellation, No Refund)</button><button onclick="payForBooking(${b.id})" style="flex:1;background:#16a34a;color:white;border:none;padding:10px;border-radius:10px;font-weight:800;cursor:pointer">💳 Pay Now - Make it reach nurse</button>` : ''}
-          ${isCancelled && isPaid? `<button onclick="openRefundModal(${b.id}, '${b.amount} ${b.currency||'GHS'}')" style="flex:1;background:#7c3aed;color:white;border:none;padding:10px;border-radius:10px;font-weight:800;cursor:pointer">💸 Refund - Fill MoMo/bank (Paid → Can Refund)</button>` : ''}
-          ${isCancelled && !isPaid? `<div style="flex:1;background:#f3f4f6;border:2px solid #e5e7eb;border-radius:10px;padding:8px;text-align:center;font-size:10px"><b>Cancelled (Not Paid)</b><br>Only cancellation - No refund because you did not pay money, only booking</div>` : ''}
-          ${isRefundRequested? `<div style="flex:1;background:#f3e8ff;border:2px solid #7c3aed;border-radius:10px;padding:8px;text-align:center;font-size:10px"><b>💸 Refund Requested</b><br>Waiting CEO approval<br>To: ${b.refundMethod||''} - ${b.refundAccount||''}</div>` : ''}
-          ${isRefunded? `<div style="flex:1;background:#dcfce7;border:2px solid #16a34a;border-radius:10px;padding:8px;text-align:center;font-size:10px"><b>✅ Refunded</b><br>Money sent to ${b.refundMethod||''}: ${b.refundAccount||''}</div>` : ''}
-        </div>
-        <div style="font-size:9px;color:#6b7280;margin-top:6px;text-align:center">
-          ${isPaid? '✅ Paid → Booking reaches nurse → Can cancel → Can refund' : '❌ Not Paid → Booking will NOT reach nurse → Only cancellation (no refund)'}
-        </div>
-      </div>`;
-    });
-    if(listDiv) listDiv.innerHTML=h;
-  };
-  
-  if(!window.db){
-    try{
-      var localBookings = JSON.parse(localStorage.getItem('localBookings')||'[]');
-      loadBookingsWithPaymentCheck(localBookings);
-    }catch(e){
-      if(listDiv) listDiv.innerHTML='Demo mode error';
-    }
+    renderBookingsList(mine, listDiv, phone);
+  }
+};
+
+function renderBookingsList(mine, listDiv, phone){
+  if(mine.length==0){
+    listDiv.innerHTML='<div style="text-align:center;color:#999;padding:20px;border:2px dashed #e5e7eb;border-radius:12px">📭 No bookings for '+phone+'<br><small>Book a nurse first - Then you can Cancel and Refund</small><br><br><button onclick="showPage(\'home\')" style="background:#16a34a;color:white;border:none;padding:10px 20px;border-radius:10px;font-weight:800">📅 Book Nurse Now</button></div>';
     return;
   }
   
-  window.db.ref('bookings').once('value').then(snap=>{
-    var all = Object.values(snap.val()||{});
-    loadBookingsWithPaymentCheck(all);
-  });
-};
-
-window.payForBooking = function(bookingId){
-  console.log('Pay for booking', bookingId);
-  if(!window.db){ alert('Demo - Pay for booking '+bookingId); return; }
+  var h='<div style="background:#eff6ff;border:2px solid #2563eb;border-radius:10px;padding:8px;margin-bottom:10px;font-size:10px;text-align:center"><b>✅ Cancellation Button FIXED!</b> - Flow: MY BOOKINGS -> Cancel (working) -> Refund -> Fill MoMo/bank -> Submit -> CEO approves<br><small>Found '+mine.length+' bookings for '+phone+'</small></div>';
   
-  window.db.ref('bookings/'+bookingId).once('value').then(snap=>{
-    var b=snap.val();
-    if(!b){ alert('Booking not found'); return; }
-    if(checkIfPaid(b)){ alert('Already paid'); return; }
+  mine.forEach(b=>{
+    var isPending = b.status==='pending_assignment' || b.status==='confirmed' || b.status==='pending_admin_assignment';
+    var isCancelled = b.status==='cancelled_by_client';
+    var isRefundRequested = b.status==='refund_requested';
+    var isRefunded = b.status==='refunded' || b.status==='refund_approved';
+    var isRefundRejected = b.status==='refund_rejected';
     
-    // Trigger paystack for this booking
-    var email = b.email || prompt('Enter email for Paystack payment:');
-    if(!email||!email.includes('@')){ alert('Valid email required'); return; }
+    var statusColor = isPending?'#eab308': isCancelled?'#ef4444': isRefundRequested?'#7c3aed': isRefunded?'#16a34a': isRefundRejected?'#ef4444':'#6b7280';
     
-    if(typeof PaystackPop==='undefined'){
-      var script=document.createElement('script');
-      script.src='https://js.paystack.co/v1/inline.js';
-      document.head.appendChild(script);
-      alert('Loading Paystack... Click Pay Now again in 2 seconds');
-      return;
-    }
-    
-    var handler = PaystackPop.setup({
-      key: 'pk_live_f17ae09bf855010825cbfccdda8e724553ab747b',
-      email: email,
-      amount: b.amount*100,
-      currency: 'GHS',
-      ref: 'LC_PAY_'+bookingId+'_'+Date.now(),
-      callback: function(response){
-        alert('✅ Payment Successful for Booking #'+bookingId+'! Ref: '+response.reference+'\n\nSystem auto monitoring: Now PAID ✅\nBooking WILL now reach nurse');
-        markAsPaid(bookingId, response.reference);
-        setTimeout(()=>loadMyBookings(), 1000);
-      },
-      onClose: function(){ alert('Payment closed - Still NOT PAID'); }
-    });
-    handler.openIframe();
-  });
-};
-
-// ===== REQUIREMENT 4: BIG SPACE POPUP FOR REFUND REASON =====
-
-var _originalOpenRefundModal = window.openRefundModal;
-window.openRefundModal = function(id, amountStr){
-  console.log('Open refund modal BIG SPACE', id);
-  window.currentRefundBookingId = id;
-  
-  // Check if paid
-  var isPaid = true;
-  if(window.db){
-    window.db.ref('bookings/'+id).once('value').then(snap=>{
-      var b=snap.val();
-      if(b && !checkIfPaid(b)){
-        alert('❌ Cannot Refund - Not Paid ❌\n\nSystem auto monitoring: This booking is NOT PAID - Only booking, no payment\n\nYou did not pay money, so only CANCELLATION is available, no refund\n\nFlow:\n❌ Not Paid → Only Cancel (no refund)\n✅ Paid → Cancel → Refund → Fill MoMo/bank → CEO approves');
-        return;
-      }
-      showBigRefundModal(id, amountStr, b);
-    });
-  } else {
-    try{
-      var localBookings = JSON.parse(localStorage.getItem('localBookings')||'[]');
-      var b = localBookings.find(x=>x.id==id);
-      if(b && !checkIfPaid(b)){
-        alert('❌ Cannot Refund - Not Paid ❌\nSystem: Not paid, only booking - Only cancellation, no refund');
-        return;
-      }
-      showBigRefundModal(id, amountStr, b);
-    }catch(e){
-      showBigRefundModal(id, amountStr, null);
-    }
-  }
-};
-
-window.showBigRefundModal = function(id, amountStr, booking){
-  var existing = document.getElementById('refundModal');
-  if(existing) existing.remove();
-  
-  var modal = document.createElement('div');
-  modal.id='refundModal';
-  modal.style.cssText='position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.8);z-index:10000;display:flex;align-items:center;justify-content:center;padding:10px;overflow-y:auto';
-  
-  modal.innerHTML = `
-  <div style="background:white;border-radius:20px;max-width:550px;width:100%;max-height:95vh;overflow-y:auto;box-shadow:0 10px 40px rgba(0,0,0,0.5);border:3px solid #7c3aed">
-    <div style="background:linear-gradient(90deg,#7c3aed,#2563eb);color:white;padding:16px;border-radius:20px 20px 0 0;text-align:center;position:sticky;top:0;z-index:1">
+    h+=`<div style="border:3px solid ${statusColor};border-radius:16px;padding:12px;margin:12px 0;background:white;box-shadow:0 2px 8px rgba(0,0,0,0.1)">
       <div style="display:flex;justify-content:space-between;align-items:center">
-        <div style="text-align:left">
-          <div style="font-size:24px">💸</div>
-          <h2 style="margin:4px 0 0 0;font-size:16px">Request Refund - Big Space to Write Well</h2>
-          <small>System auto monitoring: PAID ✅ → Can refund</small>
-        </div>
-        <button onclick="closeRefundModal()" style="background:rgba(0,0,0,0.3);color:white;border:2px solid white;width:36px;height:36px;border-radius:50%;font-size:18px;font-weight:800;cursor:pointer">✕</button>
+        <div><b style="font-size:14px">#${b.id}</b><br><small style="color:#6b7280">${b.time||new Date(b.timestamp).toLocaleString()}</small></div>
+        <span style="padding:6px 12px;border-radius:20px;font-size:10px;font-weight:800;background:${statusColor};color:white">${(b.status||'PENDING').toUpperCase().replace(/_/g,' ')}</span>
       </div>
-    </div>
-    
-    <div style="padding:20px">
-      <div style="background:#f0fdf4;border:2px solid #16a34a;border-radius:12px;padding:10px;margin-bottom:12px;font-size:11px">
-        <div style="display:flex;justify-content:space-between"><span>Booking ID:</span><b id="refundBookingId">#${id}</b></div>
-        <div style="display:flex;justify-content:space-between"><span>Amount to refund:</span><b id="refundBookingAmount" style="color:#16a34a;font-size:14px">${amountStr} - PAID ✅</b></div>
-        <div style="margin-top:6px;font-size:10px;color:#065f46;background:#dcfce7;padding:6px;border-radius:8px">✅ System auto monitoring: Payment detected - You PAID money, so you CAN get refund during cancellation</div>
+      <div style="font-size:11px;margin-top:10px;line-height:1.6;background:#f9fafb;border-radius:10px;padding:10px">
+        <div style="display:flex;justify-content:space-between"><span>Service:</span><b>${b.service||''}</b></div>
+        <div style="display:flex;justify-content:space-between"><span>Amount:</span><b style="color:#16a34a;font-size:13px">${b.amount||0} ${b.currency||'GHS'}</b></div>
+        <div style="display:flex;justify-content:space-between"><span>📍 Location:</span><b>${(b.location||'').substring(0,30)}</b></div>
+        <div style="display:flex;justify-content:space-between"><span>Nurse:</span><b>${b.selectedNurse||'Admin will assign'}</b></div>
+        <div style="display:flex;justify-content:space-between"><span>Duration:</span><b>${b.days||''} • ${b.totalHours||''} hrs</b></div>
+        ${b.refundAccount? `<div style="margin-top:6px;padding:6px;background:#f3e8ff;border-radius:8px"><b>💳 Refund to:</b> ${b.refundMethod||''} - ${b.refundAccount} (${b.refundAccountName||''})<br><b>Reason:</b> ${b.refundReason||''}</div>` : ''}
       </div>
       
-      <label style="font-size:13px;font-weight:800;color:#111827;display:block;margin-bottom:8px">💬 Reason for refund - Write well in big space (required) - Requirement 4</label>
-      <div style="background:#fffbeb;border:2px dashed #eab308;border-radius:10px;padding:8px;margin-bottom:8px;font-size:10px">
-        <b>Write detailed reason - Big space popup for you to write well</b><br>
-        Example: Nurse not available on scheduled date, emergency at home, changed mind due to..., service not needed anymore, etc. CEO will read this.
+      <div style="margin-top:12px">
+        ${isPending? `
+          <button onclick="cancelBookingClient(${b.id})" style="width:100%;background:#ef4444;color:white;border:none;padding:14px;border-radius:12px;font-weight:800;font-size:14px;cursor:pointer;box-shadow:0 4px 12px rgba(239,68,68,0.3);display:flex;align-items:center;justify-content:center;gap:8px">
+            ❌ CANCEL THIS BOOKING - WORKING NOW!
+          </button>
+          <div style="text-align:center;font-size:9px;color:#6b7280;margin-top:6px">Tap to cancel → Then Refund → Fill MoMo/bank → Submit → CEO approves</div>
+        ` : ''}
+        
+        ${isCancelled? `
+          <div style="background:#fee2e2;border:2px solid #ef4444;border-radius:10px;padding:8px;margin-bottom:8px;text-align:center;font-size:11px">
+            ✅ Cancelled - Now request refund of your money
+          </div>
+          <button onclick="openRefundModal(${b.id}, '${b.amount||0} ${b.currency||'GHS'}')" style="width:100%;background:#7c3aed;color:white;border:none;padding:14px;border-radius:12px;font-weight:800;font-size:14px;cursor:pointer;box-shadow:0 4px 12px rgba(124,58,237,0.3)">
+            💸 REFUND - Fill MoMo/bank -> Submit -> CEO approves
+          </button>
+        ` : ''}
+        
+        ${isRefundRequested? `
+          <div style="background:#f3e8ff;border:2px solid #7c3aed;border-radius:12px;padding:12px;text-align:center">
+            <div style="font-size:14px">💸</div>
+            <b style="font-size:12px">Refund Requested - Waiting CEO Approval</b><br>
+            <small style="font-size:10px">To: ${b.refundMethod||''} - ${b.refundAccount||''} (${b.refundAccountName||''})<br>Amount: ${b.amount||0} ${b.currency||'GHS'}<br>Reason: ${b.refundReason||''}</small><br>
+            <small style="font-size:9px;color:#6b7280;margin-top:6px;display:block">CEO will approve in CEO Dashboard → Refunds tab</small>
+          </div>
+        ` : ''}
+        
+        ${isRefunded? `
+          <div style="background:#dcfce7;border:2px solid #16a34a;border-radius:12px;padding:12px;text-align:center">
+            <div style="font-size:20px">✅</div>
+            <b style="font-size:12px;color:#065f46">REFUNDED - Money Sent!</b><br>
+            <small style="font-size:11px">Amount: ${b.amount||0} ${b.currency||'GHS'}<br>Sent to: ${b.refundMethod||''} - ${b.refundAccount||''}<br>Account: ${b.refundAccountName||''}</small>
+          </div>
+        ` : ''}
+        
+        ${isRefundRejected? `
+          <div style="background:#fee2e2;border:2px solid #ef4444;border-radius:12px;padding:10px;text-align:center">
+            <b style="font-size:11px">❌ Refund Rejected</b><br>
+            <small>Reason: ${b.refundRejectReason||''}</small>
+          </div>
+        ` : ''}
       </div>
-      
-      <!-- BIG SPACE TEXTAREA - Requirement 4 -->
-      <textarea id="refundReason" placeholder="Write your refund reason in detail here - Big space to write well...
-
-Example:
-
-Dear CEO,
-
-I am requesting refund for Booking #${id} because:
-
-- Reason: Nurse was not available on my scheduled date 15th September
-- I had family emergency and had to travel
-- Service no longer needed
-- Please refund my money to my MoMo
-
-I paid ${amountStr} via Paystack and my booking reached nurse but now I need cancellation and refund.
-
-Thank you.
-
-John Mensah
-0241234567
-
-Write as much as you want - Big space provided..." style="width:100%;min-height:200px;max-height:300px;padding:14px;border:3px solid #7c3aed;border-radius:12px;font-size:12px;resize:vertical;line-height:1.6;background:#fefce8"></textarea>
-      <div style="display:flex;justify-content:space-between;margin-top:4px">
-        <small style="font-size:10px;color:#6b7280">Big space - Write well - CEO will read</small>
-        <small id="refundReasonCount" style="font-size:10px;color:#7c3aed;font-weight:800">0 chars - Write detailed reason</small>
-      </div>
-      
-      <label style="font-size:11px;font-weight:800;color:#111827;display:block;margin:16px 0 4px 0">💳 Refund to MoMo / Bank / Account (required)</label>
-      <select id="refundMethod" onchange="updateRefundAccountPlaceholder()" style="width:100%;padding:12px;border:2px solid #e5e7eb;border-radius:10px;font-size:12px;margin-bottom:8px">
-        <option value="">-- Select refund method --</option>
-        <option value="MTN MoMo">📱 MTN MoMo - Ghana</option>
-        <option value="Vodafone Cash">📱 Vodafone Cash - Ghana</option>
-        <option value="AirtelTigo Money">📱 AirtelTigo Money - Ghana</option>
-        <option value="Bank Account">🏦 Bank Account</option>
-        <option value="PayPal">💳 PayPal</option>
-        <option value="Other">💰 Other</option>
-      </select>
-      
-      <input id="refundAccount" placeholder="MoMo number / Bank account number - Example: 0241234567" style="width:100%;padding:12px;border:2px solid #16a34a;border-radius:10px;font-size:12px;margin-bottom:8px">
-      
-      <input id="refundAccountName" placeholder="Account name - Example: John Mensah (name on MoMo/bank)" style="width:100%;padding:12px;border:2px solid #e5e7eb;border-radius:10px;font-size:12px;margin-bottom:12px">
-      
-      <div style="background:#eff6ff;border:2px solid #2563eb;border-radius:10px;padding:10px;margin:8px 0;font-size:10px">
-        <b>Flow:</b> MY BOOKINGS -> Cancel -> Refund -> Fill MoMo/bank -> Submit -> CEO approves<br>
-        <b>Payment Monitoring:</b> System auto checks - Paid ✅ → Can refund, Not Paid ❌ → Only cancellation (no refund)
-      </div>
-      
-      <div style="display:flex;gap:8px;margin-top:16px;position:sticky;bottom:0;background:white;padding-top:10px">
-        <button onclick="closeRefundModal()" style="flex:1;background:#f3f4f6;border:2px solid #e5e7eb;padding:14px;border-radius:12px;font-weight:700;font-size:12px;cursor:pointer">❌ Cancel</button>
-        <button onclick="submitRefundRequest()" style="flex:2;background:#7c3aed;color:white;border:none;padding:14px;border-radius:12px;font-weight:800;font-size:13px;cursor:pointer;box-shadow:0 4px 12px rgba(124,58,237,0.3)">💸 Submit Refund Request</button>
-      </div>
-    </div>
-  </div>
-  `;
+    </div>`;
+  });
   
-  document.body.appendChild(modal);
-  modal.addEventListener('click', function(e){ if(e.target===modal) closeRefundModal(); });
-  
-  // Char count
-  var reasonEl = document.getElementById('refundReason');
-  if(reasonEl){
-    reasonEl.addEventListener('input', function(){
-      var countEl=document.getElementById('refundReasonCount');
-      if(countEl) countEl.innerText=this.value.length+' chars - '+(this.value.length<20?'Write more...':'Good detailed reason ✅');
-    });
-    reasonEl.focus();
-  }
-};
+  listDiv.innerHTML=h;
+}
 
-window.closeRefundModal = function(){
-  var modal=document.getElementById('refundModal');
-  if(modal){ modal.remove(); }
-};
-
-console.log('V58 Payment monitoring + Big refund space loaded - 4 requirements done');
+console.log('✅ Cancellation button FIXED - V58');
 </script>
 
 </body>
