@@ -4332,5 +4332,209 @@ window.submitRefundRequest = function(){
 console.log('✅ 3 ISSUES FIXED V59:\n1. No refund popup if not paid (only booking) - Fixed\n2. Button to disappear refund page (✕ Close) - Fixed\n3. Big space popup for refund reasons - Fixed');
 </script>
 
+
+<script>
+// ===== BUTTON FOR CLIENTS TO DISAPPEAR HISTORY OF BOOKINGS AFTER LOAD =====
+console.log('Adding Clear History button - Disappear bookings history');
+
+window.clearMyBookingsHistory = function(){
+  console.log('clearMyBookingsHistory clicked');
+  
+  var phoneEl=document.getElementById('myBookPhone');
+  var phone=phoneEl? phoneEl.value.trim() : '';
+  if(!phone){ phone=localStorage.getItem('lastClientPhone')||''; }
+  
+  if(!phone){
+    alert('Enter phone to clear history');
+    return;
+  }
+  
+  if(!confirm('🗑️ CLEAR BOOKINGS HISTORY?\n\nPhone: '+phone+'\n\nAre you sure you want to disappear the history of bookings?\n\n• This will clear all your bookings history from this device\n• Bookings will disappear from MY BOOKINGS list\n• You can still book new nurses\n• In production, bookings remain in Firebase for admin but hidden from your view\n\nContinue?')){
+    return;
+  }
+  
+  var confirm2 = prompt('Type DELETE to confirm clear history:');
+  if(confirm2!=='DELETE'){
+    alert('Cancelled - Type DELETE exactly to confirm');
+    return;
+  }
+  
+  // Clear localStorage
+  try{
+    var localBookings = JSON.parse(localStorage.getItem('localBookings')||'[]');
+    var suffix = phone.replace(/[^0-9]/g,'').slice(-9);
+    var remaining = localBookings.filter(b=> !(b.phone||'').replace(/[^0-9]/g,'').endsWith(suffix) );
+    var removed = localBookings.length - remaining.length;
+    localStorage.setItem('localBookings', JSON.stringify(remaining));
+    
+    // Also clear paidBookings for those IDs
+    var paidBookings = JSON.parse(localStorage.getItem('paidBookings')||'[]');
+    var removedIds = localBookings.filter(b=> (b.phone||'').replace(/[^0-9]/g,'').endsWith(suffix) ).map(b=>b.id);
+    var remainingPaid = paidBookings.filter(id=> !removedIds.includes(id) && !removedIds.includes(id.toString()) );
+    localStorage.setItem('paidBookings', JSON.stringify(remainingPaid));
+    
+    console.log('Cleared', removed, 'bookings from localStorage');
+    
+    // Clear displayed list
+    var listDiv=document.getElementById('myBookingsList');
+    if(listDiv){
+      listDiv.innerHTML='<div style="text-align:center;padding:30px;background:#f0fdf4;border:3px solid #16a34a;border-radius:16px"><div style="font-size:40px">🗑️</div><b style="font-size:16px;color:#065f46">Bookings History Cleared! Disappeared!</b><br><small style="font-size:11px">Cleared '+removed+' bookings for '+phone+'<br>History disappeared from your view<br>You can book new nurses</small><br><br><button onclick="loadMyBookings()" style="background:#16a34a;color:white;border:none;padding:10px 20px;border-radius:10px;font-weight:800;cursor:pointer">🔄 Reload</button><button onclick="showPage(\'home\')" style="background:#2563eb;color:white;border:none;padding:10px 20px;border-radius:10px;font-weight:800;cursor:pointer;margin-left:6px">📅 Book New Nurse</button></div>';
+    }
+    
+    alert('✅ BOOKINGS HISTORY CLEARED! DISAPPEARED!\n\nPhone: '+phone+'\nCleared: '+removed+' bookings\n\nHistory disappeared from MY BOOKINGS list\nYou can now book new nurses with clean history');
+    
+  }catch(e){
+    console.error('Clear history error', e);
+    alert('❌ Error clearing history: '+e.message);
+  }
+};
+
+window.hideMyBookingsHistory = function(){
+  console.log('hideMyBookingsHistory clicked - temporarily disappear');
+  var listDiv=document.getElementById('myBookingsList');
+  if(!listDiv){ alert('No bookings list'); return; }
+  
+  if(listDiv.style.display==='none'){
+    listDiv.style.display='block';
+    var btn=document.getElementById('hideHistoryBtn');
+    if(btn) btn.innerHTML='👁️ Hide - Disappear History';
+  } else {
+    listDiv.style.display='none';
+    var btn=document.getElementById('hideHistoryBtn');
+    if(btn) btn.innerHTML='👁️ Show - Appear History';
+    
+    // Show message where list was
+    var placeholder = document.getElementById('bookingsHiddenPlaceholder');
+    if(!placeholder){
+      placeholder=document.createElement('div');
+      placeholder.id='bookingsHiddenPlaceholder';
+      placeholder.style.cssText='text-align:center;padding:20px;background:#f9fafb;border:2px dashed #9ca3af;border-radius:12px;margin:10px 0';
+      placeholder.innerHTML='<div style="font-size:24px">👁️‍🗨️</div><b>History Hidden - Disappeared</b><br><small>Click Show - Appear History to see bookings again</small>';
+      listDiv.parentNode.insertBefore(placeholder, listDiv.nextSibling);
+    }
+    placeholder.style.display='block';
+  }
+};
+
+// Enhance loadMyBookings to add Clear History buttons
+var _originalRenderForClear = window.loadMyBookings;
+window.loadMyBookings = function(){
+  console.log('loadMyBookings with Clear History buttons');
+  var phoneEl=document.getElementById('myBookPhone');
+  var phone=phoneEl? phoneEl.value.trim() : '';
+  if(!phone){ phone=localStorage.getItem('lastClientPhone')||''; if(phoneEl) phoneEl.value=phone; }
+  if(!phone){ alert('Enter phone to load bookings - Example: 0241234567'); return; }
+  
+  var listDiv=document.getElementById('myBookingsList');
+  if(!listDiv) return;
+  listDiv.style.display='block';
+  var placeholder=document.getElementById('bookingsHiddenPlaceholder');
+  if(placeholder) placeholder.style.display='none';
+  
+  listDiv.innerHTML='<div style="text-align:center;padding:20px"><div style="font-size:24px">⏳</div>Loading bookings for '+phone+'...<br><small>MY BOOKINGS -> Cancel (working) -> Refund (only if paid) -> Big space for reasons -> Fill MoMo/bank -> Submit -> CEO approves</small><br><small>After load, you can clear history with button below</small></div>';
+  
+  // Load bookings (same as before but with clear buttons added after)
+  var allBookings = [];
+  try{
+    var localBookings = JSON.parse(localStorage.getItem('localBookings')||'[]');
+    allBookings = [...localBookings];
+  }catch(e){}
+  
+  var loadAndRender = function(firebaseBookings){
+    var all = [...allBookings, ...firebaseBookings];
+    var map={};
+    all.forEach(b=>{ map[b.id]=b; });
+    var merged = Object.values(map);
+    
+    var suffix = phone.replace(/[^0-9]/g,'').slice(-9);
+    var mine = merged.filter(b=> (b.phone||'').replace(/[^0-9]/g,'').endsWith(suffix) );
+    mine.sort((a,b)=>b.timestamp-a.timestamp);
+    
+    if(mine.length==0){
+      listDiv.innerHTML='<div style="text-align:center;color:#999;padding:20px;border:2px dashed #e5e7eb;border-radius:12px">📭 No bookings for '+phone+'<br><small>Book a nurse first</small></div>';
+      // Still show clear button area
+      addClearHistoryButtons(phone, 0);
+      return;
+    }
+    
+    var h='<div style="background:#eff6ff;border:2px solid #2563eb;border-radius:10px;padding:8px;margin-bottom:10px;font-size:10px;text-align:center"><b>✅ Found '+mine.length+' bookings for '+phone+'</b> - After viewing, you can clear history with buttons below</div>';
+    
+    mine.forEach(b=>{
+      var isPaid = (typeof checkIfPaidForRefund==='function'? checkIfPaidForRefund(b) : (b.isPaid||b.paid||b.paystackRef));
+      var isPending = b.status==='pending_assignment' || b.status==='confirmed' || b.status==='pending_admin_assignment' || b.status==='pending_payment';
+      var isCancelled = b.status==='cancelled_by_client';
+      var isRefundRequested = b.status==='refund_requested';
+      var isRefunded = b.status==='refunded' || b.status==='refund_approved';
+      var statusColor = isPending?'#eab308': isCancelled?'#ef4444': isRefundRequested?'#7c3aed': isRefunded?'#16a34a':'#6b7280';
+      
+      h+=`<div style="border:3px solid ${statusColor};border-radius:16px;padding:12px;margin:12px 0;background:white">
+        <div style="display:flex;justify-content:space-between"><b>#${b.id}</b><div style="display:flex;gap:6px"><span style="padding:4px 10px;border-radius:20px;font-size:10px;font-weight:800;background:${isPaid?'#16a34a':'#9ca3af'};color:white">${isPaid?'PAID ✅':'NOT PAID ❌'}</span><span style="padding:4px 10px;border-radius:20px;font-size:10px;font-weight:800;background:${statusColor};color:white">${(b.status||'').toUpperCase().replace(/_/g,' ')}</span></div></div>
+        <div style="font-size:11px;margin-top:8px;line-height:1.5;background:#f9fafb;border-radius:10px;padding:10px">
+          <div style="display:flex;justify-content:space-between"><span>Service:</span><b>${b.service||''}</b></div>
+          <div style="display:flex;justify-content:space-between"><span>Amount:</span><b style="color:#16a34a">${b.amount||0} ${b.currency||'GHS'} ${isPaid?'(PAID)':'(NOT PAID)'}</b></div>
+          <div style="display:flex;justify-content:space-between"><span>📍 Location:</span><b>${(b.location||'').substring(0,30)}</b></div>
+          <div style="display:flex;justify-content:space-between"><span>Nurse:</span><b>${b.selectedNurse||'Admin'}</b></div>
+          ${b.refundAccount? `<div style="margin-top:6px;padding:6px;background:#f3e8ff;border-radius:8px"><b>💳 Refund to:</b> ${b.refundMethod} - ${b.refundAccount}<br><b>Reason:</b> ${(b.refundReason||'').substring(0,100)}</div>` : ''}
+        </div>
+        <div style="margin-top:10px">
+          ${isPending && isPaid? `<button onclick="cancelBookingClient(${b.id})" style="width:100%;background:#ef4444;color:white;border:none;padding:12px;border-radius:12px;font-weight:800;cursor:pointer">❌ CANCEL THIS BOOKING - Paid → Can Refund After</button>` : ''}
+          ${isPending && !isPaid? `<button onclick="cancelBookingClient(${b.id})" style="width:100%;background:#9ca3af;color:white;border:none;padding:12px;border-radius:12px;font-weight:800;cursor:pointer">❌ CANCEL - Not Paid → Only Cancellation</button><button onclick="payForBooking(${b.id})" style="width:100%;background:#16a34a;color:white;border:none;padding:10px;border-radius:10px;font-weight:800;margin-top:6px;cursor:pointer">💳 Pay Now</button>` : ''}
+          ${isCancelled && isPaid? `<button onclick="openRefundModal(${b.id}, '${b.amount||0} ${b.currency||'GHS'}')" style="width:100%;background:#7c3aed;color:white;border:none;padding:12px;border-radius:12px;font-weight:800;cursor:pointer">💸 REFUND - Fill MoMo/bank - Big Space for Reasons</button>` : ''}
+          ${isCancelled && !isPaid? `<div style="background:#f3f4f6;border-radius:10px;padding:8px;text-align:center;font-size:10px">Cancelled (Not Paid) - Only cancellation, no refund - Issue 1 Fixed</div>` : ''}
+          ${isRefundRequested? `<div style="background:#f3e8ff;border:2px solid #7c3aed;border-radius:10px;padding:8px;text-align:center;font-size:10px"><b>💸 Refund Requested</b><br>Waiting CEO approval - To: ${b.refundMethod} - ${b.refundAccount}</div>` : ''}
+          ${isRefunded? `<div style="background:#dcfce7;border:2px solid #16a34a;border-radius:10px;padding:8px;text-align:center;font-size:10px"><b>✅ Refunded</b> - Sent to ${b.refundMethod}: ${b.refundAccount}</div>` : ''}
+        </div>
+      </div>`;
+    });
+    
+    listDiv.innerHTML=h;
+    addClearHistoryButtons(phone, mine.length);
+  };
+  
+  if(window.db){
+    var suffix = phone.replace(/[^0-9]/g,'').slice(-9);
+    window.db.ref('bookings').once('value').then(snap=>{
+      var firebaseBookings = Object.values(snap.val()||{}).filter(b=> (b.phone||'').replace(/[^0-9]/g,'').endsWith(suffix) );
+      loadAndRender(firebaseBookings);
+    }).catch(e=>{
+      var suffix = phone.replace(/[^0-9]/g,'').slice(-9);
+      var mine = allBookings.filter(b=> (b.phone||'').replace(/[^0-9]/g,'').endsWith(suffix) );
+      loadAndRender([]);
+    });
+  } else {
+    loadAndRender([]);
+  }
+};
+
+function addClearHistoryButtons(phone, count){
+  var listDiv=document.getElementById('myBookingsList');
+  if(!listDiv) return;
+  
+  var existingBtnDiv=document.getElementById('clearHistoryBtnDiv');
+  if(existingBtnDiv) existingBtnDiv.remove();
+  
+  var btnDiv=document.createElement('div');
+  btnDiv.id='clearHistoryBtnDiv';
+  btnDiv.style.cssText='background:linear-gradient(135deg,#fefce8,#fee2e2);border:3px solid #eab308;border-radius:16px;padding:12px;margin:16px 0;text-align:center';
+  btnDiv.innerHTML=`
+    <div style="font-size:14px;font-weight:800;color:#92400e;margin-bottom:8px">🗑️ Bookings History Management</div>
+    <div style="font-size:10px;color:#6b7280;margin-bottom:10px">After client has loaded his booking - Found ${count} bookings for ${phone} - You can disappear history</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button id="hideHistoryBtn" onclick="hideMyBookingsHistory()" style="flex:1;background:#6b7280;color:white;border:none;padding:12px;border-radius:12px;font-weight:800;font-size:11px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.2)">👁️ Hide - Disappear History (Temporary)</button>
+      <button onclick="clearMyBookingsHistory()" style="flex:1;background:#ef4444;color:white;border:none;padding:12px;border-radius:12px;font-weight:800;font-size:11px;cursor:pointer;box-shadow:0 4px 12px rgba(239,68,68,0.3)">🗑️ Clear History - Disappear Bookings Forever</button>
+    </div>
+    <div style="display:flex;gap:6px;margin-top:8px">
+      <button onclick="loadMyBookings()" style="flex:1;background:#16a34a;color:white;border:none;padding:10px;border-radius:10px;font-weight:700;font-size:10px;cursor:pointer">🔄 Reload Bookings</button>
+      <button onclick="showPage('home')" style="flex:1;background:#2563eb;color:white;border:none;padding:10px;border-radius:10px;font-weight:700;font-size:10px;cursor:pointer">📅 Book New Nurse</button>
+    </div>
+    <div style="font-size:9px;color:#9ca3af;margin-top:6px">Hide = Temporary disappear (can show again) | Clear = Forever disappear from this device (admin still has record)</div>
+  `;
+  
+  listDiv.parentNode.insertBefore(btnDiv, listDiv.nextSibling);
+}
+
+console.log('Clear History buttons added - Client can disappear history after load');
+</script>
+
 </body>
 </html>
