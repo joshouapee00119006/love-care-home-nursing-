@@ -2141,24 +2141,86 @@ window.payWithPaystack = function(){
 };
 
 window.loadMyBookings = function(){
-  console.log('loadMyBookings clicked');
+  console.log('loadMyBookings clicked - with Cancel->Refund flow');
   var phoneEl=document.getElementById('myBookPhone'); var phone=phoneEl? phoneEl.value.trim() : '';
   if(!phone){ phone=localStorage.getItem('lastClientPhone')||''; if(phoneEl) phoneEl.value=phone; }
   if(!phone){ alert('Enter your phone to load bookings'); return; }
-  var listDiv=document.getElementById('myBookingsList'); if(listDiv) listDiv.innerHTML='Loading bookings for '+phone+'...';
-  if(!window.db){ if(listDiv) listDiv.innerHTML='Firebase not connected - Demo mode'; return; }
+  var listDiv=document.getElementById('myBookingsList'); if(listDiv) listDiv.innerHTML='Loading bookings for '+phone+'... MY BOOKINGS -> Cancel -> Refund -> Fill MoMo/bank -> Submit -> CEO approves';
+  if(!window.db){
+    // Demo mode with full flow
+    try{
+      var localBookings = JSON.parse(localStorage.getItem('localBookings')||'[]');
+      var suffix = phone.replace(/[^0-9]/g,'').slice(-9);
+      var mine = localBookings.filter(b=> (b.phone||'').replace(/[^0-9]/g,'').endsWith(suffix) );
+      mine.sort((a,b)=>b.timestamp-a.timestamp);
+      if(mine.length==0){ if(listDiv) listDiv.innerHTML='<div style="text-align:center;color:#999;padding:20px">No bookings for '+phone+'<br><small>Demo: Book a nurse first - Then flow: MY BOOKINGS -> Cancel -> Refund -> Fill MoMo/bank -> Submit</small></div>'; return; }
+      var h='<div style="background:#eff6ff;border:2px solid #2563eb;border-radius:10px;padding:8px;margin-bottom:10px;font-size:10px"><b>Flow:</b> MY BOOKINGS -> Cancel -> Refund -> Fill MoMo/bank -> Submit -> CEO approves (like Uber refund)</div>';
+      mine.forEach(b=>{
+        var isPending = b.status==='pending_assignment' || b.status==='confirmed';
+        var isCancelled = b.status==='cancelled_by_client';
+        var isRefundRequested = b.status==='refund_requested';
+        var isRefunded = b.status==='refunded' || b.status==='refund_approved';
+        h+=`<div style="border:3px solid ${isPending?'#eab308': isCancelled?'#ef4444': isRefundRequested?'#7c3aed': isRefunded?'#16a34a':'#e5e7eb'};border-radius:16px;padding:12px;margin:10px 0;background:white;box-shadow:0 2px 8px rgba(0,0,0,0.1)">
+          <div style="display:flex;justify-content:space-between;align-items:center"><b>#${b.id}</b><span style="padding:4px 10px;border-radius:20px;font-size:10px;font-weight:800;background:${isPending?'#eab308': isCancelled?'#ef4444': isRefundRequested?'#7c3aed': isRefunded?'#16a34a':'#6b7280'};color:white">${(b.status||'').toUpperCase()}</span></div>
+          <div style="font-size:11px;margin-top:8px;line-height:1.5">
+            <b>Service:</b> ${b.service} - <b style="color:#16a34a">${b.amount} ${b.currency}</b><br>
+            <b>📍 Location:</b> ${b.location||''}<br>
+            <b>⏰ Time:</b> ${b.time||''}<br>
+            <b>Nurse:</b> ${b.selectedNurse||'Admin will assign'}<br>
+          </div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px">
+            ${isPending? `<button onclick="cancelBookingClient(${b.id})" style="flex:1;background:#ef4444;color:white;border:none;padding:10px;border-radius:10px;font-weight:800;cursor:pointer">❌ Cancel Booking</button>` : ''}
+            ${isCancelled? `<button onclick="openRefundModal(${b.id}, '${b.amount} ${b.currency}')" style="flex:1;background:#7c3aed;color:white;border:none;padding:10px;border-radius:10px;font-weight:800;cursor:pointer">💸 Refund - Fill MoMo/bank</button>` : ''}
+            ${isRefundRequested? `<div style="flex:1;background:#f3e8ff;border:2px solid #7c3aed;border-radius:10px;padding:8px;text-align:center;font-size:10px"><b>💸 Refund Requested</b><br>Waiting CEO approval<br>MoMo: ${b.refundAccount||''}</div>` : ''}
+            ${isRefunded? `<div style="flex:1;background:#dcfce7;border:2px solid #16a34a;border-radius:10px;padding:8px;text-align:center;font-size:10px"><b>✅ Refunded</b><br>Money sent to ${b.refundMethod||''}: ${b.refundAccount||''}</div>` : ''}
+          </div>
+          <div style="font-size:9px;color:#6b7280;margin-top:6px;text-align:center">Flow: MY BOOKINGS -> ${isPending?'Cancel': isCancelled?'Refund -> Fill MoMo/bank -> Submit': isRefundRequested?'CEO approves': isRefunded?'Done ✅':'...'} </div>
+        </div>`;
+      });
+      if(listDiv) listDiv.innerHTML=h;
+    }catch(e){
+      if(listDiv) listDiv.innerHTML='Demo mode - Error: '+e.message;
+    }
+    return;
+  }
   var suffix = phone.replace(/[^0-9]/g,'').slice(-9);
   window.db.ref('bookings').once('value').then(snap=>{
     var all = Object.values(snap.val()||{});
     var mine = all.filter(b=> (b.phone||'').replace(/[^0-9]/g,'').endsWith(suffix) );
     mine.sort((a,b)=>b.timestamp-a.timestamp);
     if(mine.length==0){ if(listDiv) listDiv.innerHTML='<div style="text-align:center;color:#999;padding:10px">No bookings for '+phone+'</div>'; return; }
-    var h=''; mine.forEach(b=>{
-      h+=`<div style="border:2px solid #16a34a;border-radius:10px;padding:10px;margin:6px 0;background:white"><b>#${b.id}</b> - ${b.service} - ${b.amount} ${b.currency}<br>📍 ${b.location||''}<br>⏰ ${b.time||''}<br>Status: <span style="background:#fef3c7;padding:2px 8px;border-radius:10px">${b.status||''}</span></div>`;
+    var h='<div style="background:#eff6ff;border:2px solid #2563eb;border-radius:10px;padding:8px;margin-bottom:10px;font-size:10px"><b>Flow:</b> MY BOOKINGS -> Cancel -> Refund -> Fill MoMo/bank -> Submit -> CEO approves (like Uber refund)</div>';
+    mine.forEach(b=>{
+      var isPending = b.status==='pending_assignment' || b.status==='confirmed';
+      var isCancelled = b.status==='cancelled_by_client';
+      var isRefundRequested = b.status==='refund_requested';
+      var isRefunded = b.status==='refunded' || b.status==='refund_approved';
+      var isRefundRejected = b.status==='refund_rejected';
+      
+      h+=`<div style="border:3px solid ${isPending?'#eab308': isCancelled?'#ef4444': isRefundRequested?'#7c3aed': isRefunded?'#16a34a': isRefundRejected?'#ef4444':'#e5e7eb'};border-radius:16px;padding:12px;margin:10px 0;background:white;box-shadow:0 2px 8px rgba(0,0,0,0.1)">
+        <div style="display:flex;justify-content:space-between;align-items:center"><b>#${b.id}</b><span style="padding:4px 10px;border-radius:20px;font-size:10px;font-weight:800;background:${isPending?'#eab308': isCancelled?'#ef4444': isRefundRequested?'#7c3aed': isRefunded?'#16a34a': isRefundRejected?'#ef4444':'#6b7280'};color:white">${(b.status||'').toUpperCase()}</span></div>
+        <div style="font-size:11px;margin-top:8px;line-height:1.5">
+          <b>Service:</b> ${b.service} - <b style="color:#16a34a">${b.amount} ${b.currency||'GHS'}</b><br>
+          <b>📍 Location:</b> ${b.location||''}<br>
+          <b>⏰ Time:</b> ${b.time||''}<br>
+          <b>Nurse:</b> ${b.selectedNurse||'Admin will assign'}<br>
+          ${b.refundAccount? `<b>💳 Refund to:</b> ${b.refundMethod||''} - ${b.refundAccount} (${b.refundAccountName||''})<br>` : ''}
+          ${b.refundReason? `<b>Reason:</b> ${b.refundReason}<br>` : ''}
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px">
+          ${isPending? `<button onclick="cancelBookingClient(${b.id})" style="flex:1;background:#ef4444;color:white;border:none;padding:10px;border-radius:10px;font-weight:800;cursor:pointer">❌ Cancel Booking</button>` : ''}
+          ${isCancelled? `<button onclick="openRefundModal(${b.id}, '${b.amount} ${b.currency||'GHS'}')" style="flex:1;background:#7c3aed;color:white;border:none;padding:10px;border-radius:10px;font-weight:800;cursor:pointer">💸 Refund - Fill MoMo/bank -> Submit</button>` : ''}
+          ${isRefundRequested? `<div style="flex:1;background:#f3e8ff;border:2px solid #7c3aed;border-radius:10px;padding:8px;text-align:center;font-size:10px"><b>💸 Refund Requested</b><br>Waiting CEO approval<br>To: ${b.refundMethod||''} - ${b.refundAccount||''}</div>` : ''}
+          ${isRefunded? `<div style="flex:1;background:#dcfce7;border:2px solid #16a34a;border-radius:10px;padding:8px;text-align:center;font-size:10px"><b>✅ Refunded</b><br>Money sent to ${b.refundMethod||''}: ${b.refundAccount||''}<br>Amount: ${b.amount} ${b.currency||''}</div>` : ''}
+          ${isRefundRejected? `<div style="flex:1;background:#fee2e2;border:2px solid #ef4444;border-radius:10px;padding:8px;text-align:center;font-size:10px"><b>❌ Refund Rejected</b><br>Reason: ${b.refundRejectReason||''}</div>` : ''}
+        </div>
+        <div style="font-size:9px;color:#6b7280;margin-top:6px;text-align:center">Flow: MY BOOKINGS -> ${isPending?'Cancel': isCancelled?'Refund -> Fill MoMo/bank -> Submit': isRefundRequested?'CEO approves': isRefunded?'Done ✅': isRefundRejected?'Rejected':'...'} </div>
+      </div>`;
     });
     if(listDiv) listDiv.innerHTML=h;
   });
 };
+
 
 // Auto init on load
 window.addEventListener('load', function(){
@@ -3080,6 +3142,337 @@ document.addEventListener('DOMContentLoaded', function(){
   
   console.log('Booking form persistence enabled - Your name/phone will NOT be cleared when selecting nurse');
 });
+</script>
+
+
+<script>
+// ===== FLOW 1: MY BOOKINGS -> CANCEL -> REFUND -> FILL MOMO/BANK -> SUBMIT -> CEO APPROVES =====
+
+window.cancelBookingClient = function(id){
+  console.log('Cancel booking client', id);
+  if(!confirm('❌ Cancel Booking?\n\nAre you sure you want to cancel this booking?\n\nIf you paid, you can request refund after cancelling.')) return;
+  
+  if(!window.db){
+    alert('Demo mode - Booking cancelled locally. In production, status would be cancelled_by_client and refund button would appear');
+    // Update local storage
+    try{
+      var localBookings = JSON.parse(localStorage.getItem('localBookings')||'[]');
+      var b = localBookings.find(x=>x.id==id);
+      if(b){ b.status='cancelled_by_client'; b.cancelTime=Date.now(); localStorage.setItem('localBookings', JSON.stringify(localBookings)); }
+    }catch(e){}
+    if(typeof loadMyBookings==='function') loadMyBookings();
+    return;
+  }
+  
+  window.db.ref('bookings/'+id).once('value').then(snap=>{
+    var booking = snap.val();
+    if(!booking){ alert('Booking not found'); return; }
+    if(booking.status==='cancelled_by_client'){ alert('Already cancelled - Now you can request refund'); openRefundModal(id, booking.amount+' '+(booking.currency||'GHS')); return; }
+    if(booking.status==='refund_requested'){ alert('Refund already requested - Waiting CEO approval'); return; }
+    
+    window.db.ref('bookings/'+id).update({
+      status: 'cancelled_by_client',
+      cancelTime: Date.now(),
+      cancelBy: 'client'
+    }).then(()=>{
+      alert('✅ Booking Cancelled Successfully!\n\nBooking ID: '+id+'\n\nNext: Click 💸 REFUND button to request refund of your money.\nFlow: MY BOOKINGS -> Cancel -> Refund -> Fill MoMo/bank -> Submit -> CEO approves');
+      
+      // Show refund button immediately
+      setTimeout(()=>{
+        if(confirm('Booking cancelled! Do you want to request REFUND now?\n\nFill MoMo/bank details to get your money back. CEO will approve.')){
+          openRefundModal(id, booking.amount+' '+(booking.currency||'GHS'));
+        } else {
+          if(typeof loadMyBookings==='function') loadMyBookings();
+        }
+      }, 500);
+    });
+  });
+};
+
+window.openRefundModal = function(id, amountStr){
+  console.log('Open refund modal', id, amountStr);
+  window.currentRefundBookingId = id;
+  
+  var modal = document.getElementById('refundModal');
+  if(!modal){
+    // Create modal if not exists
+    modal = document.createElement('div');
+    modal.id='refundModal';
+    modal.style.cssText='position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);z-index:9999;display:flex;align-items:center;justify-content:center;padding:10px';
+    modal.innerHTML = `
+    <div style="background:white;border-radius:20px;max-width:450px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 10px 40px rgba(0,0,0,0.5)">
+      <div style="background:linear-gradient(90deg,#7c3aed,#2563eb);color:white;padding:16px;border-radius:20px 20px 0 0;text-align:center">
+        <div style="font-size:28px">💸</div>
+        <h2 style="margin:8px 0 0 0;font-size:16px">Request Refund - Fill MoMo/Bank</h2>
+        <small>CEO will approve - Money back to your account</small>
+      </div>
+      <div style="padding:20px">
+        <div style="background:#f9fafb;border:2px solid #e5e7eb;border-radius:12px;padding:10px;margin-bottom:12px;font-size:11px">
+          <div style="display:flex;justify-content:space-between"><span>Booking ID:</span><b id="refundBookingId">${id}</b></div>
+          <div style="display:flex;justify-content:space-between"><span>Amount to refund:</span><b id="refundBookingAmount" style="color:#16a34a">${amountStr}</b></div>
+          <div style="margin-top:6px;font-size:10px;color:#6b7280">Flow: MY BOOKINGS -> Cancel -> Refund -> Fill MoMo/bank -> Submit -> CEO approves</div>
+        </div>
+        
+        <label style="font-size:11px;font-weight:800;color:#111827;display:block;margin-bottom:4px">💬 Reason for refund (required)</label>
+        <textarea id="refundReason" placeholder="Why do you want refund? Example: Nurse not available, changed mind, emergency, etc." style="width:100%;min-height:80px;padding:10px;border:2px solid #e5e7eb;border-radius:10px;font-size:11px;resize:vertical"></textarea>
+        
+        <label style="font-size:11px;font-weight:800;color:#111827;display:block;margin:12px 0 4px 0">💳 Refund to MoMo / Bank / Account (required)</label>
+        <select id="refundMethod" onchange="updateRefundAccountPlaceholder()" style="width:100%;padding:10px;border:2px solid #e5e7eb;border-radius:10px;font-size:11px;margin-bottom:8px">
+          <option value="">-- Select refund method --</option>
+          <option value="MTN MoMo">📱 MTN MoMo - Ghana</option>
+          <option value="Vodafone Cash">📱 Vodafone Cash - Ghana</option>
+          <option value="AirtelTigo Money">📱 AirtelTigo Money - Ghana</option>
+          <option value="Bank Account">🏦 Bank Account</option>
+          <option value="PayPal">💳 PayPal</option>
+          <option value="Other">💰 Other</option>
+        </select>
+        
+        <input id="refundAccount" placeholder="MoMo number / Bank account number - Example: 0241234567" style="width:100%;padding:10px;border:2px solid #16a34a;border-radius:10px;font-size:11px;margin-bottom:8px">
+        
+        <input id="refundAccountName" placeholder="Account name - Example: John Mensah (name on MoMo/bank)" style="width:100%;padding:10px;border:2px solid #e5e7eb;border-radius:10px;font-size:11px;margin-bottom:8px">
+        
+        <div style="background:#fffbeb;border:2px dashed #eab308;border-radius:10px;padding:8px;margin:8px 0;font-size:10px">
+          <b>⚠️ Refund Process:</b><br>
+          1️⃣ You fill MoMo/bank details above<br>
+          2️⃣ Click Submit → Status: refund_requested<br>
+          3️⃣ CEO reviews in CEO Dashboard → Refunds tab<br>
+          4️⃣ CEO approves → Status: refund_approved → refunded<br>
+          5️⃣ Money sent to your MoMo/bank
+        </div>
+        
+        <div style="display:flex;gap:8px;margin-top:12px">
+          <button onclick="closeRefundModal()" style="flex:1;background:#f3f4f6;border:2px solid #e5e7eb;padding:12px;border-radius:12px;font-weight:700;font-size:12px;cursor:pointer">❌ Cancel</button>
+          <button onclick="submitRefundRequest()" style="flex:2;background:#7c3aed;color:white;border:none;padding:12px;border-radius:12px;font-weight:800;font-size:12px;cursor:pointer">💸 Submit Refund Request</button>
+        </div>
+        
+        <div style="text-align:center;margin-top:8px;font-size:9px;color:#9ca3af">CEO approves refunds - Money back guaranteed like Uber refund flow</div>
+      </div>
+    </div>
+    `;
+    document.body.appendChild(modal);
+    modal.addEventListener('click', function(e){ if(e.target===modal) closeRefundModal(); });
+  }
+  
+  // Update existing modal elements if it already exists
+  var idEl = document.getElementById('refundBookingId');
+  var amountEl = document.getElementById('refundBookingAmount');
+  if(idEl) idEl.innerText=id;
+  if(amountEl) amountEl.innerText=amountStr;
+  
+  modal.classList.remove('hidden');
+  modal.style.display='flex';
+};
+
+window.updateRefundAccountPlaceholder = function(){
+  var method = document.getElementById('refundMethod')?.value;
+  var accountInput = document.getElementById('refundAccount');
+  if(!accountInput) return;
+  
+  if(method==='MTN MoMo' || method==='Vodafone Cash' || method==='AirtelTigo Money'){
+    accountInput.placeholder='MoMo number - Example: 0241234567';
+  } else if(method==='Bank Account'){
+    accountInput.placeholder='Bank account number - Example: 1234567890 + Bank name';
+  } else if(method==='PayPal'){
+    accountInput.placeholder='PayPal email - Example: john@gmail.com';
+  } else {
+    accountInput.placeholder='Account number / details';
+  }
+};
+
+window.closeRefundModal = function(){
+  var modal=document.getElementById('refundModal');
+  if(modal){ modal.classList.add('hidden'); modal.style.display='none'; }
+};
+
+window.submitRefundRequest = function(){
+  var reasonEl=document.getElementById('refundReason');
+  var methodEl=document.getElementById('refundMethod');
+  var accountEl=document.getElementById('refundAccount');
+  var accountNameEl=document.getElementById('refundAccountName');
+  
+  var reason=reasonEl? reasonEl.value.trim() : '';
+  var method=methodEl? methodEl.value : '';
+  var account=accountEl? accountEl.value.trim() : '';
+  var accountName=accountNameEl? accountNameEl.value.trim() : '';
+  
+  if(!reason){ alert('Please enter reason for refund'); if(reasonEl) reasonEl.focus(); return; }
+  if(!method){ alert('Please select refund method: MoMo, Bank, etc.'); if(methodEl) methodEl.focus(); return; }
+  if(!account){ alert('Please enter MoMo number / Bank account number where you want refund'); if(accountEl) accountEl.focus(); return; }
+  if(!accountName){ alert('Please enter account name (name on MoMo/bank)'); if(accountNameEl) accountNameEl.focus(); return; }
+  
+  var bookingId = window.currentRefundBookingId;
+  if(!bookingId){ alert('Booking ID missing'); return; }
+  
+  if(!window.db){
+    alert('Demo mode - Refund request submitted locally\n\nBooking: '+bookingId+'\nReason: '+reason+'\nMethod: '+method+'\nAccount: '+account+' ('+accountName+')\n\nIn production, CEO would approve in CEO Dashboard -> Refunds tab');
+    closeRefundModal();
+    return;
+  }
+  
+  window.db.ref('bookings/'+bookingId).once('value').then(snap=>{
+    var booking = snap.val();
+    if(!booking){ alert('Booking not found'); return; }
+    
+    var update = {
+      status: 'refund_requested',
+      refundReason: reason,
+      refundMethod: method,
+      refundAccount: account,
+      refundAccountName: accountName,
+      refundRequestTime: Date.now(),
+      refundAmount: booking.amount,
+      refundCurrency: booking.currency
+    };
+    
+    window.db.ref('bookings/'+bookingId).update(update).then(()=>{
+      window.db.ref('refunds/'+bookingId).set({...booking, ...update}).then(()=>{
+        alert('✅ Refund Request Submitted!\n\nBooking: #'+bookingId+'\nAmount: '+booking.amount+' '+(booking.currency||'GHS')+'\nReason: '+reason+'\nRefund to: '+method+' - '+account+' ('+accountName+')\n\nCEO will approve in CEO Dashboard -> Refunds tab -> Status will become refund_approved -> refunded -> Money sent to your '+method);
+        closeRefundModal();
+        if(typeof loadMyBookings==='function') loadMyBookings();
+      });
+    });
+  });
+};
+
+// ===== CEO REFUND APPROVAL FLOW =====
+
+window.approveRefund = function(bookingId){
+  if(!confirm('✅ Approve Refund?\n\nBooking: #'+bookingId+'\n\nThis will mark as refund_approved and then refunded. Money will be sent to client MoMo/bank.\n\nContinue?')) return;
+  
+  if(!window.db){ alert('Demo - Refund approved'); return; }
+  
+  window.db.ref('bookings/'+bookingId).once('value').then(snap=>{
+    var b=snap.val();
+    if(!b){ alert('Not found'); return; }
+    
+    window.db.ref('bookings/'+bookingId).update({
+      status: 'refund_approved',
+      refundApprovedTime: Date.now(),
+      refundApprovedBy: 'CEO'
+    }).then(()=>{
+      setTimeout(()=>{
+        window.db.ref('bookings/'+bookingId).update({
+          status: 'refunded',
+          refundedTime: Date.now()
+        });
+        window.db.ref('refunds/'+bookingId).update({
+          status: 'refunded',
+          refundedTime: Date.now()
+        });
+        alert('✅ Refund Approved & Processed!\n\nBooking #'+bookingId+'\nAmount: '+b.amount+' '+b.currency+'\nSent to: '+b.refundMethod+' - '+b.refundAccount+' ('+b.refundAccountName+')\n\nClient will see status: refunded');
+        if(typeof loadCeoData==='function') loadCeoData();
+      }, 1000);
+    });
+  });
+};
+
+window.rejectRefund = function(bookingId){
+  var reason = prompt('❌ Reject Refund - Reason:\n\nWhy rejecting refund?');
+  if(reason===null) return;
+  if(!reason.trim()){ alert('Enter reason'); return; }
+  
+  if(!window.db){ alert('Demo - Refund rejected: '+reason); return; }
+  
+  window.db.ref('bookings/'+bookingId).update({
+    status: 'refund_rejected',
+    refundRejectReason: reason,
+    refundRejectedTime: Date.now()
+  }).then(()=>{
+    window.db.ref('refunds/'+bookingId).update({
+      status: 'refund_rejected',
+      refundRejectReason: reason
+    });
+    alert('Refund rejected: '+reason);
+    if(typeof loadCeoData==='function') loadCeoData();
+  });
+};
+
+// ===== FLOW 2: BUTTON TO REFRESH NEW COMMUNICATION WITH BOT HELP =====
+
+window.refreshBotHelp = function(){
+  console.log('Refresh Bot Help communication');
+  
+  var botHelpSection = document.getElementById('botHelpSection') || document.getElementById('page-help');
+  var helpChatBox = document.getElementById('helpChatBox') || document.getElementById('globalChatBox');
+  
+  // Show loading
+  var statusEl = document.getElementById('botHelpStatus');
+  if(statusEl){
+    statusEl.innerHTML='🔄 Refreshing Bot Help communication...';
+    statusEl.style.background='#dbeafe';
+  }
+  
+  // Clear and reload bot messages
+  if(helpChatBox){
+    helpChatBox.innerHTML='<div style="text-align:center;padding:20px;color:#6b7280"><div style="font-size:24px">🤖</div><div style="font-weight:800;margin-top:8px">Refreshing Bot Help...</div><small>Loading new communication with Bot</small></div>';
+  }
+  
+  // Simulate bot help refresh with new messages
+  setTimeout(function(){
+    var botMessages = [
+      {role: 'BOT', text: '👋 Hello! I am LOVE CARE Bot Help - Refreshed! How can I help you today?\n\nI can help with:\n• Booking a nurse\n• Cancel & Refund flow: MY BOOKINGS -> Cancel -> Refund -> Fill MoMo/bank -> CEO approves\n• Map auto zoom like Uber\n• Video profiles', time: new Date().toLocaleTimeString()},
+      {role: 'BOT', text: '💡 New: When you book a nurse, nurse gets strong notification (Sound + Vibration + Popup) like Uber driver and can Accept/Reject at his portal', time: new Date().toLocaleTimeString()},
+      {role: 'BOT', text: '🗺️ Tip: Use map auto-locate like Uber - Shows 20 nurses around Accra, tap nurse pin to see 1-min video + written profile aligned with CV before booking', time: new Date().toLocaleTimeString()}
+    ];
+    
+    if(helpChatBox){
+      var h='';
+      botMessages.forEach(m=>{
+        h+=`<div style="border:2px solid #2563eb;border-radius:12px;padding:10px;margin:8px 0;background:#eff6ff"><div style="display:flex;justify-content:space-between"><b>🤖 BOT HELP</b><small>${m.time}</small></div><div style="font-size:11px;margin-top:6px;white-space:pre-wrap">${m.text}</div></div>`;
+      });
+      h+=`<div style="text-align:center;margin-top:10px"><button onclick="refreshBotHelp()" style="background:#2563eb;color:white;border:none;padding:10px 20px;border-radius:20px;font-weight:800;cursor:pointer">🔄 Refresh New Communication with Bot Help</button></div>`;
+      helpChatBox.innerHTML=h;
+    }
+    
+    if(statusEl){
+      statusEl.innerHTML='✅ Bot Help refreshed - New communication loaded at '+new Date().toLocaleTimeString();
+      statusEl.style.background='#dcfce7';
+    }
+    
+    // Also refresh global chat if available
+    if(typeof loadGlobalChat==='function'){
+      try{ loadGlobalChat(); }catch(e){}
+    }
+    
+    console.log('Bot Help refreshed');
+  }, 1000);
+};
+
+window.clearBotHelpChat = function(){
+  if(!confirm('Clear Bot Help chat?')) return;
+  var helpChatBox = document.getElementById('helpChatBox') || document.getElementById('globalChatBox');
+  if(helpChatBox) helpChatBox.innerHTML='<div style="text-align:center;padding:20px;color:#999">Chat cleared - Click Refresh to get new communication with Bot Help</div>';
+};
+
+// Enhanced help page with refresh button
+document.addEventListener('DOMContentLoaded', function(){
+  setTimeout(function(){
+    var helpPage = document.getElementById('page-help');
+    if(helpPage){
+      // Add refresh button to help page if not exists
+      if(!document.getElementById('refreshBotHelpBtn')){
+        var header = helpPage.querySelector('h2');
+        if(header){
+          var btnDiv = document.createElement('div');
+          btnDiv.style.cssText='display:flex;gap:8px;margin:10px 0;flex-wrap:wrap';
+          btnDiv.innerHTML=`
+            <button id="refreshBotHelpBtn" onclick="refreshBotHelp()" style="flex:1;background:#2563eb;color:white;border:none;padding:12px;border-radius:12px;font-weight:800;cursor:pointer">🔄 Refresh New Communication with Bot Help</button>
+            <button onclick="clearBotHelpChat()" style="background:#f3f4f6;border:2px solid #e5e7eb;padding:12px;border-radius:12px;font-weight:700;cursor:pointer">🗑 Clear</button>
+          `;
+          header.parentNode.insertBefore(btnDiv, header.nextSibling);
+          
+          var statusDiv = document.createElement('div');
+          statusDiv.id='botHelpStatus';
+          statusDiv.style.cssText='background:#f0fdf4;border:2px solid #16a34a;border-radius:10px;padding:8px;margin:8px 0;font-size:10px;text-align:center';
+          statusDiv.innerHTML='🤖 Bot Help ready - Click Refresh to get new communication';
+          btnDiv.parentNode.insertBefore(statusDiv, btnDiv.nextSibling);
+        }
+      }
+    }
+  }, 1500);
+});
+
+console.log('Cancel->Refund flow + Bot Help refresh loaded');
 </script>
 
 </body>
