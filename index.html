@@ -17,6 +17,7 @@
 <script src="https://js.paystack.co/v1/inline.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap');
 *{box-sizing:border-box} body{margin:0;font-family:'Poppins',sans-serif;background:#f0fdf4;padding-bottom:115px}
@@ -525,7 +526,7 @@ This will be shown to clients when they select you on map with your video." styl
 </div>
 
 <input id="nRegExperience" type="number" placeholder="Years">
-<input id="nRegExperience" type="number" placeholder="Years"><select id="nRegSpecialty"><option value="">-- Specialty (13) --</option><option>General Nurse</option><option>Elderly Care</option><option>Baby Care and Nanny</option><option>Hospital Support</option><option>Post-Surgery Care</option><option>Disability Support</option><option>Maternity Care</option><option>Night Nurse</option><option>Palliative Care</option><option>Physiotherapy</option><option>Injection and Wound Care</option><option>Diabetes Monitoring</option><option>Dementia Care</option><option>Child Special Needs Care</option></select><button class="btnSubmit" onclick="registerNurse()">Register</button><div style="text-align:center;margin-top:10px"><button class="btnSmall" style="background:#2563eb;color:white" onclick="showPage('nurse-public')">Already Registered? Login Here</button></div></div></div>
+<input id="nRegExperience" type="number" placeholder="Years"><select id="nRegSpecialty"><option value="">-- Specialty (13) --</option><option>General Nurse</option><option>Elderly Care</option><option>Baby Care and Nanny</option><option>Hospital Support</option><option>Post-Surgery Care</option><option>Disability Support</option><option>Maternity Care</option><option>Night Nurse</option><option>Palliative Care</option><option>Physiotherapy</option><option>Injection and Wound Care</option><option>Diabetes Monitoring</option><option>Dementia Care</option><option>Child Special Needs Care</option></select><div id="nRegStatus" style="display:none;background:#eff6ff;border:2px solid #2563eb;border-radius:10px;padding:10px;margin:8px 0;font-size:11px;font-weight:700"></div><button class="btnSubmit" onclick="registerNurse()">Register - Upload All to Firebase Storage</button><div style="text-align:center;margin-top:10px"><button class="btnSmall" style="background:#2563eb;color:white" onclick="showPage('nurse-public')">Already Registered? Login Here</button></div></div></div>
 <div id="page-booking-public" class="page">
 <div class="card" style="border:3px solid #2563eb">
 <h2>💡 LOVE CARE HELP CENTER - How To Use The App</h2>
@@ -1308,10 +1309,15 @@ function registerNurse(){
   var idType=document.getElementById('nRegNationalIDType')?document.getElementById('nRegNationalIDType').value:'';
   var idNumber=document.getElementById('nRegNationalIDNumber')?document.getElementById('nRegNationalIDNumber').value.trim():'';
   var profile=document.getElementById('nRegProfile')?document.getElementById('nRegProfile').value.trim():'';
+  var exp=document.getElementById('nRegExperience')?document.getElementById('nRegExperience').value.trim():'';
   
   if(!name||!fullPhone||!pass||!loc){alert('All required: Name, Phone, Password, Location');return;}
   if(!idType||!idNumber){alert('⚠️ National ID Required!\n\nPlease select National ID Type (Ghana Card, Passport, etc) and enter ID Number');return;}
   if(!nurseRegLat){alert('GPS required - Tap GPS Auto');return;}
+  
+  var phoneKey=fullPhone.replace(/[^0-9]/g,'');
+  var statusEl=document.getElementById('nRegStatus');
+  if(statusEl){ statusEl.innerHTML='⏳ Uploading files to Firebase Storage...'; statusEl.style.display='block'; }
   
   var w={
     name:name,
@@ -1324,26 +1330,93 @@ function registerNurse(){
     status:'pending_verification',
     onDuty:false,
     specialty:specialty,
+    experience:exp,
     nationalIDType:idType,
     nationalIDNumber:idNumber,
     profile:profile,
     verificationStatus:'pending',
     hasNationalID:true,
-    hasPhoto: document.getElementById('nRegPhoto') && document.getElementById('nRegPhoto').files.length>0,
-    hasCV: document.getElementById('nRegCV') && document.getElementById('nRegCV').files.length>0,
-    hasPIN: document.getElementById('nRegPINPhoto') && document.getElementById('nRegPINPhoto').files.length>0,
-    hasIDFront: document.getElementById('nRegNationalIDFront') && document.getElementById('nRegNationalIDFront').files.length>0,
-    hasIDBack: document.getElementById('nRegNationalIDBack') && document.getElementById('nRegNationalIDBack').files.length>0
+    hasPhoto:false,
+    hasCV:false,
+    hasPIN:false,
+    hasIDFront:false,
+    hasIDBack:false,
+    hasVideo:false,
+    photoUrl:'',
+    cvUrl:'',
+    pinUrl:'',
+    nationalIDFrontUrl:'',
+    nationalIDBackUrl:'',
+    videoUrl:''
   };
   
-  if(db) db.ref('workers/'+fullPhone.replace(/[^0-9]/g,'')).set(w).then(()=>{
-    alert('✅ Registered Successfully with National ID!\n\nName: '+name+'\nID Type: '+idType+'\nID Number: '+idNumber+'\n\nYour National ID will be verified by Admin.\nStatus: Pending Verification\n\nNow login after verification.');
-    showPage('nurse-login');
-  });
-  else {
-    alert('✅ Registered (Demo) with National ID: '+idType+' - '+idNumber);
-    showPage('nurse-login');
+  var filesToUpload=[];
+  var photoFile=document.getElementById('nRegPhoto')?document.getElementById('nRegPhoto').files[0]:null;
+  var cvFile=document.getElementById('nRegCV')?document.getElementById('nRegCV').files[0]:null;
+  var pinFile=document.getElementById('nRegPINPhoto')?document.getElementById('nRegPINPhoto').files[0]:null;
+  var idFrontFile=document.getElementById('nRegNationalIDFront')?document.getElementById('nRegNationalIDFront').files[0]:null;
+  var idBackFile=document.getElementById('nRegNationalIDBack')?document.getElementById('nRegNationalIDBack').files[0]:null;
+  var videoFile=document.getElementById('nRegVideo')?document.getElementById('nRegVideo').files[0]:null;
+  
+  if(photoFile) filesToUpload.push({file:photoFile, path:'nurses/'+phoneKey+'/photo_'+Date.now()+'.jpg', key:'photoUrl', hasKey:'hasPhoto'});
+  if(cvFile) filesToUpload.push({file:cvFile, path:'nurses/'+phoneKey+'/cv_'+Date.now()+'_'+cvFile.name, key:'cvUrl', hasKey:'hasCV'});
+  if(pinFile) filesToUpload.push({file:pinFile, path:'nurses/'+phoneKey+'/pin_'+Date.now()+'.jpg', key:'pinUrl', hasKey:'hasPIN'});
+  if(idFrontFile) filesToUpload.push({file:idFrontFile, path:'nurses/'+phoneKey+'/nationalID_front_'+Date.now()+'.jpg', key:'nationalIDFrontUrl', hasKey:'hasIDFront'});
+  if(idBackFile) filesToUpload.push({file:idBackFile, path:'nurses/'+phoneKey+'/nationalID_back_'+Date.now()+'.jpg', key:'nationalIDBackUrl', hasKey:'hasIDBack'});
+  if(videoFile) filesToUpload.push({file:videoFile, path:'nurses/'+phoneKey+'/intro_video_'+Date.now()+'.mp4', key:'videoUrl', hasKey:'hasVideo'});
+  
+  if(filesToUpload.length===0){
+    alert('⚠️ Please upload at least Photo, National ID Front/Back');
+    if(statusEl) statusEl.innerHTML='❌ Upload at least Photo + National ID';
+    return;
   }
+  
+  var uploadProgress=0;
+  var storage=firebase.storage();
+  
+  function uploadNext(index){
+    if(index>=filesToUpload.length){
+      // All uploaded, save to Realtime DB
+      if(statusEl) statusEl.innerHTML='✅ All files uploaded! Saving to Realtime Database...';
+      db.ref('workers/'+phoneKey).set(w).then(()=>{
+        alert('✅ Registered Successfully with ALL Files Uploaded to Firebase Storage!\n\nName: '+name+'\nID: '+idType+' - '+idNumber+'\nFiles: '+filesToUpload.length+' uploaded\n\nPhoto: '+(w.photoUrl?'YES':'No')+'\nCV: '+(w.cvUrl?'YES':'No')+'\nPIN: '+(w.pinUrl?'YES':'No')+'\nGhana Card Front: '+(w.nationalIDFrontUrl?'YES':'No')+'\nGhana Card Back: '+(w.nationalIDBackUrl?'YES':'No')+'\nVideo: '+(w.videoUrl?'YES':'No')+'\n\nCEO can now see all in Firebase Console → Storage + Realtime Database → workers/'+phoneKey+'\n\nStatus: Pending Verification');
+        if(statusEl) statusEl.innerHTML='✅ Registered! '+filesToUpload.length+' files visible in Firebase Storage + Realtime DB';
+        showPage('nurse-login');
+      }).catch(e=>{
+        alert('DB Save Error: '+e.message);
+        if(statusEl) statusEl.innerHTML='❌ DB Error: '+e.message;
+      });
+      return;
+    }
+    
+    var item=filesToUpload[index];
+    if(statusEl) statusEl.innerHTML='⏳ Uploading '+(index+1)+'/'+filesToUpload.length+': '+item.key+'... '+(item.file.size/1024/1024).toFixed(2)+'MB';
+    
+    var ref=storage.ref(item.path);
+    ref.put(item.file).then(snapshot=>{
+      return snapshot.ref.getDownloadURL();
+    }).then(url=>{
+      w[item.key]=url;
+      w[item.hasKey]=true;
+      uploadProgress++;
+      if(statusEl) statusEl.innerHTML='✅ Uploaded '+(index+1)+'/'+filesToUpload.length+': '+item.key;
+      uploadNext(index+1);
+    }).catch(e=>{
+      console.error('Upload error', item.key, e);
+      if(statusEl) statusEl.innerHTML='❌ Upload failed for '+item.key+': '+e.message+' - Check Storage Rules';
+      alert('Upload Failed for '+item.key+': '+e.message+'\n\nMake sure Storage Rules allow write: allow read, write: if true;\nFile: '+item.file.name);
+      // Continue with others
+      uploadNext(index+1);
+    });
+  }
+  
+  if(!db || !firebase.storage){
+    alert('⚠️ Firebase not connected - Demo mode - Files not uploaded to Storage');
+    db.ref('workers/'+phoneKey).set(w).then(()=>{ alert('Demo Registered'); showPage('nurse-login'); });
+    return;
+  }
+  
+  uploadNext(0);
 }
 function loginNurse(){var fullPhone=getFullPhone('nurseLoginCode','nurseLoginPhone'); var pass=document.getElementById('nurseLoginPass').value.trim(); if(db){db.ref('workers/'+fullPhone.replace(/[^0-9]/g,'')).once('value').then(s=>{var d=s.val(); if(d&&d.password===pass){localStorage.setItem('nursePhone',fullPhone);localStorage.setItem('nurseName',d.name);document.getElementById('authStatus').innerText='✅ Logged in as NURSE - '+d.name;showPage('nurse-dashboard');}else if(d){document.getElementById('nurseLoginResult').innerText='Wrong password';}else{localStorage.setItem('nursePhone',fullPhone);localStorage.setItem('nurseName',fullPhone);showPage('nurse-dashboard');}});}else{localStorage.setItem('nursePhone',fullPhone);showPage('nurse-dashboard');}}
 function loginStaff(){var id=document.getElementById('staffLoginID').value.trim(); if(!id){alert('Enter ID');return;} localStorage.setItem('staffID',id);document.getElementById('authStatus').innerText='✅ Logged in as STAFF - '+id;showPage('staff-dashboard');}
@@ -4758,6 +4831,485 @@ document.addEventListener('DOMContentLoaded', function(){
     });
   }
 });
+</script>
+
+
+<script>
+// ===== CLIENT CONFIRMS NURSE COMPLETED SERVICE BEFORE WITHDRAWAL + CEO CONFIRM =====
+
+window.nurseMarkServiceCompleted = function(bookingId){
+  console.log('Nurse marking service completed', bookingId);
+  if(!confirm('✅ Mark Service as Completed?\n\nHave you completed the service for booking #'+bookingId+'?\n\nClient will need to confirm, then CEO confirms before you can withdraw.')){
+    return;
+  }
+  if(!db){ alert('Demo: Service marked completed - Waiting client confirmation'); return; }
+  
+  db.ref('bookings/'+bookingId).once('value').then(snap=>{
+    var b=snap.val();
+    if(!b){ alert('Booking not found'); return; }
+    if(b.status!=='confirmed'){
+      alert('Booking must be confirmed first. Current: '+b.status);
+      return;
+    }
+    db.ref('bookings/'+bookingId).update({
+      status:'service_completed_pending_client_confirmation',
+      serviceCompletedByNurse:Date.now(),
+      serviceCompletedAt:new Date().toISOString(),
+      withdrawalLocked:true
+    }).then(()=>{
+      alert('✅ Service Marked as Completed!\n\nBooking #'+bookingId+'\nStatus: Waiting Client Confirmation\n\nClient must press CONFIRM COMPLETION, then CEO must confirm, then withdrawal will open for you.\n\nWithdrawal is CLOSED until client + CEO confirm.');
+      if(typeof loadNurseDashboard==='function') loadNurseDashboard();
+      if(typeof loadCeoData==='function') loadCeoData();
+    });
+  });
+};
+
+window.clientConfirmServiceCompletion = function(bookingId){
+  console.log('Client confirming service completion', bookingId);
+  if(!confirm('✅ CONFIRM that nurse completed service?\n\nBooking #'+bookingId+'\n\nBy confirming:\n• You confirm nurse completed service at your home\n• Nurse can then be considered for withdrawal (after CEO confirm)\n• This is confrontation/confirmation\n\nConfirm?')){
+    return;
+  }
+  if(!db){ 
+    // Demo mode
+    try{
+      var localBookings=JSON.parse(localStorage.getItem('localBookings')||'[]');
+      var b=localBookings.find(x=>x.id==bookingId || x.id.toString()==bookingId.toString());
+      if(b){
+        b.status='client_confirmed_pending_ceo';
+        b.clientConfirmedAt=Date.now();
+        localStorage.setItem('localBookings', JSON.stringify(localBookings));
+        alert('✅ Client Confirmed Completion (Demo)!\n\nNow CEO must confirm before withdrawal opens for nurse.\nStatus: Waiting CEO Confirmation');
+        if(typeof loadMyBookings==='function') loadMyBookings();
+      }
+    }catch(e){ alert('Error: '+e.message); }
+    return;
+  }
+  
+  db.ref('bookings/'+bookingId).once('value').then(snap=>{
+    var b=snap.val();
+    if(!b){ alert('Booking not found'); return; }
+    if(b.status!=='service_completed_pending_client_confirmation'){
+      alert('Cannot confirm. Status must be service_completed_pending_client_confirmation. Current: '+b.status);
+      return;
+    }
+    db.ref('bookings/'+bookingId).update({
+      status:'client_confirmed_pending_ceo',
+      clientConfirmed:true,
+      clientConfirmedAt:Date.now(),
+      clientConfirmedAtISO:new Date().toISOString(),
+      withdrawalLocked:true
+    }).then(()=>{
+      alert('✅ CLIENT CONFIRMED - Nurse Completed Service!\n\nBooking #'+bookingId+'\nStatus: Client Confirmed - Waiting CEO Confirmation\n\nCEO must now confirm before nurse withdrawal opens.\n\nThank you for confirming!');
+      if(typeof loadMyBookings==='function') loadMyBookings();
+      if(typeof loadCeoData==='function') loadCeoData();
+    });
+  });
+};
+
+window.ceoConfirmServiceForWithdrawal = function(bookingId){
+  console.log('CEO confirming service for withdrawal', bookingId);
+  if(!confirm('👑 CEO CONFIRM - Open Withdrawal for Nurse?\n\nBooking #'+bookingId+'\n\nClient already confirmed nurse completed service.\n\nConfirming will:\n• Open withdrawal logic for nurse\n• Nurse can withdraw earnings\n• Status: ceo_confirmed_withdrawal_open\n\nConfirm?')){
+    return;
+  }
+  if(!db){ alert('Demo: CEO confirmed - Withdrawal opened'); return; }
+  
+  db.ref('bookings/'+bookingId).once('value').then(snap=>{
+    var b=snap.val();
+    if(!b){ alert('Booking not found'); return; }
+    db.ref('bookings/'+bookingId).update({
+      status:'ceo_confirmed_withdrawal_open',
+      ceoConfirmed:true,
+      ceoConfirmedAt:Date.now(),
+      ceoConfirmedAtISO:new Date().toISOString(),
+      withdrawalLocked:false,
+      withdrawalOpen:true,
+      withdrawalOpenAt:Date.now()
+    }).then(()=>{
+      // Also update worker balance to allow withdrawal
+      if(b.selectedNurse){
+        var nurseKey=b.selectedNurse.replace(/[^0-9]/g,'');
+        db.ref('workers/'+nurseKey).once('value').then(s=>{
+          var w=s.val();
+          if(w){
+            var amount=b.amount||0;
+            var currentBalance=w.balance||0;
+            db.ref('workers/'+nurseKey).update({
+              balance: currentBalance + amount,
+              totalEarned: (w.totalEarned||0)+amount,
+              withdrawalLocked:false
+            });
+          }
+        });
+      }
+      alert('✅ CEO CONFIRMED - WITHDRAWAL OPENED FOR NURSE!\n\nBooking #'+bookingId+'\nStatus: ceo_confirmed_withdrawal_open\n\nNurse can now initiate withdrawal.\nWithdrawal logic is now OPEN.');
+      if(typeof loadCeoData==='function') loadCeoData();
+    });
+  });
+};
+
+// Check if nurse can withdraw - withdrawal logic closed until client + CEO confirm
+window.canNurseWithdraw = function(nursePhone){
+  // This will be checked in withdrawal page
+  return new Promise(function(resolve){
+    if(!db || !nursePhone){ resolve({canWithdraw:false, reason:'No DB or phone'}); return; }
+    var suffix=nursePhone.replace(/[^0-9]/g,'').slice(-9);
+    db.ref('bookings').once('value').then(snap=>{
+      var all=Object.values(snap.val()||{});
+      var nurseBookings=all.filter(b=>{
+        var bs=(b.selectedNurse||'').replace(/[^0-9]/g,'').slice(-9);
+        return bs.endsWith(suffix) || b.selectedNurse===nursePhone;
+      });
+      var confirmedBookings=nurseBookings.filter(b=> b.status==='ceo_confirmed_withdrawal_open' || b.ceoConfirmed);
+      var pendingClient=nurseBookings.filter(b=> b.status==='service_completed_pending_client_confirmation');
+      var pendingCeo=nurseBookings.filter(b=> b.status==='client_confirmed_pending_ceo');
+      
+      if(confirmedBookings.length>0){
+        resolve({canWithdraw:true, count:confirmedBookings.length, bookings:confirmedBookings, pendingClient:pendingClient.length, pendingCeo:pendingCeo.length});
+      } else {
+        var reason='';
+        if(pendingClient.length>0) reason='⏳ Waiting Client Confirmation (Client must press CONFIRM that you completed service) - '+pendingClient.length+' bookings';
+        else if(pendingCeo.length>0) reason='⏳ Waiting CEO Confirmation (CEO must confirm after client confirmation) - '+pendingCeo.length+' bookings';
+        else reason='🔒 Withdrawal Closed - No completed services confirmed by client + CEO. Client must confirm completion first, then CEO.';
+        resolve({canWithdraw:false, reason:reason, pendingClient:pendingClient.length, pendingCeo:pendingCeo.length, total:nurseBookings.length});
+      }
+    });
+  });
+};
+
+// Enhance loadMyBookings to show confirmation button
+var _originalLoadMyBookingsForConfirm = window.loadMyBookings;
+window.loadMyBookings = function(){
+  var phoneEl=document.getElementById('myBookPhone');
+  var phone=phoneEl? phoneEl.value.trim() : '';
+  if(!phone){ phone=localStorage.getItem('lastClientPhone')||''; if(phoneEl) phoneEl.value=phone; }
+  if(!phone){ alert('Enter phone to load bookings'); return; }
+  var listDiv=document.getElementById('myBookingsList');
+  if(!listDiv) return;
+  listDiv.innerHTML='Loading bookings with confirmation flow...';
+  
+  var renderWithConfirm = function(mine){
+    if(mine.length==0){
+      listDiv.innerHTML='<div style="text-align:center;color:#999;padding:20px">📭 No bookings for '+phone+'</div>';
+      if(typeof addClearHistoryButtons==='function') addClearHistoryButtons(phone,0);
+      return;
+    }
+    var h='<div style="background:#eff6ff;border:3px solid #2563eb;border-radius:12px;padding:10px;margin-bottom:10px"><b style="font-size:11px">🔐 NEW FLOW: Client confirms nurse completed service before withdrawal + CEO confirms</b><br><small style="font-size:9px">Flow: Nurse completes → Client CONFIRMS (confrontation) → CEO confirms → Withdrawal OPENS for nurse (closed until then)</small></div>';
+    
+    mine.forEach(b=>{
+      var status=b.status||'';
+      var isConfirmed=b.status==='confirmed';
+      var isServiceCompletedPendingClient=b.status==='service_completed_pending_client_confirmation';
+      var isClientConfirmedPendingCeo=b.status==='client_confirmed_pending_ceo';
+      var isWithdrawalOpen=b.status==='ceo_confirmed_withdrawal_open';
+      var isCancelled=b.status==='cancelled_by_client';
+      var isRefund=b.status.includes('refund');
+      
+      h+=`<div style="border:3px solid ${isConfirmed?'#16a34a': isServiceCompletedPendingClient?'#eab308': isClientConfirmedPendingCeo?'#7c3aed': isWithdrawalOpen?'#059669': '#e5e7eb'};border-radius:16px;padding:12px;margin:12px 0;background:white">
+        <div style="display:flex;justify-content:space-between"><b>#${b.id}</b><span style="padding:4px 10px;border-radius:20px;font-size:10px;font-weight:800;background:${isConfirmed?'#16a34a': isServiceCompletedPendingClient?'#eab308': isClientConfirmedPendingCeo?'#7c3aed': isWithdrawalOpen?'#059669':'#6b7280'};color:white">${status.toUpperCase().replace(/_/g,' ')}</span></div>
+        <div style="font-size:11px;margin-top:8px;background:#f9fafb;border-radius:10px;padding:10px">
+          <div>Service: <b>${b.service||''}</b> - ${b.amount||0} ${b.currency||'GHS'}</div>
+          <div>Nurse: <b>${b.selectedNurse||'Admin'}</b></div>
+          <div>📍 ${b.location||''}</div>
+          ${b.serviceCompletedAt? `<div>✅ Nurse completed: ${b.serviceCompletedAt}</div>` : ''}
+          ${b.clientConfirmedAt? `<div>✅ Client confirmed: ${new Date(b.clientConfirmedAt).toLocaleString()}</div>` : ''}
+          ${b.ceoConfirmedAt? `<div>✅ CEO confirmed: ${new Date(b.ceoConfirmedAt).toLocaleString()} - Withdrawal OPEN</div>` : ''}
+        </div>
+        <div style="margin-top:10px;display:flex;flex-direction:column;gap:8px">
+          ${isConfirmed? `<div style="background:#fef3c7;border-radius:8px;padding:8px;font-size:10px">⏳ Waiting nurse to mark completed</div>` : ''}
+          ${isServiceCompletedPendingClient? `
+            <div style="background:#fffbeb;border:2px solid #eab308;border-radius:10px;padding:10px;text-align:center">
+              <b style="font-size:11px;color:#92400e">⏳ Nurse marked service completed - Waiting YOUR confirmation</b><br>
+              <small style="font-size:9px">Nurse says completed at your home. Please confirm if true.</small>
+            </div>
+            <button onclick="clientConfirmServiceCompletion(${b.id})" style="width:100%;background:#16a34a;color:white;border:none;padding:14px;border-radius:12px;font-weight:800;font-size:13px;cursor:pointer;box-shadow:0 4px 12px rgba(22,163,74,0.3)">✅ CONFIRM - Nurse Completed Service (Confrontation) - Required before nurse can withdraw</button>
+          ` : ''}
+          ${isClientConfirmedPendingCeo? `<div style="background:#f3e8ff;border:2px solid #7c3aed;border-radius:10px;padding:10px;text-align:center"><b style="font-size:11px;color:#5b21b6">✅ You Confirmed - Waiting CEO Confirmation</b><br><small>CEO must confirm to open withdrawal for nurse. Withdrawal still closed.</small></div>` : ''}
+          ${isWithdrawalOpen? `<div style="background:#dcfce7;border:2px solid #16a34a;border-radius:10px;padding:10px;text-align:center"><b style="color:#065f46">✅ CEO Confirmed - Withdrawal OPEN for Nurse</b><br><small>Nurse can now withdraw earnings for this booking.</small></div>` : ''}
+          ${isConfirmed? `<button onclick="cancelBookingClient(${b.id})" style="background:#ef4444;color:white;border:none;padding:10px;border-radius:10px;font-weight:700;width:100%">❌ Cancel</button>` : ''}
+          ${isCancelled? `<div style="text-align:center"><button onclick="openRefundModal(${b.id}, '${b.amount} ${b.currency}')" style="background:#7c3aed;color:white;border:none;padding:10px;border-radius:10px;font-weight:800;width:100%">💸 Refund</button></div>` : ''}
+        </div>
+      </div>`;
+    });
+    listDiv.innerHTML=h;
+    if(typeof addClearHistoryButtons==='function') addClearHistoryButtons(phone, mine.length);
+  };
+  
+  var allBookings=[];
+  try{
+    var localBookings=JSON.parse(localStorage.getItem('localBookings')||'[]');
+    allBookings=[...localBookings];
+  }catch(e){}
+  
+  if(window.db){
+    var suffix=phone.replace(/[^0-9]/g,'').slice(-9);
+    db.ref('bookings').once('value').then(snap=>{
+      var firebaseBookings=Object.values(snap.val()||{}).filter(b=> (b.phone||'').replace(/[^0-9]/g,'').endsWith(suffix) );
+      var map={};
+      allBookings.forEach(b=>{ map[b.id]=b; });
+      firebaseBookings.forEach(b=>{ map[b.id]=b; });
+      var merged=Object.values(map).sort((a,b)=>b.timestamp-a.timestamp);
+      renderWithConfirm(merged);
+    });
+  } else {
+    var suffix=phone.replace(/[^0-9]/g,'').slice(-9);
+    var mine=allBookings.filter(b=> (b.phone||'').replace(/[^0-9]/g,'').endsWith(suffix) ).sort((a,b)=>b.timestamp-a.timestamp);
+    renderWithConfirm(mine);
+  }
+};
+
+// Enhance nurse dashboard to show mark completed button
+var _origLoadNurseDashboard = window.loadNurseDashboard;
+window.loadNurseDashboard = function(){
+  var phone=localStorage.getItem('nursePhone');
+  if(!phone){ if(_origLoadNurseDashboard) _origLoadNurseDashboard(); return; }
+  
+  if(_origLoadNurseDashboard) _origLoadNurseDashboard();
+  
+  // Add withdrawal lock check
+  setTimeout(function(){
+    canNurseWithdraw(phone).then(function(result){
+      var withdrawCard=document.querySelector('#page-nurse-withdrawal .card');
+      var statusDiv=document.getElementById('withdrawalLockStatus');
+      if(!statusDiv && withdrawCard){
+        statusDiv=document.createElement('div');
+        statusDiv.id='withdrawalLockStatus';
+        withdrawCard.insertBefore(statusDiv, withdrawCard.children[1]);
+      }
+      if(statusDiv){
+        if(result.canWithdraw){
+          statusDiv.innerHTML=`<div style="background:#dcfce7;border:3px solid #16a34a;border-radius:12px;padding:12px;margin:10px 0;text-align:center"><b style="color:#065f46;font-size:13px">✅ WITHDRAWAL OPEN - ${result.count} bookings confirmed by Client + CEO</b><br><small>You can now withdraw. Withdrawal logic is OPEN.</small></div>`;
+        } else {
+          statusDiv.innerHTML=`<div style="background:#fee2e2;border:3px solid #ef4444;border-radius:12px;padding:12px;margin:10px 0;text-align:center"><b style="color:#991b1b;font-size:12px">🔒 WITHDRAWAL CLOSED</b><br><small style="font-size:11px">${result.reason}</small><br><small style="font-size:9px;margin-top:6px;display:block">Flow: You complete service → Mark completed → Client CONFIRMS (confrontation) → CEO confirms → Withdrawal OPENS</small></div>`;
+        }
+      }
+      
+      // Disable withdraw buttons if locked
+      var withdrawBtns=document.querySelectorAll('#page-nurse-withdrawal button');
+      withdrawBtns.forEach(function(btn){
+        if(btn.textContent.includes('Withdraw') || btn.id==='withdrawBtn'){
+          if(!result.canWithdraw){
+            btn.disabled=true;
+            btn.style.opacity='0.5';
+            btn.title='Withdrawal locked until client + CEO confirm completion';
+          } else {
+            btn.disabled=false;
+            btn.style.opacity='1';
+          }
+        }
+      });
+    });
+  }, 800);
+};
+
+// CEO tab for confirming service completion
+window.renderServiceConfirmationsCEO = function(bookingsList){
+  var c=document.getElementById('ceoConfirmationsList');
+  if(!c) return;
+  var pending=c; // fallback
+  var pendingClient=bookingsList.filter(b=> b.status==='service_completed_pending_client_confirmation');
+  var pendingCeo=bookingsList.filter(b=> b.status==='client_confirmed_pending_ceo');
+  var opened=bookingsList.filter(b=> b.status==='ceo_confirmed_withdrawal_open');
+  
+  if(pendingClient.length===0 && pendingCeo.length===0 && opened.length===0){
+    c.innerHTML='<div style="padding:20px;text-align:center;background:#f9fafb;border-radius:10px">No service confirmations yet<br><small>When nurse marks completed, client confirms, you confirm to open withdrawal</small></div>';
+    return;
+  }
+  
+  var h='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px"><div style="background:#fef3c7;padding:10px;border-radius:10px;text-align:center;border:2px solid #eab308"><b>'+pendingClient.length+'</b><br><small>Waiting Client Confirm</small></div><div style="background:#f3e8ff;padding:10px;border-radius:10px;text-align:center;border:2px solid #7c3aed"><b>'+pendingCeo.length+'</b><br><small>Waiting CEO Confirm</small></div><div style="background:#dcfce7;padding:10px;border-radius:10px;text-align:center;border:2px solid #16a34a"><b>'+opened.length+'</b><br><small>Withdrawal Open</small></div></div>';
+  
+  if(pendingCeo.length>0){
+    h+='<h3 style="color:#7c3aed">⏳ Waiting CEO Confirmation - Client Already Confirmed (Click to Open Withdrawal)</h3>';
+    pendingCeo.forEach(b=>{
+      h+=`<div style="border:3px solid #7c3aed;border-radius:12px;padding:12px;margin:8px 0;background:#f3e8ff">
+        <div style="display:flex;justify-content:space-between"><b>#${b.id}</b><span style="background:#7c3aed;color:white;padding:4px 10px;border-radius:20px;font-size:10px">CLIENT CONFIRMED - PENDING CEO</span></div>
+        <div style="font-size:11px;margin-top:6px">Client: ${b.name} - ${b.phone}<br>Nurse: ${b.selectedNurse}<br>Service: ${b.service} - ${b.amount} ${b.currency}<br>Client confirmed: ${b.clientConfirmedAt? new Date(b.clientConfirmedAt).toLocaleString() : ''}<br>Withdrawal: LOCKED until CEO confirms</div>
+        <button onclick="ceoConfirmServiceForWithdrawal(${b.id})" style="width:100%;background:#16a34a;color:white;border:none;padding:12px;border-radius:10px;font-weight:800;margin-top:8px">✅ CEO CONFIRM - Open Withdrawal for Nurse</button>
+      </div>`;
+    });
+  }
+  
+  if(pendingClient.length>0){
+    h+='<h3 style="color:#eab308">⏳ Waiting Client Confirmation (Nurse Marked Completed)</h3>';
+    pendingClient.forEach(b=>{
+      h+=`<div style="border:2px solid #eab308;border-radius:12px;padding:12px;margin:8px 0;background:#fffbeb">
+        <div style="display:flex;justify-content:space-between"><b>#${b.id}</b><span style="background:#eab308;color:white;padding:4px 10px;border-radius:20px;font-size:10px">WAITING CLIENT</span></div>
+        <div style="font-size:11px;margin-top:6px">Client: ${b.name}<br>Nurse: ${b.selectedNurse}<br>Service completed by nurse: ${b.serviceCompletedAt||''}<br>Withdrawal: LOCKED</div>
+      </div>`;
+    });
+  }
+  
+  if(opened.length>0){
+    h+='<h3 style="color:#16a34a">✅ Withdrawal Opened (CEO Confirmed)</h3>';
+    opened.slice(0,10).forEach(b=>{
+      h+=`<div style="border:2px solid #16a34a;border-radius:12px;padding:10px;margin:6px 0;background:#f0fdf4;font-size:11px">
+        <b>#${b.id}</b> - ${b.service} - ${b.amount} ${b.currency} - Withdrawal OPEN - Nurse can withdraw
+      </div>`;
+    });
+  }
+  
+  c.innerHTML=h;
+};
+
+// Override loadCeoData to also render confirmations
+var _origLoadCeoData = window.loadCeoData;
+window.loadCeoData = function(){
+  if(_origLoadCeoData) _origLoadCeoData();
+  setTimeout(function(){
+    if(window.allBookings && typeof renderServiceConfirmationsCEO==='function'){
+      renderServiceConfirmationsCEO(window.allBookings);
+    } else if(window.db){
+      db.ref('bookings').once('value').then(s=>{
+        var all=Object.values(s.val()||{});
+        window.allBookings=all;
+        renderServiceConfirmationsCEO(all);
+      });
+    }
+  }, 600);
+};
+
+console.log('✅ Client confirmation + CEO confirmation before withdrawal logic loaded - Withdrawal closed until both confirm');
+</script>
+
+<!-- CEO Tab for Service Confirmations -->
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  setTimeout(function(){
+    var ceoTabs=document.querySelector('.ceoTabs');
+    var bookingsTab=document.getElementById('ceo-tab-bookings');
+    if(ceoTabs && bookingsTab && !document.getElementById('btn-confirmations')){
+      var btn=document.createElement('button');
+      btn.id='btn-confirmations';
+      btn.className='btnSmall';
+      btn.style.cssText='background:#059669;color:white';
+      btn.innerText='✅ Confirmations';
+      btn.onclick=function(){ switchCeoTab('confirmations'); };
+      ceoTabs.appendChild(btn);
+      
+      var tab=document.createElement('div');
+      tab.id='ceo-tab-confirmations';
+      tab.className='ceo-tab card hidden';
+      tab.innerHTML='<h2>✅ Service Confirmations - Client + CEO Before Withdrawal</h2><p style="font-size:11px">Flow: Nurse completes service → Marks completed → Client CONFIRMS (confrontation) → CEO confirms → Withdrawal OPENS for nurse (closed until then)</p><div id="ceoConfirmationsList">Loading...</div>';
+      bookingsTab.parentNode.appendChild(tab);
+    }
+  }, 1000);
+});
+</script>
+
+
+<script>
+// Enhance nurse bookings list with Mark Completed button
+var _origLoadNurseDashboardEnhance = window.loadNurseDashboard;
+window.loadNurseDashboard = (function(orig){
+  return function(){
+    if(orig) orig();
+    
+    // Also render enhanced nurse bookings with mark completed
+    var phone=localStorage.getItem('nursePhone');
+    if(!phone || !db) return;
+    
+    setTimeout(function(){
+      var listDiv=document.getElementById('nurseBookingsList') || document.getElementById('nurseDashboardBookings') || document.querySelector('#page-nurse-dashboard .card');
+      if(!listDiv) return;
+      
+      var suffix=phone.replace(/[^0-9]/g,'').slice(-9);
+      db.ref('bookings').once('value').then(snap=>{
+        var all=Object.values(snap.val()||{});
+        var mine=all.filter(b=>{
+          var bs=(b.selectedNurse||'').replace(/[^0-9]/g,'').slice(-9);
+          return bs.endsWith(suffix) || b.selectedNurse===phone;
+        }).sort((a,b)=>b.timestamp-a.timestamp).slice(0,20);
+        
+        if(mine.length===0) return;
+        
+        var container=document.getElementById('nurseBookingsEnhanced');
+        if(!container){
+          container=document.createElement('div');
+          container.id='nurseBookingsEnhanced';
+          container.style.marginTop='12px';
+          listDiv.appendChild(container);
+        }
+        
+        var h='<div style="background:#eff6ff;border:2px solid #2563eb;border-radius:12px;padding:10px;margin:10px 0"><b style="font-size:11px">🔐 Withdrawal Logic: Closed until Client + CEO confirm</b><br><small style="font-size:9px">Mark service completed → Client confirms (confrontation) → CEO confirms → Withdrawal opens</small></div>';
+        
+        mine.forEach(b=>{
+          var status=b.status||'';
+          var isConfirmed=status==='confirmed';
+          var isPendingClient=status==='service_completed_pending_client_confirmation';
+          var isPendingCeo=status==='client_confirmed_pending_ceo';
+          var isOpen=status==='ceo_confirmed_withdrawal_open';
+          
+          h+=`<div style="border:3px solid ${isConfirmed?'#16a34a': isPendingClient?'#eab308': isPendingCeo?'#7c3aed': isOpen?'#059669':'#e5e7eb'};border-radius:12px;padding:10px;margin:8px 0;background:white">
+            <div style="display:flex;justify-content:space-between"><b>#${b.id}</b><span style="background:${isConfirmed?'#16a34a': isPendingClient?'#eab308': isPendingCeo?'#7c3aed': isOpen?'#059669':'#6b7280'};color:white;padding:4px 8px;border-radius:20px;font-size:9px">${status.toUpperCase().replace(/_/g,' ')}</span></div>
+            <div style="font-size:10px;margin-top:6px">Client: ${b.name} - ${b.phone}<br>Service: ${b.service} - ${b.amount} ${b.currency}<br>📍 ${b.location||''}</div>
+            <div style="margin-top:8px">
+              ${isConfirmed? `<button onclick="nurseMarkServiceCompleted(${b.id})" style="width:100%;background:#16a34a;color:white;border:none;padding:10px;border-radius:10px;font-weight:800">✅ Mark Service Completed - Waiting Client Confirm</button>` : ''}
+              ${isPendingClient? `<div style="background:#fef3c7;padding:8px;border-radius:8px;text-align:center;font-size:10px">⏳ Waiting Client Confirmation (Confrontation)<br>Client must confirm you completed service</div>` : ''}
+              ${isPendingCeo? `<div style="background:#f3e8ff;padding:8px;border-radius:8px;text-align:center;font-size:10px">⏳ Waiting CEO Confirmation<br>Client confirmed, CEO must confirm to open withdrawal</div>` : ''}
+              ${isOpen? `<div style="background:#dcfce7;padding:8px;border-radius:8px;text-align:center;font-size:10px;color:#065f46">✅ Withdrawal OPEN - You can withdraw earnings for this booking<br>Amount: ${b.amount} ${b.currency}</div>` : ''}
+            </div>
+          </div>`;
+        });
+        
+        container.innerHTML=h;
+      });
+    }, 1000);
+  };
+})(window.loadNurseDashboard);
+</script>
+
+
+<script>
+var _origRenderNurses = window.renderNurses;
+window.renderNurses = function(list){
+  if(_origRenderNurses) _origRenderNurses(list);
+  // Enhance with Storage URLs
+  setTimeout(function(){
+    var container=document.getElementById('ceoNursesList');
+    if(!container) return;
+    var nurses=list||window.allWorkers||[];
+    nurses.forEach(function(n){
+      if(n.photoUrl || n.videoUrl || n.nationalIDFrontUrl){
+        // Add buttons if not already
+      }
+    });
+  }, 500);
+};
+
+function renderNursesEnhanced(list){
+  var c=document.getElementById('ceoNursesList');
+  if(!c){ return; }
+  if(!list || list.length===0){ c.innerHTML='<div style="padding:20px;text-align:center">No nurses</div>'; return; }
+  var h='<table><tr><th>Photo</th><th>Name</th><th>Phone</th><th>ID</th><th>Files (Storage)</th><th>Status</th><th>Action</th></tr>';
+  list.forEach(function(n){
+    var photo=n.photoUrl? `<a href="${n.photoUrl}" target="_blank"><img src="${n.photoUrl}" style="width:50px;height:50px;border-radius:50%;object-fit:cover;border:2px solid #16a34a"></a>` : (n.hasPhoto?'✅ Has Photo (no URL - old version)':'❌ No Photo');
+    var files='';
+    if(n.photoUrl) files+=`<a href="${n.photoUrl}" target="_blank" style="background:#16a34a;color:white;padding:2px 6px;border-radius:6px;font-size:9px;margin:2px;display:inline-block">📸 Photo</a> `;
+    if(n.cvUrl) files+=`<a href="${n.cvUrl}" target="_blank" style="background:#2563eb;color:white;padding:2px 6px;border-radius:6px;font-size:9px;margin:2px;display:inline-block">📄 CV</a> `;
+    if(n.pinUrl) files+=`<a href="${n.pinUrl}" target="_blank" style="background:#7c3aed;color:white;padding:2px 6px;border-radius:6px;font-size:9px;margin:2px;display:inline-block">🪪 PIN</a> `;
+    if(n.nationalIDFrontUrl) files+=`<a href="${n.nationalIDFrontUrl}" target="_blank" style="background:#f59e0b;color:white;padding:2px 6px;border-radius:6px;font-size:9px;margin:2px;display:inline-block">🆔 ID Front</a> `;
+    if(n.nationalIDBackUrl) files+=`<a href="${n.nationalIDBackUrl}" target="_blank" style="background:#f59e0b;color:white;padding:2px 6px;border-radius:6px;font-size:9px;margin:2px;display:inline-block">🆔 ID Back</a> `;
+    if(n.videoUrl) files+=`<a href="${n.videoUrl}" target="_blank" style="background:#ef4444;color:white;padding:2px 6px;border-radius:6px;font-size:9px;margin:2px;display:inline-block">🎥 Video</a> `;
+    if(!files) files='<small style="font-size:9px;color:#999">No Storage URLs - Old version or not uploaded<br>hasPhoto:'+n.hasPhoto+' hasCV:'+n.hasCV+'</small>';
+    
+    var idInfo=(n.nationalIDType||'')+'<br><small>'+(n.nationalIDNumber||'')+'</small>';
+    
+    h+=`<tr>
+      <td>${photo}</td>
+      <td>${n.name||''}<br><small>${n.specialty||''}</small></td>
+      <td>${n.phone||''}</td>
+      <td style="font-size:10px">${idInfo}</td>
+      <td style="max-width:200px">${files}</td>
+      <td><span style="background:${n.status==='pending_verification'?'#eab308':'#16a34a'};color:white;padding:4px 8px;border-radius:20px;font-size:9px">${n.status||''}</span><br><small>${n.verificationStatus||''}</small></td>
+      <td><button onclick="if(confirm('Verify nurse?')) db.ref('workers/'+'${n.phone}'.replace(/[^0-9]/g,'')).update({status:'verified', verificationStatus:'verified', onDuty:true}).then(()=>loadCeoData())" style="background:#16a34a;color:white;border:none;padding:6px 10px;border-radius:8px;font-size:10px">✅ Verify</button><br><button onclick="if(confirm('Delete nurse?')) db.ref('workers/'+'${n.phone}'.replace(/[^0-9]/g,'')).remove().then(()=>loadCeoData())" style="background:#ef4444;color:white;border:none;padding:4px 8px;border-radius:8px;font-size:9px;margin-top:4px">Delete</button></td>
+    </tr>`;
+  });
+  h+='</table>';
+  h+='<div style="background:#f0fdf4;border:2px solid #16a34a;border-radius:10px;padding:10px;margin-top:10px;font-size:10px"><b>📁 Firebase Storage Structure:</b><br>Storage → nurses/{phone}/ → photo.jpg, cv.pdf, pin.jpg, nationalID_front.jpg, nationalID_back.jpg, intro_video.mp4<br>Realtime DB → workers/{phone} → photoUrl, cvUrl, pinUrl, nationalIDFrontUrl, nationalIDBackUrl, videoUrl (clickable URLs)</div>';
+  c.innerHTML=h;
+}
+
+// Override original renderNurses to use enhanced version
+window.renderNurses = renderNursesEnhanced;
 </script>
 
 </body>
