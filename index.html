@@ -1962,21 +1962,155 @@ window.clearDirection = function(){
 };
 
 window.submitBooking = function(){
-  console.log('submitBooking clicked');
-  var nameEl=document.getElementById('cName'); var phoneEl=document.getElementById('cPhone'); var serviceEl=document.getElementById('cService');
-  var name=nameEl? nameEl.value.trim() : '';
-  var phone=phoneEl? phoneEl.value.trim() : '';
-  var service=serviceEl? serviceEl.value : '';
-  if(!name||!phone||!service){ alert('Please enter Full Name, Phone, Service'); return; }
-  if(!window.selectedNurseId && window.nearbyNursesSorted[0]) window.selectedNurseId=window.nearbyNursesSorted[0].phone||window.nearbyNursesSorted[0].id;
-  var budgetEl=document.getElementById('cBudget'); var amount=budgetEl? parseFloat(budgetEl.value||50) : 50;
-  var curEl=document.getElementById('cCurrency'); var cur=curEl? curEl.value : 'GHS';
-  var id=Date.now();
-  var b={id:id,name:name,phone:phone,service:service,location:document.getElementById('cLocation')?document.getElementById('cLocation').value:'',amount:amount,currency:cur,status:'pending_assignment',time:new Date().toLocaleString(),timestamp:Date.now(),lat:window.clientLat,lng:window.clientLng,selectedNurse:window.selectedNurseId||null,email:document.getElementById('cEmail')?document.getElementById('cEmail').value:''};
-  console.log('Booking', b);
-  if(window.db) window.db.ref('bookings/'+id).set(b).then(()=>{ alert('✅ Booked! Total '+amount+' '+cur+' - Nurse: '+(window.selectedNurseId||'Admin will assign')+'\nBooking ID: '+id); var myPhoneEl=document.getElementById('myBookPhone'); if(myPhoneEl) myPhoneEl.value=phone; if(typeof loadMyBookings==='function') loadMyBookings(); }).catch(e=>{ alert('Booking error: '+e.message); });
-  else { alert('✅ Booking Request Submitted (Demo)!\nTotal: '+amount+' '+cur+'\nNurse: '+(window.selectedNurseId||'Admin will assign')+'\nID: '+id); }
+  console.log('submitBooking clicked - FIXED validation');
+  
+  // Get values with fallback for all possible IDs
+  var nameEl = document.getElementById('cName') || document.getElementById('clientName');
+  var phoneEl = document.getElementById('cPhone');
+  var phoneCodeEl = document.getElementById('cPhoneCode');
+  var emailEl = document.getElementById('cEmail');
+  var serviceEl = document.getElementById('cService');
+  var locationEl = document.getElementById('cLocation');
+  var budgetEl = document.getElementById('cBudget');
+  var currencyEl = document.getElementById('cCurrency');
+  
+  var name = nameEl? nameEl.value.trim() : '';
+  var phoneRaw = phoneEl? phoneEl.value.trim() : '';
+  var email = emailEl? emailEl.value.trim() : '';
+  var service = serviceEl? serviceEl.value.trim() : '';
+  var location = locationEl? locationEl.value.trim() : '';
+  
+  console.log('Booking form values:', {name: name, phoneRaw: phoneRaw, service: service, email: email});
+  
+  // Robust validation with clear messages
+  var missing = [];
+  if(!name) missing.push('Full Name');
+  if(!phoneRaw) missing.push('Phone');
+  if(!service) missing.push('Service (select from dropdown)');
+  
+  if(missing.length>0){
+    alert('⚠️ Please fill in:\n\n• '+missing.join('\n• ')+'\n\nYou filled: Name='+ (name? 'YES' : 'NO') +', Phone='+ (phoneRaw? 'YES' : 'NO') +', Service='+ (service? 'YES - '+service : 'NO') +'\n\nTip: After selecting nurse on map, DO NOT clear form - keep your name/phone/service filled');
+    // Highlight missing fields
+    if(!name && nameEl){ nameEl.style.border='3px solid #ef4444'; nameEl.focus(); setTimeout(()=>{nameEl.style.border='';},3000); }
+    else if(!phoneRaw && phoneEl){ phoneEl.style.border='3px solid #ef4444'; phoneEl.focus(); setTimeout(()=>{phoneEl.style.border='';},3000); }
+    else if(!service && serviceEl){ serviceEl.style.border='3px solid #ef4444'; serviceEl.focus(); setTimeout(()=>{serviceEl.style.border='';},3000); }
+    return;
+  }
+  
+  // Get full phone with country code
+  var fullPhone = phoneRaw;
+  try{
+    if(typeof getFullPhone==='function' && phoneCodeEl && phoneEl){
+      fullPhone = getFullPhone('cPhoneCode','cPhone');
+    } else if(phoneCodeEl){
+      var code = phoneCodeEl.value||'';
+      fullPhone = code + phoneRaw.replace(/^0+/, '').replace(/\+/g,'');
+      if(phoneRaw.startsWith('+')) fullPhone = phoneRaw;
+    }
+  }catch(e){
+    console.log('getFullPhone error, using raw', e);
+    fullPhone = phoneRaw;
+  }
+  
+  // Auto select nearest nurse if none selected
+  if(!window.selectedNurseId){
+    if(window.nearbyNursesSorted && window.nearbyNursesSorted.length>0){
+      window.selectedNurseId = window.nearbyNursesSorted[0].phone || window.nearbyNursesSorted[0].id;
+      console.log('Auto selected nearest nurse:', window.selectedNurseId);
+    } else {
+      var allNurses = (typeof getAllNursesSource==='function'? getAllNursesSource() : []);
+      if(allNurses.length>0){
+        window.selectedNurseId = allNurses[0].phone || allNurses[0].id;
+      }
+    }
+  }
+  
+  var amount = 50;
+  if(budgetEl){ amount = parseFloat(budgetEl.value||50); if(isNaN(amount)) amount=50; }
+  
+  // Try calculate total for validation but don't block
+  var calc = null;
+  try{
+    if(typeof calculateTotal==='function'){
+      calc = calculateTotal();
+      console.log('Calculated total', calc);
+    }
+  }catch(e){ console.log('calculateTotal error', e); }
+  
+  var cur = currencyEl? currencyEl.value : 'GHS';
+  var country = document.getElementById('countrySelect')? document.getElementById('countrySelect').value : 'GH';
+  
+  var id = Date.now();
+  var booking = {
+    id: id,
+    name: name,
+    phone: fullPhone,
+    phoneRaw: phoneRaw,
+    service: service,
+    location: location,
+    amount: amount,
+    currency: cur,
+    status: 'pending_assignment',
+    time: new Date().toLocaleString(),
+    timestamp: Date.now(),
+    lat: window.clientLat || 5.6037,
+    lng: window.clientLng || -0.1870,
+    selectedNurse: window.selectedNurseId || null,
+    email: email,
+    country: country,
+    days: calc? calc.displayDuration : '1 Day',
+    totalHours: calc? calc.totalHours : 8,
+    hourlyRate: calc? calc.rateData?.amount : 0,
+    bookingUnit: calc? calc.unit : 'daily'
+  };
+  
+  console.log('✅ Booking data ready:', booking);
+  
+  // Save to localStorage for persistence
+  try{
+    localStorage.setItem('lastClientPhone', fullPhone);
+    localStorage.setItem('lastClientName', name);
+    localStorage.setItem('lastClientService', service);
+  }catch(e){}
+  
+  // Save to Firebase
+  if(window.db){
+    window.db.ref('bookings/'+id).set(booking).then(()=>{
+      alert('✅ BOOKED SUCCESSFULLY!\n\nName: '+name+'\nPhone: '+fullPhone+'\nService: '+service+'\nAmount: '+amount+' '+cur+'\nNurse: '+(window.selectedNurseId||'Admin will assign')+'\nBooking ID: '+id+'\n\nNurse will get STRONG notification (Sound + Vibration + Popup) like Uber and can ACCEPT/REJECT at his portal');
+      var myPhoneEl=document.getElementById('myBookPhone'); if(myPhoneEl) myPhoneEl.value=phoneRaw;
+      if(typeof loadMyBookings==='function') setTimeout(()=>loadMyBookings(), 1000);
+      
+      // Also trigger notification check for demo
+      if(window.selectedNurseId){
+        console.log('Booking saved, nurse should get notification for', window.selectedNurseId);
+      }
+    }).catch(e=>{
+      console.error('Firebase booking error', e);
+      alert('⚠️ Booking saved locally but Firebase error: '+e.message+'\n\nBooking ID: '+id+'\nNurse: '+(window.selectedNurseId||'Admin will assign')+' - Will retry sync');
+      // Save locally as fallback
+      try{
+        var localBookings = JSON.parse(localStorage.getItem('localBookings')||'[]');
+        localBookings.push(booking);
+        localStorage.setItem('localBookings', JSON.stringify(localBookings));
+      }catch(e2){}
+    });
+  } else {
+    // Demo mode
+    alert('✅ BOOKING REQUEST SUBMITTED (Demo Mode)!\n\nName: '+name+'\nPhone: '+fullPhone+'\nService: '+service+'\nTotal: '+amount+' '+cur+'\nNurse: '+(window.selectedNurseId||'Admin will assign')+'\nID: '+id+'\n\nIn production, this would save to Firebase and nurse would get strong notification like Uber');
+    try{
+      var localBookings = JSON.parse(localStorage.getItem('localBookings')||'[]');
+      localBookings.push(booking);
+      localStorage.setItem('localBookings', JSON.stringify(localBookings));
+    }catch(e){}
+  }
+  
+  // Clear selected info after booking
+  setTimeout(()=>{
+    var info=document.getElementById('selectedNurseInfo');
+    if(info){ info.innerText='✅ Booked! Nurse will get notification and Accept/Reject. Booking ID: '+id; info.style.background='#dcfce7'; }
+  }, 500);
 };
+
 
 window.payWithPaystack = function(){
   console.log('payWithPaystack clicked');
@@ -2469,18 +2603,46 @@ window.showNurseVideoProfilePopup = function(nurseId){
 
 // Override selectNurseCard to show video profile popup first like Uber driver profile
 var _originalSelectNurseCard = window.selectNurseCard;
+// FIXED: selectNurseCard does NOT clear name/phone - keeps your filled data
 window.selectNurseCard = function(id){
-  console.log('selectNurseCard with video profile', id);
-  // Show video profile popup first
-  showNurseVideoProfilePopup(id);
-  // Also do original selection
-  if(_originalSelectNurseCard) _originalSelectNurseCard(id);
+  console.log('selectNurseCard FIXED - keeping form data', id);
   window.selectedNurseId=id;
+  
+  // Keep existing form data - DO NOT clear
+  var nameEl = document.getElementById('cName');
+  var phoneEl = document.getElementById('cPhone');
+  var serviceEl = document.getElementById('cService');
+  console.log('Form data preserved:', {name: nameEl?.value, phone: phoneEl?.value, service: serviceEl?.value});
+  
+  // Show video profile popup
+  if(typeof showNurseVideoProfilePopup==='function'){
+    showNurseVideoProfilePopup(id);
+  }
+  
   var info=document.getElementById('selectedNurseInfo');
-  if(info){ info.innerText='✅ Selected: '+id+' - Watch video profile above before booking!'; info.style.background='#dcfce7'; }
+  if(info){ 
+    var nurseName = id;
+    try{
+      var nurse = (window.nearbyNursesSorted||[]).find(n=> (n.phone==id || n.id==id)) || (window.demoNurses||[]).find(n=> (n.phone==id || n.id==id));
+      if(nurse) nurseName = nurse.name + ' ('+ (nurse.location||'') +')';
+    }catch(e){}
+    info.innerHTML='✅ Selected: <b>'+nurseName+'</b><br><small>Your Name/Phone/Service still filled - Click BOOK SELECTED or Book This Nurse in video popup</small>'; 
+    info.style.background='#dcfce7'; 
+    info.style.border='2px solid #16a34a';
+    info.style.padding='10px';
+    info.style.borderRadius='10px';
+  }
   if(typeof renderNurseMarkers==='function') renderNurseMarkers();
   if(typeof renderNearbyList==='function') renderNearbyList();
+  
+  // Scroll to booking button
+  var bookBtn = document.getElementById('bookSelectedBtn') || document.querySelector('[onclick*="submitBooking"]');
+  if(bookBtn){
+    bookBtn.style.animation='pulse 1s 3';
+    setTimeout(()=>{bookBtn.style.animation='';},3000);
+  }
 };
+
 
 // Also override map marker popup to include video button
 var _originalRenderNurseMarkers = window.renderNurseMarkers;
@@ -2877,6 +3039,47 @@ window.loadNurseDashboard = function(){
 };
 
 console.log('Nurse notification + Accept/Reject feature loaded');
+</script>
+
+
+<script>
+// ===== PERSIST BOOKING FORM - Don't lose name/phone when selecting nurse =====
+document.addEventListener('DOMContentLoaded', function(){
+  // Restore last values
+  try{
+    var lastName = localStorage.getItem('lastClientName');
+    var lastPhone = localStorage.getItem('lastClientPhoneRaw') || localStorage.getItem('lastClientPhone');
+    var lastService = localStorage.getItem('lastClientService');
+    var lastLocation = localStorage.getItem('lastClientLocation');
+    var lastEmail = localStorage.getItem('lastClientEmail');
+    
+    if(lastName && document.getElementById('cName') && !document.getElementById('cName').value) document.getElementById('cName').value=lastName;
+    if(lastPhone && document.getElementById('cPhone') && !document.getElementById('cPhone').value) document.getElementById('cPhone').value=lastPhone;
+    if(lastService && document.getElementById('cService') && !document.getElementById('cService').value) document.getElementById('cService').value=lastService;
+    if(lastLocation && document.getElementById('cLocation') && !document.getElementById('cLocation').value) document.getElementById('cLocation').value=lastLocation;
+    if(lastEmail && document.getElementById('cEmail') && !document.getElementById('cEmail').value) document.getElementById('cEmail').value=lastEmail;
+  }catch(e){}
+  
+  // Save on change
+  ['cName','cPhone','cService','cLocation','cEmail'].forEach(id=>{
+    var el=document.getElementById(id);
+    if(el){
+      el.addEventListener('change', function(){
+        try{
+          localStorage.setItem('lastClient'+id.charAt(1).toUpperCase()+id.slice(2), this.value);
+          if(id==='cPhone') localStorage.setItem('lastClientPhoneRaw', this.value);
+        }catch(e){}
+      });
+      el.addEventListener('input', function(){
+        try{
+          localStorage.setItem('lastClient'+id.charAt(1).toUpperCase()+id.slice(2), this.value);
+        }catch(e){}
+      });
+    }
+  });
+  
+  console.log('Booking form persistence enabled - Your name/phone will NOT be cleared when selecting nurse');
+});
 </script>
 
 </body>
