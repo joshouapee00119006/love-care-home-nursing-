@@ -101,7 +101,7 @@ table{width:100%;border-collapse:collapse;font-size:11px;margin-top:8px} th,td{b
 <body>
 <div class="sosFloat" onclick="alert('SOS Sent')">SOS</div>
 <div class="header"><div id="logoTapArea" title="Tap 5x = Staff, Long press 1.8s = CEO" style="display:flex;align-items:center;gap:10px;cursor:pointer"><img src="./logo.png" class="header-logo-img" onerror="this.style.display='none'"><div style="line-height:1"><b>LOVE CARE</b><br><span style="background:white;color:#16a34a;padding:2px 8px;border-radius:20px;font-size:8px;font-weight:800">GLOBAL HOME NURSING</span></div></div></div>
-<div class="announcementBar"><span id="announcementText">LOVE CARE GLOBAL - Ghana 6.04 GHS/hr (65% OFF +15%) - CEO: Long-press Logo | Staff: Tap Logo 5x GHS/hr (65% OFF +15%) Legal Nurse Minimum - Auto Pay Calculator - 32 Countries</span></div>
+<div class="announcementBar"><span id="announcementText">LOVE CARE GLOBAL - Ghana 6.04 GHS/hr (65% OFF) - CEO: Long-press Logo | Staff: Tap Logo 5x GHS/hr (65% OFF) Legal Nurse Minimum - Auto Pay Calculator - 32 Countries</span></div>
 
 <div class="globalBar">
 <span style="font-size:11px;font-weight:800">🌍</span>
@@ -309,476 +309,23 @@ function setWorkTime(s,e){
 </div>
 
 <div class="wageCard" id="wageBreakdown">
-<div class="wageRow"><span>🌍 Country:</span><span id="breakCountry">GH</span></div>
-<div class="wageRow"><span>👩⚕ Legal Nurse Min / Hour:</span><span id="breakHourly">Loading...</span></div>
-<div class="wageRow"><span>⏰ Service Duration:</span><span id="breakHours">-</span></div>
-<div class="wageRow"><span>📅 Days Equiv:</span><span id="breakDays">-</span></div>
-<div class="wageRow"><span>⏳ Total Hours:</span><span id="breakTotalHours">0 hrs</span></div>
+
+
+
+
+
 <div class="wageRow totalRow"><span>💰 LEGAL MINIMUM TOTAL:</span><span id="breakTotalPay" style="font-size:15px">0 GHS</span></div>
 </div>
 </div>
 
 <div style="display:flex;gap:6px"><input id="cBudget" type="number" placeholder="Your Offer - Must be >= Min" min="1" step="0.01" oninput="validateBudgetLive()" onchange="validateBudgetLive()" onkeyup="validateBudgetLive()" style="border:2px solid #16a34a;padding:12px;border-radius:8px;width:100%;font-weight:700;background:white">= Min" oninput="validateBudgetLive()" onchange="validateBudgetLive()" onkeyup="validateBudgetLive()"= Minimum" style="flex:1" oninput="validateBudgetLive()"><select id="cCurrency" style="width:110px" onchange="calculateTotal();validateBudgetLive()"><option>GHS</option><option>USD</option><option>NGN</option><option>ZAR</option><option>KES</option><option>UGX</option><option>TZS</option><option>ETB</option><option>RWF</option><option>XAF</option><option>XOF</option><option>EGP</option><option>MAD</option><option>GBP</option><option>CAD</option><option>AUD</option><option>EUR</option><option>INR</option><option>PKR</option><option>BDT</option><option>PHP</option><option>IDR</option><option>BRL</option><option>MXN</option><option>SAR</option><option>AED</option><option>JPY</option></select></div>
-<small id="minRateInfo" style="font-size:10px;font-weight:800;color:#92400e;background:#fef3c7;border:1px solid #f59e0b;padding:6px 10px;border-radius:8px;margin:4px 0;display:block">Loading legal nurse rate...</small>
+<small id="minRateInfo" style="display:none !important" style="font-size:10px;font-weight:800;color:#92400e;background:#fef3c7;border:1px solid #f59e0b;padding:6px 10px;border-radius:8px;margin:4px 0;display:block">Loading legal nurse rate...</small>
 
 <div class="card" style="border:3px solid #0a0a0a;background:linear-gradient(135deg,#f0fdf4,#dcfce7)">
 <h2 data-i18n="pay_title">💳 PAY WITH PAYSTACK</h2>
 <p style="font-size:11px;color:#374151" data-i18n="pay_desc">Client payment goes directly to CEO Paystack account.</p>
 <div style="background:white;border:2px solid #16a34a;border-radius:10px;padding:10px;margin:8px 0">
-<div class="wageRow"><span>💰 Total:</span><span id="payTotalDisplay" style="font-weight:800;color:#16a34a">0 GHS</span></div>
-<div class="wageRow hidden"><span>Nurse:</span><span id="payNurseShare">0</span></div><div class="wageRow hidden"><span>CEO:</span><span id="payCeoShare">0</span></div>
-</div>
-<div style="display:flex;gap:6px">
-<button class="btnSubmit" style="background:linear-gradient(90deg,#0a0a0a,#16a34a);flex:1" onclick="window.payWithPaystack()" id="paystackBtn" style="cursor:pointer;pointer-events:auto !important" id="paystackBtn">💳 PAY NOW WITH PAYSTACK</button>
-<button class="btnSmall" style="background:#f0fdf4;border:2px solid #16a34a;color:#16a34a" onclick="updatePaystackSplit()">🔄 Update</button>
-</div>
-<div id="paystackStatus" style="font-size:11px;margin-top:8px;padding:8px;border-radius:8px;display:none"></div>
-</div>
-
-<button class="btnSubmit" style="background:linear-gradient(90deg,#2563eb,#00b050)" id="findNursesBtn" onclick="window.findNursesUber()" id="findNursesBtn" style="cursor:pointer;pointer-events:auto !important">🔍 FIND NURSES NEAR ME</button>
-<div id="uberActionArea" class="hidden"><div style="display:flex;gap:6px;margin-top:8px"><button class="btnSubmit" style="background:#eab308;color:#111;flex:1" onclick="randomSelectNurse()">🎲 RANDOM</button><button class="btnSubmit" style="background:#111827;flex:1" id="bookSelectedBtn" onclick="window.submitBooking()" id="bookSelectedBtn" style="cursor:pointer;pointer-events:auto !important">BOOK SELECTED</button></div><div id="selectedNurseInfo" style="font-size:10px;text-align:center;margin-top:4px;color:#16a34a;font-weight:800">No nurse selected</div></div></div>
-
-<div class="card" style="border:3px solid #2563eb"><h2>📋 MY BOOKINGS</h2><div class="phoneRow"><select id="myBookPhoneCode"></select><input id="myBookPhone" placeholder="Enter phone to load"><button class="btnSmall" style="background:#2563eb;color:white;padding:12px 16px" onclick="loadMyBookings()">LOAD</button></div><div id="myBookingsList" style="margin-top:10px"><div style="text-align:center;color:#999;font-size:11px;padding:10px">No bookings loaded</div></div></div>
-<div class="card"><h2>LIVE Map - <span id="nearbyCount">0</span> Nearby</h2><div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap"><button class="btnMap" onclick="toggleMap()">🗺 Map</button><button class="btnSmall" style="background:#16a34a;color:white" id="findNursesBtn" onclick="window.findNursesUber()" id="findNursesBtn" style="cursor:pointer;pointer-events:auto !important">Refresh</button><select id="radiusSelect" style="width:100px;padding:8px;border-radius:8px"><option value="5">5 km</option><option value="10" selected>10 km</option><option value="20">20 km</option><option value="50">50 km</option></select></div><div id="loveCareMapWrapper" class="map-wrapper"><div id="uberMap"></div></div><div id="loveCareLiveList"></div></div>
-</div>
-
-<div id="page-nurse-public" class="page"><div class="card"><h2>Nurse Registration</h2><input id="nRegName" placeholder="Full Name"><div class="phoneRow"><select id="nRegPhoneCode"></select><input id="nRegPhone" placeholder="Phone"></div><input id="nRegPass" type="password" placeholder="Password"><div class="locationRow"><input id="nRegLocation" placeholder="Tap GPS Auto"><button type="button" onclick="autoGPS('nRegLocation','nurseGpsStatus2')">GPS</button></div><small id="nurseGpsStatus2" class="gpsBadge hidden"></small><div style="background:#fefce8;border:2px solid #eab308;border-radius:10px;padding:10px;margin:8px 0"><h4 style="margin:0 0 6px 0;font-size:11px;color:#92400e">📸 Upload Your Photo (Nurse Profile Photo)</h4><input type="file" id="nRegPhoto" accept="image/*" style="width:100%;padding:8px;border:2px dashed #eab308;border-radius:8px;background:white"><small style="font-size:9px;color:#666">Your clear face photo - will be shown to clients</small><div style="margin-top:6px"><img id="nRegPhotoImg" style="max-width:100%;max-height:120px;display:none;border-radius:8px;border:2px solid #eab308"></div></div><div style="background:#f0fdf4;border:2px solid #16a34a;border-radius:10px;padding:10px;margin:8px 0"><h4 style="margin:0 0 6px 0;font-size:11px;color:#16a34a">📄 Upload CV (Resume)</h4><input type="file" id="nRegCV" accept=".pdf,.doc,.docx,.jpg,.png" style="width:100%;padding:8px;border:2px dashed #16a34a;border-radius:8px;background:white"><small style="font-size:9px;color:#666">PDF, DOC, JPG, PNG</small><div id="nRegCVPreview" style="margin-top:6px;font-size:10px;color:#16a34a"></div></div><div style="background:#eff6ff;border:2px solid #2563eb;border-radius:10px;padding:10px;margin:8px 0"><h4 style="margin:0 0 6px 0;font-size:11px;color:#2563eb">🪪 PIN Photo (Professional ID)</h4><input type="file" id="nRegPINPhoto" accept="image/*" style="width:100%;padding:8px;border:2px dashed #2563eb;border-radius:8px;background:white"><small style="font-size:9px;color:#666">Nursing PIN / License / ID Photo</small><div style="margin-top:6px"><img id="nRegPINImg" style="max-width:100%;max-height:120px;display:none;border-radius:8px;border:2px solid #2563eb"></div></div><input id="nRegExperience" type="number" placeholder="Years"><select id="nRegSpecialty"><option value="">-- Specialty (13) --</option><option>General Nurse</option><option>Elderly Care</option><option>Baby Care and Nanny</option><option>Hospital Support</option><option>Post-Surgery Care</option><option>Disability Support</option><option>Maternity Care</option><option>Night Nurse</option><option>Palliative Care</option><option>Physiotherapy</option><option>Injection and Wound Care</option><option>Diabetes Monitoring</option><option>Dementia Care</option><option>Child Special Needs Care</option></select><button class="btnSubmit" onclick="registerNurse()">Register</button><div style="text-align:center;margin-top:10px"><button class="btnSmall" style="background:#2563eb;color:white" onclick="showPage('nurse-public')">Already Registered? Login Here</button></div></div></div>
-<div id="page-booking-public" class="page">
-<div class="card" style="border:3px solid #2563eb">
-<h2>💡 LOVE CARE HELP CENTER - How To Use The App</h2>
-<p style="font-size:12px;color:#374151">Welcome to LOVE CARE GLOBAL. This help page answers your questions automatically. Type your question below.</p>
-<div style="background:#f0fdf4;border:2px solid #16a34a;border-radius:12px;padding:12px;margin:10px 0">
-<h3 style="margin:0 0 8px 0;font-size:13px;color:#16a34a">🤖 Ask Me Anything - Auto Help Bot</h3>
-<div id="helpBotChat" style="height:220px;overflow-y:auto;background:white;border-radius:10px;padding:10px;border:1px solid #bbf7d0;display:flex;flex-direction:column;gap:8px">
-<div style="background:#e0f2fe;padding:8px 10px;border-radius:10px;font-size:11px;align-self:flex-start"><b>Bot:</b> Hi! I can help you. Ask me about booking, payment, GPS, legal rates, refunds, nurses, etc.</div>
-</div>
-<div style="display:flex;gap:6px;margin-top:8px">
-<input id="helpBotInput" placeholder="Type your question... e.g. How to book nurse?" onkeypress="if(event.key==='Enter')helpBotAsk()" style="flex:1;margin:0;border:2px solid #16a34a">
-<button class="btnSmall" style="background:#16a34a;color:white;padding:12px 18px" onclick="helpBotAsk()">Send</button>
-</div>
-</div>
-<input id="helpSearch" placeholder="🔍 Search help... e.g. payment, GPS, refund" oninput="filterHelp()" style="border:2px solid #2563eb">
-<div id="helpFaqList">
-<div class="helpItem" data-keywords="book how to book steps"><div class="helpQ" onclick="toggleHelp(this)">📘 How do I book a nurse? <span>+</span></div><div class="helpA"><p><b>Steps:</b><br>1. Go to Home page<br>2. Fill Full Name, Phone, Service<br>3. Tap GPS Auto<br>4. Choose Hourly/Days/Weeks/Months<br>5. Your offer must be >= Legal Minimum (Ghana 6.04 GHS/hr - 65% OFF)<br>6. Click FIND NURSES NEAR ME<br>7. Pick nurse then BOOK SELECTED</p></div></div>
-<div class="helpItem" data-keywords="hourly daily weekly monthly duration time how long"><div class="helpQ" onclick="toggleHelp(this)">⏱ How does Hourly / Days / Weeks / Months work? <span>+</span></div><div class="helpA"><p><b>New System:</b><br>• Hourly: total hours at home<br>• Daily: days (1-90) + hours per day (1,2,4,6,8,10,12,24) - NOW INCLUDES 1hr/day<br>• Weekly: weeks x 7 days<br>• Monthly: months x 30 days</p></div></div>
-<div class="helpItem" data-keywords="legal minimum pay rate ghana 5.25 ghs currency"><div class="helpQ" onclick="toggleHelp(this)">💰 What is the legal minimum pay? Ghana 6.04 GHS/hr (65% OFF +15%) <span>+</span></div><div class="helpA"><p>Ghana Law PROMO: <b>6.04 GHS per hour</b> (15 GHS -65% = 5.25 +15% = 6.04). Formula: Total Hours × 5.25 GHS = Legal Minimum Total. Example: 7 days x 8 hrs = 56 hrs → 56×5.25 = 294 GHS minimum (was 840). All 32 countries reduced 65%.</p></div></div>
-</div>
-</div>
-</div>
-
-<div id="page-nurse-login" class="page"><div class="card" style="margin:20px;border:3px solid #16a34a"><h2>Nurse Login</h2><div class="phoneRow"><select id="nurseLoginCode"></select><input id="nurseLoginPhone" placeholder="Phone"></div><input id="nurseLoginPass" type="password" placeholder="Password"><button class="btnSubmit" onclick="loginNurse()">Login as Nurse</button><div id="nurseLoginResult" style="color:red;font-size:11px;margin-top:8px"></div></div></div>
-<div id="page-nurse-dashboard" class="page"><div class="card" style="border:3px solid #2563eb"><h2>Nurse Dashboard</h2><div style="display:flex;gap:5px"><button class="btnSubmit" style="width:auto;background:#00b050" onclick="startDuty()">START DUTY</button><button class="btnSubmit" style="width:auto;background:#ef4444" onclick="stopDuty()">STOP</button><button class="btnSubmit" style="width:auto;background:#111827" onclick="logoutNurse()">Logout</button></div><div id="nurseGpsStatus" style="padding:8px;background:#e8f5e9;border:1px solid #16a34a;font-size:11px;display:none;margin-top:8px">OFF</div></div><div class="card"><h2>New Offers</h2><div id="nurseJobsList">Start DUTY</div></div><div class="card" style="border:3px solid #2563eb"><h2>GROUP CHAT</h2>
-<div class="loginBar"><button onclick="showPage('nurse-login')" style="border-color:#2563eb">👩‍⚕ Nurse Login</button><button onclick="showPage('staff-login')" style="border-color:#7c3aed">🧑‍💼 Staff Login</button><button onclick="showPage('ceo-login')" style="border-color:#111827">👑 CEO Login</button></div>
-<div id="nurseChatBox" class="chatBox"></div><div class="chatInputRow"><input id="nurseChatInput" placeholder="Message..." onkeypress="if(event.key==='Enter')sendGroupMessage('NURSE')"><button class="btnSmall" style="background:#2563eb;color:white;padding:12px 18px" onclick="sendGroupMessage('NURSE')">Send</button></div><button class="btnSmall" style="background:#111827;color:white;width:100%;margin-top:6px" onclick="showPage('group-chat')">Open Full Chat</button></div></div>
-<div id="page-staff-login" class="page"><div class="card" style="margin:20px;border:3px solid #7c3aed"><h2>Staff Portal</h2><input id="staffLoginID" placeholder="Staff ID"><input id="staffLoginPass" type="password" placeholder="Password"><button class="btnSubmit" style="background:#7c3aed" onclick="loginStaff()">Login as Staff</button></div></div>
-<div id="page-staff-dashboard" class="page"><div class="card"><h2>Staff Dashboard</h2><div id="staffBookingsList">Loading...</div></div><div class="card" style="border:3px solid #7c3aed"><h2>GROUP CHAT</h2>
-<div class="loginBar"><button onclick="showPage('nurse-login')" style="border-color:#2563eb">👩‍⚕ Nurse Login</button><button onclick="showPage('staff-login')" style="border-color:#7c3aed">🧑‍💼 Staff Login</button><button onclick="showPage('ceo-login')" style="border-color:#111827">👑 CEO Login</button></div>
-<div id="staffChatBox" class="chatBox"></div><div class="chatInputRow"><input id="staffChatInput" placeholder="Message..." onkeypress="if(event.key==='Enter')sendGroupMessage('STAFF')"><button class="btnSmall" style="background:#7c3aed;color:white;padding:12px 18px" onclick="sendGroupMessage('STAFF')">Send</button></div><button class="btnSmall" style="background:#111827;color:white;width:100%;margin-top:6px" onclick="showPage('group-chat')">Open Full Chat</button></div><div style="margin:20px;display:flex;gap:8px"><button class="btnSubmit" style="background:#16a34a;flex:1" onclick="showPage('home')">Home</button><button class="btnSubmit" style="background:#ef4444;flex:1" onclick="logoutStaff()">Logout</button></div></div>
-
-<div id="page-group-chat" class="page"><div class="card" style="border:3px solid #16a34a"><h2>GLOBAL GROUP CHAT - 65% OFF PROMO</h2>
-<div class="loginBar" id="chatLoginBar">
-  <button onclick="showPage('nurse-login')" style="border-color:#2563eb;color:#2563eb">👩‍⚕ Nurse Login</button>
-  <button onclick="showPage('staff-login')" style="border-color:#7c3aed;color:#7c3aed">🧑‍💼 Staff Login</button>
-  <button onclick="showPage('ceo-login')" style="border-color:#111827;color:#111827">👑 CEO Login</button>
-</div>
-<div id="authStatus" style="font-size:10px;background:#fffbe6;padding:6px 10px;border-radius:8px;margin-bottom:8px;border:1px dashed #eab308">Not logged in - Login as Nurse/Staff/CEO to chat</div>
-<div id="globalChatBox" class="chatBox" style="height:55vh"></div><div class="chatInputRow"><select id="groupRole" style="width:100px"><option value="NURSE">NURSE</option><option value="STAFF">STAFF</option><option value="CEO">CEO</option></select><input id="globalChatInput" placeholder="Type..." onkeypress="if(event.key==='Enter')sendGlobalChat()"><button class="btnSmall" style="background:#16a34a;color:white;padding:12px 20px" onclick="sendGlobalChat()">Send</button></div>
-<div style="display:flex;gap:8px;margin-top:10px;background:#f9fafb;border:2px dashed #16a34a;border-radius:12px;padding:10px">
-  <button id="editLastBtn" type="button" style="flex:1;padding:12px;border-radius:8px;border:2px solid #eab308;background:#fef3c7;color:#92400e;font-weight:800;font-size:12px;cursor:pointer;opacity:0.4" onclick="if(window.lastOwnMessageKey){window.editMessage(window.lastOwnMessageKey);}else{alert('No own message - send first');}" disabled>✏️ No own msg</button>
-  <button id="deleteLastBtn" type="button" style="flex:1;padding:12px;border-radius:8px;border:2px solid #ef4444;background:#fee2e2;color:#991b1b;font-weight:800;font-size:12px;cursor:pointer;opacity:0.4" onclick="if(window.lastOwnMessageKey){window.deleteMessage(window.lastOwnMessageKey);}else{alert('No own message');}" disabled>🗑 No own msg</button>
-</div>
-<div style="text-align:center;font-size:9px;color:#666;margin-top:4px">⬇️ Edit/Delete your last message - buttons above (near Send) + inside bubble</div>
-<div style="display:flex;gap:6px;margin-top:8px"><button class="btnSmall" style="background:#111827;color:white;flex:1" onclick="showPage('home')">Home</button><button id="masterClearBtn" class="btnSmall hidden" style="background:#ef4444;color:white;flex:1" onclick="clearGroupChat()">🗑 MASTER CLEAR ALL</button></div></div></div>
-
-<div id="page-ceo-login" class="page"><div class="card" style="margin:20px;border:3px solid #111827"><h2>Secure Access</h2><input id="ceoLoginID" placeholder="Access ID"><input id="ceoLoginPass" type="password" placeholder="Access Key"><button class="btnSubmit" style="background:#111827" onclick="loginCEO()">Login</button><div id="ceoLoginResult" style="color:red;font-size:11px;margin-top:8px"></div></div></div>
-<div id="page-ceo-dashboard" class="page">
-<div class="card" style="border:3px solid #111827"><h2>CEO Management <span style="background:#16a34a;color:white;padding:2px 8px;border-radius:10px;font-size:10px">LIVE - 65% OFF</span></h2>
-<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;margin:10px 0">
-<div style="background:#f0fdf4;padding:10px;border-radius:10px;text-align:center;border:2px solid #16a34a"><b id="statBookings">0</b><br><small>Bookings</small></div>
-<div style="background:#fffbeb;padding:10px;border-radius:10px;text-align:center;border:2px solid #eab308"><b id="statNurses">0</b><br><small>Nurses</small></div>
-<div style="background:#eff6ff;padding:10px;border-radius:10px;text-align:center;border:2px solid #2563eb"><b id="statOnline">0</b><br><small>On Duty</small></div>
-<div style="background:#fef2f2;padding:10px;border-radius:10px;text-align:center;border:2px solid #ef4444"><b id="statRefunds">0</b><br><small>Refunds</small></div>
-</div>
-<div class="ceoTabs">
-<button id="btn-bookings" class="btnSmall activeTab" style="background:#111827;color:white" onclick="switchCeoTab('bookings')">Bookings</button>
-<button id="btn-nurses" class="btnSmall" style="background:#16a34a;color:white" onclick="switchCeoTab('nurses')">Nurses</button>
-<button id="btn-clients" class="btnSmall" style="background:#2563eb;color:white" onclick="switchCeoTab('clients')">Clients</button>
-<button id="btn-payments" class="btnSmall" style="background:#eab308;color:#111" onclick="switchCeoTab('payments')">Payments</button>
-<button id="btn-refunds" class="btnSmall" style="background:#ef4444;color:white" onclick="switchCeoTab('refunds')">💸 Refunds</button>
-<button id="btn-staff" class="btnSmall" style="background:#7c3aed;color:white" onclick="switchCeoTab('staff')">Staff</button>
-<button id="btn-announce" class="btnSmall" style="background:#0e7490;color:white" onclick="switchCeoTab('announce')">Announce</button>
-<button id="btn-chat" class="btnSmall" style="background:#ef4444;color:white" onclick="switchCeoTab('chat')">💬GROUP</button>
-</div>
-<div style="display:flex;gap:6px;margin-top:6px"><button class="btnSmall" style="background:#111827;color:white" onclick="loadCeoData()">🔄 Refresh All</button><button class="btnSmall" style="background:#ef4444;color:white" onclick="logoutCEO()">Logout</button></div>
-</div>
-<div id="ceo-tab-bookings" class="ceo-tab card"><h2>1. Bookings</h2><div style="display:flex;gap:6px;margin-bottom:8px"><input id="ceoSearchBooking" placeholder="Search" oninput="filterBookings()" style="flex:1;margin:0"><select id="ceoBookingFilter" onchange="filterBookings()" style="width:130px;margin:0"><option value="">All</option><option value="pending_assignment">pending</option><option value="confirmed">confirmed</option><option value="cancelled_by_client">cancelled</option><option value="refund_requested">refund req</option><option value="refund_approved">approved</option><option value="refunded">refunded</option></select></div><div id="ceoBookingsList">Loading...</div></div>
-<div id="ceo-tab-nurses" class="ceo-tab card hidden"><h2>2. Nurses + Map</h2><input id="ceoSearchNurse" placeholder="Search nurse" oninput="filterNurses()" style="margin:0 0 8px 0"><div id="ceoNursesList">Loading...</div><div id="ceoMap" style="height:380px;border-radius:12px;border:2px solid #16a34a;margin-top:10px"></div></div>
-<div id="ceo-tab-clients" class="ceo-tab card hidden"><h2>3. Clients</h2><div id="ceoClientsList">Loading...</div></div>
-<div id="ceo-tab-payments" class="ceo-tab card hidden"><h2>4. Payments</h2><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px"><div style="background:#f0fdf4;padding:10px;border-radius:10px;border:2px solid #16a34a"><small>Total GHS</small><br><b id="totalRevenue">0</b></div><div style="background:#fffbeb;padding:10px;border-radius:10px;border:2px solid #eab308"><small>Pending</small><br><b id="pendingRevenue">0</b></div></div><div id="ceoPaymentsList">Loading...</div></div>
-<div id="ceo-tab-refunds" class="ceo-tab card hidden" style="border:3px solid #ef4444"><h2>💸 REFUND MANAGEMENT</h2><div id="ceoRefundsList">Loading refunds...</div></div>
-<div id="ceo-tab-staff" class="ceo-tab card hidden"><h2>5. Staff</h2><div style="display:flex;gap:6px;margin-bottom:10px"><input id="newStaffId" placeholder="New Staff ID" style="flex:1;margin:0"><input id="newStaffPass" placeholder="Password" style="flex:1;margin:0"><button class="btnSmall" style="background:#16a34a;color:white" onclick="addStaff()">Add</button></div><div id="ceoStaffList">Loading...</div></div>
-<div id="ceo-tab-announce" class="ceo-tab card hidden"><h2>6. Announcement & Nurse Legal Rates (65% OFF)</h2><textarea id="announcementInput" rows="2" placeholder="Type announcement..."></textarea><div class="colorRow"><label>Background:</label><input id="announceBgColor" type="color" value="#111827"><span id="bgVal">#111827</span></div><div class="colorRow"><label>Text Color:</label><input id="announceTextColor" type="color" value="#eab308"><span id="textVal">#eab308</span></div><div class="colorRow"><label>Border:</label><input id="announceBorderColor" type="color" value="#eab308"><span id="borderVal">#eab308</span></div><div class="colorRow"><label>Speed:</label><select id="announceSpeed" style="width:120px"><option value="10s">Fast</option><option value="22s" selected>Normal</option><option value="40s">Slow</option></select></div><button class="btnSmall" style="background:#0e7490;color:white;width:100%;padding:12px;margin-top:8px" onclick="saveAnnouncement()">💾 SAVE LIVE</button>
-<div style="margin-top:12px;border-top:2px solid #eee;padding-top:8px"><label style="font-size:11px;font-weight:800">Edit Nurse Hourly Minimum Per Country (Legal) - Ghana now 6.04 GHS/hr (65% OFF +15%)</label><div id="minRateEditor" style="max-height:300px;overflow-y:auto;font-size:11px"></div><button class="btnSmall" style="background:#16a34a;color:white;margin-top:8px;width:100%;padding:12px" onclick="saveSettings()">💾 Save All Nurse Hourly Rates</button></div></div>
-<div id="ceo-tab-chat" class="ceo-tab card hidden" style="border:3px solid #ef4444"><h2>GROUP CHAT <span id="ceoOnlineCount" style="background:#22c55e;color:white;padding:2px 8px;border-radius:10px;font-size:9px">0 ONLINE</span></h2>
-<div class="loginBar"><button onclick="showPage('nurse-login')" style="border-color:#2563eb">👩‍⚕ Nurse Login</button><button onclick="showPage('staff-login')" style="border-color:#7c3aed">🧑‍💼 Staff Login</button><button onclick="showPage('ceo-login')" style="border-color:#111827">👑 CEO Login</button></div>
-<div id="ceoChatBox" class="chatBox"></div><div class="chatInputRow"><input id="ceoChatInput" placeholder="Broadcast..." onkeypress="if(event.key==='Enter')sendGroupMessage('CEO')"><button class="btnSmall" style="background:#111827;color:white;padding:12px 18px" onclick="sendGroupMessage('CEO')">Send</button></div><button class="btnSmall" style="background:#111827;color:white;width:100%;margin-top:6px" onclick="showPage('group-chat')">Open Full Chat</button><button id="ceoMasterClear" class="btnSmall hidden" style="background:#ef4444;color:white;width:100%;margin-top:6px" onclick="clearGroupChat()">🗑 MASTER CLEAR ALL</button></div>
-</div>
-
-<div id="ratePopup" class="ratePopup hidden"><h3 style="color:#ef4444;margin:0 0 10px 0">⏰ No Nurse Picked Yet</h3><p id="ratePopupMsg" style="font-size:13px;color:#333"></p><p style="font-size:12px"><b id="ratePopupCurrent"></b></p><div style="display:flex;gap:8px;margin-top:12px"><button class="btnSubmit" style="background:#16a34a;flex:1" onclick="increaseRateAction()">Increase Rate</button><button class="btnSubmit" style="background:#6b7280;flex:1" onclick="closeRatePopup()">Later</button></div></div>
-<div id="legalWagePopup" class="ratePopup hidden" style="border-color:#b45309"><h3 style="color:#b45309;margin:0 0 10px 0">⚖ Below Legal Nurse Minimum</h3><p id="legalWageMsg" style="font-size:13px;color:#333"></p><button class="btnSubmit" style="background:#b45309" onclick="closeLegalWagePopup()">Adjust Rate</button></div>
-<div id="refundModal" class="ratePopup hidden" style="border-color:#7c3aed"><h3 style="color:#7c3aed;margin:0 0 10px 0">💸 Request Refund</h3><p style="font-size:12px;text-align:left">Booking ID: <b id="refundBookingId"></b><br>Amount: <b id="refundBookingAmount"></b></p><input id="refundReason" placeholder="Reason"><input id="refundAccount" placeholder="MoMo / Bank Account"><input id="refundAccountName" placeholder="Account Name"><div style="display:flex;gap:8px;margin-top:12px"><button class="btnSubmit" style="background:#7c3aed;flex:1" onclick="submitRefundRequest()">Submit</button><button class="btnSubmit" style="background:#6b7280;flex:1" onclick="closeRefundModal()">Cancel</button></div></div>
-<div id="legalModal" class="legalModal hidden" onclick="if(event.target===this)closeLegal()"><div class="legalContent"><div style="display:flex;justify-content:space-between;align-items:center"><h1 id="legalTitle">Policy</h1><button onclick="closeLegal()" style="background:#ef4444;color:white;border:none;padding:8px 14px;border-radius:8px;font-weight:800">✕ CLOSE</button></div><div id="legalBody"></div></div></div>
-
-
-<div id="page-nurse-withdrawal" class="page">
-<div class="card" style="border:3px solid #16a34a">
-<h2>💸 WITHDRAWAL</h2>
-<div style="display:flex;gap:8px;margin:10px 0">
-  <button class="btnSmall" style="background:#2563eb;color:white;flex:1;padding:10px;font-weight:800" onclick="showPage('nurse-login')">👩‍⚕ Nurse Login</button>
-  <button class="btnSmall" style="background:#7c3aed;color:white;flex:1;padding:10px;font-weight:800" onclick="showPage('staff-login')">🧑‍💼 Staff Login</button>
-  <button class="btnSmall" style="background:#111827;color:white;flex:1;padding:10px;font-weight:800" onclick="showPage('ceo-login')">👑 CEO Login</button>
-</div>
-<div style="display:flex;gap:8px;margin:10px 0">
-  <button class="btnSmall" style="background:#ef4444;color:white;flex:1;padding:10px;font-weight:800" onclick="logoutNurse();logoutStaff();localStorage.clear();alert('Logged out');showPage('home')">🚪 Logout</button>
-  <button class="btnSmall" style="background:#16a34a;color:white;flex:1;padding:10px;font-weight:800" onclick="showPage('home')">🏠 Home</button>
-</div>
-<div id="withdrawalLoginPrompt" class="hidden" style="background:#fff3cd;border:3px solid #eab308;border-radius:12px;padding:16px;margin:12px 0;text-align:center">
-<h3>🔒 Login Required</h3><p>You must login as Nurse or Staff before withdrawal</p>
-<div style="display:flex;gap:8px;margin-top:12px"><button class="btnSubmit" style="background:#2563eb;flex:1" onclick="showPage('nurse-login')">Nurse Login</button><button class="btnSubmit" style="background:#7c3aed;flex:1" onclick="showPage('staff-login')">Staff Login</button></div>
-</div>
-
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0">
-  <div style="background:#dcfce7;padding:14px;border-radius:12px;border:2px solid #16a34a;text-align:center"><small>Balance</small><br><b id="withdrawBalance" style="font-size:22px;color:#16a34a">0 GHS</b><br><small id="withdrawPending">Pending: 0</small></div>
-  <div style="background:#fef3c7;padding:14px;border-radius:12px;border:2px solid #eab308;text-align:center"><small>Total Earned</small><br><b id="withdrawTotalEarned">0 GHS</b><br><small id="withdrawTotalJobs">0 Jobs</small></div>
-</div>
-<div style="background:white;border:2px solid #2563eb;border-radius:12px;padding:12px">
-  <h3 style="margin:0 0 8px 0;font-size:13px">Withdrawal Method</h3>
-  <div style="display:flex;gap:8px">
-  <input id="withdrawAmount" type="number" placeholder="Amount to withdraw" style="flex:2">
-  <select id="withdrawCurrency" style="flex:1;padding:12px;border:2px solid #16a34a;border-radius:8px;font-weight:800;background:#f0fdf4">
-    <option value="GHS">GHS - Ghana Cedi</option>
-    <option value="NGN">NGN - Nigeria Naira</option>
-    <option value="ZAR">ZAR - South Africa Rand</option>
-    <option value="KES">KES - Kenya Shilling</option>
-    <option value="UGX">UGX - Uganda Shilling</option>
-    <option value="TZS">TZS - Tanzania Shilling</option>
-    <option value="RWF">RWF - Rwanda Franc</option>
-    <option value="USD">USD - US Dollar</option>
-    <option value="GBP">GBP - British Pound</option>
-    <option value="CAD">CAD - Canadian Dollar</option>
-    <option value="AUD">AUD - Australian Dollar</option>
-    <option value="INR">INR - Indian Rupee</option>
-    <option value="PHP">PHP - Philippine Peso</option>
-  </select>
-</div>
-  <select id="withdrawMethod" onchange="toggleWithdrawFields()" style="margin:8px 0;padding:12px;border:2px solid #2563eb;border-radius:8px;width:100%;font-weight:700">
-    <option value="">-- Select Method --</option>
-    <option value="momo">MoMo (Mobile Money)</option>
-    <option value="bank">Bank Account</option>
-    <option value="virtual">Virtual Card</option>
-  </select>
-  <div id="momoFields" class="hidden" style="background:#f0fdf4;border:2px solid #16a34a;border-radius:10px;padding:10px;margin:8px 0">
-    <h4 style="margin:0 0 6px 0;font-size:11px;color:#16a34a">MoMo Details</h4>
-    <select id="momoNetwork" style="width:100%;padding:10px;margin:4px 0;border:2px solid #16a34a;border-radius:8px"><option value="MTN">MTN MoMo</option><option value="Vodafone">Vodafone Cash</option><option value="AirtelTigo">AirtelTigo Money</option><option value="Telecel">Telecel Cash</option></select>
-    <input id="momoNumber" placeholder="MoMo Number" style="width:100%;padding:10px;margin:4px 0;border:2px solid #16a34a;border-radius:8px">
-    <input id="momoName" placeholder="MoMo Account Name" style="width:100%;padding:10px;margin:4px 0;border:2px solid #16a34a;border-radius:8px">
-  </div>
-  <div id="bankFields" class="hidden" style="background:#eff6ff;border:2px solid #2563eb;border-radius:10px;padding:10px;margin:8px 0">
-    <h4 style="margin:0 0 6px 0;font-size:11px;color:#2563eb">Bank Account Details</h4>
-    <input id="bankName" placeholder="Bank Name" style="width:100%;padding:10px;margin:4px 0;border:2px solid #2563eb;border-radius:8px">
-    <input id="bankAccountNumber" placeholder="Account Number" style="width:100%;padding:10px;margin:4px 0;border:2px solid #2563eb;border-radius:8px">
-    <input id="bankAccountName" placeholder="Account Holder Name" style="width:100%;padding:10px;margin:4px 0;border:2px solid #2563eb;border-radius:8px">
-    <input id="bankBranch" placeholder="Branch (Optional)" style="width:100%;padding:10px;margin:4px 0;border:2px solid #2563eb;border-radius:8px">
-  </div>
-  <div id="virtualFields" class="hidden" style="background:#fef3c7;border:2px solid #eab308;border-radius:10px;padding:10px;margin:8px 0">
-    <h4 style="margin:0 0 6px 0;font-size:11px;color:#92400e">Virtual Card Details</h4>
-    <select id="virtualType" style="width:100%;padding:10px;margin:4px 0;border:2px solid #eab308;border-radius:8px"><option value="Visa">Visa Virtual Card</option><option value="Mastercard">Mastercard Virtual Card</option><option value="Verve">Verve Virtual Card</option></select>
-    <input id="virtualCardNumber" placeholder="Virtual Card Number" style="width:100%;padding:10px;margin:4px 0;border:2px solid #eab308;border-radius:8px">
-    <input id="virtualCardName" placeholder="Name on Card" style="width:100%;padding:10px;margin:4px 0;border:2px solid #eab308;border-radius:8px">
-    <div style="display:flex;gap:6px"><input id="virtualExpiry" placeholder="Expiry MM/YY" style="flex:1;padding:10px;margin:4px 0;border:2px solid #eab308;border-radius:8px"><input id="virtualCVV" placeholder="CVV" style="flex:1;padding:10px;margin:4px 0;border:2px solid #eab308;border-radius:8px"></div>
-  </div>
-  <textarea id="withdrawNote" placeholder="Note (Optional)" style="width:100%;padding:10px;margin:8px 0;border:2px solid #ccc;border-radius:8px;min-height:60px"></textarea>
-  <button class="btnSubmit" style="background:#16a34a;width:100%;padding:14px;font-weight:800" onclick="requestWithdrawal()">Request Withdrawal</button>
-</div>
-<div id="myEarningsList" style="margin-top:10px">Login to see earnings...</div>
-<div id="myWithdrawalsList" style="margin-top:10px">Login to see withdrawals...</div>
-<div id="ceoWithdrawalManagement" class="hidden"><h3>👑 CEO: All Withdrawals</h3><div id="allWithdrawalsList"></div></div>
-</div>
-</div>
-
-
-
-<div class="bottomNav">
-<button id="nav-home" class="active" onclick="showPage('home')"><span>🏠</span><span>Home</span></button>
-<button id="nav-nurse" onclick="showPage('nurse-public')"><span>👩⚕</span><span>Join</span></button>
-<button id="nav-book" onclick="showPage('booking-public')"><span>💡</span><span>Help</span></button>
-<button id="nav-login" onclick="showPage('nurse-login')"><span>🔑</span><span>Login</span></button>
-<button id="nav-withdraw" onclick="showPage('nurse-withdrawal')" style="background:#dcfce7;border:2px solid #16a34a"><span>💸</span><span>Withdraw</span></button>
-<button id="nav-chat" onclick="showPage('group-chat')" style="background:#fef2f2;border:2px solid #ef4444"><span>💬</span><span>Group</span></button>
-</div>
-
-<script>
-// ========= 1. REDUCED PRICE BY 65% FOR EACH COUNTRY =========
-var NURSE_HOURLY_MIN = {
- GH: { amount: 6.04, currency: "GHS", label: "Ghana - 6.04 GHS/hr (65% OFF +15%)" },
- NG: { amount: 603.75, currency: "NGN", label: "Nigeria - 603.75 NGN/hr (65% OFF)" },
- ZA: { amount: 32.2, currency: "ZAR", label: "South Africa - 32.2 ZAR/hr (65% OFF)" },
- KE: { amount: 120.75, currency: "KES", label: "Kenya - 120.75 KES/hr (65% OFF)" },
- UG: { amount: 3220, currency: "UGX", label: "Uganda - 3220 UGX/hr (65% OFF)" },
- TZ: { amount: 3220, currency: "TZS", label: "Tanzania - 3220 TZS/hr (65% OFF)" },
- RW: { amount: 483, currency: "RWF", label: "Rwanda - 483 RWF/hr (65% OFF)" },
- US: { amount: 10.06, currency: "USD", label: "USA - 10.06 USD/hr (65% OFF)" },
- UK: { amount: 6.04, currency: "GBP", label: "UK - 6.04 GBP/hr (65% OFF)" },
- CA: { amount: 11.27, currency: "CAD", label: "Canada - 11.27 CAD/hr (65% OFF)" },
- AU: { amount: 14.09, currency: "AUD", label: "Australia - 14.09 AUD/hr (65% OFF)" },
- IN: { amount: 80.5, currency: "INR", label: "India - 80.5 INR/hr (65% OFF)" },
- PH: { amount: 60.38, currency: "PHP", label: "Philippines - 60.38 PHP/hr (65% OFF)" }
-};
-
-var FX_TO_USD = { GHS:0.064, NGN:0.00062, ZAR:0.054, KES:0.0077, UGX:0.00027, TZS:0.00038, ETB:0.0079, RWF:0.00077, XAF:0.0016, XOF:0.0016, EGP:0.019, MAD:0.10, USD:1, GBP:1.27, CAD:0.73, AUD:0.65, EUR:1.08, INR:0.012, PKR:0.0036, BDT:0.0091, PHP:0.017, IDR:0.000061, BRL:0.19, MXN:0.058, SAR:0.266, AED:0.272, JPY:0.0066 };
-function convertCurrency(amount, fromCurr, toCurr){ if(fromCurr===toCurr) return amount; var usd = amount * (FX_TO_USD[fromCurr]||1); return usd / (FX_TO_USD[toCurr]||1); }
-var bookingUnit = 'daily'; var currentTotalMin = 0; var currentTotalHours = 0;
-function getCurrentNurseRate(){ var country = document.getElementById('countrySelect').value || 'GH'; var data = NURSE_HOURLY_MIN[country] || NURSE_HOURLY_MIN['GH']; try{ var override = JSON.parse(localStorage.getItem('nurseHourlyOverride')||'{}'); if(override[country]) data.amount = parseFloat(override[country]); }catch(e){} return data; }
-function stepVal(id, delta){ var el = document.getElementById(id); var v = parseInt(el.value)||0; v = v + delta; if(v<1) v=1; el.value=v; calculateTotal(); }
-function selectUnit(unit){ bookingUnit = unit; document.querySelectorAll('.unitTabs button').forEach(b=>b.classList.remove('active')); document.getElementById('btn-'+unit).classList.add('active'); document.querySelectorAll('[id^="panel-"]').forEach(p=>p.classList.add('hidden')); document.getElementById('panel-'+unit).classList.remove('hidden'); calculateTotal(); }
-function calculateTotal(){
- var rateData = getCurrentNurseRate(); var totalHours = 0; var displayDuration = ''; var displayDays = '';
- if(bookingUnit === 'hourly'){ var h = parseInt(document.getElementById('inputHours').value) || 1; totalHours = h; displayDuration = h + ' Hours'; displayDays = (h/24).toFixed(2) + ' days equiv'; } 
- else if(bookingUnit === 'daily'){ var d = parseInt(document.getElementById('inputDays').value) || 1; var hpd = parseInt(document.getElementById('hoursPerDayDaily').value) || 8; totalHours = d * hpd; displayDuration = d + ' Days x ' + hpd + ' hrs'; displayDays = d + ' days'; }
- else if(bookingUnit === 'weekly'){ var w = parseInt(document.getElementById('inputWeeks').value) || 1; var hpdW = parseInt(document.getElementById('hoursPerDayWeekly').value) || 8; totalHours = w * 7 * hpdW; displayDuration = w + ' Weeks x ' + hpdW + ' hrs/day'; displayDays = (w*7) + ' days'; }
- else if(bookingUnit === 'monthly'){ var m = parseInt(document.getElementById('inputMonths').value) || 1; var hpdM = parseInt(document.getElementById('hoursPerDayMonthly').value) || 8; totalHours = m * 30 * hpdM; displayDuration = m + ' Months x ' + hpdM + ' hrs/day'; displayDays = (m*30) + ' days'; }
- currentTotalHours = totalHours; var selectedCurr = document.getElementById('cCurrency').value; var totalMinLegal = rateData.amount * totalHours; var totalMinInSelectedCurr = Math.ceil(convertCurrency(totalMinLegal, rateData.currency, selectedCurr)); currentTotalMin = totalMinInSelectedCurr;
- document.getElementById('breakCountry').innerText = document.getElementById('countrySelect').options[document.getElementById('countrySelect').selectedIndex].text;
- document.getElementById('breakHourly').innerText = rateData.amount + ' ' + rateData.currency + '/hr (65% OFF)'; document.getElementById('breakHours').innerText = displayDuration; document.getElementById('breakDays').innerText = displayDays; document.getElementById('breakTotalHours').innerText = totalHours + ' hrs'; document.getElementById('breakTotalPay').innerText = totalMinInSelectedCurr + ' ' + selectedCurr + ' (Min)'; document.getElementById('cBudget').placeholder = 'Min ' + totalMinInSelectedCurr + ' ' + selectedCurr; document.getElementById('cBudget').min = totalMinInSelectedCurr; validateBudgetLive(); return { totalMin: totalMinInSelectedCurr, totalHours: totalHours, rateData: rateData, displayDuration: displayDuration, unit: bookingUnit };
-}
-function validateBudgetLive(){
-  var info = document.getElementById('minRateInfo');
-  var budgetInput = document.getElementById('cBudget');
-  var findBtn = document.querySelector('button[id="findNursesBtn" onclick="window.findNursesUber()" id="findNursesBtn" style="cursor:pointer;pointer-events:auto !important"]');
-  var bookBtn = document.querySelector('button[id="bookSelectedBtn" onclick="window.submitBooking()" id="bookSelectedBtn" style="cursor:pointer;pointer-events:auto !important"]');
-  var amt = parseFloat(budgetInput.value);
-  var calc = calculateTotal();
-  if(!info) return { valid:true, minRequired: calc.totalMin, calc: calc };
-  
-  var minText = '⚖ <b>' + calc.rateData.label + '</b> Legal: <b>' + calc.rateData.amount + ' ' + calc.rateData.currency + '/hr</b> (65% OFF +15%) | ' + calc.displayDuration + ' = ' + calc.totalHours + ' hrs | <b>MIN TOTAL = ' + calc.totalMin + ' ' + document.getElementById('cCurrency').value + '</b>';
-  
-  if(!amt || amt==0 || isNaN(amt)){
-    info.innerHTML = minText + '<br><span style="color:white;background:#f59e0b;padding:4px 12px;border-radius:10px;font-weight:800">⚠️ ENTER OFFER: Minimum is '+calc.totalMin+' '+document.getElementById('cCurrency').value+' - You must enter at least minimum</span><br><span style="color:#92400e;font-size:11px">Enter your offer above to enable booking</span>';
-    info.style.background='#fef3c7'; info.style.borderColor='#f59e0b'; info.style.color='#92400e';
-    if(findBtn){ findBtn.disabled=true; findBtn.style.opacity='0.4'; findBtn.style.pointerEvents='auto'; findBtn.innerText='🔒 ENTER OFFER FIRST - Min '+calc.totalMin; }
-    if(bookBtn){ bookBtn.disabled=true; bookBtn.style.opacity='0.4'; bookBtn.style.pointerEvents='auto'; }
-    if(budgetInput){ budgetInput.style.border='3px solid #f59e0b'; budgetInput.style.background='#fef3c7'; }
-    return { valid:false, minRequired: calc.totalMin, calc: calc };
-  }
-  
-  if(amt < calc.totalMin){
-    var shortage = (calc.totalMin - amt).toFixed(2);
-    info.innerHTML = minText + '<br><span style="color:white;background:#ef4444;padding:2px 8px;border-radius:10px">❌ BLOCKED: Your offer '+amt+' is BELOW minimum '+calc.totalMin+' - Short by '+shortage+' '+document.getElementById('cCurrency').value+'</span><br><span style="color:#991b1b;font-size:11px">⚠️ You CANNOT book until you increase to at least '+calc.totalMin+'</span>';
-    info.style.background='#fee2e2'; info.style.borderColor='#ef4444'; info.style.color='#991b1b';
-    // DISABLE BUTTONS - STRICT BLOCK
-    if(findBtn){ 
-      findBtn.disabled=true; 
-      findBtn.style.opacity='0.4'; 
-      findBtn.style.pointerEvents='auto'; findBtn.style.cursor='not-allowed';
-      findBtn.innerText='🔒 BLOCKED - Increase Offer First';
-    }
-    if(bookBtn){ 
-      bookBtn.disabled=true; 
-      bookBtn.style.opacity='0.4'; 
-      bookBtn.style.pointerEvents='auto'; bookBtn.style.cursor='not-allowed';
-    }
-    if(budgetInput){ budgetInput.style.border='3px solid #ef4444'; budgetInput.style.background='#fee2e2'; }
-    return { valid:false, minRequired: calc.totalMin, calc: calc };
-  } else {
-    var extra = (amt - calc.totalMin).toFixed(2);
-    info.innerHTML = minText + '<br><span style="color:white;background:#16a34a;padding:2px 8px;border-radius:10px">✅ APPROVED: Your offer '+amt+' meets minimum - Extra '+extra+' will attract nurses faster</span>';
-    info.style.background='#dcfce7'; info.style.borderColor='#16a34a'; info.style.color='#065f46';
-    // ENABLE BUTTONS
-    if(findBtn){ 
-      findBtn.disabled=false; 
-      findBtn.style.opacity='1'; 
-      findBtn.style.pointerEvents='auto';
-      findBtn.innerText='🔍 FIND NURSES NEAR ME';
-    }
-    if(bookBtn){ 
-      bookBtn.disabled=false; 
-      bookBtn.style.opacity='1'; 
-      bookBtn.style.pointerEvents='auto';
-    }
-    if(budgetInput){ budgetInput.style.border='2px solid #16a34a'; budgetInput.style.background='white'; }
-    return { valid:true, minRequired: calc.totalMin, calc: calc };
-  }
-}
-function enforceMinRate(){
-  var result = validateBudgetLive();
-  var budgetVal = parseFloat(document.getElementById('cBudget').value);
-  if(!budgetVal || budgetVal==0){
-    document.getElementById('legalWageMsg').innerHTML = '⚠️ Please enter your offer first!<br><br>Legal Minimum Total for your selection is: <b>'+result.minRequired+' '+document.getElementById('cCurrency').value+'</b><br><br>You must offer at least that amount to book a nurse.<br><br>Example: If minimum is '+result.minRequired+', offer '+result.minRequired+' or more (e.g. '+(result.minRequired+100)+').';
-    document.getElementById('legalWagePopup').classList.remove('hidden');
-    return false;
-  }
-  if(!result.valid){
-    document.getElementById('legalWageMsg').innerHTML = '🚫 <b>BLOCKED - Below Legal Minimum</b><br><br>Ghana Legal Nurse Minimum PROMO = <b>5.25 GHS/hour (65% OFF)</b><br><br>You selected: ' + result.calc.displayDuration + ' = ' + result.calc.totalHours + ' hours<br>Minimum you must pay: <b>' + result.minRequired + ' ' + document.getElementById('cCurrency').value + '</b><br><br>Your offer: <b style="color:#ef4444">'+budgetVal+' '+document.getElementById('cCurrency').value+'</b><br>Short by: <b style="color:#ef4444">'+(result.minRequired - budgetVal).toFixed(2)+' '+document.getElementById('cCurrency').value+'</b><br><br>❌ You CANNOT book until you increase your offer to at least <b>'+result.minRequired+'</b>.';
-    document.getElementById('legalWagePopup').classList.remove('hidden');
-    // Shake animation
-    var popup = document.getElementById('legalWagePopup');
-    popup.style.animation = 'shake 0.5s';
-    setTimeout(()=>{popup.style.animation='';},500);
-    return false;
-  }
-  return true;
-}
-function closeLegalWagePopup(){ document.getElementById('legalWagePopup').classList.add('hidden'); }
-
-// ========= 3. WHOLE-WORD TRANSLATION (FIX) =========
-var WHOLE_WORD_TRANSLATIONS = {
-  en: {
-    book_nurse: "BOOK NURSE - Auto Legal Pay Calculator (65% OFF)",
-    how_long: "⏱ How long do you need nurse?",
-    hourly: "⏰ Hourly", days_tab:"📅 Days", weeks_tab:"🗓 Weeks", months_tab:"📆 Months",
-    find_nurses:"🔍 FIND NURSES NEAR ME", global_chat:"GLOBAL GROUP CHAT - 65% OFF PROMO"
-  },
-  fr: {
-    book_nurse: "RÉSERVER INFIRMIÈRE - Calculateur (65% DE RÉDUCTION)",
-    how_long: "⏱ Combien de temps avez-vous besoin d'une infirmière?",
-    hourly:"⏰ Horaire", days_tab:"📅 Jours", weeks_tab:"🗓 Semaines", months_tab:"📆 Mois",
-    find_nurses:"🔍 TROUVER INFIRMIÈRES", global_chat:"CHAT DE GROUPE GLOBAL - 65% DE RÉDUCTION"
-  },
-  es: {
-    book_nurse:"RESERVAR ENFERMERA - Calculadora (65% DESCUENTO)",
-    how_long:"⏱ ¿Cuánto tiempo necesita enfermera?",
-    hourly:"⏰ Por hora", days_tab:"📅 Días", weeks_tab:"🗓 Semanas", months_tab:"📆 Meses",
-    find_nurses:"🔍 BUSCAR ENFERMERAS", global_chat:"CHAT GRUPAL GLOBAL - 65% DESCUENTO"
-  }
-};
-function changeLanguage(){
-  var lang = document.getElementById('langSelect').value;
-  localStorage.setItem('selectedLang', lang);
-  var dict = WHOLE_WORD_TRANSLATIONS[lang] || WHOLE_WORD_TRANSLATIONS['en'];
-  // WHOLE WORD translation - replaces entire element text, not partial substring
-  document.querySelectorAll('[data-i18n]').forEach(function(el){
-    var key = el.getAttribute('data-i18n');
-    if(dict[key]){
-      el.textContent = dict[key]; // whole word
-    }
-  });
-  document.documentElement.lang = lang;
-  // Also translate country display
-  calculateTotal();
-}
-function changeCountry(){ var sel=document.getElementById('countrySelect'); var opt=sel.options[sel.selectedIndex]; var curr=opt.getAttribute('data-curr'); document.getElementById('currencyDisplay').innerText=curr; document.getElementById('cCurrency').value=curr; localStorage.setItem('selectedCountry',sel.value); calculateTotal(); }
-
-// ========= KEEP ALL ORIGINAL FEATURES BELOW (Firebase, Map, Chat, Bookings, etc) =========
-
-var PAYSTACK_PUBLIC_KEY = 'pk_live_f17ae09bf855010825cbfccdda8e724553ab747b';
-var CEO_PAYSTACK_EMAIL = 'lovecareglobal@gmail.com';
-function updatePaystackSplit(){
-  try{
-    var calc = calculateTotal();
-    var budget = parseFloat(document.getElementById('cBudget').value) || calc.totalMin;
-    var nurseShare = (budget * 0.9).toFixed(2);
-    var ceoShare = (budget * 0.1).toFixed(2);
-    var curr = document.getElementById('cCurrency').value;
-    var el1=document.getElementById('payTotalDisplay'); if(el1) el1.innerText = budget + ' ' + curr;
-    var el2=document.getElementById('payNurseShare'); if(el2) el2.innerText = nurseShare + ' ' + curr + ' (90%)';
-    var el3=document.getElementById('payCeoShare'); if(el3) el3.innerText = ceoShare + ' ' + curr + ' (10%)';
-    var btn=document.getElementById('paystackBtn'); if(btn) btn.innerText = '💳 PAY '+budget+' '+curr+' WITH PAYSTACK';
-    return {total:budget, nurse:nurseShare, ceo:ceoShare, curr:curr};
-  }catch(e){ return {total:0,nurse:0,ceo:0,curr:'GHS'}; }
-}
-function payWithPaystack(){
-  console.log('Paystack button clicked');
-  if(typeof enforceMinRate === 'function' && !enforceMinRate()){ console.log('enforceMinRate blocked paystack'); return; }
-  var calc = calculateTotal();
-  var budgetInput = document.getElementById('cBudget');
-  var budget = parseFloat(budgetInput.value);
-  if(!budget || isNaN(budget) || budget < calc.totalMin){
-    alert('❌ BLOCKED: You must enter at least minimum '+calc.totalMin+' '+document.getElementById('cCurrency').value+'\n\nYour offer: '+(budget||0)+'\nMinimum: '+calc.totalMin+'\n\nPlease increase your offer first!');
-    if(budgetInput){ budgetInput.focus(); budgetInput.style.border='3px solid #ef4444'; }
-    return;
-  }
-  var curr = document.getElementById('cCurrency').value;
-  var email = document.getElementById('cEmail').value.trim() || CEO_PAYSTACK_EMAIL;
-  if(!email || !email.includes('@')){ alert('Please enter valid email for Paystack payment'); document.getElementById('cEmail').focus(); return; }
-  var name = document.getElementById('cName').value.trim() || 'Client';
-  var split = typeof updatePaystackSplit==='function' ? updatePaystackSplit() : {nurse:budget*0.9, ceo:budget*0.1};
-  var amountInGHS = budget;
-  if(curr !== 'GHS' && typeof convertCurrency === 'function'){ try{ amountInGHS = convertCurrency(budget, curr, 'GHS'); }catch(e){ amountInGHS=budget; } }
-  var amountKobo = Math.round(amountInGHS * 100);
-  if(amountKobo < 100){ amountKobo=100; }
-  var statusEl = document.getElementById('paystackStatus');
-  if(statusEl){ statusEl.style.display='block'; statusEl.style.background='#fef3c7'; statusEl.style.border='2px solid #f59e0b'; statusEl.style.color='#92400e'; statusEl.innerHTML='⏳ Opening Paystack... '+amountInGHS.toFixed(2)+' GHS ('+budget+' '+curr+') - Please wait'; }
-  if(typeof PaystackPop === 'undefined'){
-    console.log('PaystackPop not loaded, loading now');
-    var script=document.createElement('script');
-    script.src='https://js.paystack.co/v1/inline.js';
-    script.onload=function(){ 
-      console.log('Paystack loaded, retrying');
-      payWithPaystack(); 
-    };
-    document.head.appendChild(script);
-    if(statusEl){ statusEl.innerHTML='⏳ Loading Paystack... please wait and click again'; }
-    // Fallback: book without payment if still not loaded after 3 sec
-    setTimeout(function(){
-      if(typeof PaystackPop==='undefined'){
-        if(confirm('Paystack still loading. Book now and pay later?')){
-          submitBookingAfterPayment(null, split);
-        }
-      }
-    },3000);
-    return;
-  }
-  var handler = PaystackPop.setup({
-    key: PAYSTACK_PUBLIC_KEY,
-    email: email,
-    amount: amountKobo,
-    currency: 'GHS',
-    ref: 'LC_'+Date.now()+'_'+Math.floor(Math.random()*1000000),
-    metadata: { custom_fields: [{display_name: "Client Name", variable_name: "client_name", value: name}, {display_name: "Nurse Share", variable_name: "nurse_share", value: split.nurse}, {display_name: "CEO Share", variable_name: "ceo_share", value: split.ceo}] },
-    callback: function(response){ if(statusEl){ statusEl.style.background='#dcfce7'; statusEl.innerHTML='✅ Payment Successful! Ref: '+response.reference; } submitBookingAfterPayment(response, split); },
-    onClose: function(){ if(statusEl){ statusEl.style.background='#fee2e2'; statusEl.innerHTML='❌ Payment closed. Try again.'; } }
-  });
-  handler.openIframe();
-}
-function submitBookingAfterPayment(paystackResponse, split){
-  var name=document.getElementById('cName').value.trim();
-  var phone=document.getElementById('cPhone').value.trim();
-  var fullPhone=typeof getFullPhone === 'function' ? getFullPhone('cPhoneCode','cPhone') : phone;
-  var service=document.getElementById('cService').value;
-  if(!name||!phone||!service){alert('Name Phone Service required');return;}
-  var calc = calculateTotal();
-  var amount=parseFloat(document.getElementById('cBudget').value||0);
-  if(!amount || isNaN(amount) || amount < calc.totalMin){ 
-    alert('❌ BLOCKED: Below minimum '+calc.totalMin+' - Your offer: '+amount+'\n\nIncrease offer to at least '+calc.totalMin);
-    return; 
-  }
-  var cur=document.getElementById('cCurrency').value;
-  var id=Date.now();
-  var nurseShare = split ? parseFloat(split.nurse) : amount*0.9;
-  var ceoShare = split ? parseFloat(split.ceo) : amount*0.1;
-  var b={ id:id, name:name, phone:fullPhone, service:service, location:document.getElementById('cLocation').value, amount:amount, currency:cur, status:'pending_assignment', time:new Date().toLocaleString(), timestamp:Date.now(), lat:typeof clientLat !== 'undefined' ? clientLat : null, lng:typeof clientLng !== 'undefined' ? clientLng : null, selectedNurse:typeof selectedNurseId !== 'undefined' ? selectedNurseId : null, email:document.getElementById('cEmail').value.trim(), country:document.getElementById('countrySelect').value, days:calc.displayDuration, totalHours:calc.totalHours, hourlyRate:calc.rateData.amount, hourlyCurrency:calc.rateData.currency, legalMinTotal:calc.totalMin, bookingUnit:calc.unit, startTime:document.getElementById('cStartTime')?.value||'', endTime:document.getElementById('cEndTime')?.value||'', paymentMethod: paystackResponse ? 'paystack' : 'manual', paystackRef: paystackResponse ? paystackResponse.reference : null, nurseShare90: nurseShare, ceoShare10: ceoShare, paymentStatus: paystackResponse ? 'paid_to_ceo' : 'pending_cash', ceoPaystackEmail: CEO_PAYSTACK_EMAIL };
-  if(typeof db !== 'undefined' && db){ db.ref('bookings/'+id).set(b).then(()=>{ alert(paystackResponse ? '✅ PAID & Booked! Ref: '+paystackResponse.reference : '✅ Booked!'); if(typeof scheduleRateCheck === 'function') scheduleRateCheck(id, amount, cur, fullPhone); localStorage.setItem('lastClientPhone', fullPhone); if(typeof loadMyBookings === 'function') loadMyBookings(); if(b.selectedNurse){ var nurseKey = b.selectedNurse.replace(/[^0-9]/g,''); db.ref('nurse_earnings/'+nurseKey+'/'+id).set({ bookingId:id, amount:amount, nurseShare:nurseShare, ceoShare:ceoShare, currency:cur, status:'pending', timestamp:Date.now(), clientName:name, service:service }); } }); } else { alert('Booked locally (no Firebase)'); }
-}
-
-
-function loadWithdrawalData(){
-  var nursePhone = localStorage.getItem('nursePhone');
-  var staffId = localStorage.getItem('staffID');
-  var isCEO = localStorage.getItem('isCEOLogged')==='true';
-  var userKey = nursePhone ? nursePhone.replace(/[^0-9]/g,'') : (staffId || 'guest');
-  if(typeof db === 'undefined' || !db){ document.getElementById('myEarningsList').innerHTML='Firebase not connected'; return; }
-  db.ref('nurse_earnings/'+userKey).once('value').then(function(snap){
-    var earnings = Object.values(snap.val()||{});
-    var total = earnings.reduce((s,e)=>s+(parseFloat(e.nurseShare)||0),0);
-    db.ref('withdrawals/'+userKey).once('value').then(function(wsnap){
-      var withdrawals = Object.values(wsnap.val()||{});
-      var withdrawn = withdrawals.filter(w=>w.status==='paid').reduce((s,w)=>s+(parseFloat(w.amount)||0),0);
-      var balance = total - withdrawn;
-      var balEl=document.getElementById('withdrawBalance'); if(balEl) balEl.innerText = balance.toFixed(2)+' GHS';
-      var pendEl=document.getElementById('withdrawPending'); if(pendEl) pendEl.innerText = 'Withdrawn: '+withdrawn.toFixed(2);
-      var totEl=document.getElementById('withdrawTotalEarned'); if(totEl) totEl.innerText = total.toFixed(2)+' GHS';
-      var jobsEl=document.getElementById('withdrawTotalJobs'); if(jobsEl) jobsEl.innerText = earnings.length+' Jobs';
-      var h = earnings.length==0 ? '<div style="text-align:center;color:#999">No earnings yet</div>' : '<table><tr><th>Booking</th><th>Total</th><th>Your Earnings</th><th>Status</th></tr>' + earnings.sort((a,b)=>b.timestamp-a.timestamp).map(e=>'<tr><td>#'+e.bookingId+'</td><td>'+e.amount+'</td><td style="color:#16a34a">'+e.nurseShare.toFixed(2)+'</td><td>'+e.status+'</td></tr>').join('') + '</table>';
+' : '<table><tr><th>Booking</th><th>Total</th><th>Your Earnings</th><th>Status</th></tr>' + earnings.sort((a,b)=>b.timestamp-a.timestamp).map(e=>'<tr><td>#'+e.bookingId+'</td><td>'+e.amount+'</td><td style="color:#16a34a">'+e.nurseShare.toFixed(2)+'</td><td>'+e.status+'</td></tr>').join('') + '</table>';
       var listEl=document.getElementById('myEarningsList'); if(listEl) listEl.innerHTML=h;
       var wh = withdrawals.length==0 ? '<div style="text-align:center;color:#999">No withdrawals</div>' : '<table><tr><th>Date</th><th>Amount</th><th>Account</th><th>Status</th></tr>' + withdrawals.sort((a,b)=>b.timestamp-a.timestamp).map(w=>'<tr><td>'+new Date(w.timestamp).toLocaleDateString()+'</td><td>'+w.amount+'</td><td>'+w.account+'</td><td>'+w.status+'</td></tr>').join('') + '</table>';
       var wlistEl=document.getElementById('myWithdrawalsList'); if(wlistEl) wlistEl.innerHTML=wh;
@@ -807,7 +354,7 @@ var lastBookingId=null,lastBookingCurrency='GHS',lastBookingAmount=0,currentRefu
 var countryCodes=[{c:'Ghana',code:'+233',flag:'🇬🇭'},{c:'Nigeria',code:'+234',flag:'🇳🇬'},{c:'South Africa',code:'+27',flag:'🇿🇦'},{c:'Kenya',code:'+254',flag:'🇰🇪'},{c:'Uganda',code:'+256',flag:'🇺🇬'},{c:'Tanzania',code:'+255',flag:'🇹🇿'},{c:'Ethiopia',code:'+251',flag:'🇪🇹'},{c:'Rwanda',code:'+250',flag:'🇷🇼'},{c:'Cameroon',code:'+237',flag:'🇨🇲'},{c:'Senegal',code:'+221',flag:'🇸🇳'},{c:'Ivory Coast',code:'+225',flag:'🇨🇮'},{c:'Egypt',code:'+20',flag:'🇪🇬'},{c:'Morocco',code:'+212',flag:'🇲🇦'},{c:'USA',code:'+1',flag:'🇺🇸'},{c:'UK',code:'+44',flag:'🇬🇧'},{c:'Canada',code:'+1',flag:'🇨🇦'},{c:'Australia',code:'+61',flag:'🇦🇺'},{c:'Germany',code:'+49',flag:'🇩🇪'},{c:'France',code:'+33',flag:'🇫🇷'},{c:'Italy',code:'+39',flag:'🇮🇹'},{c:'Spain',code:'+34',flag:'🇪🇸'},{c:'India',code:'+91',flag:'🇮🇳'},{c:'Pakistan',code:'+92',flag:'🇵🇰'},{c:'Bangladesh',code:'+880',flag:'🇧🇩'},{c:'Philippines',code:'+63',flag:'🇵🇭'},{c:'Indonesia',code:'+62',flag:'🇮🇩'},{c:'Brazil',code:'+55',flag:'🇧🇷'},{c:'Mexico',code:'+52',flag:'🇲🇽'},{c:'Saudi Arabia',code:'+966',flag:'🇸🇦'},{c:'UAE',code:'+971',flag:'🇦🇪'},{c:'Japan',code:'+81',flag:'🇯🇵'}];
 function populatePhoneCodes(){var html='';countryCodes.forEach(o=>{html+=`<option value="${o.code}">${o.flag} ${o.code} ${o.c}</option>`;});['cPhoneCode','nRegPhoneCode','nurseLoginCode','myBookPhoneCode'].forEach(id=>{var el=document.getElementById(id); if(el) el.innerHTML=html;});}
 try{firebase.initializeApp(firebaseConfig);db=firebase.database();}catch(e){}
-const legalPages={privacy:{title:"Privacy Policy",body:"<p>Legal nurse wage 6.04 GHS/hr (65% OFF +15%) enforced.</p>"},terms:{title:"Terms",body:"<p>Bookings below 5.25 GHS/hr blocked.</p>"},cancel:{title:"Cancellation",body:"<p>Email lovecareglobal@gmail.com</p>"},contact:{title:"Contact",body:"<p>0544121814</p>"}};
+const legalPages={privacy:{title:"Privacy Policy",body:"<p>Legal nurse wage 6.04 GHS/hr (65% OFF) enforced.</p>"},terms:{title:"Terms",body:"<p>Bookings below 5.25 GHS/hr blocked.</p>"},cancel:{title:"Cancellation",body:"<p>Email lovecareglobal@gmail.com</p>"},contact:{title:"Contact",body:"<p>0544121814</p>"}};
 function openLegal(key){document.getElementById('legalTitle').innerText=legalPages[key].title;document.getElementById('legalBody').innerHTML=legalPages[key].body;document.getElementById('legalModal').classList.remove('hidden');}
 function closeLegal(){document.getElementById('legalModal').classList.add('hidden');}
 function scheduleRateCheck(bookingId, amount, currency, clientPhone){
@@ -1621,6 +1168,255 @@ window.payWithPaystack = function(){
   });
   handler.openIframe();
 };
+</script>
+
+
+<script>
+// V56 - NO INSCRIPTIONS ON HOMEPAGE + BUTTONS WORKING + RED ALERTS AS POPUPS
+console.log('V56 loaded - No inscriptions, buttons working, red alerts as popups');
+
+window.validateBudgetLive = function(){
+  var budgetInput = document.getElementById('cBudget');
+  var amt = budgetInput ? parseFloat(budgetInput.value) : 0;
+  var calc = typeof calculateTotal === 'function' ? calculateTotal() : {totalMin: 50, totalHours: 8, rateData: {amount: 6.04, currency: 'GHS', label: 'Ghana'}, displayDuration: '1 day'};
+  var findBtn = document.getElementById('findNursesBtn');
+  var bookBtn = document.getElementById('bookSelectedBtn');
+  var payBtn = document.getElementById('paystackBtn');
+  
+  // Hide minRateInfo inscription (keep logic but no visible inscription)
+  var info = document.getElementById('minRateInfo');
+  if(info){ info.style.display='none'; info.style.visibility='hidden'; }
+  
+  if(!amt || amt==0 || isNaN(amt)){
+    if(findBtn){ findBtn.style.opacity='0.6'; findBtn.style.background='#f59e0b'; findBtn.innerText='⚠️ ENTER OFFER FIRST - Min '+calc.totalMin; }
+    if(bookBtn){ bookBtn.style.opacity='0.6'; bookBtn.style.background='#f59e0b'; }
+    if(payBtn){ payBtn.style.opacity='0.6'; payBtn.style.background='#f59e0b'; }
+    if(budgetInput){ budgetInput.style.border='2px solid #f59e0b'; budgetInput.style.background='#fef3c7'; }
+    return { valid:false, minRequired: calc.totalMin, calc: calc };
+  }
+  if(amt < calc.totalMin){
+    var shortage = (calc.totalMin - amt).toFixed(2);
+    if(findBtn){ findBtn.style.opacity='0.6'; findBtn.style.background='#ef4444'; findBtn.innerText='🔒 BLOCKED - Min '+calc.totalMin; findBtn.style.cursor='pointer'; findBtn.style.pointerEvents='auto'; }
+    if(bookBtn){ bookBtn.style.opacity='0.6'; bookBtn.style.background='#ef4444'; bookBtn.style.cursor='pointer'; bookBtn.style.pointerEvents='auto'; }
+    if(payBtn){ payBtn.style.opacity='0.6'; payBtn.style.background='#ef4444'; payBtn.style.cursor='pointer'; payBtn.style.pointerEvents='auto'; }
+    if(budgetInput){ budgetInput.style.border='3px solid #ef4444'; budgetInput.style.background='#fee2e2'; }
+    return { valid:false, minRequired: calc.totalMin, calc: calc };
+  } else {
+    if(findBtn){ findBtn.style.opacity='1'; findBtn.style.background='linear-gradient(90deg,#2563eb,#00b050)'; findBtn.innerText='🔍 FIND NURSES NEAR ME'; findBtn.style.cursor='pointer'; findBtn.style.pointerEvents='auto'; }
+    if(bookBtn){ bookBtn.style.opacity='1'; bookBtn.style.background='#111827'; bookBtn.style.cursor='pointer'; bookBtn.style.pointerEvents='auto'; }
+    if(payBtn){ payBtn.style.opacity='1'; payBtn.style.background='#00b050'; payBtn.style.cursor='pointer'; payBtn.style.pointerEvents='auto'; }
+    if(budgetInput){ budgetInput.style.border='2px solid #16a34a'; budgetInput.style.background='white'; }
+    return { valid:true, minRequired: calc.totalMin, calc: calc };
+  }
+};
+
+window.enforceMinRate = function(){
+  var result = window.validateBudgetLive();
+  var budgetVal = parseFloat(document.getElementById('cBudget').value);
+  var curr = document.getElementById('cCurrency') ? document.getElementById('cCurrency').value : 'GHS';
+  if(!budgetVal || budgetVal==0 || isNaN(budgetVal)){
+    alert('⚠️ Please enter your offer first!\n\nLegal Minimum Total is: '+result.minRequired+' '+curr+'\n\nYou must offer at least that amount to book a nurse.\n\nExample: If minimum is '+result.minRequired+', offer '+result.minRequired+' or more.');
+    var budgetInput = document.getElementById('cBudget');
+    if(budgetInput){ budgetInput.focus(); budgetInput.style.border='3px solid #f59e0b'; }
+    return false;
+  }
+  if(!result.valid){
+    alert('🚫 BLOCKED - Below Legal Minimum\n\nYou selected: ' + result.calc.displayDuration + ' = ' + result.calc.totalHours + ' hours\nMinimum you must pay: '+result.minRequired+' '+curr+'\n\nYour offer: '+budgetVal+' '+curr+'\nShort by: '+(result.minRequired - budgetVal).toFixed(2)+' '+curr+'\n\n❌ You CANNOT book until you increase your offer to at least '+result.minRequired+'.');
+    var budgetInput = document.getElementById('cBudget');
+    if(budgetInput){ budgetInput.focus(); budgetInput.style.border='3px solid #ef4444'; budgetInput.style.background='#fee2e2'; }
+    // Shake
+    var popup = document.getElementById('legalWagePopup');
+    if(popup){ popup.classList.remove('hidden'); popup.style.animation='shake 0.5s'; setTimeout(function(){popup.style.animation='';},500); }
+    return false;
+  }
+  return true;
+};
+
+window.findNursesUber = function(){
+  console.log('FIND NURSES clicked V56');
+  if(!window.enforceMinRate()) return;
+  try{
+    var src = typeof getAllNursesSource === 'function' ? getAllNursesSource() : [];
+    if(!src || src.length===0){
+      alert('No nurses registered yet. You can still book - admin will assign from nurses list.\n\nYour booking will be PENDING ADMIN ASSIGNMENT.');
+      var actionArea = document.getElementById('uberActionArea');
+      if(actionArea) actionArea.classList.remove('hidden');
+      return;
+    }
+    var lat = typeof clientLat !== 'undefined' ? clientLat : 5.6037;
+    var lng = typeof clientLng !== 'undefined' ? clientLng : -0.1870;
+    if(typeof clientLat === 'undefined' || !clientLat){
+      if(navigator.geolocation){
+        navigator.geolocation.getCurrentPosition(function(pos){
+          clientLat = pos.coords.latitude;
+          clientLng = pos.coords.longitude;
+        });
+      }
+    }
+    var rad = 50;
+    var radEl = document.getElementById('radiusSelect');
+    if(radEl) rad = parseInt(radEl.value) || 50;
+    var filtered = src.filter(function(w){ return w.lat && w.lng; }).map(function(w){
+      var d = typeof getDistanceKm === 'function' ? getDistanceKm(lat, lng, parseFloat(w.lat), parseFloat(w.lng)) : Math.random()*10;
+      var clone = Object.assign({}, w);
+      clone.distance = d;
+      return clone;
+    }).filter(function(w){ return w.distance <= rad; }).sort(function(a,b){ return a.distance-b.distance; }).slice(0,40);
+    if(filtered.length===0){
+      filtered = src.filter(function(w){ return w.lat && w.lng; }).map(function(w){
+        var d = typeof getDistanceKm === 'function' ? getDistanceKm(lat, lng, parseFloat(w.lat), parseFloat(w.lng)) : Math.random()*10;
+        var clone = Object.assign({}, w);
+        clone.distance = d;
+        return clone;
+      }).sort(function(a,b){ return a.distance-b.distance; }).slice(0,20);
+    }
+    window.nearbyNursesSorted = filtered;
+    var countEl = document.getElementById('nearbyCount');
+    if(countEl) countEl.innerText = filtered.length;
+    var actionArea = document.getElementById('uberActionArea');
+    if(actionArea) actionArea.classList.remove('hidden');
+    var mapWrapper = document.getElementById('loveCareMapWrapper');
+    if(mapWrapper) mapWrapper.classList.remove('hidden');
+    if(typeof uberMap === 'undefined' || !uberMap){
+      if(typeof initUberMap === 'function') initUberMap();
+    }
+    setTimeout(function(){
+      if(typeof uberMap !== 'undefined' && uberMap && typeof uberMap.invalidateSize === 'function') uberMap.invalidateSize();
+      if(typeof renderNurseMarkers === 'function') renderNurseMarkers(filtered);
+      if(typeof fitMapWide === 'function') fitMapWide();
+    },500);
+    if(typeof renderNearbyList === 'function') renderNearbyList();
+    else {
+      var listEl = document.getElementById('loveCareLiveList');
+      if(listEl){
+        var h = '';
+        filtered.forEach(function(n){
+          h += '<div class="uber-card" onclick="selectNurseCard(\''+(n.phone||n.id)+'\')" style="cursor:pointer"><img src="./logo.png" style="width:40px;height:40px;border-radius:50%"><div style="flex:1"><b>'+(n.name||'Nurse')+'</b> - '+(n.distance?n.distance.toFixed(1):'2.5')+'km<br><small>'+(n.location||'')+'</small></div><div class="nurse-dot"></div></div>';
+        });
+        listEl.innerHTML = h || '<div style="padding:12px;background:#dcfce7;border-radius:10px;text-align:center">✅ '+filtered.length+' nurses found</div>';
+      }
+    }
+    alert('✅ Found '+filtered.length+' nurses near you! Select a nurse and click BOOK SELECTED');
+  }catch(e){
+    console.error(e);
+    alert('Error: '+e.message);
+  }
+};
+
+window.payWithPaystack = function(){
+  console.log('PAYSTACK clicked V56');
+  if(!window.enforceMinRate()) return;
+  var budgetEl = document.getElementById('cBudget');
+  var budget = budgetEl ? parseFloat(budgetEl.value) : 0;
+  var emailEl = document.getElementById('cEmail');
+  var email = emailEl ? emailEl.value.trim() : '';
+  if(!email || !email.includes('@')){
+    alert('Please enter valid email for Paystack payment');
+    if(emailEl) emailEl.focus();
+    return;
+  }
+  if(typeof PaystackPop === 'undefined'){
+    var script = document.createElement('script');
+    script.src = 'https://js.paystack.co/v1/inline.js';
+    script.onload = function(){ window.payWithPaystack(); };
+    document.head.appendChild(script);
+    alert('Loading Paystack... click PAYSTACK again in 2 seconds');
+    return;
+  }
+  var curr = document.getElementById('cCurrency') ? document.getElementById('cCurrency').value : 'GHS';
+  var amountGHS = budget;
+  if(curr !== 'GHS' && typeof convertCurrency === 'function'){
+    try{ amountGHS = convertCurrency(budget, curr, 'GHS'); }catch(e){}
+  }
+  var amountKobo = Math.round(amountGHS * 100);
+  var name = document.getElementById('cName') ? document.getElementById('cName').value : 'Client';
+  var handler = PaystackPop.setup({
+    key: 'pk_live_f17ae09bf855010825cbfccdda8e724553ab747b',
+    email: email,
+    amount: amountKobo,
+    currency: 'GHS',
+    ref: 'LC_'+Date.now(),
+    callback: function(res){
+      alert('✅ PAID! Ref: '+res.reference);
+      if(typeof submitBookingAfterPayment === 'function'){
+        var split = typeof updatePaystackSplit === 'function' ? updatePaystackSplit() : {nurse: budget*0.9, ceo: budget*0.1};
+        submitBookingAfterPayment(res, split);
+      } else {
+        window.submitBooking();
+      }
+    },
+    onClose: function(){ alert('Payment closed'); }
+  });
+  handler.openIframe();
+};
+
+window.submitBooking = function(){
+  console.log('BOOK SELECTED clicked V56');
+  if(!window.enforceMinRate()) return;
+  var nameEl = document.getElementById('cName');
+  var phoneEl = document.getElementById('cPhone');
+  var serviceEl = document.getElementById('cService');
+  var name = nameEl ? nameEl.value.trim() : '';
+  var phone = phoneEl ? phoneEl.value.trim() : '';
+  var service = serviceEl ? serviceEl.value : '';
+  if(!name||!phone||!service){ alert('Please enter Name, Phone, Service'); return; }
+  if(!window.selectedNurseId && window.nearbyNursesSorted && window.nearbyNursesSorted[0]){
+    window.selectedNurseId = window.nearbyNursesSorted[0].phone || window.nearbyNursesSorted[0].id;
+  }
+  var calc = typeof calculateTotal === 'function' ? calculateTotal() : {totalMin: 50, totalHours: 8, displayDuration: '1 day', unit: 'daily', rateData: {amount: 6.04, currency: 'GHS'}};
+  var budgetEl = document.getElementById('cBudget');
+  var amount = budgetEl ? parseFloat(budgetEl.value) : calc.totalMin;
+  var cur = document.getElementById('cCurrency') ? document.getElementById('cCurrency').value : 'GHS';
+  var id = Date.now();
+  var b = {
+    id: id,
+    name: name,
+    phone: typeof getFullPhone === 'function' ? getFullPhone('cPhoneCode','cPhone') : phone,
+    service: service,
+    location: document.getElementById('cLocation') ? document.getElementById('cLocation').value : '',
+    amount: amount,
+    currency: cur,
+    status: window.selectedNurseId ? 'pending_assignment' : 'pending_admin_assignment',
+    time: new Date().toLocaleString(),
+    timestamp: Date.now(),
+    lat: typeof clientLat !== 'undefined' ? clientLat : 5.6037,
+    lng: typeof clientLng !== 'undefined' ? clientLng : -0.1870,
+    selectedNurse: window.selectedNurseId || null,
+    needsAdminAssignment: !window.selectedNurseId,
+    days: calc.displayDuration,
+    totalHours: calc.totalHours
+  };
+  if(typeof db !== 'undefined' && db){
+    db.ref('bookings/'+id).set(b).then(function(){
+      alert('✅ Booked! Total '+amount+' '+cur+' for '+calc.displayDuration+'\n\n'+(window.selectedNurseId ? 'Nurse: '+window.selectedNurseId : 'No nurses nearby - Admin will assign from nurses list')+'\n\nBooking ID: '+id);
+      localStorage.setItem('lastClientPhone', b.phone);
+      if(typeof loadMyBookings === 'function') loadMyBookings();
+    });
+  } else {
+    alert('✅ Booking Request Submitted (Demo)! Total '+amount+' '+cur+'\nBooking ID: '+id+'\n\n'+(window.selectedNurseId ? 'Nurse: '+window.selectedNurseId : 'Admin will assign'));
+  }
+};
+
+document.addEventListener('DOMContentLoaded', function(){
+  // Ensure no inscriptions visible on homepage
+  var minInfo = document.getElementById('minRateInfo');
+  if(minInfo){ minInfo.style.display='none'; minInfo.style.visibility='hidden'; minInfo.style.height='0'; }
+  var legalPopup = document.getElementById('legalWagePopup');
+  if(legalPopup){ legalPopup.classList.add('hidden'); }
+  // Make buttons working
+  ['findNursesBtn','paystackBtn','bookSelectedBtn'].forEach(function(id){
+    var btn = document.getElementById(id);
+    if(btn){
+      btn.style.pointerEvents='auto';
+      btn.style.cursor='pointer';
+      btn.disabled=false;
+      btn.style.opacity='1';
+      btn.style.display='block';
+    }
+  });
+  // Trigger validation to set initial state
+  if(typeof validateBudgetLive === 'function'){ setTimeout(validateBudgetLive, 500); }
+});
 </script>
 
 </body>
