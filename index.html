@@ -1312,7 +1312,74 @@ function openNurseProfile(id){
   alert('Nurse profile: '+ (nurse? nurse.name : id) + '\nTap Select to book');
 }
 
-function renderNearbyList(){var l=document.getElementById('loveCareLiveList'); if(nearbyNursesSorted.length===0){l.innerHTML='<div style="padding:12px;background:#fef3c7;border-radius:10px;text-align:center">No nurses within range</div>';return;} var h=''; nearbyNursesSorted.forEach(n=>{h+=`<div class="uber-card" onclick="selectNurseCard('${n.phone||n.id}')"><img src="./logo.png" style="width:40px;height:40px;border-radius:50%"><div style="flex:1"><b>${n.name}</b> - ${n.distance.toFixed(1)}km<br><small>${n.location||''}</small></div><div class="nurse-dot"></div></div>`;}); l.innerHTML=h;}
+function renderNearbyList(){
+  var l=document.getElementById('loveCareLiveList'); 
+  if(!nearbyNursesSorted || nearbyNursesSorted.length===0){
+    l.innerHTML='<div style="padding:12px;background:#fef3c7;border-radius:10px;text-align:center">No nurses within range - Try expanding search</div>';
+    return;
+  } 
+  var h=''; 
+  nearbyNursesSorted.forEach(n=>{
+    var photo = n.photoUrl ? n.photoUrl : './logo.png';
+    var hasVideo = n.videoUrl ? true : false;
+    var videoBadge = hasVideo ? `<span style="background:#ef4444;color:white;padding:2px 6px;border-radius:10px;font-size:8px;font-weight:800;margin-left:4px">VIDEO</span>` : '';
+    var cloudBadge = n.cloudinary ? `<span style="background:#16a34a;color:white;padding:2px 4px;border-radius:6px;font-size:7px">CLOUD</span>` : '';
+    h+=`<div class="uber-card" style="display:flex;align-items:center;gap:10px;padding:10px;border:2px solid #e5e7eb;border-radius:14px;margin:8px 0;background:white;cursor:pointer">
+      <img src="${photo}" style="width:55px;height:55px;border-radius:50%;object-fit:cover;border:3px solid #16a34a" onerror="this.src='./logo.png'">
+      <div style="flex:1" onclick="selectNurseCard('${n.phone||n.id}')">
+        <b>${n.name} ${cloudBadge}</b> ${videoBadge}<br>
+        <small style="color:#6b7280">${n.specialty||'General Nurse'} - ${n.distance?n.distance.toFixed(1)+'km away':'Nearby'}</small><br>
+        <small style="font-size:9px">📍 ${n.location||''} • ⭐ 4.9 • ${n.experience||'5 years'} exp</small>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:4px">
+        ${hasVideo ? `<button onclick="event.stopPropagation(); openNurseVideoModal('${n.phone||n.id}')" style="background:#ef4444;color:white;border:none;padding:6px 10px;border-radius:8px;font-size:9px;font-weight:800">WATCH</button>` : ''}
+        <button onclick="event.stopPropagation(); openNurseProfile('${n.phone||n.id}')" style="background:#2563eb;color:white;border:none;padding:6px 10px;border-radius:8px;font-size:9px;font-weight:800">VIEW</button>
+        <div class="nurse-dot" style="width:10px;height:10px;background:#16a34a;border-radius:50%;margin:0 auto"></div>
+      </div>
+    </div>`;
+  }); 
+  l.innerHTML=h;
+}
+
+window.openNurseVideoModal = function(nurseId){
+  var nurse = (window.nearbyNursesSorted||[]).find(n=> (n.phone==nurseId || n.id==nurseId)) || (window.allWorkers||[]).find(n=> (n.phone==nurseId || n.id==nurseId));
+  if(!nurse){ alert('Nurse not found: '+nurseId); return; }
+  if(!nurse.videoUrl){ alert('No video for '+nurse.name+'\n\nNurse has not uploaded 1-min intro video to Cloudinary yet.'); return; }
+  var existing=document.getElementById('nurseVideoModal');
+  if(existing) existing.remove();
+  var modal=document.createElement('div');
+  modal.id='nurseVideoModal';
+  modal.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:9999;display:flex;align-items:center;justify-content:center;padding:10px;overflow-y:auto';
+  var photo=nurse.photoUrl||'./logo.png';
+  modal.innerHTML=`
+  <div style="background:white;border-radius:20px;max-width:500px;width:100%;max-height:95vh;overflow-y:auto;">
+    <div style="position:relative">
+      <video controls autoplay style="width:100%;max-height:400px;background:#000;border-radius:20px 20px 0 0" poster="${photo}" src="${nurse.videoUrl}"></video>
+      <button onclick="document.getElementById('nurseVideoModal').remove()" style="position:absolute;top:10px;right:10px;background:rgba(0,0,0,0.6);color:white;border:none;width:36px;height:36px;border-radius:50%;font-size:18px;font-weight:800">X</button>
+      <div style="position:absolute;bottom:10px;left:10px;background:rgba(0,0,0,0.7);color:white;padding:6px 12px;border-radius:20px;font-size:11px;font-weight:800">Cloudinary: ${nurse.name} - 1 Min Intro</div>
+    </div>
+    <div style="padding:16px">
+      <div style="display:flex;gap:12px;align-items:center;margin-bottom:12px">
+        <img src="${photo}" style="width:60px;height:60px;border-radius:50%;object-fit:cover;border:3px solid #16a34a">
+        <div style="flex:1">
+          <h2 style="margin:0;font-size:16px">${nurse.name}</h2>
+          <div style="font-size:11px;color:#6b7280">${nurse.specialty||'General Nurse'} - ${nurse.experience||'5 years'} exp</div>
+        </div>
+      </div>
+      <div style="background:#f0fdf4;border:2px solid #16a34a;border-radius:12px;padding:10px;margin-bottom:10px">
+        <b style="font-size:11px;color:#065f46">Client can watch nurse video during booking - Cloudinary secure_url</b><br>
+        <small style="font-size:9px">Video: ${nurse.videoUrl ? nurse.videoUrl.substring(0,60)+'...' : 'No video'}<br>Watch before booking!</small>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button onclick="document.getElementById('nurseVideoModal').remove(); selectNurseCard('${nurse.phone||nurse.id}')" style="flex:1;background:#16a34a;color:white;border:none;padding:12px;border-radius:12px;font-weight:800;font-size:12px">SELECT THIS NURSE</button>
+        <button onclick="document.getElementById('nurseVideoModal').remove()" style="flex:1;background:#e5e7eb;color:#111827;border:none;padding:12px;border-radius:12px;font-weight:800">Close</button>
+      </div>
+    </div>
+  </div>`;
+  document.body.appendChild(modal);
+  modal.onclick=function(e){ if(e.target===modal) modal.remove(); };
+}
+
 function selectNurseCard(id){selectedNurseId=id; document.getElementById('selectedNurseInfo').innerText='Selected: '+id;}
 function randomSelectNurse(){if(nearbyNursesSorted.length===0){alert('No nurses');return;} var p=nearbyNursesSorted[Math.floor(Math.random()*nearbyNursesSorted.length)]; selectNurseCard(p.phone||p.id);}
 function submitBooking(){
@@ -2849,8 +2916,8 @@ window.showNurseVideoProfilePopup = function(nurseId){
   modal.id='nurseVideoProfileModal';
   modal.style.cssText='position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.8);z-index:9999;display:flex;align-items:center;justify-content:center;padding:10px;overflow-y:auto';
   
-  var hasVideo = nurse.video || nurse.video_name;
-  var hasPhoto = nurse.photo;
+  var hasVideo = nurse.videoUrl || nurse.video || nurse.video_name;
+  var hasPhoto = nurse.photoUrl || nurse.photo;
   var profile = nurse.profile || 'I am '+nurse.name+', a licensed '+(nurse.specialty||'General Nurse')+' with '+(nurse.experience||'5 years')+' experience.\n\nExperience:\n- '+(nurse.specialty||'General Nurse')+' at private homes and hospitals\n\nSkills: '+(nurse.specialty||'Elderly care')+', medication, wound care, compassionate care\n\nWhy choose me: Professional, punctual, compassionate care at 65% OFF.\n\nLanguages: English, Twi, Ga\nAvailable: Full-time, Live-in';
   
   // Escape profile for HTML
