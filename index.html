@@ -424,7 +424,24 @@ This will be shown to clients when they select you on map with your video." styl
 </div>
 
 <div id="page-nurse-login" class="page"><div class="card" style="margin:20px;border:3px solid #16a34a"><h2>Nurse Login</h2><div class="phoneRow"><select id="nurseLoginCode"></select><input id="nurseLoginPhone" placeholder="Phone"></div><input id="nurseLoginPass" type="password" placeholder="Password"><button class="btnSubmit" onclick="loginNurse()">Login as Nurse</button><div id="nurseLoginResult" style="color:red;font-size:11px;margin-top:8px"></div></div></div>
-<div id="page-nurse-dashboard" class="page"><div class="card" style="border:3px solid #2563eb"><h2>Nurse Dashboard</h2><div style="display:flex;gap:5px"><button class="btnSubmit" style="width:auto;background:#00b050" onclick="startDuty()">START DUTY</button><button class="btnSubmit" style="width:auto;background:#ef4444" onclick="stopDuty()">STOP</button><button class="btnSubmit" style="width:auto;background:#111827" onclick="logoutNurse()">Logout</button></div><div id="nurseGpsStatus" style="padding:8px;background:#e8f5e9;border:1px solid #16a34a;font-size:11px;display:none;margin-top:8px">OFF</div></div><div class="card"><h2>New Offers</h2><div id="nurseJobsList">Start DUTY</div></div><div class="card" style="border:3px solid #2563eb"><h2>GROUP CHAT</h2>
+<div id="page-nurse-dashboard" class="page">
+<div class="card" style="border:3px solid #16a34a">
+<h2>🔔 Nurse Bookings - Accept/Reject (Like Uber Driver)</h2>
+<div style="background:#eff6ff;border:2px solid #2563eb;border-radius:10px;padding:10px;margin:8px 0;font-size:11px">
+<b>How it works (like Uber driver):</b><br>
+1️⃣ When client books you, you get <b>strong notification</b>: Sound 🔊 + Vibration 📳 + Popup 🚨 + Browser notification<br>
+2️⃣ You have <b>5 minutes</b> to <b>ACCEPT</b> or <b>REJECT</b> at your portal<br>
+3️⃣ If ACCEPT: Client notified, you navigate to client home with Google Maps directions like Uber<br>
+4️⃣ If REJECT: Enter reason, admin assigns another nurse like Uber reassigns driver
+</div>
+<div style="display:flex;gap:6px;margin-bottom:8px">
+<button class="btnSmall" style="background:#16a34a;color:white;flex:1;padding:10px;font-weight:800" onclick="loadNurseBookings()">🔄 Refresh Bookings</button>
+<button class="btnSmall" style="background:#2563eb;color:white;flex:1;padding:10px;font-weight:800" onclick="requestNotificationPermission()">🔔 Enable Notifications</button>
+</div>
+<div id="nurseBookingsList" style="max-height:600px;overflow-y:auto"></div>
+<div id="nurseDashboardBookings" style="max-height:600px;overflow-y:auto"></div>
+</div>
+<div class="card" style="border:3px solid #2563eb"><h2>Nurse Dashboard</h2><div style="display:flex;gap:5px"><button class="btnSubmit" style="width:auto;background:#00b050" onclick="startDuty()">START DUTY</button><button class="btnSubmit" style="width:auto;background:#ef4444" onclick="stopDuty()">STOP</button><button class="btnSubmit" style="width:auto;background:#111827" onclick="logoutNurse()">Logout</button></div><div id="nurseGpsStatus" style="padding:8px;background:#e8f5e9;border:1px solid #16a34a;font-size:11px;display:none;margin-top:8px">OFF</div></div><div class="card"><h2>New Offers</h2><div id="nurseJobsList">Start DUTY</div></div><div class="card" style="border:3px solid #2563eb"><h2>GROUP CHAT</h2>
 <div class="loginBar"><button onclick="showPage('nurse-login')" style="border-color:#2563eb">👩‍⚕ Nurse Login</button><button onclick="showPage('staff-login')" style="border-color:#7c3aed">🧑‍💼 Staff Login</button><button onclick="showPage('ceo-login')" style="border-color:#111827">👑 CEO Login</button></div>
 <div id="nurseChatBox" class="chatBox"></div><div class="chatInputRow"><input id="nurseChatInput" placeholder="Message..." onkeypress="if(event.key==='Enter')sendGroupMessage('NURSE')"><button class="btnSmall" style="background:#2563eb;color:white;padding:12px 18px" onclick="sendGroupMessage('NURSE')">Send</button></div><button class="btnSmall" style="background:#111827;color:white;width:100%;margin-top:6px" onclick="showPage('group-chat')">Open Full Chat</button></div></div>
 <div id="page-staff-login" class="page"><div class="card" style="margin:20px;border:3px solid #7c3aed"><h2>Staff Portal</h2><input id="staffLoginID" placeholder="Staff ID"><input id="staffLoginPass" type="password" placeholder="Password"><button class="btnSubmit" style="background:#7c3aed" onclick="loginStaff()">Login as Staff</button></div></div>
@@ -2473,6 +2490,393 @@ window.renderNurseMarkers = function(list){
 };
 
 console.log('Video + Written Profile feature loaded - Nurses can upload 1-min video at registration, clients watch before booking');
+</script>
+
+
+<script>
+// ===== NURSE NOTIFICATION + ACCEPT/REJECT WHEN CLIENT BOOKS =====
+
+// Request notification permission
+window.requestNotificationPermission = function(){
+  if('Notification' in window){
+    if(Notification.permission==='default'){
+      Notification.requestPermission().then(perm=>{
+        console.log('Notification permission:', perm);
+        if(perm==='granted'){
+          // Test notification
+          new Notification('LOVE CARE - Notifications Enabled', {body: 'You will get strong notification when client books you like Uber', icon: './logo.png'});
+        }
+      });
+    }
+  }
+};
+
+// Strong notification function
+window.sendStrongNurseNotification = function(booking){
+  console.log('Sending strong notification to nurse', booking);
+  
+  // 1. Browser Notification (strong)
+  if('Notification' in window && Notification.permission==='granted'){
+    var notif = new Notification('🚨 NEW BOOKING! Client booked you!', {
+      body: `Client: ${booking.name} - Service: ${booking.service} - Amount: ${booking.amount} ${booking.currency} - Location: ${booking.location||''} - Tap to Accept/Reject`,
+      icon: './logo.png',
+      badge: './logo.png',
+      vibrate: [500, 200, 500, 200, 500],
+      requireInteraction: true,
+      tag: 'booking-'+booking.id,
+      data: {bookingId: booking.id}
+    });
+    notif.onclick = function(){
+      window.focus();
+      if(typeof showPage==='function') showPage('nurse-dashboard');
+      notif.close();
+    };
+  }
+  
+  // 2. Sound notification (strong beep)
+  try{
+    var audio = new Audio('data:audio/wav;base64,UklGRlQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YVgAAACAAP//AP//AP//AP//AP//AP//AP//AP//AP//AP//AP//AP//AP//AP//AP//AP//AP//AP//AP//AP//AP//AP//AP//AP//AP//AP//AP//AP//AP//AP//AP//AP//AP//AP//AP//AP//AP//AP//AP//AP//AP//AP//AP//AP//AP//AP//AP//AP//AP//');
+    // Fallback beep using Web Audio API
+    var ctx = new (window.AudioContext||window.webkitAudioContext)();
+    var playBeep = function(freq, duration, delay){
+      setTimeout(function(){
+        var osc = ctx.createOscillator();
+        var gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.frequency.value = freq;
+        gain.gain.setValueAtTime(0.8, ctx.currentTime);
+        osc.start();
+        osc.stop(ctx.currentTime+duration/1000);
+      }, delay);
+    };
+    // Strong beeps like Uber: 3 loud beeps
+    playBeep(880, 300, 0);
+    playBeep(880, 300, 400);
+    playBeep(880, 600, 800);
+  }catch(e){ console.log('Audio notification failed', e); }
+  
+  // 3. Vibration (strong like Uber)
+  if(navigator.vibrate){
+    navigator.vibrate([500, 200, 500, 200, 1000]); // Strong vibration pattern
+  }
+  
+  // 4. In-app strong popup
+  var existingPopup = document.getElementById('nurseBookingPopup');
+  if(existingPopup) existingPopup.remove();
+  
+  var popup = document.createElement('div');
+  popup.id='nurseBookingPopup';
+  popup.style.cssText='position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.85);z-index:10000;display:flex;align-items:center;justify-content:center;padding:10px;animation:shake 0.5s';
+  popup.innerHTML = `
+  <div style="background:white;border-radius:20px;max-width:450px;width:100%;box-shadow:0 10px 40px rgba(0,0,0,0.5);border:4px solid #16a34a;overflow:hidden">
+    <div style="background:linear-gradient(90deg,#ef4444,#eab308);color:white;padding:16px;text-align:center;animation:pulse 1s infinite">
+      <div style="font-size:32px">🚨</div>
+      <h2 style="margin:8px 0 0 0;font-size:18px">NEW CLIENT BOOKING!</h2>
+      <small style="background:white;color:#ef4444;padding:2px 10px;border-radius:20px;font-weight:800">STRONG NOTIFICATION LIKE UBER</small>
+    </div>
+    <div style="padding:20px">
+      <div style="display:flex;gap:10px;align-items:center;margin-bottom:12px">
+        <div style="width:50px;height:50px;border-radius:50%;background:#f0fdf4;border:3px solid #16a34a;display:flex;align-items:center;justify-content:center;font-size:24px">👤</div>
+        <div style="flex:1">
+          <b style="font-size:16px">${booking.name}</b><br>
+          <small>📞 ${booking.phone} • ✉ ${booking.email||''}</small><br>
+          <small>📍 ${booking.location||''}</small>
+        </div>
+      </div>
+      
+      <div style="background:#f9fafb;border:2px solid #e5e7eb;border-radius:12px;padding:12px;margin:10px 0">
+        <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:11px;color:#6b7280">Service:</span><b style="font-size:12px">${booking.service}</b></div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:11px;color:#6b7280">Amount:</span><b style="font-size:14px;color:#16a34a">${booking.amount} ${booking.currency}</b></div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:11px;color:#6b7280">Duration:</span><b style="font-size:11px">${booking.days||''} • ${booking.totalHours||''} hrs</b></div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:11px;color:#6b7280">Time:</span><b style="font-size:11px">⏰ ${booking.startTime||''} - ${booking.endTime||''}</b></div>
+        <div style="display:flex;justify-content:space-between"><span style="font-size:11px;color:#6b7280">Booking ID:</span><b style="font-size:11px">#${booking.id}</b></div>
+      </div>
+      
+      <div style="background:#fffbeb;border:2px dashed #eab308;border-radius:10px;padding:10px;margin:10px 0;font-size:10px">
+        <b>Client watched your 1-min video + profile aligned with CV before booking</b><br>
+        Client is at ${booking.lat? booking.lat.toFixed(4)+','+booking.lng.toFixed(4) : booking.location} - Tap Directions to navigate to client home like Uber
+      </div>
+      
+      <div style="display:flex;gap:10px;margin-top:16px">
+        <button onclick="nurseAcceptBooking(${booking.id})" style="flex:1;background:#16a34a;color:white;border:none;padding:14px;border-radius:12px;font-weight:800;font-size:14px;cursor:pointer;box-shadow:0 4px 12px rgba(22,163,74,0.3)">✅ ACCEPT BOOKING</button>
+        <button onclick="nurseRejectBooking(${booking.id})" style="flex:1;background:#ef4444;color:white;border:none;padding:14px;border-radius:12px;font-weight:800;font-size:14px;cursor:pointer;box-shadow:0 4px 12px rgba(239,68,68,0.3)">❌ REJECT</button>
+      </div>
+      
+      <div style="display:flex;gap:8px;margin-top:10px">
+        <button onclick="showDirectionToClientFromBooking(${booking.id})" style="flex:1;background:#2563eb;color:white;border:none;padding:10px;border-radius:10px;font-weight:700;font-size:11px;cursor:pointer">🗺️ Directions to Client (Like Uber)</button>
+        <button onclick="document.getElementById('nurseBookingPopup').remove()" style="flex:1;background:#f3f4f6;border:2px solid #e5e7eb;padding:10px;border-radius:10px;font-weight:700;font-size:11px;cursor:pointer">⏰ Decide Later (5 min)</button>
+      </div>
+      
+      <div style="text-align:center;margin-top:10px;font-size:9px;color:#9ca3af">
+        Strong notification: Sound + Vibration + Popup like Uber driver gets ride request<br>
+        You have 5 minutes to Accept/Reject - Client waiting
+      </div>
+    </div>
+  </div>
+  <style>@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}} @keyframes pulse{0%{opacity:1}50%{opacity:0.8}100%{opacity:1}}</style>
+  `;
+  
+  document.body.appendChild(popup);
+  
+  // Auto play sound again after 3 sec if not responded (like Uber)
+  setTimeout(function(){
+    if(document.getElementById('nurseBookingPopup')){
+      if(navigator.vibrate) navigator.vibrate([500, 200, 500]);
+      try{
+        var ctx2 = new (window.AudioContext||window.webkitAudioContext)();
+        var osc = ctx2.createOscillator();
+        var gain = ctx2.createGain();
+        osc.connect(gain);
+        gain.connect(ctx2.destination);
+        osc.frequency.value=880;
+        gain.gain.setValueAtTime(0.8, ctx2.currentTime);
+        osc.start();
+        osc.stop(ctx2.currentTime+0.6);
+      }catch(e){}
+    }
+  }, 3000);
+};
+
+window.nurseAcceptBooking = function(bookingId){
+  console.log('Nurse accepting booking', bookingId);
+  if(!window.db){ alert('Firebase not connected - Demo Accept'); document.getElementById('nurseBookingPopup')?.remove(); return; }
+  
+  window.db.ref('bookings/'+bookingId).once('value').then(snap=>{
+    var booking = snap.val();
+    if(!booking){ alert('Booking not found'); return; }
+    
+    // Check if already accepted/rejected
+    if(booking.status==='confirmed'){
+      alert('Already accepted by you');
+      document.getElementById('nurseBookingPopup')?.remove();
+      return;
+    }
+    if(booking.status==='rejected_by_nurse'){
+      alert('You already rejected this booking');
+      document.getElementById('nurseBookingPopup')?.remove();
+      return;
+    }
+    
+    // Accept
+    window.db.ref('bookings/'+bookingId).update({
+      status: 'confirmed',
+      acceptedBy: localStorage.getItem('nursePhone')||'nurse',
+      acceptedTime: Date.now(),
+      nurseAccepted: true
+    }).then(()=>{
+      alert('✅ BOOKING ACCEPTED!\n\nClient: '+booking.name+'\nService: '+booking.service+'\nAmount: '+booking.amount+' '+booking.currency+'\n\nClient will be notified.\n\n🗺️ Tap Directions to Client to navigate to client home like Uber driver');
+      
+      // Notify client (in real app, push notification)
+      if(window.db){
+        window.db.ref('bookings/'+bookingId).update({clientNotified: 'accepted'});
+      }
+      
+      document.getElementById('nurseBookingPopup')?.remove();
+      
+      // Reload dashboard
+      if(typeof loadNurseDashboard==='function') loadNurseDashboard();
+      if(typeof loadNurseBookings==='function') loadNurseBookings();
+      
+      // Show directions
+      setTimeout(()=>{ showDirectionToClientFromBooking(bookingId); }, 1000);
+    });
+  });
+};
+
+window.nurseRejectBooking = function(bookingId){
+  console.log('Nurse rejecting booking', bookingId);
+  var reason = prompt('❌ Reject Booking - Reason (required):\n\nWhy rejecting? Example: Not available, too far, etc.\n\nThis will notify client and admin will assign another nurse like Uber reassigns driver');
+  if(reason===null) return; // Cancelled
+  if(!reason.trim()){ alert('Please enter reason'); return; }
+  
+  if(!window.db){ alert('Firebase not connected - Demo Reject: '+reason); document.getElementById('nurseBookingPopup')?.remove(); return; }
+  
+  window.db.ref('bookings/'+bookingId).once('value').then(snap=>{
+    var booking = snap.val();
+    if(!booking){ alert('Booking not found'); return; }
+    
+    window.db.ref('bookings/'+bookingId).update({
+      status: 'rejected_by_nurse',
+      rejectedBy: localStorage.getItem('nursePhone')||'nurse',
+      rejectReason: reason,
+      rejectedTime: Date.now(),
+      needsAdminAssignment: true
+    }).then(()=>{
+      alert('❌ BOOKING REJECTED\n\nReason: '+reason+'\n\nAdmin will assign another nurse like Uber reassigns when driver rejects. Client will be notified.');
+      
+      document.getElementById('nurseBookingPopup')?.remove();
+      
+      if(typeof loadNurseDashboard==='function') loadNurseDashboard();
+      if(typeof loadNurseBookings==='function') loadNurseBookings();
+    });
+  });
+};
+
+window.showDirectionToClientFromBooking = function(bookingId){
+  if(!window.db){ alert('Demo - Directions to client would show here with Google Maps like Uber'); return; }
+  window.db.ref('bookings/'+bookingId).once('value').then(snap=>{
+    var booking = snap.val();
+    if(!booking || !booking.lat || !booking.lng){ alert('Client location not available'); return; }
+    
+    // Get nurse current location
+    if(navigator.geolocation){
+      navigator.geolocation.getCurrentPosition(function(pos){
+        var nurseLat = pos.coords.latitude;
+        var nurseLng = pos.coords.longitude;
+        var googleUrl = `https://www.google.com/maps/dir/?api=1&origin=${nurseLat},${nurseLng}&destination=${booking.lat},${booking.lng}&travelmode=driving`;
+        window.open(googleUrl, '_blank');
+        alert('🗺️ Opening Google Maps Directions\n\nFrom: Your current location (Nurse)\nTo: Client home - '+booking.location+'\n\nNavigate like Uber driver to rider - Follow blue line');
+      }, function(){
+        // Fallback to nurse's registered location
+        var nurseLat = 5.6037, nurseLng = -0.1870;
+        try{
+          var nurseData = JSON.parse(localStorage.getItem('nurseData')||'{}');
+          if(nurseData.lat) nurseLat = nurseData.lat;
+          if(nurseData.lng) nurseLng = nurseData.lng;
+        }catch(e){}
+        var googleUrl = `https://www.google.com/maps/dir/?api=1&origin=${nurseLat},${nurseLng}&destination=${booking.lat},${booking.lng}&travelmode=driving`;
+        window.open(googleUrl, '_blank');
+      });
+    } else {
+      var googleUrl = `https://www.google.com/maps/dir/?api=1&destination=${booking.lat},${booking.lng}&travelmode=driving`;
+      window.open(googleUrl, '_blank');
+    }
+  });
+};
+
+// ===== LISTEN FOR NEW BOOKINGS FOR LOGGED-IN NURSE =====
+window.initNurseBookingListener = function(){
+  var nursePhone = localStorage.getItem('nursePhone');
+  if(!nursePhone){ console.log('No nurse logged in, not listening'); return; }
+  if(!window.db){ console.log('No Firebase, not listening'); return; }
+  
+  console.log('Starting booking listener for nurse', nursePhone);
+  
+  // Request notification permission
+  requestNotificationPermission();
+  
+  // Listen to bookings where selectedNurse == nursePhone
+  var suffix = nursePhone.replace(/[^0-9]/g,'').slice(-9);
+  
+  window.db.ref('bookings').on('child_added', function(snap){
+    var booking = snap.val();
+    if(!booking) return;
+    
+    var bookingPhoneSuffix = (booking.selectedNurse||'').replace(/[^0-9]/g,'').slice(-9);
+    var isForThisNurse = bookingPhoneSuffix.endsWith(suffix) || (booking.selectedNurse===nursePhone);
+    
+    // Also check if booking is pending and needs assignment and is nearby
+    if(!isForThisNurse && booking.needsAdminAssignment){
+      // For demo, notify all nurses if admin assignment needed
+      // In production, only notify nearby nurses
+      isForThisNurse = true;
+    }
+    
+    if(isForThisNurse && (booking.status==='pending_assignment' || booking.status==='pending_admin_assignment')){
+      // Check if booking is recent (last 10 minutes)
+      var age = Date.now() - (booking.timestamp||0);
+      if(age < 10*60*1000){ // 10 minutes
+        console.log('New booking for this nurse!', booking);
+        setTimeout(()=>{ sendStrongNurseNotification(booking); }, 1000);
+      }
+    }
+  });
+  
+  window.db.ref('bookings').on('child_changed', function(snap){
+    var booking = snap.val();
+    if(!booking) return;
+    var bookingPhoneSuffix = (booking.selectedNurse||'').replace(/[^0-9]/g,'').slice(-9);
+    var isForThisNurse = bookingPhoneSuffix.endsWith(suffix) || (booking.selectedNurse===nursePhone);
+    if(isForThisNurse && booking.status==='pending_assignment'){
+      var age = Date.now() - (booking.timestamp||0);
+      if(age < 2*60*1000){ // 2 minutes - newly assigned
+        console.log('Booking changed to pending for this nurse', booking);
+        sendStrongNurseNotification(booking);
+      }
+    }
+  });
+};
+
+// Enhanced nurse dashboard to show bookings with accept/reject
+window.loadNurseBookings = function(){
+  var nursePhone = localStorage.getItem('nursePhone');
+  if(!nursePhone){ console.log('No nurse phone'); return; }
+  var listDiv = document.getElementById('nurseBookingsList') || document.getElementById('nurseDashboardBookings');
+  if(!listDiv){ console.log('No bookings list div'); return; }
+  
+  if(!window.db){ listDiv.innerHTML='<div style="text-align:center;padding:10px">Demo mode - No Firebase - Bookings would appear here with Accept/Reject buttons</div>'; return; }
+  
+  var suffix = nursePhone.replace(/[^0-9]/g,'').slice(-9);
+  window.db.ref('bookings').once('value').then(snap=>{
+    var all = Object.values(snap.val()||{});
+    var mine = all.filter(b=>{
+      var bSuffix = (b.selectedNurse||'').replace(/[^0-9]/g,'').slice(-9);
+      return bSuffix.endsWith(suffix) || b.selectedNurse===nursePhone || b.acceptedBy===nursePhone;
+    });
+    mine.sort((a,b)=>b.timestamp-a.timestamp);
+    
+    if(mine.length==0){
+      listDiv.innerHTML='<div style="text-align:center;color:#999;padding:20px">📭 No bookings yet<br><small>When client books you, you will get strong notification like Uber driver gets ride request</small><br><small>Demo 20 nurses around Accra - Clients can book you</small></div>';
+      return;
+    }
+    
+    var h='';
+    mine.forEach(b=>{
+      var isPending = b.status==='pending_assignment' || b.status==='pending_admin_assignment';
+      var isConfirmed = b.status==='confirmed' && b.acceptedBy===nursePhone;
+      var isRejected = b.status==='rejected_by_nurse' && b.rejectedBy===nursePhone;
+      
+      h+=`<div style="border:3px solid ${isPending?'#eab308': isConfirmed?'#16a34a':'#e5e7eb'};border-radius:16px;padding:12px;margin:10px 0;background:${isPending?'#fffbeb': isConfirmed?'#f0fdf4':'white'};box-shadow:0 2px 8px rgba(0,0,0,0.1)">
+        <div style="display:flex;justify-content:space-between;align-items:start">
+          <div><b>#${b.id}</b> - ${b.service}</div>
+          <span style="padding:4px 10px;border-radius:20px;font-size:10px;font-weight:800;background:${isPending?'#eab308': isConfirmed?'#16a34a': isRejected?'#ef4444':'#6b7280'};color:white">${(b.status||'').toUpperCase()}</span>
+        </div>
+        <div style="font-size:11px;margin-top:8px;line-height:1.5">
+          <b>👤 Client:</b> ${b.name} - ${b.phone}<br>
+          <b>📍 Location:</b> ${b.location||''}<br>
+          <b>💰 Amount:</b> <span style="color:#16a34a;font-weight:800">${b.amount} ${b.currency}</span> - ${b.days||''} • ${b.totalHours||''} hrs<br>
+          <b>⏰ Time:</b> ${b.startTime||''} - ${b.endTime||''} • ${b.time||''}<br>
+          <b>📏 Distance:</b> ${b.distance? b.distance.toFixed(1)+'km' : 'Nearby'}<br>
+        </div>
+        ${isPending? `
+        <div style="background:#fef3c7;border:2px dashed #eab308;border-radius:10px;padding:8px;margin:8px 0;font-size:10px;text-align:center">
+          🚨 <b>NEW BOOKING - Client waiting for your response like Uber rider waits for driver</b><br>
+          Client watched your 1-min video + profile aligned with CV before booking
+        </div>
+        <div style="display:flex;gap:8px;margin-top:10px">
+          <button onclick="nurseAcceptBooking(${b.id})" style="flex:1;background:#16a34a;color:white;border:none;padding:12px;border-radius:10px;font-weight:800;cursor:pointer">✅ ACCEPT</button>
+          <button onclick="nurseRejectBooking(${b.id})" style="flex:1;background:#ef4444;color:white;border:none;padding:12px;border-radius:10px;font-weight:800;cursor:pointer">❌ REJECT</button>
+        </div>
+        <div style="display:flex;gap:6px;margin-top:8px">
+          <button onclick="showDirectionToClientFromBooking(${b.id})" style="flex:1;background:#2563eb;color:white;border:none;padding:8px;border-radius:8px;font-weight:700;font-size:11px;cursor:pointer">🗺️ Directions to Client Home (Like Uber)</button>
+        </div>
+        ` : isConfirmed? `
+        <div style="background:#dcfce7;border:2px solid #16a34a;border-radius:10px;padding:8px;margin:8px 0;font-size:11px;text-align:center;color:#065f46">
+          ✅ You ACCEPTED this booking - Client notified<br>
+          <b>Go to client home - Use directions</b>
+        </div>
+        <button onclick="showDirectionToClientFromBooking(${b.id})" style="width:100%;background:#2563eb;color:white;border:none;padding:10px;border-radius:10px;font-weight:800;cursor:pointer;margin-top:6px">🗺️ Navigate to Client Home Like Uber Driver</button>
+        ` : `
+        <div style="font-size:10px;color:#6b7280;margin-top:6px">Status: ${b.status}</div>
+        `}
+      </div>`;
+    });
+    listDiv.innerHTML=h;
+  });
+};
+
+// Override nurse dashboard load
+var _originalLoadNurseDashboard = window.loadNurseDashboard;
+window.loadNurseDashboard = function(){
+  if(_originalLoadNurseDashboard) _originalLoadNurseDashboard();
+  setTimeout(()=>{
+    initNurseBookingListener();
+    loadNurseBookings();
+  }, 1000);
+};
+
+console.log('Nurse notification + Accept/Reject feature loaded');
 </script>
 
 </body>
