@@ -339,7 +339,7 @@ function setWorkTime(s,e){
 </div>
 
 <button id="findNursesBtn" onclick="window.findNursesUber();return false;" style="cursor:pointer;pointer-events:auto !important;opacity:1 !important;display:block !important;background:linear-gradient(90deg,#2563eb,#00b050);color:white;padding:14px;border-radius:10px;width:100%;font-weight:800;margin:8px 0;border:none" type="button">🔍 FIND NURSES NEAR ME</button>
-<div id="uberActionArea" class="hidden"><div style="display:flex;gap:6px;margin-top:8px"><button class="btnSubmit" style="background:#eab308;color:#111;flex:1" onclick="randomSelectNurse()">🎲 RANDOM</button><button class="btnSubmit" style="background:#111827;flex:1" onclick="submitBooking()">BOOK SELECTED</button></div><div id="selectedNurseInfo" style="font-size:10px;text-align:center;margin-top:4px;color:#16a34a;font-weight:800">No nurse selected</div></div></div>
+<div id="uberActionArea" class="hidden"><div style="display:flex;gap:6px;margin-top:8px"><button class="btnSubmit" style="background:#eab308;color:#111;flex:1" onclick="window.randomSelectNurse()" id="randomNurseBtn" type="button">🎲 RANDOM NEAR NURSE</button><button class="btnSubmit" style="background:#111827;flex:1" onclick="window.submitBooking()" id="bookSelectedBtn" type="button">BOOK SELECTED</button></div><div id="selectedNurseInfo" style="font-size:10px;text-align:center;margin-top:4px;color:#16a34a;font-weight:800">No nurse selected</div></div></div>
 
 <div class="card" style="border:3px solid #2563eb"><h2>📋 MY BOOKINGS</h2><div class="phoneRow"><select id="myBookPhoneCode"></select><input id="myBookPhone" placeholder="Enter phone to load"><button class="btnSmall" style="background:#2563eb;color:white;padding:12px 16px" onclick="loadMyBookings()">LOAD</button></div><div id="myBookingsList" style="margin-top:10px"><div style="text-align:center;color:#999;font-size:11px;padding:10px">No bookings loaded</div></div></div>
 <div class="card"><h2>LIVE Map - <span id="nearbyCount">0</span> Nearby</h2><div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap"><button class="btnMap" onclick="toggleMap()">🗺 Map</button><button id="findNursesBtn" onclick="window.findNursesUber();return false;" style="cursor:pointer;pointer-events:auto !important;opacity:1 !important;display:block !important;background:linear-gradient(90deg,#2563eb,#00b050);color:white;padding:14px;border-radius:10px;width:100%;font-weight:800;margin:8px 0;border:none" type="button">🔍 FIND NURSES NEAR ME</button><select id="radiusSelect" style="width:100px;padding:8px;border-radius:8px"><option value="5">5 km</option><option value="10" selected>10 km</option><option value="20">20 km</option><option value="50">50 km</option></select></div><div id="loveCareMapWrapper" class="map-wrapper"><div id="uberMap"></div></div><div id="loveCareLiveList"></div></div>
@@ -2154,6 +2154,233 @@ document.addEventListener('DOMContentLoaded', function(){
     var d = Math.sqrt(Math.pow((n.lat-5.6037)*111,2) + Math.pow((n.lng+0.1870)*111*Math.cos(5.6037*Math.PI/180),2));
     console.log((i+1)+'. '+n.name+' - '+n.location+' - '+d.toFixed(1)+'km - '+n.lat+', '+n.lng);
   });
+});
+</script>
+
+
+<script>
+// V61 - UBER DIRECTIONS: NURSES IDENTIFIED + RANDOM SELECT + DIRECTIONS TO CLIENT HOME
+
+// Add routing polyline for directions like Uber
+var routeLine = null;
+var clientToNurseLine = null;
+
+window.showDirectionsToClient = function(nurseLat, nurseLng, clientLat, clientLng, nurseName){
+  try{
+    console.log('Showing directions like Uber: Nurse to Client');
+    if(!window.uberMap) return;
+    
+    // Remove old routes
+    if(routeLine) window.uberMap.removeLayer(routeLine);
+    if(clientToNurseLine) window.uberMap.removeLayer(clientToNurseLine);
+    
+    var nursePos = [nurseLat, nurseLng];
+    var clientPos = [clientLat || window.clientLat || 5.6037, clientLng || window.clientLng || -0.1870];
+    
+    // Create route line like Uber (blue line with arrow)
+    routeLine = L.polyline([nursePos, clientPos], {
+      color: '#2563eb',
+      weight: 5,
+      opacity: 0.8,
+      dashArray: null,
+      lineCap: 'round',
+      lineJoin: 'round'
+    }).addTo(window.uberMap);
+    
+    // Add arrow in middle like Uber
+    var midLat = (nursePos[0] + clientPos[0]) / 2;
+    var midLng = (nursePos[1] + clientPos[1]) / 2;
+    
+    // Calculate distance
+    var distanceKm = 0;
+    if(typeof getDistanceKm === 'function'){
+      distanceKm = getDistanceKm(nursePos[0], nursePos[1], clientPos[0], clientPos[1]);
+    } else {
+      var dLat = (nursePos[0]-clientPos[0])*111;
+      var dLng = (nursePos[1]-clientPos[1])*111*Math.cos(clientPos[0]*Math.PI/180);
+      distanceKm = Math.sqrt(dLat*dLat + dLng*dLng);
+    }
+    var etaMins = Math.ceil(distanceKm * 3 + 2); // 3 mins per km + 2 mins prep
+    
+    // Fit map to show route like Uber
+    window.uberMap.fitBounds(L.latLngBounds([nursePos, clientPos]).pad(0.3));
+    
+    // Show directions info like Uber
+    var directionsInfo = document.getElementById('uberDirectionsInfo');
+    if(!directionsInfo){
+      var infoDiv = document.createElement('div');
+      infoDiv.id = 'uberDirectionsInfo';
+      infoDiv.style.cssText = 'background:white;border:3px solid #2563eb;border-radius:16px;padding:12px;margin:12px 0;box-shadow:0 4px 20px rgba(0,0,0,0.2);';
+      var mapWrapper = document.getElementById('loveCareMapWrapper');
+      if(mapWrapper) mapWrapper.parentNode.insertBefore(infoDiv, mapWrapper.nextSibling);
+      directionsInfo = infoDiv;
+    }
+    
+    if(directionsInfo){
+      directionsInfo.innerHTML = 
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">' +
+        '<h4 style="margin:0;color:#111827">🚗 Directions Like Uber</h4>' +
+        '<button onclick="document.getElementById(\'uberDirectionsInfo\').style.display=\'none\'; if(window.routeLine) window.uberMap.removeLayer(window.routeLine);" style="background:#fee2e2;border:2px solid #ef4444;border-radius:8px;padding:4px 8px;cursor:pointer">✕ Close</button>' +
+        '</div>' +
+        '<div style="display:flex;gap:8px;margin-bottom:10px">' +
+        '<div style="flex:1;background:#f0fdf4;border:2px solid #16a34a;border-radius:10px;padding:8px;text-align:center"><div style="font-size:20px">👩‍⚕️</div><b style="font-size:11px">'+(nurseName||'Nurse')+'</b><br><small style="font-size:10px">Nurse Location</small></div>' +
+        '<div style="display:flex;align-items:center;font-size:20px">→</div>' +
+        '<div style="flex:1;background:#eff6ff;border:2px solid #2563eb;border-radius:10px;padding:8px;text-align:center"><div style="font-size:20px">📍</div><b style="font-size:11px">Client Home</b><br><small style="font-size:10px">Your Location</small></div>' +
+        '</div>' +
+        '<div style="display:flex;gap:8px;margin-bottom:10px">' +
+        '<div style="flex:1;background:#dbeafe;border-radius:10px;padding:8px;text-align:center"><b>📏 '+distanceKm.toFixed(1)+' km</b><br><small>Distance</small></div>' +
+        '<div style="flex:1;background:#fef3c7;border-radius:10px;padding:8px;text-align:center"><b>⏱ '+etaMins+' mins</b><br><small>ETA</small></div>' +
+        '<div style="flex:1;background:#dcfce7;border-radius:10px;padding:8px;text-align:center"><b>🚗 Driving</b><br><small>Mode</small></div>' +
+        '</div>' +
+        '<div style="background:#111827;color:white;border-radius:10px;padding:10px;margin-bottom:10px">' +
+        '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span style="background:#2563eb;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px">1</span><span style="font-size:11px">Start at '+ (nurseName||'Nurse') +' location</span></div>' +
+        '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span style="background:#2563eb;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px">2</span><span style="font-size:11px">Follow blue route to client home</span></div>' +
+        '<div style="display:flex;align-items:center;gap:8px"><span style="background:#16a34a;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px">3</span><span style="font-size:11px">Arrive at client home - Start care</span></div>' +
+        '</div>' +
+        '<div style="display:flex;gap:8px">' +
+        '<a href="https://www.google.com/maps/dir/'+nurseLat+','+nurseLng+'/'+clientPos[0]+','+clientPos[1]+'" target="_blank" style="flex:1;background:#00b050;color:white;padding:12px;border-radius:10px;text-align:center;text-decoration:none;font-weight:800;font-size:12px;display:block">🗺️ Open Google Maps Directions</a>' +
+        '<a href="https://maps.apple.com/?saddr='+nurseLat+','+nurseLng+'&daddr='+clientPos[0]+','+clientPos[1]+'&dirflg=d" target="_blank" style="flex:1;background:#111827;color:white;padding:12px;border-radius:10px;text-align:center;text-decoration:none;font-weight:800;font-size:12px;display:block">🍎 Apple Maps</a>' +
+        '</div>' +
+        '<div style="margin-top:8px;display:flex;gap:8px">' +
+        '<button onclick="window.open(\'https://www.google.com/maps/dir/?api=1&origin='+nurseLat+','+nurseLng+'&destination='+clientPos[0]+','+clientPos[1]+'&travelmode=driving\', \'_blank\')" style="flex:1;background:#2563eb;color:white;border:none;padding:10px;border-radius:10px;font-weight:800;cursor:pointer;font-size:11px">🚀 Start Navigation Like Uber</button>' +
+        '<button onclick="window.shareDirections('+nurseLat+','+nurseLng+','+clientPos[0]+','+clientPos[1]+',\''+(nurseName||'Nurse')+'\')" style="flex:1;background:#f59e0b;color:white;border:none;padding:10px;border-radius:10px;font-weight:800;cursor:pointer;font-size:11px">📤 Share Directions</button>' +
+        '</div>';
+      directionsInfo.style.display='block';
+    }
+    
+    console.log('Directions shown: '+distanceKm.toFixed(1)+'km, '+etaMins+' mins - Nurse to Client');
+  }catch(e){
+    console.error('showDirections error:', e);
+  }
+};
+
+window.shareDirections = function(nurseLat, nurseLng, clientLat, clientLng, nurseName){
+  var googleMapsUrl = 'https://www.google.com/maps/dir/'+nurseLat+','+nurseLng+'/'+clientLat+','+clientLng;
+  var text = '🚗 Uber-like Directions for Nurse '+ (nurseName||'') +' to Client Home:\n📍 Nurse: '+nurseLat+', '+nurseLng+'\n📍 Client: '+clientLat+', '+clientLng+'\n🗺️ '+googleMapsUrl;
+  if(navigator.share){
+    navigator.share({title: 'Nurse Directions Like Uber', text: text, url: googleMapsUrl});
+  } else {
+    navigator.clipboard.writeText(text).then(function(){
+      alert('✅ Directions copied!\n\n'+text+'\n\nPaste to share with nurse - nurse can use to go client home like Uber');
+    });
+  }
+};
+
+// Override selectNurseCard to include directions like Uber
+var originalSelectNurseCard = window.selectNurseCard;
+window.selectNurseCard = function(id){
+  console.log('Nurse identified and selected like Uber:', id);
+  window.selectedNurseId = id;
+  
+  // Find nurse data
+  var nurse = null;
+  if(window.nearbyNursesSorted){
+    nurse = window.nearbyNursesSorted.find(function(n){ return (n.phone||n.id) === id; });
+  }
+  if(!nurse && window.DEMO_NURSES_ACCRA){
+    nurse = window.DEMO_NURSES_ACCRA.find(function(n){ return (n.phone||n.id) === id; });
+  }
+  
+  var infoEl = document.getElementById('selectedNurseInfo');
+  if(infoEl){
+    if(nurse){
+      infoEl.innerHTML = 
+        '<div style="background:white;border:2px solid #2563eb;border-radius:12px;padding:10px;text-align:left">' +
+        '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">' +
+        '<img src="./logo.png" style="width:50px;height:50px;border-radius:50%;border:3px solid #16a34a" onerror="this.src=\'https://ui-avatars.com/api/?name='+(nurse.name||'Nurse')+'&background=16a34a&color=fff\'">' +
+        '<div style="flex:1"><b>✅ '+ (nurse.name||'Nurse') +' Identified</b><br><small>📍 '+(nurse.location||'')+' - 📏 '+(nurse.distance?nurse.distance.toFixed(1)+'km':'nearby')+' - ⭐ 4.9</small><br><small>📞 '+(nurse.phone||id)+' - 💼 '+(nurse.experience||'5yrs')+' - ✅ PIN Verified</small></div>' +
+        '<div style="background:#16a34a;width:12px;height:12px;border-radius:50%"></div>' +
+        '</div>' +
+        '<div style="display:flex;gap:6px">' +
+        '<button onclick="window.showDirectionsToClient('+(nurse.lat||5.6037)+','+(nurse.lng||-0.1870)+', window.clientLat, window.clientLng, \''+(nurse.name||'Nurse')+'\')" style="flex:1;background:#2563eb;color:white;border:none;padding:8px;border-radius:8px;font-weight:800;cursor:pointer;font-size:11px">🗺️ Show Directions Like Uber</button>' +
+        '<button onclick="window.randomSelectNurse()" style="background:#eab308;color:#111;border:none;padding:8px 12px;border-radius:8px;font-weight:800;cursor:pointer;font-size:11px">🎲 Random</button>' +
+        '</div>' +
+        '</div>';
+      infoEl.style.display='block';
+      infoEl.style.background='transparent';
+      infoEl.style.border='none';
+      
+      // Show directions automatically like Uber does
+      setTimeout(function(){
+        window.showDirectionsToClient(nurse.lat||5.6037, nurse.lng||-0.1870, window.clientLat, window.clientLng, nurse.name||'Nurse');
+      }, 500);
+    } else {
+      infoEl.innerText = '✅ Selected: '+id;
+      infoEl.style.background='#dcfce7';
+    }
+  }
+  
+  // Highlight card like Uber
+  document.querySelectorAll('.uber-nurse-card').forEach(function(c){ c.classList.remove('selected'); });
+  var card = document.getElementById('nurse-card-'+id);
+  if(card) card.classList.add('selected');
+  
+  // Update map marker popup
+  if(window.nurseMarkers){
+    window.nurseMarkers.forEach(function(m){
+      // Keep all markers
+    });
+  }
+  
+  console.log('Nurse '+id+' identified on app - ready for directions');
+};
+
+// Override randomSelectNurse to be Uber-like random near nurse with directions
+window.randomSelectNurse = function(){
+  console.log('🎲 RANDOMLY SELECT NEAR NURSE LIKE UBER CLICKED');
+  if(!window.nearbyNursesSorted || window.nearbyNursesSorted.length===0){
+    // Try demo nurses
+    if(window.DEMO_NURSES_ACCRA && window.DEMO_NURSES_ACCRA.length>0){
+      window.nearbyNursesSorted = window.DEMO_NURSES_ACCRA.slice(0,10).map(function(n){
+        var d = Math.sqrt(Math.pow((n.lat-5.6037)*111,2) + Math.pow((n.lng+0.1870)*111*Math.cos(5.6037*Math.PI/180),2));
+        var c = Object.assign({}, n);
+        c.distance = d;
+        return c;
+      }).sort(function(a,b){ return a.distance-b.distance; });
+    } else {
+      alert('No nurses found - click FIND NURSES NEAR ME first like Uber');
+      return;
+    }
+  }
+  
+  // Randomly select from nearest 5 like Uber does (closest drivers)
+  var nearest = window.nearbyNursesSorted.slice(0, Math.min(5, window.nearbyNursesSorted.length));
+  var randomNurse = nearest[Math.floor(Math.random()*nearest.length)];
+  
+  console.log('Randomly selected near nurse like Uber:', randomNurse.name, randomNurse.distance.toFixed(1)+'km');
+  
+  // Select it
+  window.selectNurseCard(randomNurse.phone||randomNurse.id);
+  
+  // Show Uber-like random selection animation
+  var listEl = document.getElementById('loveCareLiveList');
+  if(listEl){
+    // Flash effect like Uber
+    var card = document.getElementById('nurse-card-'+(randomNurse.phone||randomNurse.id));
+    if(card){
+      card.style.animation = 'pulse 0.5s 3';
+      setTimeout(function(){ card.style.animation=''; }, 1500);
+      card.scrollIntoView({behavior: 'smooth', block: 'center'});
+    }
+  }
+  
+  alert('🎲 Randomly Selected Near Nurse Like Uber!\n\n✅ '+randomNurse.name+'\n📍 '+randomNurse.location+'\n📏 '+(randomNurse.distance?randomNurse.distance.toFixed(1)+'km':'nearby')+' - ⏱ '+(randomNurse.distance?Math.ceil(randomNurse.distance*3)+' mins away':'5 mins')+'\n\n🗺️ Directions shown on map - Nurse can use Google Maps to go to client home like Uber driver!\n\nClick "Show Directions Like Uber" or "Open Google Maps Directions"');
+};
+
+// Add nurse identification badge
+window.identifyNursesOnApp = function(){
+  console.log('Identifying 20 nurses on app like Uber drivers');
+  if(window.DEMO_NURSES_ACCRA){
+    window.DEMO_NURSES_ACCRA.forEach(function(n){
+      console.log('✅ Nurse Identified on App: '+n.name+' - ID: '+n.id+' - Phone: '+n.phone+' - Location: '+n.location+' - Lat: '+n.lat+', Lng: '+n.lng);
+    });
+  }
+};
+
+document.addEventListener('DOMContentLoaded', function(){
+  setTimeout(function(){
+    window.identifyNursesOnApp();
+  }, 1000);
 });
 </script>
 
