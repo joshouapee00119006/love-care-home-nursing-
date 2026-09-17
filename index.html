@@ -343,7 +343,14 @@ function setWorkTime(s,e){
 
 <div class="card" style="border:3px solid #2563eb"><h2>📋 MY BOOKINGS</h2><div class="phoneRow"><select id="myBookPhoneCode"></select><input id="myBookPhone" placeholder="Enter phone to load"><button class="btnSmall" style="background:#2563eb;color:white;padding:12px 16px" onclick="loadMyBookings()">LOAD</button></div><div id="myBookingsList" style="margin-top:10px"><div style="text-align:center;color:#999;font-size:11px;padding:10px">No bookings loaded</div></div></div>
 <div class="card" style="border:3px solid #16a34a"><h2>🗺 LIVE Map - <span id="nearbyCount">0</span> Nearby Like Uber</h2>
-<div id="uberMapStatus" style="background:#f0fdf4;border:2px solid #16a34a;border-radius:10px;padding:10px;margin:8px 0;font-size:11px;font-weight:800;color:#16a34a;text-align:center">📍 Locating you like Uber... Map auto-zooming to nurses around you</div>
+<div id="uberMapStatus" style="background:#f0fdf4;border:2px solid #16a34a;border-radius:10px;padding:10px;margin:8px 0;font-size:11px;font-weight:800;color:#16a34a;text-align:center">📍 DEMO: 20 Nurses Around Accra Loaded - Map auto-locating you & zooming to show all nurses like Uber</div>
+<div style="background:#eff6ff;border:2px solid #2563eb;border-radius:10px;padding:8px;margin:8px 0;font-size:10px;font-weight:700;color:#2563eb">
+<b>🧪 DEMO TEST:</b> 20 nurses placed around Accra (Osu, Labone, Dansoman, Achimota, East Legon, etc.)<br>
+1️⃣ Click <b>📍 Auto Locate Me</b> → finds you<br>
+2️⃣ Map <b>auto-zooms</b> to show you + 20 nurses<br>
+3️⃣ Tap any nurse pin → <b>🧭 Directions</b> → green route line<br>
+4️⃣ Test <b>10km/20km/50km</b> filter to see auto zoom change
+</div>
 <div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap">
 <button class="btnSmall" style="background:#16a34a;color:white;flex:1;padding:10px;font-weight:800" onclick="autoLocateAndShowNurses()">📍 Auto Locate Me</button>
 <button class="btnSmall" style="background:#2563eb;color:white;flex:1;padding:10px;font-weight:800" onclick="findNursesUber()">🔄 Refresh Nurses</button>
@@ -1584,5 +1591,66 @@ window.showPage = function(id){
   }
 };
 </script>
+
+<script>
+// ===== DEMO 20 NURSES AROUND ACCRA FOR MAP TESTING =====
+(function(){
+  var demoNurses = [
+    {id: 'demo1', name: 'Nurse Grace Mensah', lat: 5.6037, lng: -0.1870, location: 'Osu, Accra', phone: '+233244000001', experience: '5 years', specialty: 'General Nurse', status: 'on_duty'},
+    {id: 'demo2', name: 'Nurse Esther Owusu', lat: 5.6137, lng: -0.1770, location: 'Labone, Accra', phone: '+233244000002', experience: '3 years', specialty: 'Elderly Care', status: 'on_duty'},
+    {id: 'demo3', name: 'Nurse Abena Osei', lat: 5.5937, lng: -0.1970, location: 'Dansoman, Accra', phone: '+233244000003', experience: '4 years', specialty: 'Baby Care', status: 'on_duty'},
+    {id: 'demo4', name: 'Nurse Akosua Boateng', lat: 5.6237, lng: -0.2070, location: 'Achimota, Accra', phone: '+233244000004', experience: '6 years', specialty: 'Hospital Support', status: 'on_duty'},
+    {id: 'demo5', name: 'Nurse Adwoa Asante', lat: 5.5837, lng: -0.1670, location: 'Teshie, Accra', phone: '+233244000005', experience: '2 years', specialty: 'Maternity Care', status: 'on_duty'},
+    {id: 'demo6', name: 'Nurse Esi Koomson', lat: 5.6337, lng: -0.1670, location: 'East Legon, Accra', phone: '+233244000006', experience: '7 years', specialty: 'Post-Surgery', status: 'on_duty'},
+    {id: 'demo7', name: 'Nurse Yaa Frimpong', lat: 5.5737, lng: -0.1870, location: 'Spintex, Accra', phone: '+233244000007', experience: '3 years', specialty: 'Disability Support', status: 'on_duty'},
+    {id: 'demo8', name: 'Nurse Afia Darko', lat: 5.6037, lng: -0.2170, location: 'Amasaman, Accra', phone: '+233244000008', experience: '5 years', specialty: 'Night Nurse', status: 'on_duty'},
+    {id: 'demo9', name: 'Nurse Ama Serwaa', lat: 5.6437, lng: -0.1870, location: 'Madina, Accra', phone: '+233244000009', experience: '4 years', specialty: 'Physiotherapy', status: 'on_duty'},
+    {id: 'demo10', name: 'Nurse Efua Mensah', lat: 5.5837, lng: -0.2070, location: 'Weija, Accra', phone: '+233244000010', experience: '6 years', specialty: 'Injection Care', status: 'on_duty'},
+    {id: 'demo11', name: 'Nurse Akua Boakye', lat: 5.6137, lng: -0.2070, location: 'Kasoa Road, Accra', phone: '+233244000011', experience: '8 years', specialty: 'Diabetes Monitoring', status: 'on_duty'},
+    {id: 'demo12', name: 'Nurse Abena Gyamfi', lat: 5.6237, lng: -0.1770, location: 'Cantonments, Accra', phone: '+233244000012', experience: '2 years', specialty: 'Dementia Care', status: 'on_duty'},
+    {id: 'demo13', name: 'Nurse Adjoa Tetteh', lat: 5.5937, lng: -0.1770, location: 'La, Accra', phone: '+233244000013', experience: '5 years', specialty: 'Child Special Needs', status: 'on_duty'},
+    {id: 'demo14', name: 'Nurse Serwaa Ampomah', lat: 5.6337, lng: -0.1970, location: 'Haatso, Accra', phone: '+233244000014', experience: '3 years', specialty: 'General Nurse', status: 'on_duty'},
+    {id: 'demo15', name: 'Nurse Mansa Koomson', lat: 5.5737, lng: -0.2070, location: 'Sakumono, Accra', phone: '+233244000015', experience: '4 years', specialty: 'Elderly Care', status: 'on_duty'},
+    {id: 'demo16', name: 'Nurse Esi Badu', lat: 5.6537, lng: -0.1970, location: 'Adenta, Accra', phone: '+233244000016', experience: '7 years', specialty: 'Baby Care', status: 'on_duty'},
+    {id: 'demo17', name: 'Nurse Akosua Manu', lat: 5.5637, lng: -0.1770, location: 'Nungua, Accra', phone: '+233244000017', experience: '6 years', specialty: 'Palliative Care', status: 'on_duty'},
+    {id: 'demo18', name: 'Nurse Yaa Ofori', lat: 5.6037, lng: -0.1570, location: 'Tema, Accra', phone: '+233244000018', experience: '5 years', specialty: 'Maternity Care', status: 'on_duty'},
+    {id: 'demo19', name: 'Nurse Afia Owusu', lat: 5.5937, lng: -0.2170, location: 'Mallam, Accra', phone: '+233244000019', experience: '3 years', specialty: 'Hospital Support', status: 'on_duty'},
+    {id: 'demo20', name: 'Nurse Grace Asare', lat: 5.6237, lng: -0.1570, location: 'Airport Hills, Accra', phone: '+233244000020', experience: '9 years', specialty: 'General Nurse', status: 'on_duty'}
+  ];
+  
+  // Save to localStorage if empty
+  var existing = [];
+  try{ existing = JSON.parse(localStorage.getItem('nurses')||'[]'); }catch(e){}
+  if(existing.length < 5){
+    // Merge demo with existing
+    var merged = [...existing];
+    demoNurses.forEach(d => {
+      if(!merged.find(m => m.id==d.id)) merged.push(d);
+    });
+    localStorage.setItem('nurses', JSON.stringify(merged));
+    console.log('✅ DEMO 20 nurses added around Accra for map testing');
+  }
+  
+  // Override getAllNursesSource to include demo if needed
+  var originalGetAll = window.getAllNursesSource;
+  window.getAllNursesSource = function(){
+    var all = [];
+    if(window.allWorkers && window.allWorkers.length>0) all = window.allWorkers;
+    else {
+      try{ all = JSON.parse(localStorage.getItem('nurses')||'[]'); }catch(e){ all=[]; }
+    }
+    // If still less than 5, add demo
+    if(all.length < 5){
+      all = demoNurses;
+      console.log('Using DEMO 20 nurses for map');
+    }
+    return all;
+  };
+  
+  // Expose for testing
+  window.demoNurses = demoNurses;
+})();
+</script>
+
 </body>
 </html>
