@@ -209,6 +209,45 @@ body {
   <div class="nurseWorkingCard"><span style="font-size:40px">👩‍⚕️</span><div><b style="font-size:12px">Baby care & nanny at home</b><br><small style="font-size:9px">Baby care - Labone</small></div><span style="font-size:30px">👶</span><span style="font-size:30px">🏠</span></div>
 </div>
 
+
+<script>
+// === LOVE CARE GLOBAL - FREE CLOUDINARY UPLOAD ===
+const CLOUD_NAME = "whkvne85";
+const UPLOAD_PRESET = "love-care-video";
+
+async function uploadToCloudinary(file) {
+  const url = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`;
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('upload_preset', UPLOAD_PRESET);
+
+  try {
+    const res = await fetch(url, { method: 'POST', body: formData });
+    const data = await res.json();
+    if(data.secure_url){
+      console.log('✅ Cloudinary uploaded:', data.secure_url);
+      return data.secure_url; // This is the viewable link for clients!
+    } else {
+      console.error('Cloudinary error:', data);
+      alert('Cloudinary upload error: '+(data.error?data.error.message:JSON.stringify(data)));
+      return null;
+    }
+  } catch(e){
+    console.error('Cloudinary fetch error', e);
+    alert('Upload failed: '+e.message);
+    return null;
+  }
+}
+
+// Helper to upload with progress status
+async function uploadFileToCloudinaryWithStatus(file, label, statusEl){
+  if(statusEl) statusEl.innerHTML='⏳ Uploading to Cloudinary: '+label+'... '+(file.size/1024/1024).toFixed(2)+'MB';
+  const url = await uploadToCloudinary(file);
+  if(url && statusEl) statusEl.innerHTML='✅ Uploaded to Cloudinary: '+label;
+  return url;
+}
+</script>
+
 </head>
 <body>
 <div class="sosFloat" onclick="alert('SOS Sent')">SOS</div>
@@ -526,7 +565,8 @@ This will be shown to clients when they select you on map with your video." styl
 </div>
 
 <input id="nRegExperience" type="number" placeholder="Years">
-<input id="nRegExperience" type="number" placeholder="Years"><select id="nRegSpecialty"><option value="">-- Specialty (13) --</option><option>General Nurse</option><option>Elderly Care</option><option>Baby Care and Nanny</option><option>Hospital Support</option><option>Post-Surgery Care</option><option>Disability Support</option><option>Maternity Care</option><option>Night Nurse</option><option>Palliative Care</option><option>Physiotherapy</option><option>Injection and Wound Care</option><option>Diabetes Monitoring</option><option>Dementia Care</option><option>Child Special Needs Care</option></select><div id="nRegStatus" style="display:none;background:#eff6ff;border:2px solid #2563eb;border-radius:10px;padding:10px;margin:8px 0;font-size:11px;font-weight:700"></div><button class="btnSubmit" onclick="registerNurse()">Register - Upload All to Firebase Storage</button><div style="text-align:center;margin-top:10px"><button class="btnSmall" style="background:#2563eb;color:white" onclick="showPage('nurse-public')">Already Registered? Login Here</button></div></div></div>
+<input id="nRegExperience" type="number" placeholder="Years"><select id="nRegSpecialty"><option value="">-- Specialty (13) --</option><option>General Nurse</option><option>Elderly Care</option><option>Baby Care and Nanny</option><option>Hospital Support</option><option>Post-Surgery Care</option><option>Disability Support</option><option>Maternity Care</option><option>Night Nurse</option><option>Palliative Care</option><option>Physiotherapy</option><option>Injection and Wound Care</option><option>Diabetes Monitoring</option><option>Dementia Care</option><option>Child Special Needs Care</option></select><div style="background:#f0fdf4;border:3px solid #16a34a;border-radius:12px;padding:10px;margin:8px 0"><b style="font-size:11px;color:#065f46">☁️ Cloudinary Upload Enabled (whkvne85 - love-care-video)</b><br><small style="font-size:9px">All your Photo, CV, PIN, Ghana Card Front/Back, Video will upload to Cloudinary and CEO can view via secure_url. Links saved to Firebase Realtime DB → workers/{phone}/photoUrl, videoUrl, etc.</small></div>
+<div id="nRegStatus" style="display:none;background:#eff6ff;border:2px solid #2563eb;border-radius:10px;padding:10px;margin:8px 0;font-size:11px;font-weight:700"></div><button class="btnSubmit" onclick="registerNurse()">Register - Upload All to Firebase Storage</button><div style="text-align:center;margin-top:10px"><button class="btnSmall" style="background:#2563eb;color:white" onclick="showPage('nurse-public')">Already Registered? Login Here</button></div></div></div>
 <div id="page-booking-public" class="page">
 <div class="card" style="border:3px solid #2563eb">
 <h2>💡 LOVE CARE HELP CENTER - How To Use The App</h2>
@@ -1317,7 +1357,7 @@ function registerNurse(){
   
   var phoneKey=fullPhone.replace(/[^0-9]/g,'');
   var statusEl=document.getElementById('nRegStatus');
-  if(statusEl){ statusEl.innerHTML='⏳ Uploading files to Firebase Storage...'; statusEl.style.display='block'; }
+  if(statusEl){ statusEl.innerHTML='⏳ Uploading files to Cloudinary (whkvne85)...'; statusEl.style.display='block'; }
   
   var w={
     name:name,
@@ -1347,10 +1387,11 @@ function registerNurse(){
     pinUrl:'',
     nationalIDFrontUrl:'',
     nationalIDBackUrl:'',
-    videoUrl:''
+    videoUrl:'',
+    cloudinary:true,
+    cloudName:CLOUD_NAME
   };
   
-  var filesToUpload=[];
   var photoFile=document.getElementById('nRegPhoto')?document.getElementById('nRegPhoto').files[0]:null;
   var cvFile=document.getElementById('nRegCV')?document.getElementById('nRegCV').files[0]:null;
   var pinFile=document.getElementById('nRegPINPhoto')?document.getElementById('nRegPINPhoto').files[0]:null;
@@ -1358,12 +1399,13 @@ function registerNurse(){
   var idBackFile=document.getElementById('nRegNationalIDBack')?document.getElementById('nRegNationalIDBack').files[0]:null;
   var videoFile=document.getElementById('nRegVideo')?document.getElementById('nRegVideo').files[0]:null;
   
-  if(photoFile) filesToUpload.push({file:photoFile, path:'nurses/'+phoneKey+'/photo_'+Date.now()+'.jpg', key:'photoUrl', hasKey:'hasPhoto'});
-  if(cvFile) filesToUpload.push({file:cvFile, path:'nurses/'+phoneKey+'/cv_'+Date.now()+'_'+cvFile.name, key:'cvUrl', hasKey:'hasCV'});
-  if(pinFile) filesToUpload.push({file:pinFile, path:'nurses/'+phoneKey+'/pin_'+Date.now()+'.jpg', key:'pinUrl', hasKey:'hasPIN'});
-  if(idFrontFile) filesToUpload.push({file:idFrontFile, path:'nurses/'+phoneKey+'/nationalID_front_'+Date.now()+'.jpg', key:'nationalIDFrontUrl', hasKey:'hasIDFront'});
-  if(idBackFile) filesToUpload.push({file:idBackFile, path:'nurses/'+phoneKey+'/nationalID_back_'+Date.now()+'.jpg', key:'nationalIDBackUrl', hasKey:'hasIDBack'});
-  if(videoFile) filesToUpload.push({file:videoFile, path:'nurses/'+phoneKey+'/intro_video_'+Date.now()+'.mp4', key:'videoUrl', hasKey:'hasVideo'});
+  var filesToUpload=[];
+  if(photoFile) filesToUpload.push({file:photoFile, key:'photoUrl', hasKey:'hasPhoto', label:'Photo (Profile)'});
+  if(cvFile) filesToUpload.push({file:cvFile, key:'cvUrl', hasKey:'hasCV', label:'CV (Resume)'});
+  if(pinFile) filesToUpload.push({file:pinFile, key:'pinUrl', hasKey:'hasPIN', label:'PIN Photo'});
+  if(idFrontFile) filesToUpload.push({file:idFrontFile, key:'nationalIDFrontUrl', hasKey:'hasIDFront', label:'National ID Front (Ghana Card Front)'});
+  if(idBackFile) filesToUpload.push({file:idBackFile, key:'nationalIDBackUrl', hasKey:'hasIDBack', label:'National ID Back (Ghana Card Back)'});
+  if(videoFile) filesToUpload.push({file:videoFile, key:'videoUrl', hasKey:'hasVideo', label:'Video Introduction (1-Min)'});
   
   if(filesToUpload.length===0){
     alert('⚠️ Please upload at least Photo, National ID Front/Back');
@@ -1371,52 +1413,43 @@ function registerNurse(){
     return;
   }
   
-  var uploadProgress=0;
-  var storage=firebase.storage();
-  
-  function uploadNext(index){
-    if(index>=filesToUpload.length){
-      // All uploaded, save to Realtime DB
-      if(statusEl) statusEl.innerHTML='✅ All files uploaded! Saving to Realtime Database...';
+  async function uploadAllToCloudinary(){
+    for(var i=0;i<filesToUpload.length;i++){
+      var item=filesToUpload[i];
+      if(statusEl) statusEl.innerHTML='⏳ Uploading '+(i+1)+'/'+filesToUpload.length+' to Cloudinary: '+item.label+'... '+(item.file.size/1024/1024).toFixed(2)+'MB - Please wait';
+      var url = await uploadToCloudinary(item.file);
+      if(url){
+        w[item.key]=url;
+        w[item.hasKey]=true;
+        console.log('SAVE TO REALTIME DB:', item.key, url);
+        if(statusEl) statusEl.innerHTML='✅ Cloudinary Uploaded '+(i+1)+'/'+filesToUpload.length+': '+item.label+'<br>URL: '+url.substring(0,60)+'...';
+      } else {
+        if(statusEl) statusEl.innerHTML='❌ Failed to upload '+item.label+' - Check Cloudinary preset love-care-video is unsigned';
+        alert('Failed to upload '+item.label+' to Cloudinary. Check: Cloud Name whkvne85 and preset love-care-video must be UNSIGNED in Cloudinary settings.');
+        // Continue anyway
+      }
+      await new Promise(r=>setTimeout(r, 500));
+    }
+    
+    // All uploaded to Cloudinary, now save URLs to Firebase Realtime Database
+    if(statusEl) statusEl.innerHTML='✅ All files uploaded to Cloudinary! Saving links to Firebase Realtime Database...';
+    
+    if(db){
       db.ref('workers/'+phoneKey).set(w).then(()=>{
-        alert('✅ Registered Successfully with ALL Files Uploaded to Firebase Storage!\n\nName: '+name+'\nID: '+idType+' - '+idNumber+'\nFiles: '+filesToUpload.length+' uploaded\n\nPhoto: '+(w.photoUrl?'YES':'No')+'\nCV: '+(w.cvUrl?'YES':'No')+'\nPIN: '+(w.pinUrl?'YES':'No')+'\nGhana Card Front: '+(w.nationalIDFrontUrl?'YES':'No')+'\nGhana Card Back: '+(w.nationalIDBackUrl?'YES':'No')+'\nVideo: '+(w.videoUrl?'YES':'No')+'\n\nCEO can now see all in Firebase Console → Storage + Realtime Database → workers/'+phoneKey+'\n\nStatus: Pending Verification');
-        if(statusEl) statusEl.innerHTML='✅ Registered! '+filesToUpload.length+' files visible in Firebase Storage + Realtime DB';
+        alert('✅ Registered Successfully with Cloudinary!\n\nName: '+name+'\nID: '+idType+' - '+idNumber+'\nFiles: '+filesToUpload.length+' uploaded to Cloudinary (whkvne85)\n\nPhoto: '+(w.photoUrl?'YES - '+w.photoUrl.substring(0,50):'No')+'\nCV: '+(w.cvUrl?'YES':'No')+'\nPIN: '+(w.pinUrl?'YES':'No')+'\nGhana Card Front: '+(w.nationalIDFrontUrl?'YES':'No')+'\nGhana Card Back: '+(w.nationalIDBackUrl?'YES':'No')+'\nVideo: '+(w.videoUrl?'YES - Viewable':'No')+'\n\nCEO can now VIEW all from Cloudinary links in Realtime DB → workers/'+phoneKey+'\nLinks are: secure_url from Cloudinary\n\nStatus: Pending Verification');
+        if(statusEl) statusEl.innerHTML='✅ Registered! '+filesToUpload.length+' files uploaded to Cloudinary (whkvne85) and saved to Realtime DB. CEO can view video and all files via secure_url.';
         showPage('nurse-login');
       }).catch(e=>{
         alert('DB Save Error: '+e.message);
         if(statusEl) statusEl.innerHTML='❌ DB Error: '+e.message;
       });
-      return;
+    } else {
+      alert('Demo: Cloudinary uploaded '+filesToUpload.length+' files - URLs: '+JSON.stringify(w));
+      showPage('nurse-login');
     }
-    
-    var item=filesToUpload[index];
-    if(statusEl) statusEl.innerHTML='⏳ Uploading '+(index+1)+'/'+filesToUpload.length+': '+item.key+'... '+(item.file.size/1024/1024).toFixed(2)+'MB';
-    
-    var ref=storage.ref(item.path);
-    ref.put(item.file).then(snapshot=>{
-      return snapshot.ref.getDownloadURL();
-    }).then(url=>{
-      w[item.key]=url;
-      w[item.hasKey]=true;
-      uploadProgress++;
-      if(statusEl) statusEl.innerHTML='✅ Uploaded '+(index+1)+'/'+filesToUpload.length+': '+item.key;
-      uploadNext(index+1);
-    }).catch(e=>{
-      console.error('Upload error', item.key, e);
-      if(statusEl) statusEl.innerHTML='❌ Upload failed for '+item.key+': '+e.message+' - Check Storage Rules';
-      alert('Upload Failed for '+item.key+': '+e.message+'\n\nMake sure Storage Rules allow write: allow read, write: if true;\nFile: '+item.file.name);
-      // Continue with others
-      uploadNext(index+1);
-    });
   }
   
-  if(!db || !firebase.storage){
-    alert('⚠️ Firebase not connected - Demo mode - Files not uploaded to Storage');
-    db.ref('workers/'+phoneKey).set(w).then(()=>{ alert('Demo Registered'); showPage('nurse-login'); });
-    return;
-  }
-  
-  uploadNext(0);
+  uploadAllToCloudinary();
 }
 function loginNurse(){var fullPhone=getFullPhone('nurseLoginCode','nurseLoginPhone'); var pass=document.getElementById('nurseLoginPass').value.trim(); if(db){db.ref('workers/'+fullPhone.replace(/[^0-9]/g,'')).once('value').then(s=>{var d=s.val(); if(d&&d.password===pass){localStorage.setItem('nursePhone',fullPhone);localStorage.setItem('nurseName',d.name);document.getElementById('authStatus').innerText='✅ Logged in as NURSE - '+d.name;showPage('nurse-dashboard');}else if(d){document.getElementById('nurseLoginResult').innerText='Wrong password';}else{localStorage.setItem('nursePhone',fullPhone);localStorage.setItem('nurseName',fullPhone);showPage('nurse-dashboard');}});}else{localStorage.setItem('nursePhone',fullPhone);showPage('nurse-dashboard');}}
 function loginStaff(){var id=document.getElementById('staffLoginID').value.trim(); if(!id){alert('Enter ID');return;} localStorage.setItem('staffID',id);document.getElementById('authStatus').innerText='✅ Logged in as STAFF - '+id;showPage('staff-dashboard');}
