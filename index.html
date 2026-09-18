@@ -491,7 +491,8 @@ function setWorkTime(s,e){
 <div class="wageRow hidden"><span>Nurse:</span><span id="payNurseShare">0</span></div><div class="wageRow hidden"><span>CEO:</span><span id="payCeoShare">0</span></div>
 </div>
 <div style="display:flex;gap:6px">
-<button class="btnSubmit" style="background:linear-gradient(90deg,#0a0a0a,#16a34a);flex:1" onclick="payWithPaystack()" id="paystackBtn">💳 PAY NOW WITH PAYSTACK</button>
+<button class="btnSubmit" style="background:linear-gradient(90deg,#0a0a0a,#16a34a);flex:1" onclick="payWithPaystack()" id="paystackBtn" type="button">💳 PAY NOW WITH PAYSTACK</button>
+<button class="btnSubmit" style="background:#16a34a;flex:1" onclick="try{ if(typeof enforceMinRate==='function' && !enforceMinRate()) return; var s=typeof updatePaystackSplit==='function'?updatePaystackSplit():{total:0}; submitBookingAfterPayment(null,s); }catch(e){ alert(e.message); }" id="bookWithoutPayBtn" type="button">📋 BOOK WITHOUT PAY (Cash)</button>
 <button class="btnSmall" style="background:#f0fdf4;border:2px solid #16a34a;color:#16a34a" onclick="updatePaystackSplit()">🔄 Update</button>
 </div>
 <div id="paystackStatus" style="font-size:11px;margin-top:8px;padding:8px;border-radius:8px;display:none"></div>
@@ -631,7 +632,6 @@ This will be shown to clients when they select you on map with your video." styl
 <div class="loginBar" id="chatLoginBar">
   <button onclick="showPage('nurse-login')" style="border-color:#2563eb;color:#2563eb">👩‍⚕ Nurse Login</button>
   <button onclick="showPage('staff-login')" style="border-color:#7c3aed;color:#7c3aed">🧑‍💼 Staff Login</button>
-  <button onclick="showPage('ceo-login')" style="border-color:#111827;color:#111827">👑 CEO Login</button>
 </div>
 <div id="authStatus" style="font-size:10px;background:#fffbe6;padding:6px 10px;border-radius:8px;margin-bottom:8px;border:1px dashed #eab308">Not logged in - Login as Nurse/Staff/CEO to chat</div>
 <div id="globalChatBox" class="chatBox" style="height:55vh"></div><div class="chatInputRow"><select id="groupRole" style="width:100px"><option value="NURSE">NURSE</option><option value="STAFF">STAFF</option><option value="CEO">CEO</option></select><input id="globalChatInput" placeholder="Type..." onkeypress="if(event.key==='Enter')sendGlobalChat()"><button class="btnSmall" style="background:#16a34a;color:white;padding:12px 20px" onclick="sendGlobalChat()">Send</button></div>
@@ -640,7 +640,7 @@ This will be shown to clients when they select you on map with your video." styl
   <button id="deleteLastBtn" type="button" style="flex:1;padding:12px;border-radius:8px;border:2px solid #ef4444;background:#fee2e2;color:#991b1b;font-weight:800;font-size:12px;cursor:pointer;opacity:0.4" onclick="if(window.lastOwnMessageKey){window.deleteMessage(window.lastOwnMessageKey);}else{alert('No own message');}" disabled>🗑 No own msg</button>
 </div>
 <div style="text-align:center;font-size:9px;color:#666;margin-top:4px">⬇️ Edit/Delete your last message - buttons above (near Send) + inside bubble</div>
-<div style="display:flex;gap:6px;margin-top:8px"><button class="btnSmall" style="background:#111827;color:white;flex:1" onclick="showPage('home')">Home</button><button id="masterClearBtn" class="btnSmall hidden" style="background:#ef4444;color:white;flex:1" onclick="clearGroupChat()">🗑 MASTER CLEAR ALL</button></div></div></div>
+<div style="display:flex;gap:6px;margin-top:8px"><button class="btnSmall" style="background:#111827;color:white;flex:1" onclick="showPage('home')">Home</button></div></div></div>
 
 <div id="page-ceo-login" class="page"><div class="card" style="margin:20px;border:3px solid #111827"><h2>Secure Access</h2><input id="ceoLoginID" placeholder="Access ID"><input id="ceoLoginPass" type="password" placeholder="Access Key"><button class="btnSubmit" style="background:#111827" onclick="loginCEO()">Login</button><div id="ceoLoginResult" style="color:red;font-size:11px;margin-top:8px"></div></div></div>
 <div id="page-ceo-dashboard" class="page">
@@ -673,7 +673,7 @@ This will be shown to clients when they select you on map with your video." styl
 <div style="margin-top:12px;border-top:2px solid #eee;padding-top:8px"><label style="font-size:11px;font-weight:800">Edit Nurse Hourly Minimum Per Country (Legal) - Ghana now 6.04 GHS/hr (65% OFF +15%)</label><div id="minRateEditor" style="max-height:300px;overflow-y:auto;font-size:11px"></div><button class="btnSmall" style="background:#16a34a;color:white;margin-top:8px;width:100%;padding:12px" onclick="saveSettings()">💾 Save All Nurse Hourly Rates</button></div></div>
 <div id="ceo-tab-chat" class="ceo-tab card hidden" style="border:3px solid #ef4444"><h2>GROUP CHAT <span id="ceoOnlineCount" style="background:#22c55e;color:white;padding:2px 8px;border-radius:10px;font-size:9px">0 ONLINE</span></h2>
 <div class="loginBar"><button onclick="showPage('nurse-login')" style="border-color:#2563eb">👩‍⚕ Nurse Login</button><button onclick="showPage('staff-login')" style="border-color:#7c3aed">🧑‍💼 Staff Login</button><button onclick="showPage('ceo-login')" style="border-color:#111827">👑 CEO Login</button></div>
-<div id="ceoChatBox" class="chatBox"></div><div class="chatInputRow"><input id="ceoChatInput" placeholder="Broadcast..." onkeypress="if(event.key==='Enter')sendGroupMessage('CEO')"><button class="btnSmall" style="background:#111827;color:white;padding:12px 18px" onclick="sendGroupMessage('CEO')">Send</button></div><button class="btnSmall" style="background:#111827;color:white;width:100%;margin-top:6px" onclick="showPage('group-chat')">Open Full Chat</button><button id="ceoMasterClear" class="btnSmall hidden" style="background:#ef4444;color:white;width:100%;margin-top:6px" onclick="clearGroupChat()">🗑 MASTER CLEAR ALL</button></div>
+<div id="ceoChatBox" class="chatBox"></div><div class="chatInputRow"><input id="ceoChatInput" placeholder="Broadcast..." onkeypress="if(event.key==='Enter')sendGroupMessage('CEO')"><button class="btnSmall" style="background:#111827;color:white;padding:12px 18px" onclick="sendGroupMessage('CEO')">Send</button></div><button class="btnSmall" style="background:#111827;color:white;width:100%;margin-top:6px" onclick="showPage('group-chat')">Open Full Chat</button><!-- CEO Master Clear Removed per request --></div>
 </div>
 
 <div id="ratePopup" class="ratePopup hidden"><h3 style="color:#ef4444;margin:0 0 10px 0">⏰ No Nurse Picked Yet</h3><p id="ratePopupMsg" style="font-size:13px;color:#333"></p><p style="font-size:12px"><b id="ratePopupCurrent"></b></p><div style="display:flex;gap:8px;margin-top:12px"><button class="btnSubmit" style="background:#16a34a;flex:1" onclick="increaseRateAction()">Increase Rate</button><button class="btnSubmit" style="background:#6b7280;flex:1" onclick="closeRatePopup()">Later</button></div></div>
@@ -937,32 +937,118 @@ function updatePaystackSplit(){
   }catch(e){ return {total:0,nurse:0,ceo:0,curr:'GHS'}; }
 }
 function payWithPaystack(){
-  if(typeof enforceMinRate === 'function' && !enforceMinRate()) return;
-  var calc = calculateTotal();
-  var budget = parseFloat(document.getElementById('cBudget').value) || calc.totalMin;
-  var curr = document.getElementById('cCurrency').value;
-  var email = document.getElementById('cEmail').value.trim() || CEO_PAYSTACK_EMAIL;
-  var name = document.getElementById('cName').value.trim() || 'Client';
-  var split = updatePaystackSplit();
-  if(budget < calc.totalMin){ alert('BLOCKED: Below minimum '+calc.totalMin); return; }
-  var amountInGHS = budget;
-  if(curr !== 'GHS' && typeof convertCurrency === 'function'){ amountInGHS = convertCurrency(budget, curr, 'GHS'); }
-  var amountKobo = Math.round(amountInGHS * 100);
-  var statusEl = document.getElementById('paystackStatus');
-  if(statusEl){ statusEl.style.display='block'; statusEl.style.background='#fef3c7'; statusEl.innerHTML='⏳ Opening Paystack... '+amountInGHS.toFixed(2)+' GHS'; }
-  if(typeof PaystackPop === 'undefined'){ alert('Paystack not loaded. Booking without payment.'); submitBookingAfterPayment(null, split); return; }
-  var handler = PaystackPop.setup({
-    key: PAYSTACK_PUBLIC_KEY,
-    email: email,
-    amount: amountKobo,
-    currency: 'GHS',
-    ref: 'LC_'+Date.now()+'_'+Math.floor(Math.random()*1000000),
-    metadata: { custom_fields: [{display_name: "Client Name", variable_name: "client_name", value: name}, {display_name: "Nurse Share", variable_name: "nurse_share", value: split.nurse}, {display_name: "CEO Share", variable_name: "ceo_share", value: split.ceo}] },
-    callback: function(response){ if(statusEl){ statusEl.style.background='#dcfce7'; statusEl.innerHTML='✅ Payment Successful! Ref: '+response.reference; } submitBookingAfterPayment(response, split); },
-    onClose: function(){ if(statusEl){ statusEl.style.background='#fee2e2'; statusEl.innerHTML='❌ Payment closed. Try again.'; } }
-  });
-  handler.openIframe();
+  try{
+    console.log('Pay button clicked - starting');
+    // Don't block with enforceMinRate that disables button - check but show message
+    var calc = typeof calculateTotal==='function' ? calculateTotal() : {totalMin: 5.25, rateData:{amount:5.25}};
+    var budgetEl = document.getElementById('cBudget');
+    var budget = budgetEl ? parseFloat(budgetEl.value) : 0;
+    if(!budget || isNaN(budget) || budget<=0){
+      budget = calc.totalMin;
+      if(budgetEl) budgetEl.value = budget;
+    }
+    var currEl = document.getElementById('cCurrency');
+    var curr = currEl ? currEl.value : 'GHS';
+    
+    // Check minimum but don't silently return - show popup
+    if(typeof enforceMinRate==='function'){
+      var rateCheck = validateBudgetLive ? validateBudgetLive() : {valid:true, minRequired: calc.totalMin};
+      if(!rateCheck.valid){
+        // Show legal wage popup but still allow pay if user confirms?
+        var minReq = rateCheck.minRequired || calc.totalMin;
+        if(budget < minReq){
+          alert('⚠️ Below Legal Minimum\n\nGhana Legal Minimum PROMO: 5.25 GHS/hr\nYour selection minimum: '+minReq+' '+curr+'\nYour offer: '+budget+' '+curr+'\n\nPlease increase offer to at least '+minReq+' before paying.');
+          if(document.getElementById('legalWagePopup')) document.getElementById('legalWagePopup').classList.remove('hidden');
+          return;
+        }
+      }
+    }
+    
+    var emailEl = document.getElementById('cEmail');
+    var email = (emailEl && emailEl.value.trim()) ? emailEl.value.trim() : 'client@lovecare.com';
+    var nameEl = document.getElementById('cName');
+    var name = (nameEl && nameEl.value.trim()) ? nameEl.value.trim() : 'Client';
+    var phoneEl = document.getElementById('cPhone');
+    var phone = phoneEl ? phoneEl.value.trim() : '';
+    var serviceEl = document.getElementById('cService');
+    var service = serviceEl ? serviceEl.value : '';
+    
+    if(!nameEl || !nameEl.value.trim()){ alert('Enter your Full Name first'); if(nameEl) nameEl.focus(); return; }
+    if(!phoneEl || !phoneEl.value.trim()){ alert('Enter your Phone first'); if(phoneEl) phoneEl.focus(); return; }
+    if(!serviceEl || !serviceEl.value){ alert('Select Service first'); return; }
+    
+    var split = typeof updatePaystackSplit==='function' ? updatePaystackSplit() : {total: budget, nurse: (budget*0.9).toFixed(2), ceo: (budget*0.1).toFixed(2)};
+    
+    var amountInGHS = budget;
+    if(curr !== 'GHS' && typeof convertCurrency === 'function'){
+      try{ amountInGHS = convertCurrency(budget, curr, 'GHS'); }catch(e){ amountInGHS = budget; }
+    }
+    // Paystack minimum is 100 kobo = 1 GHS
+    if(amountInGHS < 1) amountInGHS = 1;
+    var amountKobo = Math.round(amountInGHS * 100);
+    
+    var statusEl = document.getElementById('paystackStatus');
+    if(statusEl){ 
+      statusEl.classList.remove('hidden');
+      statusEl.style.display='block'; 
+      statusEl.style.background='#fef3c7'; 
+      statusEl.innerHTML='⏳ Opening Paystack... '+amountInGHS.toFixed(2)+' GHS ('+budget+' '+curr+')'; 
+    }
+    
+    // Check Paystack loaded
+    if(typeof PaystackPop === 'undefined'){
+      console.log('PaystackPop not loaded, trying to load script');
+      var existingScript = document.querySelector('script[src*="paystack"]');
+      if(!existingScript){
+        var s=document.createElement('script');
+        s.src='https://js.paystack.co/v1/inline.js';
+        s.onload=function(){ 
+          alert('Paystack loaded, please click PAY again');
+          if(statusEl) statusEl.innerHTML='✅ Paystack loaded - Click PAY again';
+        };
+        document.head.appendChild(s);
+      }
+      // Fallback: Book without payment but warn
+      if(confirm('Paystack not loaded yet (internet issue).\n\nDo you want to BOOK NOW without Paystack payment?\nYou can pay cash later.\n\nClick OK to Book without payment, Cancel to try again later.')){
+        submitBookingAfterPayment(null, split);
+      }
+      return;
+    }
+    
+    // Ensure PAYSTACK key exists
+    var payKey = typeof PAYSTACK_PUBLIC_KEY !== 'undefined' ? PAYSTACK_PUBLIC_KEY : 'pk_live_f17ae09bf855010825cbfccdda8e724553ab747b';
+    console.log('Paystack key', payKey.substring(0,10)+'...', 'amount kobo', amountKobo, 'email', email);
+    
+    var handler = PaystackPop.setup({
+      key: payKey,
+      email: email,
+      amount: amountKobo,
+      currency: 'GHS',
+      ref: 'LC_'+Date.now()+'_'+Math.floor(Math.random()*1000000),
+      metadata: { custom_fields: [{display_name: "Client Name", variable_name: "client_name", value: name}, {display_name: "Phone", variable_name: "phone", value: phone}, {display_name: "Service", variable_name: "service", value: service}, {display_name: "Nurse Share 90%", variable_name: "nurse_share", value: split.nurse}, {display_name: "CEO Share 10%", variable_name: "ceo_share", value: split.ceo}] },
+      callback: function(response){ 
+        console.log('Paystack success', response);
+        if(statusEl){ statusEl.style.background='#dcfce7'; statusEl.innerHTML='✅ Payment Successful! Ref: '+response.reference+'<br>Booking your nurse...'; } 
+        submitBookingAfterPayment(response, split); 
+      },
+      onClose: function(){ 
+        console.log('Paystack closed');
+        if(statusEl){ statusEl.style.background='#fee2e2'; statusEl.innerHTML='❌ Payment window closed. Click PAY again to retry or Book without payment.<br><button onclick="submitBookingAfterPayment(null, updatePaystackSplit())" style="background:#16a34a;color:white;border:none;padding:8px 12px;border-radius:8px;margin-top:6px">📋 Book Without Payment (Cash)</button>'; } 
+      }
+    });
+    handler.openIframe();
+  }catch(err){
+    console.error('payWithPaystack error', err);
+    alert('Pay error: '+err.message+'\n\nTrying to book without payment as fallback');
+    try{
+      var splitFallback = typeof updatePaystackSplit==='function' ? updatePaystackSplit() : {total: 0, nurse: 0, ceo: 0};
+      submitBookingAfterPayment(null, splitFallback);
+    }catch(e2){
+      alert('Booking failed: '+e2.message);
+    }
+  }
 }
+
 function submitBookingAfterPayment(paystackResponse, split){
   var name=document.getElementById('cName').value.trim();
   var phone=document.getElementById('cPhone').value.trim();
@@ -1141,7 +1227,7 @@ if(id==='nurse-dashboard') setTimeout(()=>{loadNurseDashboard();initGroupChat();
 if(id==='staff-dashboard') setTimeout(()=>{loadStaffData();initGroupChat();},400);
 if(id==='group-chat') setTimeout(()=>{initGroupChat();autoSetRole();toggleMasterClear();},400);
 }
-function toggleMasterClear(){var isCEO=localStorage.getItem('isCEOLogged')==='true';var btns=document.querySelectorAll('#masterClearBtn,#ceoMasterClear');btns.forEach(function(b){if(!b)return;if(isCEO){b.classList.remove('hidden');b.style.display='block';b.style.visibility='visible';b.innerHTML='🗑 SECRET MASTER DELETE ALL (CEO ONLY)';}else{b.classList.add('hidden');b.style.display='none';b.style.visibility='hidden';}});}
+function toggleMasterClear(){/* CEO button removed from group chat per user request - no master clear in group chat */ var btns=document.querySelectorAll('#masterClearBtn,#ceoMasterClear'); btns.forEach(function(b){if(b){b.classList.add('hidden');b.style.display='none';}});}
 // FINAL LOGO - MAIN 5x STAFF, STAFF 7x CEO, LONG-PRESS CEO - NO BADGE
 (function(){
   var logo=document.getElementById('logoTapArea');
@@ -5552,6 +5638,65 @@ function renderNursesEnhanced(list){
 
 // Override original renderNurses to use enhanced version
 window.renderNurses = renderNursesEnhanced;
+</script>
+
+
+<script>
+// Extra Pay Button Fix - Ensure button works and doesn't drop to footer
+document.addEventListener('DOMContentLoaded', function(){
+  ['paystackBtn','bookWithoutPayBtn'].forEach(function(id){
+    var btn=document.getElementById(id);
+    if(btn){
+      btn.type='button';
+      btn.addEventListener('click', function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      });
+    }
+  });
+  // Ensure paystack script loaded
+  function ensurePaystack(){
+    if(typeof PaystackPop==='undefined'){
+      var s=document.createElement('script');
+      s.src='https://js.paystack.co/v1/inline.js';
+      s.async=true;
+      document.head.appendChild(s);
+      console.log('Paystack script injected');
+    }
+  }
+  ensurePaystack();
+  setTimeout(ensurePaystack, 2000);
+});
+
+// Fix submitBookingAfterPayment to show success even without paystack
+var _origSubmitAfter = window.submitBookingAfterPayment;
+window.submitBookingAfterPayment = function(paystackResponse, split){
+  try{
+    console.log('submitBookingAfterPayment called', paystackResponse, split);
+    if(typeof _origSubmitAfter==='function'){
+      return _origSubmitAfter(paystackResponse, split);
+    }
+    // Fallback if original not found
+    var name=document.getElementById('cName')?.value.trim()||'Client';
+    var phone=document.getElementById('cPhone')?.value.trim()||'';
+    var fullPhone=typeof getFullPhone==='function'?getFullPhone('cPhoneCode','cPhone'):phone;
+    var service=document.getElementById('cService')?.value||'General';
+    var calc=typeof calculateTotal==='function'?calculateTotal():{totalMin:5.25, displayDuration:'', totalHours:1, rateData:{amount:5.25,currency:'GHS'}, unit:'hourly'};
+    var amount=parseFloat(document.getElementById('cBudget')?.value||calc.totalMin);
+    var cur=document.getElementById('cCurrency')?.value||'GHS';
+    var id=Date.now();
+    var b={id:id,name:name,phone:fullPhone,service:service,location:document.getElementById('cLocation')?.value||'',amount:amount,currency:cur,status:'pending_assignment',time:new Date().toLocaleString(),timestamp:Date.now(),lat:typeof clientLat!=='undefined'?clientLat:null,lng:typeof clientLng!=='undefined'?clientLng:null,selectedNurse:typeof selectedNurseId!=='undefined'?selectedNurseId:null,email:document.getElementById('cEmail')?.value.trim()||'',paymentMethod: paystackResponse?'paystack':'cash', paystackRef: paystackResponse?paystackResponse.reference:null, days:calc.displayDuration, totalHours:calc.totalHours};
+    if(typeof db!=='undefined' && db){
+      db.ref('bookings/'+id).set(b).then(()=>{ alert(paystackResponse?'✅ PAID & Booked! Ref: '+paystackResponse.reference : '✅ Booked! (Cash - Pay on arrival)'); if(typeof loadMyBookings==='function') loadMyBookings(); });
+    } else {
+      alert('Booked locally (no Firebase)');
+    }
+  }catch(e){
+    console.error('submitBookingAfterPayment fallback error', e);
+    alert('Booking error: '+e.message);
+  }
+};
 </script>
 
 </body>
