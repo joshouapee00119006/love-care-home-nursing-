@@ -260,19 +260,16 @@ async function uploadFileToCloudinaryWithStatus(file, label, statusEl){
 </script>
 
 
+
+
+
 <style>
-/* WITHDRAWAL BUTTON HIDDEN FOR CLIENTS - ONLY NURSE/STAFF/CEO CAN SEE */
-#nav-withdraw {
-  display: none !important;
-  visibility: hidden !important;
+/* Withdrawal button - only exists for Nurse/Staff/CEO, never for clients */
+.bottomNav button {
+  background:none;border:none;font-size:9px;color:#6b7280;width:20%;display:flex;flex-direction:column;align-items:center;gap:3px;font-weight:700;padding:5px
 }
-#nav-withdraw.show-withdraw {
-  display: flex !important;
-  visibility: visible !important;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
+.bottomNav button.active{color:#16a34a;background:#f0fdf4;border-radius:12px}
+#nav-withdraw { background:#dcfce7 !important; border:2px solid #16a34a !important; }
 </style>
 
 </head>
@@ -780,7 +777,6 @@ This will be shown to clients when they select you on map with your video." styl
 <button id="nav-nurse" onclick="showPage('nurse-public')"><span>👩⚕</span><span>Join</span></button>
 <button id="nav-book" onclick="showPage('booking-public')"><span>💡</span><span>Help</span></button>
 <button id="nav-login" onclick="showPage('nurse-login')"><span>🔑</span><span>Login</span></button>
-<button id="nav-withdraw" onclick="showPage('nurse-withdrawal')" style="background:#dcfce7;border:2px solid #16a34a" class="hidden"><span>💸</span><span>Withdraw</span></button>
 <button id="nav-chat" onclick="showPage('group-chat')" style="background:#fef2f2;border:2px solid #ef4444"><span>💬</span><span>Group</span></button>
 </div>
 
@@ -5679,6 +5675,97 @@ window.renderNurses = renderNursesEnhanced;
   }, 1000);
 
   console.log('✅ Withdrawal hidden from clients - fixed');
+})();
+</script>
+
+
+<script>
+// === WITHDRAWAL BUTTON ONLY FOR NURSE/STAFF/CEO - COMPLETELY REMOVED FOR CLIENTS ===
+(function(){
+  function ensureWithdrawalButton(){
+    try{
+      var bottomNav = document.querySelector('.bottomNav');
+      if(!bottomNav) return;
+      
+      var isNurse = false, isStaff = false, isCEO = false;
+      try{ isNurse = !!localStorage.getItem('nursePhone'); }catch(e){}
+      try{ isStaff = !!localStorage.getItem('staffID'); }catch(e){}
+      try{ isCEO = localStorage.getItem('isCEOLogged')==='true'; }catch(e){}
+      var isPrivileged = isNurse || isStaff || isCEO;
+      
+      var existing = document.getElementById('nav-withdraw');
+      
+      if(isPrivileged){
+        // Create button if not exists
+        if(!existing){
+          var btn = document.createElement('button');
+          btn.id = 'nav-withdraw';
+          btn.onclick = function(){ showPage('nurse-withdrawal'); };
+          btn.style.cssText = 'background:#dcfce7;border:2px solid #16a34a;display:flex;flex-direction:column;align-items:center;justify-content:center;';
+          btn.innerHTML = '<span>💸</span><span>Withdraw</span>';
+          // Insert before Group button
+          var chatBtn = document.getElementById('nav-chat');
+          if(chatBtn){
+            bottomNav.insertBefore(btn, chatBtn);
+          } else {
+            bottomNav.appendChild(btn);
+          }
+          console.log('✅ Withdraw button ADDED for', isNurse?'Nurse': isStaff?'Staff':'CEO');
+        }
+      } else {
+        // Remove button for clients - ensure client never sees it
+        if(existing){
+          existing.remove();
+          console.log('❌ Withdraw button REMOVED for client');
+        }
+      }
+    }catch(e){ console.error('Withdraw dynamic error', e); }
+  }
+
+  // Run immediately
+  ensureWithdrawalButton();
+  
+  document.addEventListener('DOMContentLoaded', function(){
+    ensureWithdrawalButton();
+    setTimeout(ensureWithdrawalButton, 100);
+    setTimeout(ensureWithdrawalButton, 500);
+    setTimeout(ensureWithdrawalButton, 1000);
+    setTimeout(ensureWithdrawalButton, 2000);
+  });
+  
+  setInterval(ensureWithdrawalButton, 1500);
+
+  // Hook showPage
+  var checkShowPage = setInterval(function(){
+    if(typeof window.showPage === 'function'){
+      clearInterval(checkShowPage);
+      var _orig = window.showPage;
+      window.showPage = function(page){
+        try{ _orig(page); }catch(e){}
+        setTimeout(ensureWithdrawalButton, 100);
+      };
+    }
+  }, 300);
+
+  // Hook logins
+  ['loginNurse','loginStaff','loginCEO','logoutNurse','logoutStaff','logoutCEO'].forEach(function(name){
+    var check = setInterval(function(){
+      if(typeof window[name]==='function'){
+        clearInterval(check);
+        var orig = window[name];
+        window[name] = function(){
+          var res;
+          try{ res = orig.apply(this, arguments); }catch(e){}
+          setTimeout(ensureWithdrawalButton, 300);
+          setTimeout(ensureWithdrawalButton, 1000);
+          return res;
+        };
+      }
+    }, 300);
+  });
+
+  window.addEventListener('storage', ensureWithdrawalButton);
+  console.log('✅ Withdrawal - only Nurse/Staff/CEO, never for clients - FIXED V69');
 })();
 </script>
 
