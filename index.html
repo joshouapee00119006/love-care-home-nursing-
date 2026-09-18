@@ -100,7 +100,18 @@ table{width:100%;border-collapse:collapse;font-size:11px;margin-top:8px} th,td{b
 .helpA p{font-size:11px;color:#374151;line-height:1.6;margin:0}
 .loginBar{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
 .loginBar button{padding:8px 12px;border-radius:20px;font-size:11px;font-weight:800;border:2px solid #16a34a;background:white;color:#16a34a;cursor:pointer}
-@keyframes shake{0%,100%{transform:translate(-50%,-50%)} 25%{transform:translate(-48%,-50%)} 75%{transform:translate(-52%,-50%)}} </style>
+@keyframes shake{0%,100%{transform:translate(-50%,-50%)} 25%{transform:translate(-48%,-50%)} 75%{transform:translate(-52%,-50%)}} 
+<style>
+#fileViewerModal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.92);z-index:999999;display:flex;align-items:center;justify-content:center;padding:10px}
+#fileViewerModal .fvBox{background:white;border-radius:16px;max-width:95%;max-height:95%;width:800px;overflow:hidden;display:flex;flex-direction:column;border:3px solid #16a34a}
+#fileViewerModal .fvHeader{background:#111827;color:white;padding:12px 16px;display:flex;justify-content:space-between;align-items:center}
+#fileViewerModal .fvBody{flex:1;overflow:auto;padding:0;background:#000;display:flex;align-items:center;justify-content:center}
+#fileViewerModal .fvBody img{max-width:100%;max-height:80vh;object-fit:contain}
+#fileViewerModal .fvBody iframe{width:100%;height:80vh;border:none;background:white}
+#fileViewerModal .fvBody video{width:100%;max-height:80vh;background:#000}
+#fileViewerModal .fvFooter{padding:10px;background:#f0fdf4;display:flex;gap:8px;flex-wrap:wrap}
+</style>
+
 
 <style>
 /* MOVING BACKGROUND - Nurse working on patients at home moving right to left */
@@ -1306,13 +1317,30 @@ function clearDirection(){
   fitMapWide();
 }
 function openNurseProfile(id){
-  var nurse = (nearbyNursesSorted.length>0?nearbyNursesSorted:getAllNursesSource()).find(n=> (n.phone==nurseId || n.id==id));
-  // For now just select
-  selectNurseCard(id);
-  alert('Nurse profile: '+ (nurse? nurse.name : id) + '\nTap Select to book');
+  try{
+    var nurseId = id;
+    var source = (window.nearbyNursesSorted && window.nearbyNursesSorted.length>0) ? window.nearbyNursesSorted : (typeof getAllNursesSource==='function'? getAllNursesSource() : window.allWorkers||[]);
+    var nurse = source.find(n=> (n.phone==nurseId || n.id==id || n.phone==id));
+    selectNurseCard(id);
+    if(nurse){
+      var photo = nurse.photoUrl || './logo.png';
+      var hasVideo = nurse.videoUrl ? '🎥 Has Video - Click WATCH' : 'No video';
+      if(confirm('Nurse: '+ (nurse.name||id) +'\n'+ (nurse.specialty||'') +'\n'+ hasVideo +'\n\nTap OK to view photo, Cancel to select for booking')){
+        if(nurse.photoUrl) openFileViewer(nurse.photoUrl,'image','Nurse - '+nurse.name);
+      }
+    } else {
+      console.log('Nurse not found for profile', id);
+    }
+  }catch(e){
+    console.error('openNurseProfile error', e);
+    selectNurseCard(id);
+  }
 }
 
 function renderNearbyList(){
+  try{
+  window.nearbyNursesSorted = window.nearbyNursesSorted || [];
+
   var l=document.getElementById('loveCareLiveList'); 
   if(!nearbyNursesSorted || nearbyNursesSorted.length===0){
     l.innerHTML='<div style="padding:12px;background:#fef3c7;border-radius:10px;text-align:center">No nurses within range - Try expanding search</div>';
@@ -1339,7 +1367,13 @@ function renderNearbyList(){
     </div>`;
   }); 
   l.innerHTML=h;
+  }catch(e){
+    console.error('renderNearbyList error', e);
+    var l=document.getElementById('loveCareLiveList');
+    if(l) l.innerHTML='<div style="color:red;padding:10px">Error loading nurses: '+e.message+'</div>';
+  }
 }
+
 
 window.openNurseVideoModal = function(nurseId){
   var nurse = (window.nearbyNursesSorted||[]).find(n=> (n.phone==nurseId || n.id==nurseId)) || (window.allWorkers||[]).find(n=> (n.phone==nurseId || n.id==nurseId));
@@ -2236,7 +2270,13 @@ window.renderNearbyList = function(){
     </div>`;
   });
   l.innerHTML=h;
-};
+  }catch(e){
+    console.error('renderNearbyList error', e);
+    var l=document.getElementById('loveCareLiveList');
+    if(l) l.innerHTML='<div style="color:red;padding:10px">Error loading nurses: '+e.message+'</div>';
+  }
+}
+;
 
 window.selectNurseCard = function(id){
   console.log('selectNurseCard', id);
@@ -5358,6 +5398,75 @@ window.loadNurseDashboard = (function(orig){
 </script>
 
 
+
+<script>
+// === UNIVERSAL FILE VIEWER - FIXES CEO VIEW AND PICTURE CLICK CRASH ===
+window.openFileViewer = function(url, type, title){
+  try{
+    if(!url){ alert('No file URL'); return; }
+    // Remove existing
+    var existing=document.getElementById('fileViewerModal');
+    if(existing) existing.remove();
+    var modal=document.createElement('div');
+    modal.id='fileViewerModal';
+    var safeTitle = (title||'File').replace(/</g,'&lt;');
+    var content='';
+    var lower = url.toLowerCase();
+    var isImage = type==='image' || lower.match(/\.(jpg|jpeg|png|gif|webp)$/);
+    var isVideo = type==='video' || lower.match(/\.(mp4|mov|webm|avi)$/) || lower.includes('video');
+    var isPdf = type==='pdf' || lower.match(/\.pdf$/);
+    
+    if(isImage){
+      content=`<img src="${url}" onerror="this.onerror=null;this.src='./logo.png';alert('Image failed to load, trying new tab'); window.open('${url}','_blank')" style="max-width:100%;max-height:80vh">`;
+    } else if(isVideo){
+      content=`<video controls autoplay playsinline style="width:100%;max-height:80vh;background:#000" src="${url}" onerror="alert('Video failed to load')"></video>`;
+    } else if(isPdf){
+      content=`<iframe src="${url}" style="width:100%;height:80vh;background:white"></iframe>`;
+    } else {
+      // Try to detect: if contains image in cloudinary but no extension, try image first then iframe
+      if(lower.includes('image')){
+        content=`<img src="${url}" onerror="this.parentElement.innerHTML='<iframe src=\'${url}\' style=\'width:100%;height:80vh;background:white\'></iframe>'" style="max-width:100%;max-height:80vh">`;
+      } else if(lower.includes('video')){
+        content=`<video controls autoplay style="width:100%;max-height:80vh;background:#000" src="${url}"></video>`;
+      } else {
+        content=`<iframe src="${url}" style="width:100%;height:80vh;background:white" onerror="this.src='https://docs.google.com/viewer?url='+encodeURIComponent('${url}')+'&embedded=true'"></iframe>`;
+      }
+    }
+    
+    modal.innerHTML=`
+      <div class="fvBox">
+        <div class="fvHeader">
+          <b>📁 ${safeTitle}</b>
+          <button onclick="document.getElementById('fileViewerModal').remove()" style="background:#ef4444;color:white;border:none;width:32px;height:32px;border-radius:50%;font-weight:800;cursor:pointer">X</button>
+        </div>
+        <div class="fvBody">${content}</div>
+        <div class="fvFooter">
+          <a href="${url}" target="_blank" style="flex:1;background:#16a34a;color:white;padding:10px;text-align:center;border-radius:8px;text-decoration:none;font-weight:800">🌐 Open in New Tab</a>
+          <a href="${url}" download style="flex:1;background:#2563eb;color:white;padding:10px;text-align:center;border-radius:8px;text-decoration:none;font-weight:800">⬇️ Download</a>
+          <button onclick="document.getElementById('fileViewerModal').remove()" style="flex:1;background:#e5e7eb;border:none;padding:10px;border-radius:8px;font-weight:800">Close</button>
+        </div>
+      </div>`;
+    document.body.appendChild(modal);
+    modal.onclick=function(e){ if(e.target===modal) modal.remove(); };
+    console.log('Viewer opened:', type, url);
+  }catch(err){
+    console.error('Viewer error', err);
+    alert('Viewer error: '+err.message+'\nOpening in new tab');
+    window.open(url,'_blank');
+  }
+};
+
+// Safe wrapper for old photo clicks that crashed system
+window.safeOpenPhoto = function(url, nurseName){
+  if(!url){ alert('No photo for '+(nurseName||'nurse')); return; }
+  openFileViewer(url,'image', '📸 Photo - '+(nurseName||'Nurse'));
+};
+
+// Fix for nearby list - ensure global
+window.nearbyNursesSorted = window.nearbyNursesSorted || [];
+window.allWorkers = window.allWorkers || [];
+</script>
+
 <script>
 var _origRenderNurses = window.renderNurses;
 window.renderNurses = function(list){
@@ -5378,33 +5487,66 @@ window.renderNurses = function(list){
 function renderNursesEnhanced(list){
   var c=document.getElementById('ceoNursesList');
   if(!c){ return; }
-  if(!list || list.length===0){ c.innerHTML='<div style="padding:20px;text-align:center">No nurses</div>'; return; }
-  var h='<table><tr><th>Photo</th><th>Name</th><th>Phone</th><th>ID</th><th>Files (Storage)</th><th>Status</th><th>Action</th></tr>';
+  if(!list || list.length===0){ c.innerHTML='<div style="padding:20px;text-align:center">No nurses found</div>'; return; }
+  // Make global for video modal
+  window.allWorkers = list;
+  var h='<div style="overflow-x:auto"><table style="min-width:800px"><tr><th>Photo</th><th>Name</th><th>Phone</th><th>ID</th><th>Files (Cloudinary) - CEO Can View All</th><th>Status</th><th>Action</th></tr>';
   list.forEach(function(n){
-    var photo=n.photoUrl? `<a href="${n.photoUrl}" target="_blank"><img src="${n.photoUrl}" style="width:50px;height:50px;border-radius:50%;object-fit:cover;border:2px solid #16a34a"></a>` : (n.hasPhoto?'✅ Has Photo (no URL - old version)':'❌ No Photo');
-    var files='';
-    if(n.photoUrl) files+=`<a href="${n.photoUrl}" target="_blank" style="background:#16a34a;color:white;padding:2px 6px;border-radius:6px;font-size:9px;margin:2px;display:inline-block">📸 Photo</a> `;
-    if(n.cvUrl) files+=`<a href="${n.cvUrl}" target="_blank" style="background:#2563eb;color:white;padding:2px 6px;border-radius:6px;font-size:9px;margin:2px;display:inline-block">📄 CV</a> `;
-    if(n.pinUrl) files+=`<a href="${n.pinUrl}" target="_blank" style="background:#7c3aed;color:white;padding:2px 6px;border-radius:6px;font-size:9px;margin:2px;display:inline-block">🪪 PIN</a> `;
-    if(n.nationalIDFrontUrl) files+=`<a href="${n.nationalIDFrontUrl}" target="_blank" style="background:#f59e0b;color:white;padding:2px 6px;border-radius:6px;font-size:9px;margin:2px;display:inline-block">🆔 ID Front</a> `;
-    if(n.nationalIDBackUrl) files+=`<a href="${n.nationalIDBackUrl}" target="_blank" style="background:#f59e0b;color:white;padding:2px 6px;border-radius:6px;font-size:9px;margin:2px;display:inline-block">🆔 ID Back</a> `;
-    if(n.videoUrl) files+=`<a href="${n.videoUrl}" target="_blank" style="background:#ef4444;color:white;padding:2px 6px;border-radius:6px;font-size:9px;margin:2px;display:inline-block">🎥 Video</a> `;
-    if(!files) files='<small style="font-size:9px;color:#999">No Storage URLs - Old version or not uploaded<br>hasPhoto:'+n.hasPhoto+' hasCV:'+n.hasCV+'</small>';
-    
-    var idInfo=(n.nationalIDType||'')+'<br><small>'+(n.nationalIDNumber||'')+'</small>';
-    
-    h+=`<tr>
-      <td>${photo}</td>
-      <td>${n.name||''}<br><small>${n.specialty||''}</small></td>
-      <td>${n.phone||''}</td>
-      <td style="font-size:10px">${idInfo}</td>
-      <td style="max-width:200px">${files}</td>
-      <td><span style="background:${n.status==='pending_verification'?'#eab308':'#16a34a'};color:white;padding:4px 8px;border-radius:20px;font-size:9px">${n.status||''}</span><br><small>${n.verificationStatus||''}</small></td>
-      <td><button onclick="if(confirm('Verify nurse?')) db.ref('workers/'+'${n.phone}'.replace(/[^0-9]/g,'')).update({status:'verified', verificationStatus:'verified', onDuty:true}).then(()=>loadCeoData())" style="background:#16a34a;color:white;border:none;padding:6px 10px;border-radius:8px;font-size:10px">✅ Verify</button><br><button onclick="if(confirm('Delete nurse?')) db.ref('workers/'+'${n.phone}'.replace(/[^0-9]/g,'')).remove().then(()=>loadCeoData())" style="background:#ef4444;color:white;border:none;padding:4px 8px;border-radius:8px;font-size:9px;margin-top:4px">Delete</button></td>
-    </tr>`;
+    try{
+      var safeName = (n.name||'Nurse').replace(/'/g,"\'").replace(/"/g,'');
+      var photoUrl = n.photoUrl || '';
+      var photoHtml = '';
+      if(photoUrl){
+        var escUrl = photoUrl.replace(/'/g,"\'").replace(/"/g,'&quot;');
+        photoHtml = `<img src="${photoUrl}" onclick="openFileViewer('${escUrl}','image','📸 Photo - ${safeName}')" style="width:60px;height:60px;border-radius:50%;object-fit:cover;border:3px solid #16a34a;cursor:pointer" onerror="this.src='./logo.png'">`;
+      } else if(n.hasPhoto){
+        photoHtml = '<div style="width:60px;height:60px;border-radius:50%;background:#fef3c7;display:flex;align-items:center;justify-content:center;font-size:10px">📸 Old<br>No URL</div>';
+      } else {
+        photoHtml = '<div style="width:60px;height:60px;border-radius:50%;background:#fee2e2;display:flex;align-items:center;justify-content:center;font-size:18px">❌</div>';
+      }
+      
+      var files='';
+      function addBtn(url, label, color, type){
+        if(!url) return '';
+        var esc = url.replace(/'/g,"\'").replace(/"/g,'&quot;');
+        return `<button onclick="openFileViewer('${esc}','${type}','${label} - ${safeName}')" style="background:${color};color:white;padding:5px 8px;border-radius:6px;font-size:9px;margin:2px;display:inline-block;border:none;cursor:pointer;font-weight:800">${label}</button> `;
+      }
+      
+      files+= addBtn(n.photoUrl, '📸 Photo', '#16a34a', 'image');
+      files+= addBtn(n.cvUrl, '📄 CV', '#2563eb', 'pdf');
+      files+= addBtn(n.pinUrl, '🪪 PIN', '#7c3aed', 'image');
+      files+= addBtn(n.nationalIDFrontUrl, '🆔 ID Front', '#f59e0b', 'image');
+      files+= addBtn(n.nationalIDBackUrl, '🆔 ID Back', '#f59e0b', 'image');
+      files+= addBtn(n.videoUrl, '🎥 Video', '#ef4444', 'video');
+      
+      if(!files){
+        var details = [];
+        if(n.hasPhoto) details.push('hasPhoto');
+        if(n.hasCV) details.push('hasCV');
+        if(n.hasPIN) details.push('hasPIN');
+        files='<small style="font-size:9px;color:#ef4444">❌ No Cloudinary URLs - Old version<br>Flags: '+details.join(', ')+'<br>Ask nurse to re-register with new Cloudinary upload (whkvne85)</small>';
+      } else {
+        files+='<br><small style="font-size:8px;color:#16a34a">✅ Click any button to VIEW - No crash, uses safe viewer</small>';
+      }
+      
+      var idInfo=(n.nationalIDType||'')+'<br><small>'+(n.nationalIDNumber||'')+'</small>';
+      
+      h+=`<tr>
+        <td style="text-align:center">${photoHtml}<br><small style="font-size:8px">Tap to view</small></td>
+        <td>${n.name||''}<br><small style="color:#6b7280">${n.specialty||''}</small><br><small style="font-size:9px">${n.email||''}</small></td>
+        <td style="font-size:11px">${n.phone||''}</td>
+        <td style="font-size:10px">${idInfo}</td>
+        <td style="max-width:320px">${files}</td>
+        <td><span style="background:${n.status==='pending_verification'?'#eab308':'#16a34a'};color:white;padding:4px 8px;border-radius:20px;font-size:9px">${n.status||''}</span><br><small>${n.verificationStatus||''}</small></td>
+        <td><button onclick="if(confirm('Verify ${safeName}?')){ try{ db.ref('workers/'+'${n.phone}'.replace(/[^0-9]/g,'')).update({status:'verified', verificationStatus:'verified', onDuty:true}).then(()=>{ alert('Verified!'); loadCeoData(); }); }catch(e){ alert('Error:'+e.message); } }" style="background:#16a34a;color:white;border:none;padding:6px 10px;border-radius:8px;font-size:10px;cursor:pointer">✅ Verify</button><br><button onclick="if(confirm('Delete ${safeName}?')){ try{ db.ref('workers/'+'${n.phone}'.replace(/[^0-9]/g,'')).remove().then(()=>loadCeoData()); }catch(e){ alert(e.message); } }" style="background:#ef4444;color:white;border:none;padding:4px 8px;border-radius:8px;font-size:9px;margin-top:4px;cursor:pointer">🗑 Delete</button></td>
+      </tr>`;
+    }catch(e){
+      console.error('Render nurse error', n, e);
+      h+=`<tr><td colspan="7" style="color:red">Error rendering nurse ${n.phone}: ${e.message}</td></tr>`;
+    }
   });
-  h+='</table>';
-  h+='<div style="background:#f0fdf4;border:2px solid #16a34a;border-radius:10px;padding:10px;margin-top:10px;font-size:10px"><b>📁 Firebase Storage Structure:</b><br>Storage → nurses/{phone}/ → photo.jpg, cv.pdf, pin.jpg, nationalID_front.jpg, nationalID_back.jpg, intro_video.mp4<br>Realtime DB → workers/{phone} → photoUrl, cvUrl, pinUrl, nationalIDFrontUrl, nationalIDBackUrl, videoUrl (clickable URLs)</div>';
+  h+='</table></div>';
+  h+='<div style="background:#f0fdf4;border:3px solid #16a34a;border-radius:12px;padding:12px;margin-top:12px;font-size:11px"><b>✅ FIXED - CEO Can Now View All Uploads:</b><br>📸 Photo - Click photo or button to view in safe modal (no crash)<br>📄 CV - PDF viewer with download + open in new tab<br>🪪 PIN - Image viewer<br>🆔 Ghana Card Front/Back - Image viewer<br>🎥 Video - Video player with controls<br><br><b>How it works:</b> All files from Cloudinary (whkvne85) → secure_url saved in Realtime DB → workers/{phone}/photoUrl, cvUrl, pinUrl, nationalIDFrontUrl, nationalIDBackUrl, videoUrl → Click button → openFileViewer() safe modal (no system stop)<br><br><small style="color:#065f46">If file shows "No Cloudinary URLs", nurse registered with old version before Cloudinary. Ask nurse to re-register.</small></div>';
   c.innerHTML=h;
 }
 
