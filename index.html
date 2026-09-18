@@ -259,6 +259,22 @@ async function uploadFileToCloudinaryWithStatus(file, label, statusEl){
 }
 </script>
 
+
+<style>
+/* WITHDRAWAL BUTTON HIDDEN FOR CLIENTS - ONLY NURSE/STAFF/CEO CAN SEE */
+#nav-withdraw {
+  display: none !important;
+  visibility: hidden !important;
+}
+#nav-withdraw.show-withdraw {
+  display: flex !important;
+  visibility: visible !important;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+</style>
+
 </head>
 <body>
 <div class="sosFloat" onclick="alert('SOS Sent')">SOS</div>
@@ -764,7 +780,7 @@ This will be shown to clients when they select you on map with your video." styl
 <button id="nav-nurse" onclick="showPage('nurse-public')"><span>👩⚕</span><span>Join</span></button>
 <button id="nav-book" onclick="showPage('booking-public')"><span>💡</span><span>Help</span></button>
 <button id="nav-login" onclick="showPage('nurse-login')"><span>🔑</span><span>Login</span></button>
-<button id="nav-withdraw" onclick="showPage('nurse-withdrawal')" style="display:none;background:#dcfce7;border:2px solid #16a34a" class="hidden"><span>💸</span><span>Withdraw</span></button>
+<button id="nav-withdraw" onclick="showPage('nurse-withdrawal')" style="background:#dcfce7;border:2px solid #16a34a" class="hidden"><span>💸</span><span>Withdraw</span></button>
 <button id="nav-chat" onclick="showPage('group-chat')" style="background:#fef2f2;border:2px solid #ef4444"><span>💬</span><span>Group</span></button>
 </div>
 
@@ -5567,58 +5583,103 @@ window.renderNurses = renderNursesEnhanced;
 </script>
 
 
+
+
+
 <script>
-// === HIDE WITHDRAWAL FROM CLIENTS - ONLY NURSE/STAFF/CEO CAN SEE ===
-function updateWithdrawalVisibility(){
-  var withdrawBtn = document.getElementById('nav-withdraw');
-  if(!withdrawBtn) return;
-  var isNurse = !!localStorage.getItem('nursePhone');
-  var isStaff = !!localStorage.getItem('staffID');
-  var isCEO = localStorage.getItem('isCEOLogged')==='true';
-  var isPrivileged = isNurse || isStaff || isCEO;
-  
-  if(isPrivileged){
-    withdrawBtn.classList.remove('hidden');
-    withdrawBtn.style.display='flex';
-    withdrawBtn.style.visibility='visible';
-    withdrawBtn.style.flexDirection='column';
-    withdrawBtn.style.alignItems='center';
-  } else {
-    withdrawBtn.classList.add('hidden');
-    withdrawBtn.style.display='none';
-    withdrawBtn.style.visibility='hidden';
+// === FIXED: HIDE WITHDRAWAL FROM CLIENTS - ONLY NURSE/STAFF/CEO CAN SEE ===
+(function(){
+  function updateWithdrawalVisibility(){
+    try{
+      var withdrawBtn = document.getElementById('nav-withdraw');
+      if(!withdrawBtn) return;
+      var isNurse = false, isStaff = false, isCEO = false;
+      try{ isNurse = !!localStorage.getItem('nursePhone'); }catch(e){}
+      try{ isStaff = !!localStorage.getItem('staffID'); }catch(e){}
+      try{ isCEO = localStorage.getItem('isCEOLogged')==='true'; }catch(e){}
+      var isPrivileged = isNurse || isStaff || isCEO;
+      
+      if(isPrivileged){
+        withdrawBtn.classList.remove('hidden');
+        withdrawBtn.classList.add('show-withdraw');
+        withdrawBtn.style.cssText = 'background:#dcfce7;border:2px solid #16a34a;display:flex !important;visibility:visible !important;flex-direction:column;align-items:center;justify-content:center;';
+        // console.log('Withdraw SHOW for', isNurse?'Nurse': isStaff?'Staff':'CEO');
+      } else {
+        withdrawBtn.classList.add('hidden');
+        withdrawBtn.classList.remove('show-withdraw');
+        withdrawBtn.style.cssText = 'display:none !important;visibility:hidden !important;';
+        // console.log('Withdraw HIDE for client');
+      }
+    }catch(e){ console.error('Withdraw visibility error', e); }
   }
-}
 
-document.addEventListener('DOMContentLoaded', function(){
+  // Run immediately
   updateWithdrawalVisibility();
-  setInterval(updateWithdrawalVisibility, 1500);
-});
+  
+  // Run on DOM ready
+  document.addEventListener('DOMContentLoaded', function(){
+    updateWithdrawalVisibility();
+    setTimeout(updateWithdrawalVisibility, 100);
+    setTimeout(updateWithdrawalVisibility, 500);
+    setTimeout(updateWithdrawalVisibility, 1000);
+  });
+  
+  // Check every 1 second
+  setInterval(updateWithdrawalVisibility, 1000);
 
-// Hook into showPage to update after navigation
-var _origShowPage = window.showPage;
-if(typeof _origShowPage === 'function'){
-  window.showPage = function(page){
-    try{ _origShowPage(page); }catch(e){ console.log(e); }
-    setTimeout(updateWithdrawalVisibility, 200);
-  };
-}
+  // Hook showPage
+  var checkShowPage = setInterval(function(){
+    if(typeof window.showPage === 'function'){
+      clearInterval(checkShowPage);
+      var _orig = window.showPage;
+      window.showPage = function(page){
+        try{ _orig(page); }catch(e){}
+        setTimeout(updateWithdrawalVisibility, 100);
+        setTimeout(updateWithdrawalVisibility, 500);
+      };
+    }
+  }, 500);
 
-// Wrap logins
-function wrapLogin(fnName){
-  if(typeof window[fnName]==='function'){
-    var orig = window[fnName];
-    window[fnName] = function(){
-      var res = orig.apply(this, arguments);
-      setTimeout(updateWithdrawalVisibility, 600);
-      return res;
-    };
-  }
-}
-['loginNurse','loginStaff','loginCEO','logoutNurse','logoutStaff','logoutCEO'].forEach(wrapLogin);
+  // Hook logins
+  ['loginNurse','loginStaff','loginCEO','logoutNurse','logoutStaff','logoutCEO'].forEach(function(name){
+    var check = setInterval(function(){
+      if(typeof window[name]==='function'){
+        clearInterval(check);
+        var orig = window[name];
+        window[name] = function(){
+          var res;
+          try{ res = orig.apply(this, arguments); }catch(e){}
+          setTimeout(updateWithdrawalVisibility, 300);
+          setTimeout(updateWithdrawalVisibility, 1000);
+          return res;
+        };
+      }
+    }, 500);
+  });
 
-window.addEventListener('storage', updateWithdrawalVisibility);
-console.log('✅ Withdrawal button hidden from clients - only Nurse/Staff/CEO can see');
+  window.addEventListener('storage', updateWithdrawalVisibility);
+  
+  // Extra: hide if authStatus says not logged in
+  var authCheck = setInterval(function(){
+    var authEl = document.getElementById('authStatus');
+    if(authEl && authEl.textContent && authEl.textContent.toLowerCase().includes('not logged in')){
+      var isPriv = false;
+      try{
+        isPriv = !!localStorage.getItem('nursePhone') || !!localStorage.getItem('staffID') || localStorage.getItem('isCEOLogged')==='true';
+      }catch(e){}
+      if(!isPriv){
+        var btn = document.getElementById('nav-withdraw');
+        if(btn){
+          btn.classList.add('hidden');
+          btn.classList.remove('show-withdraw');
+          btn.style.cssText = 'display:none !important;visibility:hidden !important;';
+        }
+      }
+    }
+  }, 1000);
+
+  console.log('✅ Withdrawal hidden from clients - fixed');
+})();
 </script>
 
 </body>
