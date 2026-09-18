@@ -342,7 +342,61 @@ function setWorkTime(s,e){
 <div class="card"><h2>LIVE Map - <span id="nearbyCount">0</span> Nearby</h2><div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap"><button class="btnMap" onclick="toggleMap()">🗺 Map</button><button class="btnSmall" style="background:#16a34a;color:white" onclick="findNursesUber()">Refresh</button><select id="radiusSelect" style="width:100px;padding:8px;border-radius:8px"><option value="5">5 km</option><option value="10" selected>10 km</option><option value="20">20 km</option><option value="50">50 km</option></select></div><div id="loveCareMapWrapper" class="map-wrapper"><div id="uberMap"></div></div><div id="loveCareLiveList"></div></div>
 </div>
 
-<div id="page-nurse-public" class="page"><div class="card"><h2>Nurse Registration</h2><input id="nRegName" placeholder="Full Name"><div class="phoneRow"><select id="nRegPhoneCode"></select><input id="nRegPhone" placeholder="Phone"></div><input id="nRegPass" type="password" placeholder="Password"><div class="locationRow"><input id="nRegLocation" placeholder="Tap GPS Auto"><button type="button" onclick="autoGPS('nRegLocation','nurseGpsStatus2')">GPS</button></div><small id="nurseGpsStatus2" class="gpsBadge hidden"></small><div style="background:#fefce8;border:2px solid #eab308;border-radius:10px;padding:10px;margin:8px 0"><h4 style="margin:0 0 6px 0;font-size:11px;color:#92400e">📸 Upload Your Photo (Nurse Profile Photo)</h4><input type="file" id="nRegPhoto" accept="image/*" style="width:100%;padding:8px;border:2px dashed #eab308;border-radius:8px;background:white"><small style="font-size:9px;color:#666">Your clear face photo - will be shown to clients</small><div style="margin-top:6px"><img id="nRegPhotoImg" style="max-width:100%;max-height:120px;display:none;border-radius:8px;border:2px solid #eab308"></div></div><div style="background:#f0fdf4;border:2px solid #16a34a;border-radius:10px;padding:10px;margin:8px 0"><h4 style="margin:0 0 6px 0;font-size:11px;color:#16a34a">📄 Upload CV (Resume)</h4><input type="file" id="nRegCV" accept=".pdf,.doc,.docx,.jpg,.png" style="width:100%;padding:8px;border:2px dashed #16a34a;border-radius:8px;background:white"><small style="font-size:9px;color:#666">PDF, DOC, JPG, PNG</small><div id="nRegCVPreview" style="margin-top:6px;font-size:10px;color:#16a34a"></div></div><div style="background:#eff6ff;border:2px solid #2563eb;border-radius:10px;padding:10px;margin:8px 0"><h4 style="margin:0 0 6px 0;font-size:11px;color:#2563eb">🪪 PIN Photo (Professional ID)</h4><input type="file" id="nRegPINPhoto" accept="image/*" style="width:100%;padding:8px;border:2px dashed #2563eb;border-radius:8px;background:white"><small style="font-size:9px;color:#666">Nursing PIN / License / ID Photo</small><div style="margin-top:6px"><img id="nRegPINImg" style="max-width:100%;max-height:120px;display:none;border-radius:8px;border:2px solid #2563eb"></div></div><input id="nRegExperience" type="number" placeholder="Years"><select id="nRegSpecialty"><option value="">-- Specialty (13) --</option><option>General Nurse</option><option>Elderly Care</option><option>Baby Care and Nanny</option><option>Hospital Support</option><option>Post-Surgery Care</option><option>Disability Support</option><option>Maternity Care</option><option>Night Nurse</option><option>Palliative Care</option><option>Physiotherapy</option><option>Injection and Wound Care</option><option>Diabetes Monitoring</option><option>Dementia Care</option><option>Child Special Needs Care</option></select><button class="btnSubmit" onclick="registerNurse()">Register</button><div style="text-align:center;margin-top:10px"><button class="btnSmall" style="background:#2563eb;color:white" onclick="showPage('nurse-public')">Already Registered? Login Here</button></div></div></div>
+<div id="page-nurse-public" class="page"><div class="card"><h2>Nurse Registration - All Documents Required</h2>
+<input id="nRegName" placeholder="Full Name *">
+<div class="phoneRow"><select id="nRegPhoneCode"></select><input id="nRegPhone" placeholder="Phone *"></div>
+<input id="nRegPass" type="password" placeholder="Password *">
+<div class="locationRow"><input id="nRegLocation" placeholder="Tap GPS Auto *"><button type="button" onclick="autoGPS('nRegLocation','nurseGpsStatus2')">GPS</button></div><small id="nurseGpsStatus2" class="gpsBadge hidden"></small>
+
+<div style="background:#fefce8;border:2px solid #eab308;border-radius:10px;padding:10px;margin:8px 0">
+<h4 style="margin:0 0 6px 0;font-size:11px;color:#92400e">📸 1. Upload Your Photo (Profile Photo) *</h4>
+<input type="file" id="nRegPhoto" accept="image/*" style="width:100%;padding:8px;border:2px dashed #eab308;border-radius:8px;background:white">
+<small style="font-size:9px;color:#666">Your clear face photo - shown to clients</small>
+<div style="margin-top:6px"><img id="nRegPhotoImg" style="max-width:100%;max-height:120px;display:none;border-radius:8px;border:2px solid #eab308"></div>
+</div>
+
+<div style="background:#f0fdf4;border:2px solid #16a34a;border-radius:10px;padding:10px;margin:8px 0">
+<h4 style="margin:0 0 6px 0;font-size:11px;color:#16a34a">📄 2. Upload CV (Resume) *</h4>
+<input type="file" id="nRegCV" accept=".pdf,.doc,.docx,.jpg,.png" style="width:100%;padding:8px;border:2px dashed #16a34a;border-radius:8px;background:white">
+<small style="font-size:9px;color:#666">PDF, DOC, JPG, PNG - Your certificate CV</small>
+<div id="nRegCVPreview" style="margin-top:6px;font-size:10px;color:#16a34a"></div>
+</div>
+
+<div style="background:#eff6ff;border:2px solid #2563eb;border-radius:10px;padding:10px;margin:8px 0">
+<h4 style="margin:0 0 6px 0;font-size:11px;color:#2563eb">🪪 3. PIN Photo (Professional ID) *</h4>
+<input type="file" id="nRegPINPhoto" accept="image/*" style="width:100%;padding:8px;border:2px dashed #2563eb;border-radius:8px;background:white">
+<small style="font-size:9px;color:#666">Nursing PIN / License / ID Photo</small>
+<div style="margin-top:6px"><img id="nRegPINImg" style="max-width:100%;max-height:120px;display:none;border-radius:8px;border:2px solid #2563eb"></div>
+</div>
+
+<div style="background:#fdf2f8;border:2px solid #ec4899;border-radius:10px;padding:10px;margin:8px 0">
+<h4 style="margin:0 0 6px 0;font-size:11px;color:#be185d">🆔 4. National ID (Ghana Card / Passport) * REQUIRED</h4>
+<select id="nRegIDType" style="margin-bottom:6px;border:2px dashed #ec4899"><option value="">Select ID Type</option><option value="Ghana Card" selected>Ghana Card</option><option value="Passport">Passport</option><option value="Voter ID">Voter ID</option><option value="Drivers License">Drivers License</option></select>
+<input id="nRegIDNumber" placeholder="ID Number e.g. GHA-123456789-1 *" style="border:2px dashed #ec4899">
+<input type="file" id="nRegNationalID" accept="image/*,.pdf" style="width:100%;padding:8px;border:2px dashed #ec4899;border-radius:8px;background:white;margin-top:6px">
+<small style="font-size:9px;color:#666">Take clear photo of your National ID front & back (or upload PDF)</small>
+<div style="margin-top:6px"><img id="nRegNationalIDImg" style="max-width:100%;max-height:120px;display:none;border-radius:8px;border:2px solid #ec4899"></div>
+<div id="nRegNationalIDPreview" style="margin-top:6px;font-size:10px;color:#be185d"></div>
+</div>
+
+<div style="background:#fef3c7;border:2px solid #f59e0b;border-radius:10px;padding:10px;margin:8px 0">
+<h4 style="margin:0 0 6px 0;font-size:11px;color:#92400e">🎥 5. Video Introduction (1 Minute) * REQUIRED</h4>
+<input type="file" id="nRegVideo" accept="video/*" style="width:100%;padding:8px;border:2px dashed #f59e0b;border-radius:8px;background:white">
+<small style="font-size:9px;color:#666">Record 1-min video: Introduce yourself, experience, specialty. Clients will watch this during booking!</small>
+<div style="margin-top:6px"><video id="nRegVideoPreview" style="max-width:100%;max-height:150px;display:none;border-radius:8px;border:2px solid #f59e0b" controls></video></div>
+<div id="nRegVideoInfo" style="margin-top:6px;font-size:10px;color:#92400e"></div>
+</div>
+
+<input id="nRegExperience" type="number" placeholder="Years of Experience *">
+<select id="nRegSpecialty"><option value="">-- Specialty (13) * --</option><option>General Nurse</option><option>Elderly Care</option><option>Baby Care and Nanny</option><option>Hospital Support</option><option>Post-Surgery Care</option><option>Disability Support</option><option>Maternity Care</option><option>Night Nurse</option><option>Palliative Care</option><option>Physiotherapy</option><option>Injection and Wound Care</option><option>Diabetes Monitoring</option><option>Dementia Care</option><option>Child Special Needs Care</option></select>
+
+<div style="background:#fffbeb;border:2px solid #eab308;border-radius:10px;padding:8px;margin:8px 0;font-size:10px">
+<b>⚠️ Admin Approval Required:</b> After registration, Admin will review your Photo, CV, PIN, National ID, and Video. You can login only after Admin accepts. Status will be Pending until approved.
+</div>
+
+<button class="btnSubmit" onclick="registerNurse()" style="background:linear-gradient(90deg,#16a34a,#eab308)">📤 Register - Upload to Cloudinary whkvne85</button>
+<div style="text-align:center;margin-top:10px"><button class="btnSmall" style="background:#2563eb;color:white" onclick="showPage('nurse-login')">Already Registered? Login Here</button></div>
+</div></div>
 <div id="page-booking-public" class="page">
 <div class="card" style="border:3px solid #2563eb">
 <h2>💡 LOVE CARE HELP CENTER - How To Use The App</h2>
@@ -1035,6 +1089,7 @@ function safeSetNursesStorage(nursesArray){
   }
 }
 
+
 async function registerNurse(){
   var name=document.getElementById('nRegName').value.trim();
   var fullPhone=getFullPhone('nRegPhoneCode','nRegPhone');
@@ -1042,29 +1097,40 @@ async function registerNurse(){
   var loc=document.getElementById('nRegLocation').value.trim();
   var exp=document.getElementById('nRegExperience')?.value.trim()||'';
   var specialty=document.getElementById('nRegSpecialty')?.value||'General';
-  if(!name||!fullPhone||!pass||!loc){alert('All required: Name, Phone, Password, Location');return;}
+  var idType=document.getElementById('nRegIDType')?.value||'Ghana Card';
+  var idNumber=document.getElementById('nRegIDNumber')?.value.trim()||'';
+  
+  if(!name||!fullPhone||!pass||!loc){alert('All required: Name, Phone, Password, Location *');return;}
+  if(!idNumber){alert('National ID Number required *');return;}
   if(!nurseRegLat){alert('GPS required - Tap GPS Auto button');return;}
   
+  var photoFile=document.getElementById('nRegPhoto')?.files[0]||null;
+  var cvFile=document.getElementById('nRegCV')?.files[0]||null;
+  var pinFile=document.getElementById('nRegPINPhoto')?.files[0]||null;
+  var nationalIDFile=document.getElementById('nRegNationalID')?.files[0]||null;
+  var videoFile=document.getElementById('nRegVideo')?.files[0]||null;
+  
+  if(!photoFile){alert('Upload Profile Photo *');return;}
+  if(!cvFile){alert('Upload CV *');return;}
+  if(!pinFile){alert('Upload PIN Photo *');return;}
+  if(!nationalIDFile){alert('Upload National ID (Ghana Card) * REQUIRED');return;}
+  if(!videoFile){alert('Upload 1-Minute Video Introduction * REQUIRED - Clients will watch during booking');return;}
+  
   var btn=document.querySelector('#page-nurse-public .btnSubmit');
-  if(btn){btn.disabled=true; btn.innerText='⏳ Uploading photos to Cloudinary...';}
+  if(btn){btn.disabled=true; btn.innerText='⏳ Uploading to Cloudinary whkvne85...';}
   
   try{
-    var photoFile=document.getElementById('nRegPhoto')?.files[0]||null;
-    var cvFile=document.getElementById('nRegCV')?.files[0]||null;
-    var pinFile=document.getElementById('nRegPINPhoto')?.files[0]||null;
-    
-    var photoUrl=null, cvUrl=null, pinUrl=null;
+    var photoUrl=null, cvUrl=null, pinUrl=null, nationalIDUrl=null, videoUrl=null;
     
     if(photoFile){
-      if(btn) btn.innerText='⏳ Uploading Photo...';
+      if(btn) btn.innerText='⏳ 1/5 Uploading Photo to whkvne85...';
       photoUrl=await uploadToCloudinary(photoFile);
     }
     if(cvFile){
-      if(btn) btn.innerText='⏳ Uploading CV...';
+      if(btn) btn.innerText='⏳ 2/5 Uploading CV to whkvne85...';
       if(cvFile.type && cvFile.type.indexOf('image')!==-1){
         cvUrl=await uploadToCloudinary(cvFile);
       }else{
-        // For PDF/DOC, upload directly without compression via Cloudinary raw
         try{
           var fd=new FormData();
           fd.append('file', cvFile);
@@ -1076,11 +1142,46 @@ async function registerNurse(){
       }
     }
     if(pinFile){
-      if(btn) btn.innerText='⏳ Uploading PIN...';
+      if(btn) btn.innerText='⏳ 3/5 Uploading PIN to whkvne85...';
       pinUrl=await uploadToCloudinary(pinFile);
     }
+    if(nationalIDFile){
+      if(btn) btn.innerText='⏳ 4/5 Uploading National ID (Ghana Card) to whkvne85...';
+      if(nationalIDFile.type && nationalIDFile.type.indexOf('image')!==-1){
+        nationalIDUrl=await uploadToCloudinary(nationalIDFile);
+      }else{
+        try{
+          var fd2=new FormData();
+          fd2.append('file', nationalIDFile);
+          fd2.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+          var r2=await fetch('https://api.cloudinary.com/v1_1/'+CLOUDINARY_CLOUD_NAME+'/raw/upload',{method:'POST',body:fd2});
+          var d2=await r2.json();
+          nationalIDUrl=d2.secure_url||d2.url||null;
+        }catch(e){ nationalIDUrl=null; }
+      }
+    }
+    if(videoFile){
+      if(btn) btn.innerText='⏳ 5/5 Uploading Video (1-min) to whkvne85... This may take a minute';
+      try{
+        var fdV=new FormData();
+        fdV.append('file', videoFile);
+        fdV.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+        // Video upload uses video endpoint
+        var rV=await fetch('https://api.cloudinary.com/v1_1/'+CLOUDINARY_CLOUD_NAME+'/video/upload',{method:'POST',body:fdV});
+        var dV=await rV.json();
+        videoUrl=dV.secure_url||dV.url||null;
+        if(!videoUrl){
+          // Try image endpoint as fallback
+          videoUrl=await uploadToCloudinary(videoFile);
+        }
+      }catch(e){
+        console.log('Video upload failed', e);
+        alert('Video upload failed: '+e.message+'\nTry smaller video <20MB');
+        videoUrl=null;
+      }
+    }
     
-    if(btn) btn.innerText='⏳ Saving to database...';
+    if(btn) btn.innerText='⏳ Saving to database - Pending Admin Approval...';
     
     var w={
       name:name,
@@ -1089,109 +1190,87 @@ async function registerNurse(){
       location:loc,
       experience:exp,
       specialty:specialty,
+      idType:idType,
+      idNumber:idNumber,
+      nationalIDType:idType,
+      nationalIDNumber:idNumber,
       timestamp:Date.now(),
       lat:nurseRegLat,
       lng:nurseRegLng,
-      status:'on_duty',
-      onDuty:true,
+      status:'pending_approval',
+      approvalStatus:'pending',
+      onDuty:false,
+      verified:false,
       photoUrl: photoUrl || null,
       cvUrl: cvUrl || null,
       pinUrl: pinUrl || null,
-      // Keep small thumbnails only if needed (compressed)
+      nationalIDUrl: nationalIDUrl || null,
+      nationalIDPhotoUrl: nationalIDUrl || null,
+      videoUrl: videoUrl || null,
+      videoIntroUrl: videoUrl || null,
       hasPhoto: !!photoUrl,
       hasCV: !!cvUrl,
-      hasPIN: !!pinUrl
+      hasPIN: !!pinUrl,
+      hasNationalID: !!nationalIDUrl,
+      hasVideo: !!videoUrl,
+      cloudinary: true,
+      cloudName: CLOUDINARY_CLOUD_NAME
     };
     
-    // Save to Firebase workers (no quota issue - stores URLs only)
     if(typeof db !== 'undefined' && db){
       await db.ref('workers/'+fullPhone.replace(/[^0-9]/g,'')).set(w);
-      alert('✅ Registered! Photos uploaded to Cloudinary.\nPhoto: '+(photoUrl?'Yes':'No')+'\nCV: '+(cvUrl?'Yes':'No')+'\nPIN: '+(pinUrl?'Yes':'No')+'\n\nNow login as nurse.');
+      // Also save to pending approvals
+      await db.ref('pending_nurses/'+fullPhone.replace(/[^0-9]/g,'')).set(w);
+      alert('✅ Registered Successfully!\n\nAll 5 documents uploaded to Cloudinary whkvne85:\n✅ Photo: '+(photoUrl?'Yes':'No')+'\n✅ CV: '+(cvUrl?'Yes':'No')+'\n✅ PIN: '+(pinUrl?'Yes':'No')+'\n✅ National ID ('+idType+'): '+(nationalIDUrl?'Yes - '+idNumber:'No')+'\n✅ Video: '+(videoUrl?'Yes - Clients can watch during booking':'No')+'\n\n⏳ STATUS: Pending Admin Approval\nAdmin will review your documents and accept. You can login only after approval.\n\nYou will be notified once approved.');
       showPage('nurse-login');
     }else{
-      // Fallback localStorage - save minimal without large images
-      var nurses=[];
-      try{ nurses=JSON.parse(localStorage.getItem('nurses')||'[]'); }catch(e){ nurses=[]; }
-      nurses.push({
-        id: Date.now(),
-        name: w.name,
-        phone: w.phone,
-        location: w.location,
-        lat: w.lat,
-        lng: w.lng,
-        specialty: w.specialty,
-        status: w.status,
-        photoUrl: w.photoUrl,
-        cvUrl: w.cvUrl,
-        pinUrl: w.pinUrl
-      });
-      safeSetNursesStorage(nurses);
-      alert('✅ Registered locally! (Firebase not connected) Photos: '+(photoUrl?'Cloudinary URL saved':'Local compressed'));
-      showPage('nurse-login');
+      alert('Firebase not connected - cannot register');
     }
   }catch(e){
     console.error('Registration error', e);
-    alert('Registration error: '+e.message+'\n\nTry with smaller photos or check internet. If still fails, photos will be saved locally compressed.');
-    // Fallback without Cloudinary - save compressed small images
-    try{
-      var fallbackPhoto= photoFile ? await compressImage(photoFile, 200, 0.4) : null;
-      var fallbackPin= pinFile ? await compressImage(pinFile, 300, 0.4) : null;
-      var fallbackW={
-        name:name,phone:fullPhone,password:pass,location:loc,timestamp:Date.now(),lat:nurseRegLat,lng:nurseRegLng,status:'on_duty',onDuty:true,specialty:specialty,
-        photoUrl: fallbackPhoto, pinUrl: fallbackPin, hasPhoto: !!fallbackPhoto
-      };
-      if(db) await db.ref('workers/'+fullPhone.replace(/[^0-9]/g,'')).set(fallbackW);
-      alert('✅ Registered with compressed photos (Cloudinary failed, saved small local)');
-      showPage('nurse-login');
-    }catch(e2){
-      alert('Registration error: Failed to execute setItem on Storage: '+e2.message+'\n\nYour photos are too large for localStorage (5MB limit). Use smaller photos (<500KB) or ensure Cloudinary preset exists: '+CLOUDINARY_CLOUD_NAME+' / '+CLOUDINARY_UPLOAD_PRESET);
-    }
+    alert('Registration error: '+e.message+'\n\nTry smaller files or check internet.\nCloudinary: whkvne85 / '+CLOUDINARY_UPLOAD_PRESET);
   }finally{
-    if(btn){btn.disabled=false; btn.innerText='Register';}
+    if(btn){btn.disabled=false; btn.innerText='📤 Register - Upload to Cloudinary whkvne85';}
   }
 }
 
-function loginNurse(){var fullPhone=getFullPhone('nurseLoginCode','nurseLoginPhone'); var pass=document.getElementById('nurseLoginPass').value.trim(); if(db){db.ref('workers/'+fullPhone.replace(/[^0-9]/g,'')).once('value').then(s=>{var d=s.val(); if(d&&d.password===pass){localStorage.setItem('nursePhone',fullPhone);localStorage.setItem('nurseName',d.name);document.getElementById('authStatus').innerText='✅ Logged in as NURSE - '+d.name;showPage('nurse-dashboard');}else if(d){document.getElementById('nurseLoginResult').innerText='Wrong password';}else{localStorage.setItem('nursePhone',fullPhone);localStorage.setItem('nurseName',fullPhone);showPage('nurse-dashboard');}});}else{localStorage.setItem('nursePhone',fullPhone);showPage('nurse-dashboard');}}
-function loginStaff(){var id=document.getElementById('staffLoginID').value.trim(); if(!id){alert('Enter ID');return;} localStorage.setItem('staffID',id);document.getElementById('authStatus').innerText='✅ Logged in as STAFF - '+id;showPage('staff-dashboard');}
-function loginCEO(){var id=document.getElementById('ceoLoginID').value.trim().toUpperCase(); var pass=document.getElementById('ceoLoginPass').value.trim(); var r=document.getElementById('ceoLoginResult'); if(id==='KUSIPETER'&&pass==='Peterasa80@you!'){localStorage.setItem('isCEOLogged','true');document.getElementById('authStatus').innerText='✅ Logged in as CEO';r.innerText='Success';setTimeout(()=>showPage('ceo-dashboard'),400);}else{r.innerText='Access denied';}}
-function logoutCEO(){localStorage.removeItem('isCEOLogged');showPage('home');}
-function logoutStaff(){localStorage.removeItem('staffID');showPage('home');}
-function logoutNurse(){localStorage.removeItem('nursePhone');localStorage.removeItem('nurseName');showPage('home');}
-function renderMinRateEditor(){ var container = document.getElementById('minRateEditor'); if(!container) return; var override = {}; try{ override = JSON.parse(localStorage.getItem('nurseHourlyOverride')||'{}'); }catch(e){} var html = '<table><tr><th>Country</th><th>Nurse $/hr Legal (65% OFF)</th><th>Editable</th></tr>'; Object.keys(NURSE_HOURLY_MIN).forEach(code=>{ var d = NURSE_HOURLY_MIN[code]; var val = override[code] || d.amount; html += `<tr><td>${code} - ${d.label}</td><td>${d.amount} ${d.currency}/hr</td><td><input id="min-${code}" type="number" value="${val}" style="width:90px;margin:0"><span style="font-size:10px"> ${d.currency}/hr</span></td></tr>`; }); html+='</table>'; container.innerHTML=html; }
-function switchCeoTab(tab){ document.querySelectorAll('.ceo-tab').forEach(t=>t.classList.add('hidden')); document.querySelectorAll('.ceoTabs button').forEach(b=>b.classList.remove('activeTab')); var show=document.getElementById('ceo-tab-'+tab); if(show) show.classList.remove('hidden'); var btn=document.getElementById('btn-'+tab); if(btn) btn.classList.add('activeTab'); if(tab==='nurses') setTimeout(()=>{initCeoMap();loadCeoData();},200); if(tab==='bookings'||tab==='clients'||tab==='payments'||tab==='staff'||tab==='refunds') loadCeoData(); if(tab==='announce') renderMinRateEditor(); if(tab==='chat'){initGroupChat();toggleMasterClear();} }
-function loadCeoData(){if(!db) return; db.ref('bookings').once('value').then(s=>{allBookings=Object.values(s.val()||{});document.getElementById('statBookings').innerText=allBookings.length;renderBookings(allBookings);renderClients(allBookings);renderPayments(allBookings);renderRefundsCEO(allBookings);}); db.ref('workers').once('value').then(s=>{allWorkers=Object.values(s.val()||{});document.getElementById('statNurses').innerText=allWorkers.length;document.getElementById('statOnline').innerText=allWorkers.filter(w=>w.onDuty).length;renderNurses(allWorkers);}); db.ref('staff').once('value').then(s=>{renderStaff(Object.values(s.val()||{}));}); db.ref('refunds').once('value').then(s=>{allRefunds=Object.values(s.val()||{}); document.getElementById('statRefunds').innerText=allRefunds.length;}); db.ref('settings/nurseHourly').once('value').then(s=>{ var remote = s.val(); if(remote){ localStorage.setItem('nurseHourlyOverride', JSON.stringify(remote)); Object.keys(remote).forEach(k=>{ if(NURSE_HOURLY_MIN[k]) NURSE_HOURLY_MIN[k].amount = parseFloat(remote[k]); }); calculateTotal(); } });}
-function renderBookings(list){var c=document.getElementById('ceoBookingsList'); if(!list.length){c.innerHTML='<div style="padding:20px;text-align:center;background:#fef3c7;border-radius:10px">No bookings yet</div>';return;} var h='<table><tr><th>Time</th><th>Client</th><th>Service</th><th>Duration</th><th>Amount</th><th>Status</th><th>Action</th></tr>'; list.sort((a,b)=>b.timestamp-a.timestamp).forEach(b=>{ var badge=`<span class="statusBadge st-pending">${b.status||''}</span>`; if(b.status==='confirmed') badge=`<span class="statusBadge st-confirmed">${b.status}</span>`; if(b.status==='cancelled_by_client') badge=`<span class="statusBadge st-cancelled">CANCELLED</span>`; if(b.status==='refund_requested') badge=`<span class="statusBadge st-refund_req">REFUND REQ</span>`; if(b.status==='refund_approved') badge=`<span class="statusBadge st-refund_ok">APPROVED</span>`; if(b.status==='refunded') badge=`<span class="statusBadge st-refunded">REFUNDED</span>`; h+=`<tr><td>${b.time||''}</td><td>${b.name||''}<br><small>${b.country||''} ${b.bookingUnit||''}</small></td><td>${b.service||''}</td><td>${b.days||''}<br><small>${b.totalHours||''}h</small></td><td>${b.amount||''} ${b.currency||''}<br><small>Min ${b.legalMinTotal||''}</small></td><td>${badge}</td><td><button onclick="updateBookingStatus(${b.id},'confirmed')" class="btnSmall" style="background:green;color:white">Confirm</button><button onclick="deleteBooking(${b.id})" class="btnSmall" style="background:#111;color:white">X</button></td></tr>`;}); h+='</table>'; c.innerHTML=h;}
-function renderRefundsCEO(bookingsList){ var c=document.getElementById('ceoRefundsList'); var refunds = bookingsList.filter(b=> b.status==='refund_requested' || b.status==='refund_approved' || b.status==='refunded' || b.refundReason); if(refunds.length===0){ c.innerHTML='<div style="padding:20px;text-align:center;background:#fef3c7;border-radius:10px">No refunds</div>'; return; } var h='<table><tr><th>Client</th><th>Amount</th><th>Account</th><th>Status</th><th>Action</th></tr>'; refunds.forEach(b=>{ h+=`<tr><td>${b.name||''}</td><td>${b.amount} ${b.currency}</td><td>${b.refundAccount||''}</td><td>${b.status}</td><td>`; if(b.status==='refund_requested'){ h+=`<button onclick="approveRefund(${b.id})" class="btnSmall" style="background:#16a34a;color:white">Approve</button>`; } else if(b.status==='refund_approved'){ h+=`<button onclick="confirmRefundSent(${b.id})" class="btnSmall" style="background:#2563eb;color:white">Confirm Sent</button>`; } h+=`</td></tr>`; }); h+='</table>'; c.innerHTML=h;}
-function approveRefund(id){ if(!confirm('Approve?')) return; if(!db) return; db.ref('bookings/'+id).update({status:'refund_approved'}).then(()=>{ db.ref('refunds/'+id).update({status:'approved'}).then(()=>{ loadCeoData(); }); });}
-function confirmRefundSent(id){ if(!confirm('Confirm sent?')) return; if(!db) return; db.ref('bookings/'+id).update({status:'refunded'}).then(()=>{ db.ref('refunds/'+id).update({status:'refunded'}).then(()=>{ loadCeoData(); }); });}
-function renderNurses(list){var c=document.getElementById('ceoNursesList'); if(!list.length){c.innerHTML='<div style="padding:20px;text-align:center;background:#fef3c7;border-radius:10px">No nurses</div>';return;} var h='<table><tr><th>Name</th><th>Phone</th><th>Location</th><th>Status</th><th>Action</th></tr>'; list.forEach(w=>{h+=`<tr><td>${w.name||''}</td><td>${w.phone||''}</td><td>${w.location||''}</td><td>${w.status||''}</td><td><button onclick="deleteWorker('${(w.phone||'').replace(/[^0-9]/g,'')}')" class="btnSmall" style="background:red;color:white">Remove</button></td></tr>`;}); h+='</table>'; c.innerHTML=h;}
-function renderClients(b){var c=document.getElementById('ceoClientsList'); var map={}; b.forEach(x=>{if(x.phone) map[x.phone]={name:x.name,phone:x.phone,location:x.location,count:(map[x.phone]?.count||0)+1};}); var clients=Object.values(map); if(!clients.length){c.innerHTML='<div style="padding:20px;text-align:center;background:#fef3c7;border-radius:10px">No clients</div>';return;} var h='<table><tr><th>Name</th><th>Phone</th><th>Bookings</th></tr>'; clients.forEach(x=>{h+=`<tr><td>${x.name||''}</td><td>${x.phone}</td><td>${x.count}</td></tr>`;}); h+='</table>'; c.innerHTML=h;}
-function renderPayments(b){var total=b.reduce((s,x)=>s+(x.amount||0),0); document.getElementById('totalRevenue').innerText=total.toFixed(2); document.getElementById('pendingRevenue').innerText=b.filter(x=>x.status==='pending_assignment').reduce((s,x)=>s+(x.amount||0),0).toFixed(2); var c=document.getElementById('ceoPaymentsList'); if(!b.length){c.innerHTML='<div style="padding:20px;text-align:center">No payments</div>';return;} var h='<table><tr><th>Client</th><th>Service</th><th>Amount</th></tr>'; b.forEach(x=>{h+=`<tr><td>${x.name||''}</td><td>${x.service||''}</td><td>${x.amount} ${x.currency}</td></tr>`;}); h+='</table>'; c.innerHTML=h;}
-function renderStaff(list){var c=document.getElementById('ceoStaffList'); if(!list.length){c.innerHTML='<div style="padding:20px;text-align:center">No staff</div>';return;} var h='<table><tr><th>Staff ID</th><th>Action</th></tr>'; list.forEach(s=>{h+=`<tr><td>${s.id||''}</td><td><button onclick="deleteStaff('${s.id}')" class="btnSmall" style="background:red;color:white">Delete</button></td></tr>`;}); h+='</table>'; c.innerHTML=h;}
-function filterBookings(){var q=document.getElementById('ceoSearchBooking').value.toLowerCase(); var st=document.getElementById('ceoBookingFilter').value; var f=allBookings.filter(b=>(!q||(b.name||'').toLowerCase().includes(q))&&(!st||b.status===st)); renderBookings(f);}
-function filterNurses(){var q=document.getElementById('ceoSearchNurse').value.toLowerCase(); var f=allWorkers.filter(w=>(w.name||'').toLowerCase().includes(q)); renderNurses(f);}
-function updateBookingStatus(id,s){if(!db) return; db.ref('bookings/'+id).update({status:s}).then(()=>loadCeoData());}
-function deleteBooking(id){if(confirm('Delete?')){if(db) db.ref('bookings/'+id).remove().then(()=>{ loadCeoData(); });}}
-function deleteWorker(k){if(confirm('Remove nurse?')){if(db) db.ref('workers/'+k).remove().then(()=>loadCeoData());}}
-function addStaff(){var id=document.getElementById('newStaffId').value.trim(); var pass=document.getElementById('newStaffPass').value.trim(); if(!id||!pass){alert('ID and pass required');return;} if(db) db.ref('staff/'+id).set({id:id,password:pass}).then(()=>{alert('Staff added');loadCeoData();});}
-function deleteStaff(id){if(confirm('Delete staff?')){if(db) db.ref('staff/'+id).remove().then(()=>loadCeoData());}}
-function applyAnnouncementConfig(cfg){if(!cfg) return; var root=document.documentElement; if(cfg.bg) root.style.setProperty('--announce-bg',cfg.bg); if(cfg.textColor) root.style.setProperty('--announce-text',cfg.textColor); if(cfg.border) root.style.setProperty('--announce-border',cfg.border); if(cfg.speed) root.style.setProperty('--announce-speed',cfg.speed); if(cfg.text) document.getElementById('announcementText').innerText=cfg.text; if(document.getElementById('announcementInput')&&cfg.text) document.getElementById('announcementInput').value=cfg.text; localStorage.setItem('announcementConfig',JSON.stringify(cfg));}
-function saveAnnouncement(){var txt=document.getElementById('announcementInput').value.trim(); var bg=document.getElementById('announceBgColor').value; var tColor=document.getElementById('announceTextColor').value; var bColor=document.getElementById('announceBorderColor').value; var speed=document.getElementById('announceSpeed').value; if(!txt){alert('Enter text');return;} var cfg={text:txt,bg:bg,textColor:tColor,border:bColor,speed:speed}; applyAnnouncementConfig(cfg); if(db){db.ref('settings/announcementConfig').set(cfg).then(()=>alert('LIVE!'));}}
-function saveSettings(){ var override = {}; Object.keys(NURSE_HOURLY_MIN).forEach(code=>{ var el = document.getElementById('min-'+code); if(el) override[code] = parseFloat(el.value); }); localStorage.setItem('nurseHourlyOverride', JSON.stringify(override)); Object.keys(override).forEach(k=>{ NURSE_HOURLY_MIN[k].amount = override[k]; }); if(db){ db.ref('settings/nurseHourly').set(override).then(()=>alert('✅ Rates saved - Live for all clients (65% OFF)')); } else { alert('Saved locally'); } calculateTotal(); }
-var groupChatListener=false;
-function initGroupChat(){if(!db||groupChatListener) return; groupChatListener=true; db.ref('group_chat').limitToLast(200).on('value',snap=>{var data=snap.val()||{}; var msgs=Object.entries(data).map(([k,v])=>{return {...v,_key:k};}).sort((a,b)=>a.timestamp-b.timestamp); renderGroupChat(msgs);});}
-function renderGroupChat(msgs){
-['ceoChatBox','nurseChatBox','staffChatBox','globalChatBox'].forEach(function(id){
-var box=document.getElementById(id); if(!box) return;
-var meId=getCurrentId(); var html='';
-msgs.forEach(function(m){
-  var isMe=m.senderId===meId;
-  html+='<div class="chatMsg '+(isMe?'me':'other')+'"><div><b>'+escapeHtml(m.senderName||'User')+'</b> <span class="roleBadge role-'+(m.role||'GUEST')+'">'+(m.role||'GUEST')+'</span></div><div style="margin:4px 0">'+escapeHtml(m.text||'')+(m.edited?' <small style="color:#eab308">(edited)</small>':'')+'</div>';
-  if(isMe){
-    html+='<div class="chatActions" style="margin-top:6px;display:flex;gap:4px"><button type="button" class="btnEdit" data-action="edit" data-key="'+m._key+'" onclick="window.editMessage(\''+m._key+'\')" style="font-size:11px;padding:6px 12px;border-radius:6px;border:none;font-weight:800;background:#facc15;color:#111;cursor:pointer;touch-action:manipulation">✏️ Edit</button><button type="button" class="btnDel" data-action="delete" data-key="'+m._key+'" onclick="window.deleteMessage(\''+m._key+'\')" style="font-size:11px;padding:6px 12px;border-radius:6px;border:none;font-weight:800;background:#ef4444;color:white;cursor:pointer;touch-action:manipulation">🗑 Delete</button></div>';
+
+
+function loginNurse(){
+  var fullPhone=getFullPhone('nurseLoginCode','nurseLoginPhone'); 
+  var pass=document.getElementById('nurseLoginPass').value.trim(); 
+  var resultEl=document.getElementById('nurseLoginResult');
+  if(resultEl) resultEl.innerText='Checking approval...';
+  if(db){
+    db.ref('workers/'+fullPhone.replace(/[^0-9]/g,'')).once('value').then(s=>{
+      var d=s.val(); 
+      if(!d){ if(resultEl) resultEl.innerText='Nurse not found - Please register first'; return; }
+      if(d.password!==pass){ if(resultEl) resultEl.innerText='Wrong password'; return; }
+      
+      // Check admin approval
+      var status = d.status||d.approvalStatus||'pending_approval';
+      if(status==='pending_approval' || status==='pending' || d.approvalStatus==='pending'){
+        if(resultEl) resultEl.innerHTML='⏳ <b>Pending Admin Approval</b><br><br>Your documents are under review:<br>📸 Photo: '+(d.hasPhoto?'✅':'❌')+'<br>📄 CV: '+(d.hasCV?'✅':'❌')+'<br>🪪 PIN: '+(d.hasPIN?'✅':'❌')+'<br>🆔 National ID ('+(d.idType||d.nationalIDType||'Ghana Card')+'): '+(d.hasNationalID?'✅ '+ (d.idNumber||d.nationalIDNumber||''):'❌')+'<br>🎥 Video: '+(d.hasVideo?'✅ Clients can watch during booking':'❌')+'<br><br>Admin will accept after verifying. Please wait.';
+        alert('⏳ Pending Admin Approval\n\nYour registration is awaiting admin review.\n\nDocuments uploaded:\nPhoto: '+(d.hasPhoto?'Yes':'No')+'\nCV: '+(d.hasCV?'Yes':'No')+'\nPIN: '+(d.hasPIN?'Yes':'No')+'\nNational ID: '+(d.hasNationalID?'Yes - '+ (d.idNumber||''):'No')+'\nVideo: '+(d.hasVideo?'Yes':'No')+'\n\nYou can login only after admin accepts. Contact admin: lovecareglobal@gmail.com');
+        return;
+      }
+      if(status==='rejected'){
+        if(resultEl) resultEl.innerHTML='❌ <b>Registration Rejected</b><br>'+(d.rejectionReason||'Please contact admin')+'<br><br>Contact: lovecareglobal@gmail.com';
+        alert('❌ Your registration was rejected by admin\nReason: '+(d.rejectionReason||'Documents not clear')+'\nPlease re-register with clear documents');
+        return;
+      }
+      // Approved
+      localStorage.setItem('nursePhone',fullPhone);
+      localStorage.setItem('nurseName',d.name);
+      if(document.getElementById('authStatus')) document.getElementById('authStatus').innerText='✅ Logged in as NURSE - '+d.name+' (Approved)';
+      showPage('nurse-dashboard');
+    });
+  }else{
+    localStorage.setItem('nursePhone',fullPhone);
+    showPage('nurse-dashboard');
   }
-  html+='</div>';
-});
+}
+);
 box.innerHTML=html||'<div style="text-align:center;color:#999;padding:20px">No messages</div>'; box.scrollTop=box.scrollHeight;
 });
 var online=msgs.filter(function(m){return Date.now()-m.timestamp<300000;}).length; var el=document.getElementById('ceoOnlineCount'); if(el) el.innerText=online+' ONLINE';
