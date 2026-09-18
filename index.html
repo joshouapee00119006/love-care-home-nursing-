@@ -223,10 +223,102 @@ body {
 
 <script>
 // === LOVE CARE GLOBAL - FREE CLOUDINARY UPLOAD ===
+
+// === IMAGE COMPRESSION FOR SUCCESSFUL REGISTRATION ===
+function compressImageFile(file, maxWidth, quality){
+  return new Promise((resolve, reject)=>{
+    if(!file) { resolve(file); return; }
+    // If not image, return as is
+    if(!file.type || file.type.indexOf('image')===-1){
+      resolve(file);
+      return;
+    }
+    // If already small (<300KB), don't compress
+    if(file.size < 300*1024){
+      console.log('Image already small', file.size);
+      resolve(file);
+      return;
+    }
+    var reader = new FileReader();
+    reader.onload = function(e){
+      var img = new Image();
+      img.onload = function(){
+        var canvas = document.createElement('canvas');
+        var scale = Math.min(1, maxWidth / img.width);
+        // Also limit height
+        if(img.height * scale > maxWidth) scale = maxWidth / img.height;
+        canvas.width = img.width * scale;
+        canvas.height = img.height * scale;
+        var ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(0,0,canvas.width,canvas.height);
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        canvas.toBlob(function(blob){
+          if(!blob){
+            resolve(file);
+            return;
+          }
+          var compressedFile = new File([blob], file.name.replace(/\.[^/.]+$/, '.jpg'), {type: 'image/jpeg', lastModified: Date.now()});
+          console.log('Compressed', file.name, file.size, '->', compressedFile.size, 'saved', Math.round((1-compressedFile.size/file.size)*100)+'%');
+          resolve(compressedFile);
+        }, 'image/jpeg', quality || 0.6);
+      };
+      img.onerror = function(){ resolve(file); };
+      img.src = e.target.result;
+    };
+    reader.onerror = function(){ resolve(file); };
+    reader.readAsDataURL(file);
+  });
+}
+
+async function compressVideoFile(file){
+  // For video, we just check size - if >15MB, we reject or try to limit
+  // Browser video compression is complex, so we just validate size and warn
+  if(file.size > 15*1024*1024){
+    // Try to compress by alerting user
+    console.log('Video too large', file.size);
+    return file; // still try to upload, Cloudinary will handle
+  }
+  return file;
+}
+
+async function getCompressedFileForUpload(file){
+  try{
+    if(!file) return file;
+    if(file.type && file.type.indexOf('image')!==-1){
+      // Photo, PIN, ID Front/Back - compress to max 800px, 0.6 quality -> ~100-200KB
+      var maxW = 800;
+      var qual = 0.6;
+      // For ID, use slightly higher quality
+      if(file.size > 2*1024*1024) { maxW = 600; qual = 0.5; }
+      return await compressImageFile(file, maxW, qual);
+    } else if(file.type && file.type.indexOf('video')!==-1){
+      return await compressVideoFile(file);
+    } else {
+      // PDF, DOC - return as is, but check size
+      if(file.size > 5*1024*1024){
+        alert('⚠️ '+file.name+' is '+(file.size/1024/1024).toFixed(1)+'MB - too large!\nPlease use file <5MB for successful registration.\nTry compressing PDF or using smaller file.');
+        // Still return but may fail
+      }
+      return file;
+    }
+  }catch(e){
+    console.error('Compression error', e);
+    return file;
+  }
+}
+
+
 const CLOUD_NAME = "whkvne85";
 const UPLOAD_PRESET = "love-care-video";
 
 async function uploadToCloudinary(file) {
+  // Ensure file is compressed for successful registration
+  try{
+    if(file && file.type && file.type.indexOf('image')!==-1 && file.size > 500*1024){
+      file = await compressImageFile(file, 800, 0.6);
+    }
+  }catch(e){ console.log('Auto compress error', e); }
   const url = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`;
   const formData = new FormData();
   formData.append('file', file);
@@ -1529,8 +1621,15 @@ function registerNurse(){
   async function uploadAllToCloudinary(){
     for(var i=0;i<filesToUpload.length;i++){
       var item=filesToUpload[i];
-      if(statusEl) statusEl.innerHTML='⏳ Uploading '+(i+1)+'/'+filesToUpload.length+' to Cloudinary: '+item.label+'... '+(item.file.size/1024/1024).toFixed(2)+'MB - Please wait';
-      var url = await uploadToCloudinary(item.file);
+      // COMPRESS BEFORE UPLOAD FOR SUCCESSFUL REGISTRATION
+      var originalSize = item.file.size;
+      if(statusEl) statusEl.innerHTML='⏳ Compressing '+(i+1)+'/'+filesToUpload.length+': '+item.label+'... Original: '+(originalSize/1024/1024).toFixed(2)+'MB';
+      var compressedFile = await getCompressedFileForUpload(item.file);
+      var compressedSize = compressedFile.size;
+      var savedPercent = originalSize>0 ? Math.round((1-compressedSize/originalSize)*100) : 0;
+      console.log('Upload '+item.label+': '+originalSize+' -> '+compressedSize+' saved '+savedPercent+'%');
+      if(statusEl) statusEl.innerHTML='⏳ Uploading '+(i+1)+'/'+filesToUpload.length+' to Cloudinary: '+item.label+'... '+(compressedSize/1024).toFixed(0)+'KB (saved '+savedPercent+'% from '+(originalSize/1024/1024).toFixed(2)+'MB) - Please wait';
+      var url = await uploadToCloudinary(compressedFile);
       if(url){
         w[item.key]=url;
         w[item.hasKey]=true;
